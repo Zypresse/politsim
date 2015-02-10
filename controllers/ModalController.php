@@ -43,4 +43,9 @@ class ModalController extends MyController
             return $this->_r("Invalid post ID");
     }
 
+    public function actionTweetAboutHuman()
+    {
+        return $this->render("tweet_about_human");
+    }
+
 }
