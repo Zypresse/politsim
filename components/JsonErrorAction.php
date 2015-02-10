@@ -1,6 +1,13 @@
 <?php 
 
+/*
+*	Надстройка над ErrorAction
+*	Рендерит любую ошибку в стандартном для API виде
+*	{"result":"error","error":"%errorname%"}
+*/
+
 namespace app\components;
+
 use Yii;
 use yii\web\ErrorAction;
 use yii\base\Exception;

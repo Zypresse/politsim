@@ -1,5 +1,12 @@
 <?php
 
+/*
+*	Надстройка над ActiveRecord
+*	FindByPk($id) — как в Yii1
+*	FindByCode($code) — аналог, для поиска по уникальному полю code
+*	getPublicAttributes — получить не все аттрибуты, а только указанные в setPublicAttributes модели
+*/
+
 namespace app\components;
 
 use Yii;
@@ -18,6 +25,7 @@ abstract class MyModel extends ActiveRecord
 	}
 
 	// Массив имен аттрибутов, доступных для кого угодно
+	// true — доступны все
 	public function setPublicAttributes() 
 	{
 		return true;
@@ -26,7 +34,7 @@ abstract class MyModel extends ActiveRecord
     public function getPublicAttributes()
     {
     	if ($this->setPublicAttributes() === true) return $this->attributes;
-    	
+
         $ar = [];
         foreach ($this->attributes as $key => $value) {
             if (in_array($key, $this->setPublicAttributes())) {

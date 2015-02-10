@@ -1,5 +1,21 @@
 <?php
 
+/*
+*	Надстройка над Controller 
+*	@result — для хранения JSON-ответа
+*	@error — для хранения названия ошибки
+*	
+*		Метод _r($errorName)
+*	Рендерит стандартный для API JSON-объект
+*	{"result":%data%}
+*	Или ошибку
+*	{"result":"error","error":"%errorname%"}
+*
+*	@viewer_id — хранит ID залогиненого юзера
+*	Логин происходит в beforeAction
+*	Секретный ключ из которого генерируется auth_key — в app/config/params.php
+*/
+
 namespace app\components;
 
 use yii;
@@ -32,7 +48,6 @@ class MyController extends Controller
                 }
             }
         } 
-        //var_dump($action);
         if (isset($action->actionMethod)) $action->actionMethod = 'actionInvalidAuthkey';
         return true;
     }
