@@ -52,4 +52,13 @@ class Post extends MyModel
             'party_reserve' => 'ID партии, которой зарезервирован пост',
         ];
     }
+
+    public function getOrg()
+    {
+        return $this->hasOne('app\models\Org', array('id' => 'org_id'));
+    }
+    public function getUser()
+    {
+        return $this->hasOne('app\models\User', array('post_id' => 'id'));
+    }
 }

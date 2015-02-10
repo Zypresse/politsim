@@ -19,6 +19,6 @@ class JsonErrorAction extends ErrorAction
 	        }
     	}
 
-		return $this->controller->render('json',['result'=>'error','error'=>$name]);
+		return $this->controller->render('/json',['result'=>'error','error'=>$name]);
 	}
 }

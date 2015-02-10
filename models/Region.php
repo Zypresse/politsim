@@ -93,32 +93,35 @@ class Region extends MyModel
         ];
     }
 
-    private $publicAttributes = [
-        'id',
-        'code',
-        'state_id',
-        'name',
-        'city',
-        'b',
-        'lat',
-        'lng',
-        'separate_risk',
-        'population',
-        'oil',
-        'natural_gas',
-        'coal',
-        'nf_ores',
-        'f_ores',
-        're_ores',
-        'u_ores',
-        'wood',
-        'corn',
-        'fruits',
-        'fish',
-        'meat',
-        'wool',
-        'b_materials'
-    ];
+    public function setPublicAttributes()
+    { 
+        return [
+            'id',
+            'code',
+            'state_id',
+            'name',
+            'city',
+            'b',
+            'lat',
+            'lng',
+            'separate_risk',
+            'population',
+            'oil',
+            'natural_gas',
+            'coal',
+            'nf_ores',
+            'f_ores',
+            're_ores',
+            'u_ores',
+            'wood',
+            'corn',
+            'fruits',
+            'fish',
+            'meat',
+            'wool',
+            'b_materials'
+        ];
+    }
 
     public function getBorders()
     {

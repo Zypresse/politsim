@@ -3,24 +3,15 @@
 namespace app\controllers;
 
 use yii;
-use yii\base\ViewContextInterface;
-use yii\web\Controller;
+use app\components\MyController;
 use app\models\User;
 use app\models\GovermentFieldType;
 use app\models\Org;
 use app\models\Resurse;
 use app\models\Region;
 
-class JsonController extends Controller implements ViewContextInterface
+class JsonController extends MyController
 {
-    private $result = 'undefined';
-    private $error = false;
-    private function _r() 
-    {
-        if ($this->error) $this->result = 'error';
-        return $this->render('json',['result'=>$this->result,'error'=>$this->error]);
-    }
-
     public function actions()
     {
         return [
@@ -29,11 +20,6 @@ class JsonController extends Controller implements ViewContextInterface
             ],
         ];
     }
-	public $layout = 'api';
-	public function getViewPath()
-	{
-	    return Yii::getAlias('@app/views');
-	}
 
     public function actionHello()
     {
@@ -44,25 +30,26 @@ class JsonController extends Controller implements ViewContextInterface
     public function actionUserinfo($uid = false, $nick = false)
     {
         if ($uid === false && $nick === false) {
-            $this->error = 'Invalid params';
+            $uid = $this->viewer_id;
+        } 
+
+        if ($uid) {
+            $uid = intval($uid);
+            $user = User::findByPk($uid);
         } else {
-            if ($uid) {
-                $uid = intval($uid);
-                $user = User::findByPk($uid);
-            } else {
-                $nick = str_replace("@", "", mb_strtolower($nick));
-                $user = User::find()->where(["twitter_nickname"=>$nick])->one();
-            }
-            if (is_null($user)) {
-                $this->error = 'User not found';
-            } else {
-                $this->result = $user->getPublicAttributes();
-            }
+            $nick = str_replace("@", "", mb_strtolower($nick));
+            $user = User::find()->where(["twitter_nickname"=>$nick])->one();
         }
+        if (is_null($user)) {
+            $this->error = 'User not found';
+        } else {
+            $this->result = $user->getPublicAttributes();
+        }
+        
         return $this->_r();
     }
 
-    public function actionGovermentfieldtype_info($id)
+    public function actionGovermentFieldTypeInfo($id)
     {
         $id = intval($id);
         if ($id > 0) {
@@ -78,7 +65,7 @@ class JsonController extends Controller implements ViewContextInterface
         return $this->_r();
     }
 
-    public function actionOrg_info($id)
+    public function actionOrgInfo($id)
     {
         $id = intval($id);
         if ($id > 0) {
@@ -95,7 +82,7 @@ class JsonController extends Controller implements ViewContextInterface
         return $this->_r();
     }
 
-    public function actionRegion_info($code)
+    public function actionRegionInfo($code)
     {
         if ($code) {
             $region = Region::findByCode($code);
@@ -111,14 +98,14 @@ class JsonController extends Controller implements ViewContextInterface
         return $this->_r();
     }
 
-    public function actionRegions_resurses($code)
+    public function actionRegionsResurses($code)
     {
         if ($code) {
             $resurse = Resurse::findByCode($code);
             if (is_null($resurse)) {
                 $this->error = "Resurse not found";
             } else {
-                $regions = Region::findAll();
+                $regions = Region::find()->all();
                 $this->result = [];
                 foreach ($regions as $region) {
                     $this->result[] = ['code'=>$region->code,$code=>$region->attributes[$code]];
@@ -131,10 +118,10 @@ class JsonController extends Controller implements ViewContextInterface
         return $this->_r();
     }
 
-    public function actionRegions_population()
+    public function actionRegionsPopulation()
     {
     
-        $regions = Region::findAll();
+        $regions = Region::find()->all();
         $this->result = [];
         foreach ($regions as $region) {
             $this->result[] = ['code'=>$region->code,'population'=>$region->population];

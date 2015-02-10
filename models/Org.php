@@ -69,19 +69,31 @@ class Org extends MyModel
         ];
     }
 
-    private $publicAttributes = [
-        'id',
-        'state_id',
-        'name',
-        'leader_post',
-        'leader_dest',
-        'dest',
-        'leader_can_create_posts',
-        'next_elect',
-        'elect_period',
-        'other_org_id',
-        'vote_party_id',
-        'elect_with_org',
-        'elect_leader_with_org'
-    ];
+    public function setPublicAttributes() 
+    {
+        return [
+            'id',
+            'state_id',
+            'name',
+            'leader_post',
+            'leader_dest',
+            'dest',
+            'leader_can_create_posts',
+            'next_elect',
+            'elect_period',
+            'other_org_id',
+            'vote_party_id',
+            'elect_with_org',
+            'elect_leader_with_org'
+        ];
+    }
+
+    public function getLeader()
+    {
+        return $this->hasOne('app\models\Post', array('id' => 'leader_post'));
+    }
+    public function getState()
+    {
+        return $this->hasOne('app\models\State', array('id' => 'state_id'));
+    }
 }

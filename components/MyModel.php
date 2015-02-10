@@ -18,13 +18,18 @@ abstract class MyModel extends ActiveRecord
 	}
 
 	// Массив имен аттрибутов, доступных для кого угодно
-	private $publicAttributes = ['id'];
+	public function setPublicAttributes() 
+	{
+		return true;
+	}
 
     public function getPublicAttributes()
     {
+    	if ($this->setPublicAttributes() === true) return $this->attributes;
+    	
         $ar = [];
         foreach ($this->attributes as $key => $value) {
-            if (in_array($key, $this->publicAttributes)) {
+            if (in_array($key, $this->setPublicAttributes())) {
                 $ar[$key] = $value;
             }
         }

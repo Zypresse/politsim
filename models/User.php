@@ -74,20 +74,39 @@ class User extends MyModel
         ];
     }
 
-    private $publicAttributes = [
-        'id',
-        'uid_vk',
-        'name',
-        'photo',
-        'photo_big',
-        'party_id',
-        'state_id',
-        'post_id',
-        'region_id',
-        'sex',
-        'star',
-        'heart',
-        'chart_pie',
-    ];
+    public function setPublicAttributes() 
+    {
+        return [
+            'id',
+            'uid_vk',
+            'name',
+            'photo',
+            'photo_big',
+            'party_id',
+            'state_id',
+            'post_id',
+            'region_id',
+            'sex',
+            'star',
+            'heart',
+            'chart_pie',
+        ];
+    }
 
+    public function getParty()
+    {
+        return $this->hasOne('app\models\Party', array('id' => 'party_id'));
+    }
+    public function getState()
+    {
+        return $this->hasOne('app\models\State', array('id' => 'state_id'));
+    }
+    public function getPost()
+    {
+        return $this->hasOne('app\models\Post', array('id' => 'post_id'));
+    }
+    public function getRegion()
+    {
+        return $this->hasOne('app\models\Region', array('id' => 'region_id'));
+    }
 }
