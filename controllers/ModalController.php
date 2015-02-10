@@ -6,6 +6,9 @@ use yii;
 use app\models\Region;
 use app\models\Post;
 use app\models\User;
+use app\models\Org;
+use app\models\ElectRequest;
+use app\models\ElectVote;
 use app\components\MyController;
 
 class ModalController extends MyController
@@ -46,6 +49,47 @@ class ModalController extends MyController
     public function actionTweetAboutHuman()
     {
         return $this->render("tweet_about_human");
+    }
+
+    public function actionElectExitpolls($org_id,$leader = 0)
+    {
+        $org_id = intval($org_id);
+        $leader = intval($leader);
+        if ($org_id > 0) {
+            $org = Org::findByPk($org_id);
+            if (is_null($org))
+                return $this->_r("Organisation not found");
+
+            $elect_requests = ElectRequest::find()->where(["org_id"=>$org_id,"leader"=>$leader])->all();
+            $results = [];
+            $sum_a_r = 0;
+            $sum_star = 0;
+            if (is_array($elect_requests)) { 
+            foreach ($elect_requests as $request) {
+
+                if (is_null($request->user) || is_null($request->party))
+                    return $this->_r("Trololo");
+
+                $abstract_rating = $leader ? $request->user->heart + $request->user->chart_pie/10 + ($request->party->heart + $request->party->chart_pie/10)/10 : $request->party->heart + $request->party->chart_pie/10;
+                $votes = ElectVote::find()->where(["request_id"=>$request->id])->all();
+                if (is_array($votes)) foreach ($votes as $vote) {
+                    $abstract_rating += ($vote->user->star + $vote->user->heart/10 + $vote->user->chart_pie/100)/10;
+                }
+                $results[$request->id] = $abstract_rating;
+                $sum_a_r += $abstract_rating;
+                $sum_star += $leader ? $request->user->star : $request->party->star;
+            }
+            $yavka_time = ($org->next_elect-time())/(24*60*60);
+            if ($yavka_time > 1) $yavka_time = 1;
+            $yavka_star = $sum_star / $org->state->sum_star;
+            $yavka = $yavka_time * $yavka_star;
+
+            return $this->render("elect_exitpolls",['elect_requests'=>$elect_requests,'results'=>$results,'sum_a_r'=>$sum_a_r,'org'=>$org,'yavka'=>$yavka,'leader'=>$leader]);
+
+            } else
+                return $this->_r("No requests on elections");
+        } else 
+            return $this->_r("Invalid organisation ID");
     }
 
 }

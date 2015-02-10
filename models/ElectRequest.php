@@ -48,4 +48,17 @@ class ElectRequest extends MyModel
             'leader' => '1 — заявка на выборы лидера, 0 — на выборы в организаицю',
         ];
     }
+
+    public function getOrg()
+    {
+        return $this->hasOne('app\models\Org', array('id' => 'org_id'));
+    }
+    public function getParty()
+    {
+        return $this->hasOne('app\models\Party', array('id' => 'party_id'));
+    }
+    public function getUser()
+    {
+        return $this->hasOne('app\models\User', array('id' => 'candidat'));
+    }
 }
