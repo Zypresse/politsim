@@ -1,0 +1,93 @@
+<?php
+
+namespace app\models;
+
+use Yii;
+use app\components\MyModel;
+
+/**
+ * This is the model class for table "pop_classes".
+ *
+ * @property integer $id
+ * @property string $name
+ * @property double $food_min_count
+ * @property double $food_min_type
+ * @property double $food_max_count
+ * @property double $food_max_type
+ * @property double $dress_min_count
+ * @property double $dress_min_type
+ * @property double $dress_max_count
+ * @property double $dress_max_type
+ * @property double $furniture_min_count
+ * @property double $furniture_min_type
+ * @property double $furniture_max_count
+ * @property double $furniture_max_type
+ * @property double $alcohol_min_type
+ * @property double $alcohol_min_count
+ * @property double $alcohol_max_type
+ * @property double $alcohol_max_count
+ * @property double $energy_min
+ * @property double $energy_max
+ * @property double $base_speed
+ * @property string $work_type
+ * @property integer $awareness
+ * @property integer $threshold
+ * @property integer $aggression
+ */
+class PopClass extends MyModel
+{
+    /**
+     * @inheritdoc
+     */
+    public static function tableName()
+    {
+        return 'pop_classes';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        return [
+            [['name', 'food_min_count', 'food_min_type', 'food_max_count', 'food_max_type', 'dress_min_count', 'dress_min_type', 'dress_max_count', 'dress_max_type', 'furniture_min_count', 'furniture_min_type', 'furniture_max_count', 'furniture_max_type', 'alcohol_min_type', 'alcohol_min_count', 'alcohol_max_type', 'alcohol_max_count', 'energy_min', 'energy_max', 'work_type'], 'required'],
+            [['food_min_count', 'food_min_type', 'food_max_count', 'food_max_type', 'dress_min_count', 'dress_min_type', 'dress_max_count', 'dress_max_type', 'furniture_min_count', 'furniture_min_type', 'furniture_max_count', 'furniture_max_type', 'alcohol_min_type', 'alcohol_min_count', 'alcohol_max_type', 'alcohol_max_count', 'energy_min', 'energy_max', 'base_speed'], 'number'],
+            [['awareness', 'threshold', 'aggression'], 'integer'],
+            [['name', 'work_type'], 'string', 'max' => 255]
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'ID',
+            'name' => 'Name',
+            'food_min_count' => 'Food Min Count',
+            'food_min_type' => 'Food Min Type',
+            'food_max_count' => 'Food Max Count',
+            'food_max_type' => 'Food Max Type',
+            'dress_min_count' => 'Dress Min Count',
+            'dress_min_type' => 'Dress Min Type',
+            'dress_max_count' => 'Dress Max Count',
+            'dress_max_type' => 'Dress Max Type',
+            'furniture_min_count' => 'Furniture Min Count',
+            'furniture_min_type' => 'Furniture Min Type',
+            'furniture_max_count' => 'Furniture Max Count',
+            'furniture_max_type' => 'Furniture Max Type',
+            'alcohol_min_type' => 'Alcohol Min Type',
+            'alcohol_min_count' => 'Alcohol Min Count',
+            'alcohol_max_type' => 'Alcohol Max Type',
+            'alcohol_max_count' => 'Alcohol Max Count',
+            'energy_min' => 'Energy Min',
+            'energy_max' => 'Energy Max',
+            'base_speed' => 'Base Speed',
+            'work_type' => 'Work Type',
+            'awareness' => 'Awareness',
+            'threshold' => 'Threshold',
+            'aggression' => 'Aggression',
+        ];
+    }
+}
