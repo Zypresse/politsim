@@ -90,14 +90,4 @@ class User extends MyModel
         'chart_pie',
     ];
 
-    public function getPublicAttributes()
-    {
-        $ar = [];
-        foreach ($this->attributes as $key => $value) {
-            if (in_array($key, $this->publicAttributes)) {
-                $ar[$key] = $value;
-            }
-        }
-        return $ar;
-    }
 }

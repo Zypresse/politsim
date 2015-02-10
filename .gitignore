@@ -51,7 +51,6 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
-composer.json
 config
 web
 sftp-config.json

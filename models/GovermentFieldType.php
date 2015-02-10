@@ -52,4 +52,12 @@ class GovermentFieldType extends MyModel
             'default_value' => 'Default',
         ];
     }
+
+    private $publicAttributes = [
+        'id',
+        'name',
+        'system_name',
+        'type',
+        'default_value'
+    ];
 }

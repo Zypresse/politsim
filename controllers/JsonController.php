@@ -6,6 +6,10 @@ use yii;
 use yii\base\ViewContextInterface;
 use yii\web\Controller;
 use app\models\User;
+use app\models\GovermentFieldType;
+use app\models\Org;
+use app\models\Resurse;
+use app\models\Region;
 
 class JsonController extends Controller implements ViewContextInterface
 {
@@ -60,6 +64,82 @@ class JsonController extends Controller implements ViewContextInterface
 
     public function actionGovermentfieldtype_info($id)
     {
+        $id = intval($id);
+        if ($id > 0) {
+            $govermentFieldType = GovermentFieldType::findByPk($id);
+            if (is_null($govermentFieldType)) {
+                $this->error = "Goverment field type not found";
+            } else {
+                $this->result = $govermentFieldType->getPublicAttributes();
+            }
+        } else {
+            $this->error = "Invalid ID";
+        }
+        return $this->_r();
+    }
+
+    public function actionOrg_info($id)
+    {
+        $id = intval($id);
+        if ($id > 0) {
+            $org = Org::findByPk($id);
+            if (is_null($org)) {
+                $this->error = "Organisation not found";
+            } else {
+                $this->result = $org->getPublicAttributes();
+            }
+        } else {
+            $this->error = "Invalid ID";
+        }
+
+        return $this->_r();
+    }
+
+    public function actionRegion_info($code)
+    {
+        if ($code) {
+            $region = Region::findByCode($code);
+            if (is_null($region)) {
+                $this->error = "Region not found";
+            } else {
+                $this->result = $region->getPublicAttributes();
+            }
+        } else {
+            $this->error = "Invalid ID";
+        }
+
+        return $this->_r();
+    }
+
+    public function actionRegions_resurses($code)
+    {
+        if ($code) {
+            $resurse = Resurse::findByCode($code);
+            if (is_null($resurse)) {
+                $this->error = "Resurse not found";
+            } else {
+                $regions = Region::findAll();
+                $this->result = [];
+                foreach ($regions as $region) {
+                    $this->result[] = ['code'=>$region->code,$code=>$region->attributes[$code]];
+                }
+            }
+        } else {
+            $this->error = "Invalid code";
+        }
+
+        return $this->_r();
+    }
+
+    public function actionRegions_population()
+    {
+    
+        $regions = Region::findAll();
+        $this->result = [];
+        foreach ($regions as $region) {
+            $this->result[] = ['code'=>$region->code,'population'=>$region->population];
+        }    
+        
         return $this->_r();
     }
 

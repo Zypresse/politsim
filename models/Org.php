@@ -68,4 +68,20 @@ class Org extends MyModel
             'group_id' => 'Group ID',
         ];
     }
+
+    private $publicAttributes = [
+        'id',
+        'state_id',
+        'name',
+        'leader_post',
+        'leader_dest',
+        'dest',
+        'leader_can_create_posts',
+        'next_elect',
+        'elect_period',
+        'other_org_id',
+        'vote_party_id',
+        'elect_with_org',
+        'elect_leader_with_org'
+    ];
 }
