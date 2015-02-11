@@ -109,4 +109,9 @@ class User extends MyModel
     {
         return $this->hasOne('app\models\Region', array('id' => 'region_id'));
     }
+
+    public function isPartyLeader()
+    {
+        return (intval(@$this->party->leader) === intval($this->id));
+    }
 }

@@ -63,4 +63,13 @@ class Party extends MyModel
             'chart_pie' => 'Chart Pie',
         ];
     }
+
+    public function getMembers()
+    {
+        return $this->hasMany('app\models\User', array('party_id' => 'id'));
+    }
+    public function getState()
+    {
+        return $this->hasOne('app\models\State', array('id' => 'state_id'));
+    }
 }

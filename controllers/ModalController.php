@@ -198,4 +198,56 @@ class ModalController extends MyController
             return $this->_r("Invalid organisation ID");
     }
 
+    public function actionElectRequest($org_id,$leader = 0)
+    {
+        $org_id = intval($org_id);
+        $leader = intval($leader)?1:0;
+        if ($org_id > 0) {
+            $org = Org::findByPk($org_id);
+            if (is_null($org))
+                return $this->_r("Organisation not found");
+            $user = User::findByPk($this->viewer_id);
+            if ($user->state_id !== $org->state_id)
+                return $this->_r("Only citizens can requests");
+
+            if (($leader === 0 && $org->isElected()) || ($leader && $org->isLeaderElected())) {
+
+                if ($leader) {
+
+                    switch ($org->leader_dest) {
+                        case 'nation_individual_vote':
+                            if (ElectRequest::find()->where(['org_id'=>$org_id,'candidat'=>$user->id,'leader'=>1])->count())
+                                return $this->_r("Allready have request");
+                            else
+                                return $this->render("elect_leader_ind_req",['org'=>$org,'leader'=>$leader,'user'=>$user]);
+                        case 'nation_party_vote':
+                            if (ElectRequest::find()->where(['org_id'=>$org_id,'party_id'=>$user->party_id,'leader'=>1])->count())
+                                return $this->_r("Allready have request from party");
+                            if ($user->isPartyLeader())
+                                return $this->render("elect_leader_party_req",['org'=>$org,'leader'=>$leader,'user'=>$user]);
+                            else
+                                return $this->_r("Only party leader can make request");
+                        default:
+                            return $this->_r("Undefined elections type");
+                    }
+                } else {
+                    switch ($org->dest) {
+                        case 'nation_party_vote':
+                            if (ElectRequest::find()->where(['org_id'=>$org_id,'party_id'=>$user->party_id,'leader'=>0])->count())
+                                return $this->_r("Allready have request from party");
+                            if ($user->isPartyLeader())
+                                return $this->render("elect_party_req",['org'=>$org,'leader'=>$leader,'user'=>$user]);
+                            else
+                                return $this->_r("Only party leader can make request");
+                        default:
+                            return $this->_r("Undefined elections type");
+                    }
+                }
+
+            } else
+                return $this->_r("Elections not allowed");
+        } else 
+            return $this->_r("Invalid organisation ID");
+    }
+
 }
