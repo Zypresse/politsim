@@ -9,6 +9,9 @@ use app\models\User;
 use app\models\Org;
 use app\models\ElectRequest;
 use app\models\ElectVote;
+use app\models\BillType;
+use app\models\BillTypeField;
+use app\models\GovermentFieldType;
 use app\components\MyController;
 
 class ModalController extends MyController
@@ -81,7 +84,7 @@ class ModalController extends MyController
                 $sum_a_r += $abstract_rating;
                 $sum_star += $leader ? $request->user->star : $request->party->star;
             }
-            $yavka_time = ($org->next_elect-time())/(24*60*60);
+            $yavka_time = 1-($org->next_elect-time())/(24*60*60);
             if ($yavka_time > 1) $yavka_time = 1;
             $yavka_star = $sum_star / $org->state->sum_star;
             $yavka = $yavka_time * $yavka_star;
@@ -92,6 +95,58 @@ class ModalController extends MyController
                 return $this->_r("No requests on elections");
         } else 
             return $this->_r("Invalid organisation ID");
+    }
+
+    public function actionNewBill($id)
+    {
+        $id = intval($id);
+        if ($id>0) {
+            $bill_type = BillType::findByPk($id);
+            if (is_null($bill_type))
+                return $this->_r("Bill type not found");
+            $fields = BillTypeField::find()->where(['bill_id'=>$id])->all();
+
+            $user = User::findByPk($this->viewer_id);
+            if (is_null($user->state))
+                return $this->_r("No citizenship");
+
+            $additional_data = [];
+
+            if (is_array($fields)) foreach ($fields as $field) {
+                switch ($field->type) {
+                    case 'regions': // регионы исключая столицу
+                    case 'cities':
+                        $additional_data['regions'] = Region::find()->where("state_id = {$user->state_id} AND code <> '{$user->state->capital}'")->all();
+                    break;
+                    case 'regions_all': // все регионы
+                    case 'cities_all':
+                        $additional_data['regions'] = Region::find()->where(["state_id" => $user->state_id])->all();
+                    break;
+                    case 'goverment_field_types': // типы полей конституции
+                        $additional_data['goverment_field_types'] = GovermentFieldType::find()->where(['hide'=>0])->all();
+                    break;
+                    case 'legislature_types':
+                        $additional_data['legislature_types'] = [
+                            ['id'=>1,'display_name'=>'Стандартный парламент (10 мест)']
+                        ];
+                    break; 
+                    case 'elected_variants':
+                        $additional_data['elected_variants'] = [];
+                        if ($user->state->executiveOrg->isElected()) $additional_data['elected_variants'][] = ['key'=>$state->executive.'_0','name'=>'Выборы в организацию «'.$state->executiveOrg->name.'»'];
+                        if ($user->state->executiveOrg->isLeaderElected()) $additional_data['elected_variants'][] = ['key'=>$state->executive.'_1','name'=>'Выборы лидера организации «'.$state->executiveOrg->name.'»'];
+                        if ($user->state->legislatureOrg->isElected()) $additional_data['elected_variants'][] = ['key'=>$state->legislature.'_0','name'=>'Выборы в организацию «'.$state->legislatureOrg->name.'»'];
+                        if ($user->state->legislatureOrg->isLeaderElected()) $additional_data['elected_variants'][] = ['key'=>$state->legislature.'_1','name'=>'Выборы лидера организации «'.$state->legislatureOrg->name.'»'];
+                    break;                    
+                    default:
+                        
+                    break;
+                }
+            }
+
+            return $this->render("new_bill",['bill_type'=>$bill_type,'fields'=>$fields,'additional_data'=>$additional_data]);
+
+        } else 
+            return $this->_r("Invalid bill type ID");
     }
 
 }

@@ -7,6 +7,10 @@ usort($results, function($a, $b) {
 });
 
 ?>
+<div class="row"><div class="span4">
+	<p>Явка на данный момент составила <?=round($yavka*100,2)?>%</p>
+	<p>На выборы пришло <?=MyHtmlHelper::formateNumberword($yavka*$org->state->population,'человек','человек','человека')?></p>
+</div></div>
 <div class="row">
 <div class="span2">
 

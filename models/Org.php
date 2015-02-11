@@ -88,6 +88,16 @@ class Org extends MyModel
         ];
     }
 
+    public function isElected()
+    {
+        return in_array($this->dest, ['nation_party_vote','nation_individual_vote']);
+    }
+    public function isLeaderElected()
+    {
+        return in_array($this->dest, ['nation_party_vote','nation_individual_vote']);
+    }
+
+
     public function getLeader()
     {
         return $this->hasOne('app\models\Post', array('id' => 'leader_post'));

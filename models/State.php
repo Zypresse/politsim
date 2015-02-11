@@ -61,4 +61,19 @@ class State extends MyModel
             'group_id' => 'Group ID',
         ];
     }
+    
+    public function getLegislatureOrg()
+    {
+        return $this->hasOne('app\models\Org', array('id' => 'legislature'));
+    }
+    
+    public function getExecutiveOrg()
+    {
+        return $this->hasOne('app\models\Org', array('id' => 'executive'));
+    }
+
+    public function getStructure()
+    {
+        return $this->hasOne('app\models\Structure', array('id' => 'state_structure'));
+    }
 }
