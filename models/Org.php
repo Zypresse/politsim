@@ -94,7 +94,7 @@ class Org extends MyModel
     }
     public function isLeaderElected()
     {
-        return in_array($this->dest, ['nation_party_vote','nation_individual_vote']);
+        return in_array($this->leader_dest, ['nation_party_vote','nation_individual_vote']);
     }
 
 

@@ -13,6 +13,7 @@ use app\models\BillType;
 use app\models\BillTypeField;
 use app\models\GovermentFieldType;
 use app\components\MyController;
+use yii\helpers\ArrayHelper;
 
 class ModalController extends MyController
 {
@@ -147,6 +148,54 @@ class ModalController extends MyController
 
         } else 
             return $this->_r("Invalid bill type ID");
+    }
+
+    public function actionElectVote($org_id,$leader = 0)
+    {
+        $org_id = intval($org_id);
+        $leader = intval($leader);
+        if ($org_id > 0) {
+            $org = Org::findByPk($org_id);
+            if (is_null($org))
+                return $this->_r("Organisation not found");
+
+            $user = User::findByPk($this->viewer_id);
+            if ($user->state_id !== $org->state_id)
+                return $this->_r("Only citizens can vote");
+            
+            if (($leader === 0 && $org->isElected()) || ($leader && $org->isLeaderElected())) {
+                
+                $elect_requests_ids = implode(",", ArrayHelper::map(ElectRequest::find()->where(["org_id"=>$org_id,"leader"=>$leader])->asArray()->all(),'id','id'));
+                $allready_voted = ElectVote::find()->where("request_id IN ({$elect_requests_ids}) AND uid = {$this->viewer_id}")->count();
+                if(intval($allready_voted))
+                    return $this->_r("Allready voted");
+
+                $elect_requests = ElectRequest::find()->where(["org_id"=>$org_id,"leader"=>$leader])->all();
+
+                if ($leader) {
+                    switch ($org->leader_dest) {
+                        case 'nation_individual_vote':
+                            return $this->render("elect_leader_ind",['org'=>$org,'leader'=>$leader,'elect_requests'=>$elect_requests]);
+                        case 'nation_party_vote':
+                            return $this->render("elect_leader_party",['org'=>$org,'leader'=>$leader,'elect_requests'=>$elect_requests]);
+                        default:
+                            return $this->_r("Undefined elections type");
+                    }
+                } else {
+                    switch ($org->dest) {
+                        case 'nation_party_vote':
+                            return $this->render("elect_party",['org'=>$org,'leader'=>$leader,'elect_requests'=>$elect_requests]);
+                        default:
+                            return $this->_r("Undefined elections type");
+                    }
+                }
+                
+
+            } else
+                return $this->_r("Elections not allowed");
+
+        } else 
+            return $this->_r("Invalid organisation ID");
     }
 
 }
