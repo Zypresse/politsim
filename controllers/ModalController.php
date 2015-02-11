@@ -62,12 +62,13 @@ class ModalController extends MyController
 
             $elect_requests = ElectRequest::find()->where(["org_id"=>$org_id,"leader"=>$leader])->all();
             $results = [];
+            $requests = [];
             $sum_a_r = 0;
             $sum_star = 0;
             if (is_array($elect_requests)) { 
             foreach ($elect_requests as $request) {
 
-                if (is_null($request->user) || is_null($request->party))
+                if (($leader && is_null($request->user)) || is_null($request->party))
                     return $this->_r("Trololo");
 
                 $abstract_rating = $leader ? $request->user->heart + $request->user->chart_pie/10 + ($request->party->heart + $request->party->chart_pie/10)/10 : $request->party->heart + $request->party->chart_pie/10;
@@ -75,7 +76,8 @@ class ModalController extends MyController
                 if (is_array($votes)) foreach ($votes as $vote) {
                     $abstract_rating += ($vote->user->star + $vote->user->heart/10 + $vote->user->chart_pie/100)/10;
                 }
-                $results[$request->id] = $abstract_rating;
+                $results[] = ['id'=>$request->id,'rating'=>$abstract_rating];
+                $requests[$request->id] = $request;
                 $sum_a_r += $abstract_rating;
                 $sum_star += $leader ? $request->user->star : $request->party->star;
             }
@@ -84,7 +86,7 @@ class ModalController extends MyController
             $yavka_star = $sum_star / $org->state->sum_star;
             $yavka = $yavka_time * $yavka_star;
 
-            return $this->render("elect_exitpolls",['elect_requests'=>$elect_requests,'results'=>$results,'sum_a_r'=>$sum_a_r,'org'=>$org,'yavka'=>$yavka,'leader'=>$leader]);
+            return $this->render("elect_exitpolls",['requests'=>$requests,'results'=>$results,'sum_a_r'=>$sum_a_r,'org'=>$org,'yavka'=>$yavka,'leader'=>$leader]);
 
             } else
                 return $this->_r("No requests on elections");

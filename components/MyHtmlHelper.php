@@ -7,4 +7,54 @@ class MyHtmlHelper {
 	{
 		return ($hash ? '#' : '') . ['cc3399', '330066', '00ccff', '00ff66', 'cccc99', 'ff3366', 'cc0033', 'ff0033', 'ff9999', 'cc3366', 'ffccff', 'cc6699', '660033', 'ff99cc', 'ff66cc', 'ff99ff', 'ff6699', 'cc0066', 'ff3399', 'ff0099', 'ff33cc', 'ff00cc', 'ff66ff', 'ff33ff', 'ff00ff', '990066', 'cc66cc', 'cc33cc', 'cc99ff', 'cc66ff', 'cc33ff', '993399', 'cc00ff', '9900cc', '990099', 'cc99cc', '996699', '663366', '660099', '660066', '9900ff', '9933ff', '9966cc', '330033', '663399', '6633cc', '9966ff', '6600ff', '6633ff', 'ccccff', '9999ff', '9999cc', '6666ff', '666699', '333366', '333399', '330099', '3300cc', '3300ff', '3333cc', '0066ff', '0033ff', '3366ff', '3366cc', '000066', '000033', '000099', '0033cc', '0000cc', '336699', '0066cc', '99ccff', '6699ff', '6699cc', '006699', '3399cc', '0099cc', '66ccff', '3399ff', '003399', '33ccff', '99ffff', '66ffff', '33ffff', '00ffff', '00cccc', '669999', '99cccc', 'ccffff', '33cccc', '66cccc', '339999', '336666', '003333', '00ffcc', '33ffcc', '33cc99', '00cc99', '66ffcc', '99ffcc', '339966', '006633', '336633', '669966', '66cc66', '99ff99', '66ff66', '99cc99', '66ff99', '33ff99', '33cc66', '00cc66', '66cc99', '009966', '33ff66', 'ccffcc', 'ccff99', '99ff66', '99ff33', '00ff33', '00cc33', '33cc33', '66ff33', '00ff00', '66cc33', '006600', '003300', '33ff00', '66ff00', '99ff00', '66cc00', '00cc00', '33cc00', '339900', '669933', '99cc33', '336600', '669900', '99cc00', 'ccff66', 'ccff33', '999900', 'cccc00', 'cccc33', '333300', '666600', '999933', 'cccc66', '999966', 'ffffcc', 'ffff99', 'ffff66', 'ffff33', 'ffff00', 'ffcc66', 'ffcc33', 'cc9933', '996600', 'cc9900', 'ff9900', 'cc6600', 'cc6633', '663300', 'ff9966', 'ff6633', 'ff9933', 'ff6600', 'cc3300', '330000', '663333', '996666', 'cc9999', '993333', 'cc6666', 'ffcccc', 'cc3333', 'ff6666', '660000', '990000', 'cc0000', 'ff0000', 'ff3300', 'ffcc99', 'cccccc', '999999', '666666', '333333'][$i];
 	} 
+
+	public static function icon($str,$style='',$attrs=[]) {
+	    
+		$lang = [
+		    'star'=>'Известность',
+		    'heart'=>'Доверие',
+		    'chart_pie'=>'Успешность',
+		    'coins' => 'золотых монет',
+		    'world' => 'Карта',
+		    'role' => 'Работа',
+		    'chart_bar' => 'Рейтинг',
+		    'ceo' => 'Политика',
+		    'check_box_list' => 'Выборы',
+		    'entity' => 'Государство',
+		    'profile' => 'Профиль',
+		    'SMI_32' => 'СМИ',
+		    'lcd_tv_image' => 'Тель-а-виденье',
+		    'newspaper' => 'Газеты',
+		    'radio_modern' => 'Радио',
+		    'twitter_bird' => 'Соц. сети',
+		];
+	    if (isset($lang[$str])) {
+
+	    	$attrs_str = '';
+	    	if (is_array($attrs)) {
+	    		foreach ($attrs as $key => $value) {
+	    			$attrs_str .= " {$key}='{$value}' ";
+	    		}
+	    	} else $attrs_str .= $attrs;	
+	        return  "<img src='/img/{$str}.png' alt='{$lang[$str]}' title='{$lang[$str]}' style='{$style}' {$attrs_str} />";
+	    } else return false;
+	}
+
+	public static function zeroOne2Human($n) {
+	    if ($n === 0) {
+	        return 'нулевой уровень';
+	    } else if ($n<0.3) {
+	        return 'крайне низкий уровень';
+	    } else if ($n<0.5) {
+	        return 'низкий уровень';
+	    } else if ($n<0.7) {
+	        return 'средний уровень';
+	    } else if ($n<0.85) {
+	        return 'уровень выше среднего';
+	    } else if ($n<0.95) {
+	        return 'высокий уровень';
+	    } else {
+	        return 'высочайший уровень';
+	    }
+	}
 }
