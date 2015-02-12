@@ -416,4 +416,12 @@ class JsonController extends MyController
             return $this->_r("Invalid party ID");
     }
 
+    public function actionLeaveParty()
+    {
+        $user = User::findByPk($this->viewer_id);
+        $user->leaveParty();
+        $this->result = "ok";
+        return $this->_r();
+    }
+
 }
