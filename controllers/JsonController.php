@@ -359,4 +359,27 @@ class JsonController extends MyController
             return $this->_r("Invalid params");
     }
 
+    public function actionGetCitizenship($state_id)
+    {
+        $state_id = intval($state_id);
+        if ($state_id>0) {
+            $user = User::findByPk($this->viewer_id);
+            if ($user->state_id) 
+                return $this->_r("You allready have citizenship");
+            
+            $state = State::findByPk($state_id);
+            if (is_null($state))
+                return $this->_r("State not found");
+
+            // тут проверка на открытые границы и т.п.
+
+            $user->state_id = $state_id;
+            $user->save();
+            $this->result = "ok";
+            return $this->_r();
+
+        } else
+            return $this->_r("Invalid state ID");
+    }
+
 }
