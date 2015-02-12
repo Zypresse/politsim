@@ -4,6 +4,7 @@ namespace app\models;
 
 use Yii;
 use app\components\MyModel;
+use app\models\User;
 
 /**
  * This is the model class for table "parties".
@@ -71,5 +72,10 @@ class Party extends MyModel
     public function getState()
     {
         return $this->hasOne('app\models\State', array('id' => 'state_id'));
+    }
+
+    public function getMembersCount()
+    {
+        return User::find()->where(['party_id'=>$this->id])->count();
     }
 }

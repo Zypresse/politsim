@@ -10,6 +10,8 @@ use app\models\Bill;
 use app\models\Org;
 use app\models\Region;
 use app\models\Resurse;
+use app\models\Party;
+use app\models\State;
 use app\components\MyController;
 use yii\helpers\ArrayHelper;
 
@@ -91,5 +93,39 @@ class HtmlController extends MyController
 		$resurses = Resurse::find()->where(['level'=>0])->all();
 
 		return $this->render("map_resurses",['regions'=>$regions,'resurses'=>$resurses]);
+	}
+
+	public function actionChartPeoples()
+	{
+		$users = User::find()->where('star > 0')->orderBy('`star` + `heart`/10 + `chart_pie`/100 DESC')->limit(100)->all();
+		$user = User::findByPk($this->viewer_id);
+		$r = $user->star + $user->heart/10 + $user->chart_pie/100;
+		$place = User::find()->where('`star` + `heart`/10 + `chart_pie`/100 > '.$r)->count();
+
+		return $this->render("chart_peoples",['users'=>$users,'user'=>$user,'place'=>$place]);
+	}
+
+	public function actionChartParties($state_id = false)
+	{
+		if ($state_id) {
+			$state = State::findByPk($state_id);
+			if (is_null($state))
+				return $this->_r("State not found");
+		
+			$parties = Party::find()->where(['state_id'=>$state_id])->orderBy('`star` + `heart`/10 + `chart_pie`/100 DESC')->limit(100)->all();
+
+			return $this->render("chart_parties",['parties'=>$parties,'state'=>$state]);
+		} else {
+			$parties = Party::find()->orderBy('`star` + `heart`/10 + `chart_pie`/100 DESC')->limit(100)->all();
+
+			return $this->render("chart_parties",['parties'=>$parties,'state'=>false]);
+		}
+	}
+
+	public function actionChartStates()
+	{
+		$states = State::find()->orderBy('population DESC')->all();
+
+		return $this->render("chart_states",['states'=>$states]);
 	}
 }
