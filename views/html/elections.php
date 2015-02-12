@@ -102,7 +102,7 @@
 <? } elseif ($state->executiveOrg->leader_dest === 'nation_individual_vote') { ?>
 <button class="btn" onclick="elect_request(<?=$state->executive?>,1)">Подать заявку на выборы</button>
 <? } ?><br><? } ?>
-<? if ($requests['el'] && $user->isPartyLeader()) { ?>
+<? if ($requests['el'] && ($user->isPartyLeader() || $state->executiveOrg->leader_dest === 'nation_individual_vote')) { ?>
 <button class="btn btn-danger" onclick="drop_elect_request(<?=$state->executive?>,1)">Отозвать заявку на выборы</button><br>
 <? } ?>
 
@@ -150,12 +150,12 @@
 </p><br>
 <? } else { ?>
 <p>Следующие выборы лидера организации «<a href="#" onclick="load_page('org_info',{'id':<?=$state->legislature?>});"><?=htmlspecialchars($state->legislature_name)?></a>» пройдут с <?=date('d-M-Y H:i',$state->legislatureOrg->next_elect-24*60*60)?> по <?=date('d-M-Y H:i',$state->legislatureOrg->next_elect)?><br>
-<? if ($is_citizen && !$requests['le']) { if ($state->legislatureOrg->leader_dest === 'nation_party_vote' && $user->isPartyLeader()) { ?>
+<? if ($is_citizen && !$requests['ll']) { if ($state->legislatureOrg->leader_dest === 'nation_party_vote' && $user->isPartyLeader()) { ?>
 <button class="btn" onclick="elect_request(<?=$state->legislature?>,1)">Подать заявку на выборы от партии</button>
 <? } elseif ($state->legislatureOrg->leader_dest === 'nation_individual_vote') { ?>
 <button class="btn" onclick="elect_request(<?=$state->legislature?>,1)">Подать заявку на выборы</button>
 <? } ?><br><? } ?>
-<? if ($requests['le'] && $user->isPartyLeader()) { ?>
+<? if ($requests['ll'] && ($user->isPartyLeader() || $state->legislatureOrg->leader_dest === 'nation_individual_vote')) { ?>
 <button class="btn btn-danger" onclick="drop_elect_request(<?=$state->legislature?>,1)">Отозвать заявку на выборы</button><br>
 <? } ?>
 
