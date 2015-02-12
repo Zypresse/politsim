@@ -146,9 +146,14 @@ class Region extends MyModel
         return parent::beforeSave($insert);
     }
 
-    
+
     public function getState()
     {
         return $this->hasOne('app\models\State', array('id' => 'state_id'));
+    }
+
+    public function isCapital()
+    {
+        return ($this->state->capital === $this->code);
     }
 }

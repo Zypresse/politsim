@@ -250,4 +250,18 @@ class ModalController extends MyController
             return $this->_r("Invalid organisation ID");
     }
 
+    public function actionRegionInfo($code)
+    {
+        if ($code) {
+            $region = Region::findByCode($code);
+            if (is_null($region))
+                return $this->_r("Region not found");
+
+            $user = User::findByPk($this->viewer_id);
+
+            return $this->render("region_info",['region'=>$region,'user'=>$user]);
+
+        } else
+            return $this->_r("Invalid code");
+    }
 }
