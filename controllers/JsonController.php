@@ -282,17 +282,19 @@ class JsonController extends MyController
 
             $user = User::findByPk($this->viewer_id);
             if ($user->state_id)
-                $this->_r("You allready have citizenship");
+                return $this->_r("You allready have citizenship");
             $region = Region::findByCode($capital);
+            if (is_null($region))
+                return $this->_r("Region not found");
             if ($region->state_id)
-                $this->_r("Region claimed by other state");
+                return $this->_r("Region claimed by other state");
 
             $state = new State();
-            $state->name = $name;
-            $state->short_name = $short_name;
+            $state->name = strip_tags($name);
+            $state->short_name = strip_tags($short_name);
             $state->capital = $capital;
             $state->color = $color;
-            $state->flag = $flag;
+            $state->flag = strip_tags($flag);
             $state->state_structure = 1; // унитарная
             $state->goverment_form = $goverment_form;
 

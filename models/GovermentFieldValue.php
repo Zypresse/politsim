@@ -47,4 +47,9 @@ class GovermentFieldValue extends MyModel
             'value' => 'Value',
         ];
     }
+
+    public function getType()
+    {
+        return $this->hasOne('app\models\GovermentFieldType', array('id' => 'type_id'));
+    }
 }

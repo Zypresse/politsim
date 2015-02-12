@@ -3,6 +3,8 @@
 namespace app\controllers;
 
 use yii;
+use app\components\MyController;
+use yii\helpers\ArrayHelper;
 use app\models\User;
 use app\models\Dealing;
 use app\models\Medale;
@@ -12,8 +14,7 @@ use app\models\Region;
 use app\models\Resurse;
 use app\models\Party;
 use app\models\State;
-use app\components\MyController;
-use yii\helpers\ArrayHelper;
+use app\models\Ideology;
 
 class HtmlController extends MyController
 {
@@ -144,6 +145,28 @@ class HtmlController extends MyController
 				return $this->_r("State not found");
 
 			return $this->render("elections",['state'=>$state,'user'=>$user]);
+
+		} else
+			return $this->_r("Invalid state ID");
+	}
+
+	public function actionStateInfo($id = false)
+	{
+		$user = User::findByPk($this->viewer_id);
+
+		if ($id === false) {
+			$id = $user->state_id;
+		}
+		$id = intval($id);
+
+		if ($id>0) {
+			$state = State::findByPk($id);
+			if (is_null($state))
+				return $this->_r("State not found");
+
+			$ideologies = Ideology::find()->all();
+
+			return $this->render("state_info",['state'=>$state,'ideologies'=>$ideologies,'user'=>$user]);
 
 		} else
 			return $this->_r("Invalid state ID");

@@ -118,11 +118,11 @@ class ModalController extends MyController
                 switch ($field->type) {
                     case 'regions': // регионы исключая столицу
                     case 'cities':
-                        $additional_data['regions'] = Region::find()->where("state_id = {$user->state_id} AND code <> '{$user->state->capital}'")->all();
+                        $additional_data['regions'] = Region::find()->where("state_id = {$user->state_id} AND code <> '{$user->state->capital}'")->orderBy('name')->all();
                     break;
                     case 'regions_all': // все регионы
                     case 'cities_all':
-                        $additional_data['regions'] = Region::find()->where(["state_id" => $user->state_id])->all();
+                        $additional_data['regions'] = Region::find()->where(["state_id" => $user->state_id])->orderBy('name')->all();
                     break;
                     case 'goverment_field_types': // типы полей конституции
                         $additional_data['goverment_field_types'] = GovermentFieldType::find()->where(['hide'=>0])->all();

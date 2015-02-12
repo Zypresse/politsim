@@ -36,7 +36,7 @@ class State extends MyModel
     {
         return [
             [['name', 'short_name', 'capital'], 'required'],
-            [['legislature', 'executive', 'state_structure', 'goverment_form', 'group_id'], 'integer'],
+            [['legislature', 'executive', 'state_structure', 'goverment_form', 'group_id','allow_register_parties'], 'integer'],
             [['name'], 'string', 'max' => 100],
             [['short_name'], 'string', 'max' => 10],
             [['capital', 'color'], 'string', 'max' => 7]
@@ -75,5 +75,25 @@ class State extends MyModel
     public function getStructure()
     {
         return $this->hasOne('app\models\Structure', array('id' => 'state_structure'));
+    }
+
+    public function getGovermentForm()
+    {
+        return $this->hasOne('app\models\GovermentForm', array('id' => 'goverment_form'));
+    }
+
+    public function getCapitalRegion()
+    {
+        return $this->hasOne('app\models\Region', array('code' => 'capital'));
+    }
+
+    public function getRegions()
+    {
+        return $this->hasMany('app\models\Region', array('state_id' => 'id'))->orderBy('name');
+    }
+
+    public function getGovermentFields()
+    {
+        return $this->hasMany('app\models\GovermentFieldValue', array('state_id' => 'id'));
     }
 }
