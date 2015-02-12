@@ -11,6 +11,7 @@ use app\models\Resurse;
 use app\models\Region;
 use app\models\BillType;
 use app\models\Bill;
+use app\models\ElectRequest;
 
 class JsonController extends MyController
 {
@@ -178,6 +179,95 @@ class JsonController extends MyController
 
         } else
             return $this->_r("Invalid bill type ID");
+    }
+
+    public function actionDropElectRequest($org_id,$leader = 0)
+    {
+        $org_id = intval($org_id);
+        $leader = intval($leader) ? 1 : 0;
+
+        if ($org_id > 0) {
+            $user = User::findByPk($this->viewer_id);
+            if ($leader) {
+                $org = Org::findByPk($org_id);                    
+                if (is_null($org)) 
+                    return $this->_r("Organisation not found");
+                if ($org->leader_dest !== 'nation_individual_vote' && !($user->isPartyLeader()))
+                    return $this->_r("Not allowed");
+
+                if ($org->leader_dest === 'nation_individual_vote')
+                    $request = ElectRequest::find()->where(['org_id'=>$org_id,'leader'=>1,'candidat'=>$user->id])->one();
+                else
+                    $request = ElectRequest::find()->where(['org_id'=>$org_id,'leader'=>1,'party_id'=>$user->party_id])->one();
+            } else {
+                if (!($user->isPartyLeader()))
+                    return $this->_r("Not allowed");
+
+                $request = ElectRequest::find()->where(['org_id'=>$org_id,'leader'=>0,'party_id'=>$user->party_id])->one();
+            }
+
+            if (is_null($request))
+                return $this->_r("Request not found");
+
+            $request->delete();
+            $this->result = "ok";
+            return $this->_r();
+            
+        } else
+            return $this->_r("Invalid organisation ID");
+    }
+
+    public function actionElectRequest($org_id,$leader = 0,$candidat = 0)
+    {
+        $org_id = intval($org_id);
+        $candidat = intval($candidat) ? intval($candidat) : $this->viewer_id;
+        $leader = intval($leader) ? 1 : 0;
+
+        if ($org_id > 0) {
+            $user = User::findByPk($this->viewer_id);
+            if ($leader) {
+                $org = Org::findByPk($org_id);                    
+                if (is_null($org)) 
+                    return $this->_r("Organisation not found");
+                if ($org->leader_dest !== 'nation_individual_vote' && !($user->isPartyLeader()))
+                    return $this->_r("Not allowed");
+
+                if ($org->leader_dest === 'nation_individual_vote')
+                    $request = ElectRequest::find()->where(['org_id'=>$org_id,'leader'=>1,'candidat'=>$user->id])->count();
+                else
+                    $request = ElectRequest::find()->where(['org_id'=>$org_id,'leader'=>1,'party_id'=>$user->party_id])->count();
+            } else {
+                if (!($user->isPartyLeader()))
+                    return $this->_r("Not allowed");
+
+                $request = ElectRequest::find()->where(['org_id'=>$org_id,'leader'=>0,'party_id'=>$user->party_id])->count();
+            }
+
+            if ($request)
+                return $this->_r("Request allready exists");
+
+            if ($candidat !== $this->viewer_id) {
+                $c = User::findByPk($candidat);
+                if ($c->party_id !== $user->party_id)
+                    return $this->_r("Not allowed");
+            }
+
+            $request = new ElectRequest();
+            $request->org_id = $org_id;
+            $request->party_id = $user->party_id;
+            $request->candidat = ($leader) ? $candidat : NULL;
+            $request->leader = $leader;
+
+            if ($request->save()) {
+                $this->result = 'ok';
+            } else {
+                $this->error = $request->getErrors();
+            }
+
+            return $this->_r();
+
+        } else
+            return $this->_r("Invalid organisation ID");
     }
 
 }
