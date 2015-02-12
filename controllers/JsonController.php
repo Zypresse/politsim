@@ -382,4 +382,12 @@ class JsonController extends MyController
             return $this->_r("Invalid state ID");
     }
 
+    public function actionDropCitizenship()
+    {
+        $user = User::findByPk($this->viewer_id);
+        $user->leaveState();
+        $this->result = "ok";
+        return $this->_r();
+    }
+
 }

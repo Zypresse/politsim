@@ -94,4 +94,13 @@ class Party extends MyModel
     {
         return User::find()->where(['party_id'=>$this->id])->count();
     }
+
+    public function afterDelete()
+    {
+        foreach ($this->requests as $request) 
+            $request->delete();
+        foreach ($this->lrequests as $request) 
+            $request->delete();
+        
+    }
 }

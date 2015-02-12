@@ -126,4 +126,29 @@ class User extends MyModel
     {
         return (intval(@$this->party->leader) === intval($this->id));
     }
+
+    public function leaveParty()
+    {
+        if ($this->party) {
+            if (intval($this->party->getMembersCount()) === 1) {
+                $party->delete();
+            }            
+        }
+        $this->party_id = 0;
+        if ($this->post && $this->post->party_reserve) {
+            $this->post_id = 0;
+        }
+
+        return $this->save();
+    }
+    public function leaveState()
+    {
+        foreach ($this->requests as $request) 
+            $request->delete();
+
+        $this->state_id = 0;
+        $this->post_id = 0;
+        
+        return $this->leaveParty();
+    }
 }
