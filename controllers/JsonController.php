@@ -16,6 +16,7 @@ use app\models\ElectRequest;
 use app\models\Post;
 use app\models\State;
 use app\models\Party;
+use app\models\Dealing;
 
 class JsonController extends MyController
 {
@@ -422,6 +423,38 @@ class JsonController extends MyController
         $user->leaveParty();
         $this->result = "ok";
         return $this->_r();
+    }
+
+    public function actionTransferMoney($count,$uid,$is_anonim = false,$is_secret = false)
+    {
+        $count = intval($count);
+        $uid = intval($uid);
+        if ($count && $uid && $uid !== $this->viewer_id) {
+            $sender = User::findByPk($this->viewer_id);
+            $recipient = User::findByPk($uid);
+            if (is_null($recipient))
+                return $this->_r("User not found");
+
+            $sender->money -= $count;
+            $sender->save();
+            $recipient->money += $count;
+            $recipient->save();
+
+            $dealing = new Dealing();
+            $dealing->from_uid = $sender->id;
+            $dealing->to_uid = $recipient->id;
+            $dealing->sum = $count;
+            $dealing->is_anonim = $is_anonim ? 1 : 0;
+            $dealing->is_secret = $is_secret ? 1 : 0;
+            $dealing->time = time();
+            if ($dealing->save()) {
+                $this->result = "ok";
+                return $this->_r();
+            } else
+                return $this->_r($dealing->getErrors());
+
+        } else
+            return $this->_r("Invalid params");
     }
 
 }
