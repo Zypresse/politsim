@@ -4,6 +4,7 @@ namespace app\models;
 
 use Yii;
 use app\components\MyModel;
+use app\models\Post;
 
 /**
  * This is the model class for table "orgs".
@@ -95,6 +96,23 @@ class Org extends MyModel
     public function isLeaderElected()
     {
         return in_array($this->leader_dest, ['nation_party_vote','nation_individual_vote']);
+    }
+    public function isLegislature()
+    {
+        return ($this->id === $this->state->legislature);
+    }
+    public function isExecutive()
+    {
+        return ($this->id === $this->state->executive);
+    }
+
+    public function getUsersCount()
+    {
+        return Post::find()->join('LEFT JOIN','users','users.post_id = posts.id')->where('posts.org_id = '.$this->id.' AND users.id IS NOT NULL')->count();
+    }
+    public function getPostsCount()
+    {
+        return sizeof($this->posts);
     }
 
 

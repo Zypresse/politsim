@@ -9,6 +9,8 @@ use app\models\GovermentFieldType;
 use app\models\Org;
 use app\models\Resurse;
 use app\models\Region;
+use app\models\BillType;
+use app\models\Bill;
 
 class JsonController extends MyController
 {
@@ -128,6 +130,54 @@ class JsonController extends MyController
         }    
         
         return $this->_r();
+    }
+
+    public function actionNewBill($bill_type_id)
+    {
+        $bill_type_id = intval($bill_type_id);
+        if ($bill_type_id > 0) {
+            $bill_type = BillType::findByPk($bill_type_id);
+            if (is_null($bill_type))
+                return $this->_r("Bill type not found");
+
+            $user = User::findByPk($this->viewer_id);
+            if ($user->post->can_make_dicktator_bills) {
+
+                // находим в запросе данные нужных полей
+                $data = [];
+                foreach ($bill_type->fields as $field) {
+                    if (isset($_REQUEST[$field->system_name])) {
+                        $data[$field->system_name] = strip_tags($_REQUEST[$field->system_name]);
+                    } else {
+                        return $this->_r("Неправильно заполнены поля");
+                    }
+                }
+
+                if (isset($data['region_code'])) {
+                    $region = Region::findByCode($data['region_code']);
+                    if (is_null($region) || $region->state_id !== $user->state_id)
+                        return $this->_r("Invalid region code");
+                }
+
+                $bill = new Bill();
+                $bill->bill_type = $bill_type_id;
+                $bill->creator = $user->post_id;
+                $bill->created = time();
+                $bill->vote_ended = time() - 1;
+                $bill->state_id = $user->state_id;
+                $bill->data = json_encode($data,JSON_UNESCAPED_UNICODE);
+                if ($bill->save()) {
+                    $this->result = "ok";                    
+                } else {
+                    $this->error = $bill->getErrors();
+                }
+                return $this->_r();
+
+            } else
+                return $this->_r("Action not allowed");
+
+        } else
+            return $this->_r("Invalid bill type ID");
     }
 
 }

@@ -224,7 +224,7 @@ var bill_id;
 $(function(){
 	$('#send_new_zakon').click(function(){
 		var fields = $('.bill_field');
-		var f = {'bill_id':bill_id};
+		var f = {'bill_type_id':bill_id};
 		for (var i=0,l=fields.length;i<l;i++) {
 			var $f = $(fields[i]);
 			f[$f.attr("name")] = $f.val();
