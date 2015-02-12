@@ -171,4 +171,24 @@ class HtmlController extends MyController
 		} else
 			return $this->_r("Invalid state ID");
 	}
+
+	public function actionPartyInfo($id = false)
+	{
+		$user = User::findByPk($this->viewer_id);
+
+		if ($id === false) {
+			$id = $user->party_id;
+		}
+		$id = intval($id);
+
+		if ($id>0) {
+			$party = Party::findByPk($id);
+			if (is_null($party))
+				return $this->_r("Party not found");
+
+			return $this->render("party_info",['party'=>$party,'user'=>$user]);
+
+		} else
+			return $this->_r("Invalid party ID");
+	}
 }
