@@ -12,6 +12,7 @@ use app\models\ElectVote;
 use app\models\BillType;
 use app\models\BillTypeField;
 use app\models\GovermentFieldType;
+use app\models\Population;
 use app\components\MyController;
 use yii\helpers\ArrayHelper;
 
@@ -260,6 +261,20 @@ class ModalController extends MyController
             $user = User::findByPk($this->viewer_id);
 
             return $this->render("region_info",['region'=>$region,'user'=>$user]);
+
+        } else
+            return $this->_r("Invalid code");
+    }
+
+    public function actionRegionPopulation($code)
+    {
+        if ($code) {
+            $region = Region::findByCode($code);
+            if (is_null($region))
+                return $this->_r("Region not found");
+            $query = Population::find()->where(['region_id'=>$region->id]);
+
+            return $this->render("region_population",['region'=>$region,'people'=>Population::getAllGroups($query),'people_by_class'=>Population::getGroupsByClass($query)]);
 
         } else
             return $this->_r("Invalid code");
