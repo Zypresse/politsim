@@ -32,7 +32,8 @@ class Bill extends MyModel
     {
         return [
             [['bill_type', 'creator', 'created', 'vote_ended'], 'required'],
-            [['bill_type', 'creator', 'created', 'vote_ended', 'accepted'], 'integer']
+            [['bill_type', 'creator', 'created', 'vote_ended', 'accepted'], 'integer'],
+            [['data'], 'string']
         ];
     }
 
@@ -48,6 +49,16 @@ class Bill extends MyModel
             'created' => 'Created',
             'vote_ended' => 'Vote Ended',
             'accepted' => 'Accepted',
+            'data' => 'Данные',
         ];
+    }
+
+    public function getType()
+    {
+        return $this->hasOne('app\models\BillType', array('id' => 'bill_type'));
+    }
+    public function getCreatorpost()
+    {
+        return $this->hasOne('app\models\Post', array('id' => 'creator'));
     }
 }

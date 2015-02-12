@@ -46,4 +46,10 @@ class Medale extends MyModel
             'type' => 'Type',
         ];
     }
+
+
+    public function getMedaletype()
+    {
+        return $this->hasOne('app\models\MedaleType', array('id' => 'type'));
+    }
 }

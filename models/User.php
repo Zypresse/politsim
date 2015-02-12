@@ -109,6 +109,10 @@ class User extends MyModel
     {
         return $this->hasOne('app\models\Region', array('id' => 'region_id'));
     }
+    public function getMedales()
+    {
+        return $this->hasMany('app\models\Medale', array('uid' => 'id'));
+    }
 
     public function isPartyLeader()
     {

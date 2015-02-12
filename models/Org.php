@@ -106,4 +106,8 @@ class Org extends MyModel
     {
         return $this->hasOne('app\models\State', array('id' => 'state_id'));
     }
+    public function getPosts()
+    {
+        return $this->hasMany('app\models\Post', array('org_id' => 'id'));
+    }
 }

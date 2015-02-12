@@ -13,6 +13,7 @@ use app\components\MyModel;
  * @property string $name
  * @property string $type
  * @property integer $can_delete
+ * @property integer $can_make_dicktator_bills
  * @property integer $party_reserve
  */
 class Post extends MyModel
@@ -32,7 +33,7 @@ class Post extends MyModel
     {
         return [
             [['org_id', 'name', 'type'], 'required'],
-            [['org_id', 'can_delete', 'party_reserve'], 'integer'],
+            [['org_id', 'can_delete', 'can_make_dicktator_bills', 'party_reserve'], 'integer'],
             [['name'], 'string', 'max' => 300],
             [['type'], 'string', 'max' => 100]
         ];
@@ -49,6 +50,7 @@ class Post extends MyModel
             'name' => 'Name',
             'type' => 'Type',
             'can_delete' => 'Можно ли удалять этот пост',
+            'can_make_dicktator_bills' => 'Может создавать законы, которые принимаются автоматически',
             'party_reserve' => 'ID партии, которой зарезервирован пост',
         ];
     }

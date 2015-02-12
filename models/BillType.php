@@ -47,4 +47,11 @@ class BillType extends MyModel
             'only_dictator' => 'Only Dictator',
         ];
     }
+
+    
+
+    public function getFields()
+    {
+        return $this->hasMany('app\models\BillTypeField', array('bill_id' => 'id'));
+    }
 }
