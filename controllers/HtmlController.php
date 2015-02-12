@@ -128,4 +128,24 @@ class HtmlController extends MyController
 
 		return $this->render("chart_states",['states'=>$states]);
 	}
+
+	public function actionElections($state_id = true)
+	{
+		if (intval($state_id) > 0) {
+			$user = User::findByPk($this->viewer_id);
+			if ($state_id === true) {
+				$state_id = $user->state_id;
+				$state = $user->state;
+			} else {
+				$state_id = intval($state_id);
+				$state = State::findByPk($state_id);
+			}
+			if (is_null($state))
+				return $this->_r("State not found");
+
+			return $this->render("elections",['state'=>$state,'user'=>$user]);
+
+		} else
+			return $this->_r("Invalid state ID");
+	}
 }

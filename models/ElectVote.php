@@ -50,4 +50,8 @@ class ElectVote extends MyModel
     {
         return $this->hasOne('app\models\User', array('id' => 'uid'));
     }
+    public function getRequest()
+    {
+        return $this->hasOne('app\models\ElectRequest', array('id' => 'request_id'));
+    }
 }

@@ -105,6 +105,10 @@ class Org extends MyModel
     {
         return ($this->id === $this->state->executive);
     }
+    public function isGoingElects()
+    {
+        return ($this->next_elect - time() < 60*60*24);
+    }
 
     public function getUsersCount()
     {
@@ -127,5 +131,13 @@ class Org extends MyModel
     public function getPosts()
     {
         return $this->hasMany('app\models\Post', array('org_id' => 'id'));
+    }
+    public function getRequests()
+    {
+        return $this->hasMany('app\models\ElectRequest', array('org_id' => 'id'))->where(['leader'=>0]);
+    }
+    public function getLrequests()
+    {
+        return $this->hasMany('app\models\ElectRequest', array('org_id' => 'id'))->where(['leader'=>1]);
     }
 }

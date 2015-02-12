@@ -69,6 +69,14 @@ class Party extends MyModel
     {
         return $this->hasMany('app\models\User', array('party_id' => 'id'));
     }
+    public function getRequests()
+    {
+        return $this->hasMany('app\models\ElectRequest', array('party_id' => 'id'))->where(['leader'=>0]);
+    }
+    public function getLrequests()
+    {
+        return $this->hasMany('app\models\ElectRequest', array('party_id' => 'id'))->where(['leader'=>1]);
+    }
     public function getState()
     {
         return $this->hasOne('app\models\State', array('id' => 'state_id'));

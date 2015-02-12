@@ -113,6 +113,14 @@ class User extends MyModel
     {
         return $this->hasMany('app\models\Medale', array('uid' => 'id'));
     }
+    public function getVotes()
+    {
+        return $this->hasMany('app\models\ElectVote', array('uid' => 'id'));
+    }
+    public function getRequests()
+    {
+        return $this->hasMany('app\models\ElectRequest', array('candidat' => 'id'));
+    }
 
     public function isPartyLeader()
     {
