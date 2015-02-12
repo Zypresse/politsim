@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use yii;
 use app\components\MyController;
+use app\components\MyHtmlHelper;
 use app\models\User;
 use app\models\GovermentFieldType;
 use app\models\Org;
@@ -12,6 +13,8 @@ use app\models\Region;
 use app\models\BillType;
 use app\models\Bill;
 use app\models\ElectRequest;
+use app\models\Post;
+use app\models\State;
 
 class JsonController extends MyController
 {
@@ -268,6 +271,90 @@ class JsonController extends MyController
 
         } else
             return $this->_r("Invalid organisation ID");
+    }
+
+    public function actionCreateState($name,$short_name,$goverment_form,$capital,$color,$flag = false)
+    {
+       
+        if ($name && $short_name && $goverment_form && $capital && $color) {
+
+            $flag = ($flag) ? $flag : "http://placehold.it/300x200/eeeeee/000000&text=".urlencode(MyHtmlHelper::transliterate($short_name));
+
+            $user = User::findByPk($this->viewer_id);
+            if ($user->state_id)
+                $this->_r("You allready have citizenship");
+            $region = Region::findByCode($capital);
+            if ($region->state_id)
+                $this->_r("Region claimed by other state");
+
+            $state = new State();
+            $state->name = $name;
+            $state->short_name = $short_name;
+            $state->capital = $capital;
+            $state->color = $color;
+            $state->flag = $flag;
+            $state->state_structure = 1; // унитарная
+            $state->goverment_form = $goverment_form;
+
+            if ($state->save()) {
+
+                $region->state_id = $state->id;
+                $region->save();
+
+                $executive = new Org();
+                $executive->state_id = $state->id;
+                $executive->name = "Правительство ".$short_name;
+                $executive->leader_dest = 'unlimited';
+                $executive->dest = 'dest_by_leader';
+                $executive->leader_can_create_posts = 1;
+                if ($executive->save()) {
+                    $state->executive = $executive->id;
+                    $state->save();
+
+                    $leader = new Post();
+                    $leader->org_id = $executive->id;
+                    $leader->name = "Президент";
+                    $leader->type = "dictator";
+                    $leader->can_delete = 0;
+                    $leader->can_make_dicktator_bills = 1;
+                    if ($leader->save()) {
+                        $executive->leader_post = $leader->id;
+                        $executive->save();
+
+                        $user->state_id = $state->id;
+                        $user->post_id = $leader->id;
+                        $user->save();
+
+                        $minister1 = new Post();
+                        $minister1->org_id = $executive->id;
+                        $minister1->name = "Министр обороны";
+                        $minister1->type = "military_minister";
+                        $minister1->save();
+                        $minister2 = new Post();
+                        $minister2->org_id = $executive->id;
+                        $minister2->name = "Министр промышленности";
+                        $minister2->type = "industry_minister";
+                        $minister2->save();
+                        $minister3 = new Post();
+                        $minister3->org_id = $executive->id;
+                        $minister3->name = "Министр экономики";
+                        $minister3->type = "economy_minister";
+                        $minister3->save();
+
+                        $this->result = 'ok';
+                        return $this->_r();
+
+                    } else
+                        return $this->_r($leader->getErrors());
+
+                } else
+                return $this->_r($executive->getErrors());
+
+            } else
+                return $this->_r($state->getErrors());
+
+        } else
+            return $this->_r("Invalid params");
     }
 
 }

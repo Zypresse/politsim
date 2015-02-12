@@ -40,7 +40,7 @@ class Org extends MyModel
     public function rules()
     {
         return [
-            [['state_id', 'name', 'leader_post', 'leader_dest', 'dest'], 'required'],
+            [['state_id', 'name', 'leader_dest', 'dest'], 'required'],
             [['state_id', 'leader_post', 'leader_can_create_posts', 'next_elect', 'elect_period', 'other_org_id', 'vote_party_id', 'elect_with_org', 'elect_leader_with_org', 'group_id'], 'integer'],
             [['name'], 'string', 'max' => 300],
             [['leader_dest', 'dest'], 'string', 'max' => 100]
