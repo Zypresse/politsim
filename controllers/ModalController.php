@@ -279,4 +279,17 @@ class ModalController extends MyController
         } else
             return $this->_r("Invalid code");
     }
+
+    public function actionRegionResurses($code)
+    {
+        if ($code) {
+            $region = Region::findByCode($code);
+            if (is_null($region))
+                return $this->_r("Region not found");
+            
+            return $this->render("region_resurses",['region'=>$region]);
+
+        } else
+            return $this->_r("Invalid code");
+    }
 }

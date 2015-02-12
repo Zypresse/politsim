@@ -2,6 +2,8 @@
 
 namespace app\components;
 
+use app\models\Resurse;
+
 class MyHtmlHelper {
 	public static function getSomeColor($i,$hash = false) 
 	{	
@@ -28,6 +30,20 @@ class MyHtmlHelper {
 		    'newspaper' => 'Газеты',
 		    'radio_modern' => 'Радио',
 		    'twitter_bird' => 'Соц. сети',
+		    'oil' => 'Нефть',
+			'natural_gas' => 'Природный газ',
+			'coal' => 'Уголь',
+			'nf_ores' => 'Руды цветных металлов',
+			'f_ores' => 'Руды чёрных металлов',
+			're_ores' => 'Руды редкоземельных металлов',
+			'u_ores' => 'Урановые руды',
+			'wood' => 'Древесина',
+			'corn' => 'Зерно',
+			'fruits' => 'Фрукты',
+			'fish' => 'Рыба и морепродукты',
+			'meat' => 'Мясо и молочная продукция',
+			'wool' => 'Шерсть и кожа',
+			'b_materials' => 'Стройматериалы (добываемые)'
 		];
 	    if (isset($lang[$str])) {
 
@@ -50,7 +66,7 @@ class MyHtmlHelper {
 	        return 'низкий уровень';
 	    } else if ($n<0.7) {
 	        return 'средний уровень';
-	    } else if ($n<0.85) {
+	    } else if ($n<0.82) {
 	        return 'уровень выше среднего';
 	    } else if ($n<0.95) {
 	        return 'высокий уровень';
