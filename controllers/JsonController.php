@@ -15,6 +15,7 @@ use app\models\Bill;
 use app\models\ElectRequest;
 use app\models\Post;
 use app\models\State;
+use app\models\Party;
 
 class JsonController extends MyController
 {
@@ -388,6 +389,31 @@ class JsonController extends MyController
         $user->leaveState();
         $this->result = "ok";
         return $this->_r();
+    }
+
+    public function actionJoinParty($party_id)
+    {
+        $party_id = intval($party_id);
+        if ($party_id>0) {
+            $user = User::findByPk($this->viewer_id);
+            if ($user->party_id) 
+                return $this->_r("You allready have party");
+            
+            $party = Party::findByPk($party_id);
+            if (is_null($party))
+                return $this->_r("Party not found");
+            if ($user->state_id === $party->state_id)
+                return $this->_r("You have not citizenship for this party");
+
+            // тут проверка на тип партии и т.п.
+
+            $user->party_id = $party_id;
+            $user->save();
+            $this->result = "ok";
+            return $this->_r();
+
+        } else
+            return $this->_r("Invalid party ID");
     }
 
 }
