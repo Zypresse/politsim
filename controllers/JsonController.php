@@ -871,6 +871,9 @@ class JsonController extends MyController
             $tweet->retweets = $retweets;
             $tweet->date = time();
             if ($tweet->save()) {
+                $user->last_tweet = time();
+                $user->save();
+
                 return $this->_rOk();
             } else {
                 return $this->_r($tweet->getErrors());
@@ -878,6 +881,20 @@ class JsonController extends MyController
 
         } else
             return $this->_r("Invalid text");
+    }
+
+    public function actionDeleteTweet($id)
+    {
+        $id = intval($id);
+        if ($id>0) {
+            $tweet = Twitter::findByPk($id);
+            if ($tweet->uid === $this->viewer_id) {
+                $tweet->delete();
+                return $this->_rOk();
+            } else
+                return $this->_r("Not allowed");
+        } else
+            return $this->_r("Invalid tweet ID");
     }
 
 }
