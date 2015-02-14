@@ -807,4 +807,77 @@ class JsonController extends MyController
             return $this->_r("Invalid nickname");
     }
 
+    public function actionTweet($text,$type = 0,$uid = 0)
+    {
+        $text = substr(trim(strip_tags($text)),0,280);
+        $type = intval($type);
+        $uid = intval($uid);
+
+        if ($text) {
+            if ($uid) {
+                $user = User::findByPk($uid);
+                if (is_null($user))
+                    return $this->_r("User not found");
+            }
+
+            $self = User::findByPk($this->viewer_id);
+            $retweets = round($self->getTwitterSubscribersCount()/5) + mt_rand(round(-1*$self->getTwitterSubscribersCount()/40),round($self->getTwitterSubscribersCount()/20));
+
+            switch ($type) {
+                case 1:
+                    # Положительно
+                    if ($uid) {
+                        $user->heart += ($self->heart>0)?round($self->heart/10):round(abs($self->heart)/100);
+                        $user->chart_pie += ($self->chart_pie>0)?1:0;
+                        $user->star += round($self->star/10);
+                    }
+                    $self->heart += 1;
+                    $self->star += ceil($retweets/1000);
+                break;
+                case 2:
+                    # Отрицательно
+                    if ($uid) {
+                        $user->heart += -1*($self->heart>0?round($self->heart/10):round(abs($self->heart)/100));
+                        $user->chart_pie += ($self->chart_pie>0)?-1:0;
+                        $user->star += round($self->star/10);
+                    }
+                    $self->heart += -1;
+                    $self->star += ceil($retweets/1000);
+                break;
+                case 3:
+                    # Оскорбительно
+                    if ($uid) {
+                        $user->heart += -2*($self->heart>0?round($self->heart/10):round(abs($self->heart)/100));
+                        $user->chart_pie += -1;
+                        $user->star += round($self->star/10);
+                    }
+                    $self->heart += -1*abs(round($self->heart));
+                    $self->chart_pie += -1;
+                    $self->star += ceil($retweets/1000);
+                break;
+                default:
+                    $self->star += ceil($retweets/1000);
+                break;
+            }
+
+            if ($uid) {
+                $user->save();
+            }
+            $self->save();
+
+            $tweet = new Twitter();
+            $tweet->uid = $this->viewer_id;
+            $tweet->text = $text;
+            $tweet->retweets = $retweets;
+            $tweet->date = time();
+            if ($tweet->save()) {
+                return $this->_rOk();
+            } else {
+                return $this->_r($tweet->getErrors());
+            }
+
+        } else
+            return $this->_r("Invalid text");
+    }
+
 }
