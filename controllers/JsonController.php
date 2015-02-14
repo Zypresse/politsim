@@ -292,11 +292,11 @@ class JsonController extends MyController
                 return $this->_r("Region claimed by other state");
 
             $state = new State();
-            $state->name = strip_tags($name);
-            $state->short_name = strip_tags($short_name);
+            $state->name = trim(strip_tags($name));
+            $state->short_name = trim(strip_tags($short_name));
             $state->capital = $capital;
             $state->color = $color;
-            $state->flag = strip_tags($flag);
+            $state->flag = trim(strip_tags($flag));
             $state->state_structure = 1; // унитарная
             $state->goverment_form = $goverment_form;
 
@@ -457,4 +457,39 @@ class JsonController extends MyController
             return $this->_r("Invalid params");
     }
 
+    public function actionCreateParty($name,$short_name,$ideology = 10,$image = false)
+    {
+        $name = trim(strip_tags($name));
+        $short_name = mb_strtoupper(mb_substr(trim(strip_tags($short_name)), 0,6));
+        $image = trim(strip_tags($image));
+        $image = ($image) ? $image : "http://placehold.it/300x200/eeeeee/000000&text=".urlencode(MyHtmlHelper::transliterate($short_name));
+        $ideology = intval($ideology);
+
+        if ($name && $short_name && $image && $ideology) {
+            $user = User::findByPk($this->viewer_id);
+
+            if (!$user->state_id)
+                return $this->_r("You have not citizenship");
+            if ($user->party_id)
+                return $this->_r("You allready have party");
+
+            $party = new Party();
+            $party->name = $name;
+            $party->short_name = $short_name;
+            $party->image = $image;
+            $party->state_id = $user->state_id;
+            $party->leader = $user->id;
+            $party->ideology = $ideology;
+
+            if ($party->save()){
+                $user->party_id = $party->id;
+                $user->save();
+                $this->result = "ok";
+            } else
+                $this->error = $party->getErrors();
+            return $this->_r();
+
+        } else
+            return $this->_r("Invalid params");
+    }
 }
