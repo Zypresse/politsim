@@ -4,6 +4,7 @@ namespace app\models;
 
 use Yii;
 use app\components\MyModel;
+use app\models\Twitter;
 
 /**
  * This is the model class for table "users".
@@ -135,6 +136,16 @@ class User extends MyModel
     public function isStateLeader()
     {
         return ($this->isOrgLeader() && $this->post->org->isExecutive());
+    }
+
+    public function getTwitterSubscribersCount()
+    {
+        return $this->star*100 + $this->chart_pie*10 + abs($this->heart);
+    }
+
+    public function getTweetsCount()
+    {
+        return Twitter::find()->where(['uid'=>$this->id])->count();
     }
 
     public function leaveParty()

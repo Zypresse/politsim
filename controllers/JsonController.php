@@ -19,6 +19,7 @@ use app\models\Post;
 use app\models\State;
 use app\models\Party;
 use app\models\Dealing;
+use app\models\Twitter;
 
 class JsonController extends MyController
 {
@@ -790,6 +791,20 @@ class JsonController extends MyController
             return $this->_rOk();
         } else
             return $this->_r("Invalid region ID");
+    }
+
+    public function actionSetTwitterNickname($nick)
+    {
+        $nick = mb_strtolower(trim($nick));
+
+        if ($nick && !(preg_match("[^qwertyuiopadsfghjklzxcvbnm0123456789]",$nick)) && strlen($nick) > 3 && strlen($nick) < 20 && !(in_array($nick,['admin','administrator','root','moder','moderator','game','politsim']))) {
+            $user = User::findByPk($this->viewer_id);
+            $user->twitter_nickname = $nick;
+            $user->save();
+
+            return $this->_rOk();
+        } else
+            return $this->_r("Invalid nickname");
     }
 
 }

@@ -51,4 +51,14 @@ class Twitter extends MyModel
             'original' => 'uid юзера, автора оригинального твита (это ретвит)',
         ];
     }
+
+
+    public function getUser()
+    {
+        return $this->hasOne('app\models\User', array('id' => 'uid'));
+    }
+    public function getOriginalUser()
+    {
+        return $this->hasOne('app\models\User', array('id' => 'original'));
+    }
 }

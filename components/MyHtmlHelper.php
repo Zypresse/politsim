@@ -121,4 +121,11 @@ class MyHtmlHelper {
         $lat = array('a','b','v','g','d','e','zh','z','i','y','k','l','m','n','o','p','r','s','t','u','f','h' ,'ts' ,'ch','sh' ,'sht' ,'a' ,'y' ,'yu' ,'ya','A','B','V','G','D','E','Zh','Z','I','Y','K','L','M','N','O','P','R','S','T','U','F' ,'H' ,'Ts' ,'Ch','Sh' ,'Sht' ,'A' ,'Y' ,'Yu' ,'Ya','w','g','yi','W','G','Yi','y','Y','yo','Yo','e','E');
         return str_replace($cyr, $lat, $st);
 	}
+
+	public static function parseTwitterLinks($text) {
+		return preg_replace_callback("/[@]+[A-Za-z0-9]+/", function($u) {
+            $username = str_replace("@", "", $u);
+            return "<a href='#' onclick='load_page(\"twitter\",{\"nick\":\"".$username."\"})'>".$u."</a>";
+        },$text);
+	}
 }
