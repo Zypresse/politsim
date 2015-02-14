@@ -40,6 +40,12 @@ class MyController extends Controller
         return $this->render('/json',$ar);
     }
 
+    protected function _rOk()
+    {
+        $this->result = "ok";
+        return $this->_r();
+    }
+
 	public function beforeAction($action)
     {
         if (isset($_REQUEST['viewer_id']) && isset($_REQUEST['auth_key'])) {

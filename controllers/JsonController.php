@@ -535,4 +535,25 @@ class JsonController extends MyController
         } else
             return $this->_r("Invalid user ID");
     }
+
+    public function actionRenameOrg($name,$id)
+    {
+        $name = trim(strip_tags($name));
+        $id = intval($id);
+        if ($id>0 && $name) {
+            $org = Org::findByPk($id);
+            if (is_null($org)) {
+                return $this->_r("Organisation not found");
+            $user = User::findByPk($this->viewer_id);
+            if ($user->isOrgLeader()) {
+                $org->name = $name;
+                if ($org->save()) 
+                    return $this->_rOk();
+                else
+                    return $this->_r($org->getErrors());                
+            } else
+                return $this->_r("Not allowed");
+        } else
+            return $this->_r("Invalid params");
+    }
 }
