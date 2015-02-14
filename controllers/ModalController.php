@@ -3,6 +3,8 @@
 namespace app\controllers;
 
 use yii;
+use app\components\MyController;
+use yii\helpers\ArrayHelper;
 use app\models\Region;
 use app\models\Post;
 use app\models\User;
@@ -13,8 +15,7 @@ use app\models\BillType;
 use app\models\BillTypeField;
 use app\models\GovermentFieldType;
 use app\models\Population;
-use app\components\MyController;
-use yii\helpers\ArrayHelper;
+use app\models\Twitter;
 
 class ModalController extends MyController
 {
@@ -291,5 +292,22 @@ class ModalController extends MyController
 
         } else
             return $this->_r("Invalid code");
+    }
+
+    public function actionGetTwitterFeed($time,$offset,$uid = 0)
+    {
+        $time = intval($time);
+        $offset = intval($offset);
+        $uid = intval($uid);
+        if ($time && $offset) {
+            if ($uid) {
+                $tweets = Twitter::find()->where("uid = {$uid} AND date < {$time}")->offset($offset)->limit(5)->orderBy('date DESC')->all();
+            } else {
+                $tweets = Twitter::find()->where("retweets > 0 AND original = 0 AND date < ".$time)->offset($offset)->limit(5)->orderBy('date DESC')->all();
+            }
+            
+            return $this->render("twitter_feed",['tweets'=>$tweets,'viewer_id'=>$this->viewer_id]);
+        } else
+            return $this->_r("Invalid params");
     }
 }

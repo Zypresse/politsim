@@ -95,7 +95,7 @@ class MyHtmlHelper {
 	    } else if ($n === 1 || ($n%10 === 1 && $n%100 != 11 && $n != 11)) {
 	        return $pref.number_format($n,0,'',' ').' '.$s2;
 	    } else if ($n >100 && $n%100 >=12 && $n%100 <=14) {
-	        return $pref.number_format($n,0,'',' ').' '.s1;
+	        return $pref.number_format($n,0,'',' ').' '.$s1;
 	    } else if (($n%10 >=2 && $n%10 <=4 && $n >20) || ($n >=2 && $n <=4)) {
 	        return $pref.number_format($n,0,'',' ').' '.$s3;
 	    } else {
@@ -124,8 +124,13 @@ class MyHtmlHelper {
 
 	public static function parseTwitterLinks($text) {
 		return preg_replace_callback("/[@]+[A-Za-z0-9]+/", function($u) {
-            $username = str_replace("@", "", $u);
-            return "<a href='#' onclick='load_page(\"twitter\",{\"nick\":\"".$username."\"})'>".$u."</a>";
+			if (isset($u[0])) {
+				$u = $u[0];
+            	$username = str_replace("@", "", $u);
+            	return "<a href='#' onclick='load_page(\"twitter\",{\"nick\":\"".$username."\"})'>".$u."</a>";
+            } else {
+            	return false;
+            }
         },$text);
 	}
 }
