@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use yii;
+use yii\helpers\ArrayHelper;
 use app\components\MyController;
 use app\components\MyHtmlHelper;
 use app\models\User;
@@ -13,6 +14,7 @@ use app\models\Region;
 use app\models\BillType;
 use app\models\Bill;
 use app\models\ElectRequest;
+use app\models\ElectVote;
 use app\models\Post;
 use app\models\State;
 use app\models\Party;
@@ -618,7 +620,7 @@ class JsonController extends MyController
                 if ($post->save()) 
                     return $this->_rOk();
                 else
-                    return $this->_r($org->getErrors());                
+                    return $this->_r($post->getErrors());                
             } else
                 return $this->_r("Not allowed");
         } else
@@ -734,6 +736,35 @@ class JsonController extends MyController
                 return $this->_r("Not allowed");
         } else
             return $this->_r("Invalid post ID");
+    }
+
+    public function actionElectVote($request)
+    {
+        $request_id = intval($request);
+        if ($request_id > 0) {
+            $request = ElectRequest::findByPk($request_id);
+            if (is_null($request))
+                return $this->_r("Request not found");
+            $user = User::findByPk($this->viewer_id);
+            if ($user->state_id !== $request->org->state_id)
+                return $this->_r("Only citizens can vote");
+
+            $elect_requests_ids = implode(",", ArrayHelper::map(ElectRequest::find()->where(["org_id"=>$request->org_id,"leader"=>$request->leader])->asArray()->all(),'id','id'));
+            $allready_voted = ElectVote::find()->where("request_id IN ({$elect_requests_ids}) AND uid = {$this->viewer_id}")->count();
+            if(intval($allready_voted))
+                return $this->_r("Allready voted");
+
+            $vote = new ElectVote();
+            $vote->uid = $user->id;
+            $vote->request_id = $request->id;
+
+            if ($vote->save()) 
+                return $this->_rOk();
+            else
+                return $this->_r($vote->getErrors());     
+
+        } else
+            return $this->_r("Invalid request ID");
     }
 
 }
