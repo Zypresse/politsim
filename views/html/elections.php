@@ -59,19 +59,19 @@
 
 
 ?>
-<h3>Выборы в государстве <a href="#" onclick="load_page('state_info',{'id':<?=$state->id?>})"><?=htmlspecialchars($state->name)?></a></h3>
+<h3>Выборы в государстве <a href="#" onclick="load_page('state-info',{'id':<?=$state->id?>})"><?=htmlspecialchars($state->name)?></a></h3>
 
 <? if ($state->executiveOrg->isElected()) { ?>
 <? if ($state->executiveOrg->isGoingElects()) { ?>
 <p>
-Сейчас идут выборы в огранизацию «<a href="#" onclick="load_page('org_info',{'id':<?=$state->executive?>});"><?=htmlspecialchars($state->executiveOrg->name)?></a>» и будут длиться до <?=date('d-M-Y H:i',$state->executiveOrg->next_elect)?>
+Сейчас идут выборы в огранизацию «<a href="#" onclick="load_page('org-info',{'id':<?=$state->executive?>});"><?=htmlspecialchars($state->executiveOrg->name)?></a>» и будут длиться до <?=date('d-M-Y H:i',$state->executiveOrg->next_elect)?>
 <? if ($is_citizen) { ?>
 <br><button <? if ($votes['e']) { ?>disabled="disabled" title="Вы уже проголосовали"<? } ?> class="btn btn-primary" onclick="elect_vote(<?=$state->executive?>,0)">Проголосовать</button>
 <button class="btn btn-info" onclick="elect_exitpolls(<?=$state->executive?>,0)">Результаты эксит-поллов</button><br>
 <? } ?>
 </p><br>
 <? } else { ?>
-<p>Следующие выборы в огранизацию «<a href="#" onclick="load_page('org_info',{'id':<?=$state->executive?>});"><?=htmlspecialchars($state->executiveOrg->name)?></a>» пройдут с <?=date('d-M-Y H:i',$state->executiveOrg->next_elect-24*60*60)?> по <?=date('d-M-Y H:i',$state->executiveOrg->next_elect)?><br>
+<p>Следующие выборы в огранизацию «<a href="#" onclick="load_page('org-info',{'id':<?=$state->executive?>});"><?=htmlspecialchars($state->executiveOrg->name)?></a>» пройдут с <?=date('d-M-Y H:i',$state->executiveOrg->next_elect-24*60*60)?> по <?=date('d-M-Y H:i',$state->executiveOrg->next_elect)?><br>
 <? if ($state->executiveOrg->dest === 'nation_party_vote' && $is_citizen && $user->isPartyLeader() && !$requests['e']) { ?>
 <button class="btn" onclick="elect_request(<?=$state->executive?>,0)">Подать заявку на выборы от партии</button><br>
 <? } ?>
@@ -80,7 +80,7 @@
 <? } ?>
 
 <? if (sizeof($state->executiveOrg->requests)) { ?><strong>Список подавших заявку на выборы:</strong><ul><? foreach ($state->executiveOrg->requests as $request) { ?>
-<li><a href="#" onclick="load_page('party_info',{'id':<?=$request->party_id?>})"><?=htmlspecialchars($request->party->name)?></a></li>
+<li><a href="#" onclick="load_page('party-info',{'id':<?=$request->party_id?>})"><?=htmlspecialchars($request->party->name)?></a></li>
 <? } ?></ul><? } else { ?><strong>Никто ещё не подал заявку на выборы</strong><? } ?>
 </p><br><? } ?><? } ?>
 
@@ -89,14 +89,14 @@
 <? if ($state->executiveOrg->isLeaderElected()) { ?>
 <? if ($state->executiveOrg->isGoingElects()) { ?>
 <p>
-Сейчас идут выборы лидера огранизации «<a href="#" onclick="load_page('org_info',{'id':<?=$state->executive?>});"><?=htmlspecialchars($state->executiveOrg->name)?></a>» и будут длиться до <?=date('d-M-Y H:i',$state->executiveOrg->next_elect)?>
+Сейчас идут выборы лидера огранизации «<a href="#" onclick="load_page('org-info',{'id':<?=$state->executive?>});"><?=htmlspecialchars($state->executiveOrg->name)?></a>» и будут длиться до <?=date('d-M-Y H:i',$state->executiveOrg->next_elect)?>
 <? if ($is_citizen) { ?>
 <br><button <? if ($votes['el']) { ?>disabled="disabled" title="Вы уже проголосовали"<? } ?> class="btn btn-primary" onclick="elect_vote(<?=$state->executive?>,1)">Проголосовать</button>
 <button class="btn btn-info" onclick="elect_exitpolls(<?=$state->executive?>,1)">Результаты эксит-поллов</button><br>
 <? } ?>
 </p><br>
 <? } else { ?>
-<p>Следующие выборы лидера организации «<a href="#" onclick="load_page('org_info',{'id':<?=$state->executive?>});"><?=htmlspecialchars($state->executiveOrg->name)?></a>» пройдут с <?=date('d-M-Y H:i',$state->executiveOrg->next_elect-24*60*60)?> по <?=date('d-M-Y H:i',$state->executiveOrg->next_elect)?><br>
+<p>Следующие выборы лидера организации «<a href="#" onclick="load_page('org-info',{'id':<?=$state->executive?>});"><?=htmlspecialchars($state->executiveOrg->name)?></a>» пройдут с <?=date('d-M-Y H:i',$state->executiveOrg->next_elect-24*60*60)?> по <?=date('d-M-Y H:i',$state->executiveOrg->next_elect)?><br>
 <? if ($is_citizen && !$requests['el']) { if ($state->executiveOrg->leader_dest === 'nation_party_vote' && $user->isPartyLeader()) { ?>
 <button class="btn" onclick="elect_request(<?=$state->executive?>,1)">Подать заявку на выборы от партии</button>
 <? } elseif ($state->executiveOrg->leader_dest === 'nation_individual_vote') { ?>
@@ -116,14 +116,14 @@
 <? if ($state->legislatureOrg->isElected()) { ?>
 <? if ($state->legislatureOrg->isGoingElects()) { ?>
 <p>
-Сейчас идут выборы в огранизацию «<a href="#" onclick="load_page('org_info',{'id':<?=$state->legislature?>});"><?=htmlspecialchars($state->legislatureOrg->name)?></a>» и будут длиться до <?=date('d-M-Y H:i',$state->legislatureOrg->next_elect)?>
+Сейчас идут выборы в огранизацию «<a href="#" onclick="load_page('org-info',{'id':<?=$state->legislature?>});"><?=htmlspecialchars($state->legislatureOrg->name)?></a>» и будут длиться до <?=date('d-M-Y H:i',$state->legislatureOrg->next_elect)?>
 <? if ($is_citizen) { ?>
 <br><button <? if ($votes['l']) { ?>disabled="disabled" title="Вы уже проголосовали"<? } ?> class="btn btn-primary" onclick="elect_vote(<?=$state->legislature?>,0)">Проголосовать</button>
 <button class="btn btn-info" onclick="elect_exitpolls(<?=$state->legislature?>,0)">Результаты эксит-поллов</button><br>
 <? } ?>
 </p><br>
 <? } else { ?>
-<p>Следующие выборы в огранизацию «<a href="#" onclick="load_page('org_info',{'id':<?=$state->legislature?>});"><?=htmlspecialchars($state->legislatureOrg->name)?></a>» пройдут с <?=date('d-M-Y H:i',$state->legislatureOrg->next_elect-24*60*60)?> по <?=date('d-M-Y H:i',$state->legislatureOrg->next_elect)?><br>
+<p>Следующие выборы в огранизацию «<a href="#" onclick="load_page('org-info',{'id':<?=$state->legislature?>});"><?=htmlspecialchars($state->legislatureOrg->name)?></a>» пройдут с <?=date('d-M-Y H:i',$state->legislatureOrg->next_elect-24*60*60)?> по <?=date('d-M-Y H:i',$state->legislatureOrg->next_elect)?><br>
 <? if ($state->legislatureOrg->dest === 'nation_party_vote' && $is_citizen && $user->isPartyLeader() && !$requests['l']) { ?>
 <button class="btn" onclick="elect_request(<?=$state->legislature?>,0)">Подать заявку на выборы от партии</button><br>
 <? } ?>
@@ -132,7 +132,7 @@
 <? } ?>
 
 <? if (sizeof($state->legislatureOrg->requests)) { ?><strong>Список подавших заявку на выборы:</strong><ul><? foreach ($state->legislatureOrg->requests as $request) { ?>
-<li><a href="#" onclick="load_page('party_info',{'id':<?=$request->party_id?>})"><?=htmlspecialchars($request->party->name)?></a></li>
+<li><a href="#" onclick="load_page('party-info',{'id':<?=$request->party_id?>})"><?=htmlspecialchars($request->party->name)?></a></li>
 <? } ?></ul><? } else { ?><strong>Никто ещё не подал заявку на выборы</strong><? } ?>
 </p><br><? } ?><? } ?>
 
@@ -142,14 +142,14 @@
 <? if ($state->legislatureOrg->isLeaderElected()) { ?>
 <? if ($state->legislatureOrg->isGoingElects()) { ?>
 <p>
-Сейчас идут выборы лидера огранизации «<a href="#" onclick="load_page('org_info',{'id':<?=$state->legislature?>});"><?=htmlspecialchars($state->legislatureOrg->name)?></a>» и будут длиться до <?=date('d-M-Y H:i',$state->legislatureOrg->next_elect)?>
+Сейчас идут выборы лидера огранизации «<a href="#" onclick="load_page('org-info',{'id':<?=$state->legislature?>});"><?=htmlspecialchars($state->legislatureOrg->name)?></a>» и будут длиться до <?=date('d-M-Y H:i',$state->legislatureOrg->next_elect)?>
 <? if ($is_citizen) { ?>
 <br><button <? if ($votes['ll']) { ?>disabled="disabled" title="Вы уже проголосовали"<? } ?> class="btn btn-primary" onclick="elect_vote(<?=$state->legislature?>,1)">Проголосовать</button>
 <button class="btn btn-info" onclick="elect_exitpolls(<?=$state->legislature?>,1)">Результаты эксит-поллов</button><br>
 <? } ?>
 </p><br>
 <? } else { ?>
-<p>Следующие выборы лидера организации «<a href="#" onclick="load_page('org_info',{'id':<?=$state->legislature?>});"><?=htmlspecialchars($state->legislature_name)?></a>» пройдут с <?=date('d-M-Y H:i',$state->legislatureOrg->next_elect-24*60*60)?> по <?=date('d-M-Y H:i',$state->legislatureOrg->next_elect)?><br>
+<p>Следующие выборы лидера организации «<a href="#" onclick="load_page('org-info',{'id':<?=$state->legislature?>});"><?=htmlspecialchars($state->legislature_name)?></a>» пройдут с <?=date('d-M-Y H:i',$state->legislatureOrg->next_elect-24*60*60)?> по <?=date('d-M-Y H:i',$state->legislatureOrg->next_elect)?><br>
 <? if ($is_citizen && !$requests['ll']) { if ($state->legislatureOrg->leader_dest === 'nation_party_vote' && $user->isPartyLeader()) { ?>
 <button class="btn" onclick="elect_request(<?=$state->legislature?>,1)">Подать заявку на выборы от партии</button>
 <? } elseif ($state->legislatureOrg->leader_dest === 'nation_individual_vote') { ?>
@@ -211,15 +211,15 @@
 var org_id,leader,candidat,request,request_child;
 
 var send_elect_request = function() {
-	json_request('elect_request',{'org_id':org_id,'leader':leader,'candidat':candidat});
+	json_request('elect-request',{'org_id':org_id,'leader':leader,'candidat':candidat});
 }
 var send_elect_vote = function() {
-	if (request) json_request('elect_vote',{'request':request},!request_child);
-	if (request_child) json_request('elect_vote',{'request':request_child});
+	if (request) json_request('elect-vote',{'request':request},!request_child);
+	if (request_child) json_request('elect-vote',{'request':request_child});
 }
 
 function drop_elect_request(org_id,leader) {
-	json_request('drop_elect_request',{'org_id':org_id,'leader':leader,'party_id':<?=$user->party_id?>});
+	json_request('drop-elect-request',{'org_id':org_id,'leader':leader,'party_id':<?=$user->party_id?>});
 }
 
 function elect_request(Torg_id,Tleader) {
@@ -227,7 +227,7 @@ function elect_request(Torg_id,Tleader) {
 	leader = Tleader;
 	$.ajax(
 	{
-		url: '/nodejs?a=elect_request_modal&org_id='+org_id+'&leader='+leader,
+		url: '/api/modal/elect-request&org_id='+org_id+'&leader='+leader,
 		beforeSend:function() {
 	  		$('#elect_request_body').empty();
 		},
@@ -244,7 +244,7 @@ function elect_request(Torg_id,Tleader) {
 function elect_vote(org_id,leader) {
 	$.ajax(
 	{
-		url: '/nodejs?a=elect_vote_modal&org_id='+org_id+'&leader='+leader,
+		url: '/api/modal/elect-vote&org_id='+org_id+'&leader='+leader,
 		beforeSend:function() {
 	  		$('#elect_vote_body').empty();
 		},
@@ -259,7 +259,7 @@ function elect_vote(org_id,leader) {
 function elect_exitpolls(org_id,leader) {
 	$.ajax(
 	{
-		url: '/nodejs?a=elect_exitpolls_modal&org_id='+org_id+'&leader='+leader,
+		url: '/api/modal/elect-exitpolls&org_id='+org_id+'&leader='+leader,
 		beforeSend:function() {
 	  		$('#elect_exitpolls_body').empty();
 		},

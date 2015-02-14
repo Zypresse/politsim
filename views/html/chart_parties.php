@@ -3,7 +3,7 @@ use app\components\MyHtmlHelper;
 ?>
 <h1>Рейтинг партий</h1>
 <? if ($state) { ?>
-<h3>Партии государства &laquo;<a href="#" onclick="load_page('state_info',{'id':<?=$state->id?>})"><?=htmlspecialchars($state->name)?></a>&raquo;</h3>
+<h3>Партии государства &laquo;<a href="#" onclick="load_page('state-info',{'id':<?=$state->id?>})"><?=htmlspecialchars($state->name)?></a>&raquo;</h3>
 <? } ?>
 <table id="chart_parties" class="table table-striped">
   <tr><th style="width:60px;">Логотип</th><th style="width: 200px;">Название</th><th>Страна</th><th>Число участников</th><th>Характеристики</th></tr>
@@ -13,10 +13,10 @@ use app\components\MyHtmlHelper;
 <img src="<?=$party->image?>" alt="<?=$party->name?>" style="width:50px">
 </td>
 <td>
-<a href="#" onclick="load_page('party_info',{'id':<?=$party->id?>})"><?=htmlspecialchars($party->name)?></a>
+<a href="#" onclick="load_page('party-info',{'id':<?=$party->id?>})"><?=htmlspecialchars($party->name)?></a>
 </td>
 <td>
-<a href="#" onclick="load_page('state_info',{'id':<?=$party->state_id?>})"><?=htmlspecialchars($party->state->short_name)?></a>
+<a href="#" onclick="load_page('state-info',{'id':<?=$party->state_id?>})"><?=htmlspecialchars($party->state->short_name)?></a>
 </td>
 <td><?=$party->getMembersCount()?></td>
 <td>

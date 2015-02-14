@@ -4,7 +4,7 @@
 <div class="span2"><img src="<?=$party->image?>" alt="<?=$party->name?>" class="img-polaroid" style="max-width:100%"></div>
 <div class="span10">
 <h1><?=htmlspecialchars($party->name)?> <small>(<?=htmlspecialchars($party->short_name)?>)</small></h1>
-<h3>Партия государства &laquo;<a href="#" onclick="load_page('state_info',{'id':<?=$party->state_id?>})"><?=htmlspecialchars($party->state->name)?></a>&raquo;</h3>
+<h3>Партия государства &laquo;<a href="#" onclick="load_page('state-info',{'id':<?=$party->state_id?>})"><?=htmlspecialchars($party->state->name)?></a>&raquo;</h3>
 <? if ($party->group_id) { ?><p><a class="btn" href="//vk.com/club<?=$party->group_id?>" target="_blank">
 <i class="icon-home"></i> Группа в вк</a>
 </p><? } ?>
@@ -64,13 +64,13 @@
     var name = prompt('Введите новое название для партии');
     var short_name = prompt('Введите новое короткое название для партии');
     if (name != "null" && name && short_name) {
-      json_request('rename_party',{'id':id,'name':name,'short_name':short_name});
+      json_request('rename-party',{'id':id,'name':name,'short_name':short_name});
     }
   }
   function change_party_logo(id) {
     var image = prompt('Введите ссылку на новый логотип для партии');
     if (image != "null" && image) {
-      json_request('change_party_logo',{'id':id,'image':image});
+      json_request('change-party-logo',{'id':id,'image':image});
     }
   }
 
@@ -80,7 +80,7 @@
 <? if ($party->id === $user->party_id) { ?>
 
 <div class="btn-group">
-  <button class="btn btn-small dropdown-toggle btn-warning" onclick="json_request('leave_party',{},true); load_page('profile');">
+  <button class="btn btn-small dropdown-toggle btn-warning" onclick="json_request('leave-party',{},true); load_page('profile');">
     Выйти из партии
   </button>
 </div>
@@ -88,7 +88,7 @@
 <? } elseif (!$user->party_id && $user->state_id === $state->id) { ?>
 
 <div class="btn-group">
-  <button class="btn btn-small dropdown-info btn-info" onclick="json_request('join_party',{'party_id':<?=$party->id?>})">
+  <button class="btn btn-small dropdown-info btn-info" onclick="json_request('join-party',{'party_id':<?=$party->id?>})">
     Вступить в партию
   </button>
 </div>

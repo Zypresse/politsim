@@ -74,7 +74,7 @@ $(function(){
          // console.log('region-click', region);
           $.ajax(
             {
-              url: '/nodejs?a=region_population_info&region='+region,
+              url: '/api/modal/region-population?code='+region,
               beforeSend:function() {
                   $('#region_info_body').empty();
               },

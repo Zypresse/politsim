@@ -11,8 +11,8 @@ use app\components\MyHtmlHelper;
 <a href="#" onclick="load_page('profile',{'uid':<?=$player->id?>})"><img src="<?=$player->photo?>" alt="" style="width:32px;height:32px;"></a>
 &nbsp;
 <a href="#" onclick="load_page('profile',{'uid':<?=$player->id?>})"><?=htmlspecialchars($player->name)?></a></td>
-<td><? if ($player->state_id) { ?><a href="#" onclick="load_page('state_info',{'id':<?=$player->state_id?>})"><?=htmlspecialchars($player->state->short_name)?></a><? } else { ?><? if ($player->sex === 1) { ?>Гражданка<? } else { ?>Гражданин<? } ?> мира<? } ?></td>
-<td><? if ($player->party_id) { ?><a href="#" onclick="load_page('party_info',{'id':<?=$player->party_id?>})"><?=htmlspecialchars($player->party->name)?></a><? } else { ?><? if ($player->sex === 1) { ?>Беспартийная<? } else { ?>Беспартийный<? } ?><? } ?></td>
+<td><? if ($player->state_id) { ?><a href="#" onclick="load_page('state-info',{'id':<?=$player->state_id?>})"><?=htmlspecialchars($player->state->short_name)?></a><? } else { ?><? if ($player->sex === 1) { ?>Гражданка<? } else { ?>Гражданин<? } ?> мира<? } ?></td>
+<td><? if ($player->party_id) { ?><a href="#" onclick="load_page('party-info',{'id':<?=$player->party_id?>})"><?=htmlspecialchars($player->party->name)?></a><? } else { ?><? if ($player->sex === 1) { ?>Беспартийная<? } else { ?>Беспартийный<? } ?><? } ?></td>
 <td>
 		<span class="star"><?=$player->star?> <?=MyHtmlHelper::icon('star')?></span>
 		<span class="heart"><?=$player->heart?> <?=MyHtmlHelper::icon('heart')?></span>

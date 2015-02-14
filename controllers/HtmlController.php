@@ -102,7 +102,7 @@ class HtmlController extends MyController
 		$users = User::find()->where('star > 0')->orderBy('`star` + `heart`/10 + `chart_pie`/100 DESC')->limit(100)->all();
 		$user = User::findByPk($this->viewer_id);
 		$r = $user->star + $user->heart/10 + $user->chart_pie/100;
-		$place = User::find()->where('`star` + `heart`/10 + `chart_pie`/100 > '.$r)->count();
+		$place = User::find()->where('`star` + `heart`/10 + `chart_pie`/100 > '.$r)->count()+1;
 
 		return $this->render("chart_peoples",['users'=>$users,'user'=>$user,'place'=>$place]);
 	}

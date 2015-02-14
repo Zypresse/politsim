@@ -96,7 +96,7 @@ $own = ($viewer_id === $user->id);
       $('#save_nickname').click(function(){
         var nick = $('#new_nickname').val().toLowerCase();
         if (nick && !(/[^qwertyuiopasdfghjklzxcvbnm0123456789]/.test(nick)) && nick.length<20 && nick.length>3)
-          json_request('set_twitter_nickname',{'nick':nick});
+          json_request('set-twitter-nickname',{'nick':nick});
         else 
           alert('Ник должен содержать только латинские буквы и быть от 4 до 20 знаков в длину');
       })
@@ -106,7 +106,7 @@ $own = ($viewer_id === $user->id);
     $('#update_feed').click(function(){
       $(this).attr("disabled","disabled");
       var offset = parseInt($(this).data('offset'));
-      get_html('get_twitter_feed',{'time':$(this).data('time'),'offset':offset},function(rows){
+      get_html('get-twitter-feed',{'time':$(this).data('time'),'offset':offset},function(rows){
 
           $('#twitter_feed .last').removeClass('last');
           $('#twitter_feed').append(rows);
@@ -119,7 +119,7 @@ $own = ($viewer_id === $user->id);
     $('#update_user_feed').click(function(){
       $(this).attr("disabled","disabled");
       var offset = parseInt($(this).data('offset'));
-      get_html('get_twitter_feed',{'time':$(this).data('time'),'offset':offset,'uid':$(this).data('uid')},function(rows){
+      get_html('get-twitter-feed',{'time':$(this).data('time'),'offset':offset,'uid':$(this).data('uid')},function(rows){
 
           $('#twitter_user_feed .last').removeClass('last');
           $('#twitter_user_feed').append(rows);
@@ -137,7 +137,7 @@ $own = ($viewer_id === $user->id);
     });
     $( ".delete_tweet" ).on( "click", function() {
       if (confirm('Вы действительно хотите удалить пост?')) {
-        json_request('delete_tweet',{'id':$(this).data('id')});
+        json_request('delete-tweet',{'id':$(this).data('id')});
       }
       return false;
     });

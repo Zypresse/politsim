@@ -47,7 +47,7 @@ use app\components\MyHtmlHelper;
 <h3><? if ($org->leader->name) { ?><?=htmlspecialchars($org->leader->name)?><? } else { ?>Лидер организации<? } ?></h3>
 <? if ($org->leader->user) { ?><p><a href="#" onclick="load_page('profile',{'uid':<?=$org->leader->user->id?>})"><img src="<?=$org->leader->user->photo?>" alt="" style="width:32px;height:32px;"></a>
 <a href="#" onclick="load_page('profile',{'uid':<?=$org->leader->user->id?>})"><?=htmlspecialchars($org->leader->user->name)?></a>
-(<? if ($org->leader->user->party_id) { ?><a href="#" onclick="load_page('party_info',{'id':<?=$org->leader->user->party_id?>});"><?=htmlspecialchars($org->leader->user->party->name)?></a><? } else {  if ($org->leader->user->sex === 1) { ?>Беспартийная<? } else { ?>Беспартийный<? } ?><? } ?>)
+(<? if ($org->leader->user->party_id) { ?><a href="#" onclick="load_page('party-info',{'id':<?=$org->leader->user->party_id?>});"><?=htmlspecialchars($org->leader->user->party->name)?></a><? } else {  if ($org->leader->user->sex === 1) { ?>Беспартийная<? } else { ?>Беспартийный<? } ?><? } ?>)
 <span class="star"><?=$org->leader->user->star?> <?=MyHtmlHelper::icon('star')?></span>
 		<span class="heart"><?=$org->leader->user->heart?> <?=MyHtmlHelper::icon('heart')?></span>
 		<span class="chart_pie"><?=$org->leader->user->chart_pie?> <?=MyHtmlHelper::icon('chart_pie')?></span>
@@ -74,6 +74,6 @@ use app\components\MyHtmlHelper;
 </div></div>
 <script type="text/javascript">
   $(function(){
-    $('.org_member').popover({'placement':'top','trigger':'click'});
+    $('.org_member').popover({'placement':'top'});
   })
 </script>

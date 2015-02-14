@@ -7,8 +7,8 @@ use app\components\MyHtmlHelper;
   <? foreach ($states as $state) { ?>
 <tr>
 <td><img src="<?=$state->flag?>" alt="<?=$state->flag?>" style="width:50px;"></td>
-<td><a href="#" onclick="load_page('state_info',{'id':<?=$state->id?>})"><?=htmlspecialchars($state->name)?></a></td>
-<td><?=MyHtmlHelper::formateNumberword($state->population,'человек','человек','человека')?></td>
+<td><a href="#" onclick="load_page('state-info',{'id':<?=$state->id?>})"><?=htmlspecialchars($state->name)?></a></td>
+<td><?=MyHtmlHelper::formateNumberword($state->population,'h')?></td>
 </tr>
 <? } ?>
 </table>

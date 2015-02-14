@@ -36,7 +36,7 @@ use app\models\BillType;
 <? if ($player->user) { ?>
 <a href="#" onclick="load_page('profile',{'uid':<?=$player->user->id?>})"><img src="<?=$player->user->photo?>" alt="" style="width:32px;height:32px;"></a>
 <a href="#" onclick="load_page('profile',{'uid':<?=$player->user->id?>})"><?=htmlspecialchars($player->user->name)?></a>
-(<? if ($player->user->party) { ?><a href="#" onclick="load_page('party_info',{'id':<?=$player->user->party_id?>});"><?=htmlspecialchars($player->user->party->name)?></a><? } else { ?><? if ($player->user->sex === 1) { ?>Беспартийная<? } else { ?>Беспартийный<? } ?><? } ?>)
+(<? if ($player->user->party) { ?><a href="#" onclick="load_page('party-info',{'id':<?=$player->user->party_id?>});"><?=htmlspecialchars($player->user->party->name)?></a><? } else { ?><? if ($player->user->sex === 1) { ?>Беспартийная<? } else { ?>Беспартийный<? } ?><? } ?>)
 <span class="star"><?=$player->user->star?> <?=MyHtmlHelper::icon('star')?></span>
 		<span class="heart"><?=$player->user->heart?> <?=MyHtmlHelper::icon('heart')?></span>
 		<span class="chart_pie"><?=$player->user->chart_pie?> <?=MyHtmlHelper::icon('chart_pie')?></span>
@@ -280,7 +280,7 @@ function update_fields_recursive(fields) {
 		switch($f.data('type')) {
 			case 'new_capital':
 				$f.text('Город в регионе с кодом '+val);
-				get_json('json_region_info',{'code':val},function(info){
+				get_json('region-info',{'code':val},function(info){
 					$f.text(info.city);
 					gf_cache['new_capital'][val] = info.city;
 					if (fields.length) update_fields_recursive(fields);
@@ -300,7 +300,7 @@ function update_fields_recursive(fields) {
 			case 'goverment_field_type':
 				$f.text('Статья конституции №'+val);
 				gf_cache['goverment_field_type'][val] = 'Статья конституции №'+val;
-				get_json('json_govermentfieldtype_info',{'id':val},function(info){
+				get_json('goverment-field-type-info',{'id':val},function(info){
 					$f.text(info.name);
 					gf_cache['goverment_field_type'][val] = info.name;
 					goverment_field_type = info.type;
@@ -316,7 +316,7 @@ function update_fields_recursive(fields) {
 				$f.text('Выборы '+ (is_leader ? 'лидера организации' : 'в организацию' ) +' №'+org_id);
 				gf_cache['elected_variant'][val] = 'Выборы '+ (is_leader ? 'лидера организации' : 'в организацию' ) +' №'+org_id;
 
-				get_json('json_org_info',{'id':org_id},function(info){
+				get_json('org-info',{'id':org_id},function(info){
 					$f.text('Выборы '+ (is_leader ? 'лидера организации' : 'в организацию' ) +' '+info.name+'');
 					gf_cache['elected_variant'][val] = 'Выборы '+ (is_leader ? 'лидера организации' : 'в организацию' ) +' '+info.name+'';
 

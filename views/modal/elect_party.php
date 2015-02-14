@@ -6,7 +6,7 @@
 
 <input style="display:inline-block;" class="elect_vote_radio" type="radio" name="elect_vote" value="<?=$elect_request->id?>">
 
-<p style="display:inline-block;line-height: 28px;"><a href="#" onclick="$('.modal-backdrop').hide();load_page('party_info',{'id':<?=$elect_request->party_id?>})"><strong><?=htmlspecialchars($elect_request->party->name)?></strong></a></p>
+<p style="display:inline-block;line-height: 28px;"><a href="#" onclick="$('.modal-backdrop').hide();load_page('party-info',{'id':<?=$elect_request->party_id?>})"><strong><?=htmlspecialchars($elect_request->party->name)?></strong></a></p>
 </div>
 <? } ?>
 <p><small>Поставьте галочку напротив выбранной вами партии и нажмите «Проголосовать»</small></p>

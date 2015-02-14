@@ -37,7 +37,7 @@ function set_regions_names() {
 }
 
  function load_resurses_map(resurse) {
-  get_json('json_regions_resurses',{'code':resurse},function(rows){
+  get_json('regions-resurses',{'code':resurse},function(rows){
 
 
     if (map) map.remove();
@@ -90,7 +90,7 @@ function set_regions_names() {
          // console.log('region-click', region);
           $.ajax(
             {
-              url: '/nodejs?a=region_economic_info&region='+region,
+              url: '/api/modal/region-resurses?code='+region,
               beforeSend:function() {
                   $('#region_info_body').empty();
               },

@@ -4,7 +4,7 @@ use app\components\MyHtmlHelper;
 <h1><?=htmlspecialchars($region->name)?></h1>
 <? if ($region->city) { ?><p>Столица: <?=htmlspecialchars($region->city)?></p><? } ?>
 <? if ($region->state) { ?>
-<p><? if ($region->isCapital()) { ?>Столица государства<? } else { ?>Принадлежит государству<? } ?> &laquo;<a href='#' onclick="$('.modal-backdrop').hide(); load_page('state_info',{'id':<?=$region->state_id?>});" ><?=htmlspecialchars($region->state->name)?></a>&raquo;</p>
+<p><? if ($region->isCapital()) { ?>Столица государства<? } else { ?>Принадлежит государству<? } ?> &laquo;<a href='#' onclick="$('.modal-backdrop').hide(); load_page('state-info',{'id':<?=$region->state_id?>});" ><?=htmlspecialchars($region->state->name)?></a>&raquo;</p>
 <p><? if ($user->region_id == $region->id) { ?>Вы живёте здесь.<? } ?></p>
 <!--<div class="btn-toolbar">
 	<div class="btn-group">
@@ -41,7 +41,7 @@ use app\components\MyHtmlHelper;
 		$('#create_state_btn').click(function(){
     $.ajax(
       {
-        url: '/nodejs?a=create_state_dialog&region=<?=$region->code?>',
+        url: '/api/modal/create_state_dialog&region=<?=$region->code?>',
         beforeSend:function() {
             $('#create_state_dialog_body').empty();
         },
@@ -57,7 +57,7 @@ use app\components\MyHtmlHelper;
 <? } ?>
  <? if ($user->region_id !== $region->id) { ?>
 <div class="btn-group">
-  <button class="btn btn-small" onclick="json_request('moveto',{'id':'<?=$region->id?>'},true); load_page('profile')">
+  <button class="btn btn-small" onclick="json_request('move-to',{'id':'<?=$region->id?>'},true); load_page('profile')">
     Переехать сюда
   </button>
 </div><? } ?>

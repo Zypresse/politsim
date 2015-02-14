@@ -14,17 +14,17 @@ use app\components\MyHtmlHelper;
 <h1><?=htmlspecialchars($user->name)?> <? if ($is_own) { ?><small>(это вы)</small><? } ?></h1>
 <? if ($user->uid_vk) ?><p><a class="btn" href="//vk.com/id<?=$user->uid_vk?>" target="_blank"><i class="icon-user"></i> Профиль в ВК</a></p>
 <p><? if ($user->party) { ?>
-	Состоит в партии <a href="#" onclick="load_page('party_info',{'id':<?=$user->party_id?>})"><?=htmlspecialchars($user->party->name)?></a>
+	Состоит в партии <a href="#" onclick="load_page('party-info',{'id':<?=$user->party_id?>})"><?=htmlspecialchars($user->party->name)?></a>
 <? } else { ?>
 	<? if ($user->sex === 1) { ?>Беспартийная<? } else { ?>Беспартийный<? } ?>
 <? } ?></p>
 <p><? if ($user->state_id) { ?>
-	<? if ($user->sex === 1) { ?>Гражданка<? } else { ?>Гражданин<? } ?> государства <a href="#" onclick="load_page('state_info',{'id':<?=$user->state_id?>})"><?=htmlspecialchars($user->state->name)?></a>
+	<? if ($user->sex === 1) { ?>Гражданка<? } else { ?>Гражданин<? } ?> государства <a href="#" onclick="load_page('state-info',{'id':<?=$user->state_id?>})"><?=htmlspecialchars($user->state->name)?></a>
 <? } else { ?>
 	<? if ($user->sex === 1) { ?>Гражданка<? } else { ?>Гражданин<? } ?> мира
 <? } ?></p>
 <? if ($user->region) { ?><p>Живет в регионе «<?=htmlspecialchars($user->region->name)?>»</p><? } ?>
-<? if ($user->post) { ?><p><i class="icon-briefcase"></i> Занимает пост &laquo;<?=htmlspecialchars($user->post->name)?>&raquo; в организации &laquo;<a href="#" onclick="load_page('org_info',{'id':<?=$user->post->org_id?>});"><?=htmlspecialchars($user->post->org->name)?></a>&raquo;</p><? } ?>
+<? if ($user->post) { ?><p><i class="icon-briefcase"></i> Занимает пост &laquo;<?=htmlspecialchars($user->post->name)?>&raquo; в организации &laquo;<a href="#" onclick="load_page('org-info',{'id':<?=$user->post->org_id?>});"><?=htmlspecialchars($user->post->org->name)?></a>&raquo;</p><? } ?>
 <? if (sizeof($user->medales)) { ?><p>
 <h4>Значки:</h4>
 <? foreach ($user->medales as $medale) { ?>
@@ -95,7 +95,7 @@ use app\components\MyHtmlHelper;
     </form>
   </div>
   <div class="modal-footer">
-    <button onclick="json_request('transfer_money',{'type':$('#money_transfer_type').val(),'count':$('#money_transfer_count').val(),'uid':<?=$user->id?>})" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Передать</button>
+    <button onclick="json_request('transfer-money',{'type':$('#money_transfer_type').val(),'count':$('#money_transfer_count').val(),'uid':<?=$user->id?>})" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Передать</button>
     <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
   </div>
 </div>
@@ -109,7 +109,7 @@ use app\components\MyHtmlHelper;
   }
 
   function public_statement(type) {
-    json_request('public_statement',{'uid':<?=$user->id?>,'type':type});
+    json_request('public-statement',{'uid':<?=$user->id?>,'type':type});
   }
 
 </script>

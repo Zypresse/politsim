@@ -45,7 +45,7 @@ $('#mapdiv').vectorMap({
 	      regions: [{
 	        attribute: 'fill',
 	        values: {
-            <? foreach ($regions as $i => $region) {  if ($i) echo ",";  $color = $region->state ? $region->state->color : '#eee'; echo "{$region->code}: '{$color}'"; } ?>
+            <? foreach ($regions as $i => $region) {  if ($i) echo ",";  $color = $region->state ? $region->state->color : '#eee'; echo "'{$region->code}': '{$color}'"; } ?>
             }
 	      }]
 	    },
@@ -59,7 +59,7 @@ $('#mapdiv').vectorMap({
          // console.log('region-click', region);
           $.ajax(
       			{
-      				url: '/nodejs?a=region_info&region='+region,
+      				url: '/api/modal/region-info?code='+region,
       				beforeSend:function() {
       			  		$('#region_info_body').empty();
       				},

@@ -54,7 +54,7 @@ class JsonController extends MyController
         if (is_null($user)) {
             $this->error = 'User not found';
         } else {
-            $this->result = $user->getPublicAttributes();
+            $this->result = ($uid == $this->viewer_id) ? $user->attributes : $user->getPublicAttributes();
         }
         
         return $this->_r();

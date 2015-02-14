@@ -28,7 +28,7 @@ send_elect_request = function() {
 		}
 	{% endfor %}*/
 
-	json_request('elect_request',{'org_id':<?=$org->id?>,'leader':1,'candidat':$('#candidat<?=$org->id?>').val()});
+	json_request('elect-request',{'org_id':<?=$org->id?>,'leader':1,'candidat':$('#candidat<?=$org->id?>').val()});
 
 	/*{% for child_org in child_orgs %}
 	json_request('elect_request',{'org_id':{{ child_org.id }},'leader':1,'candidat':$('#candidat{{ child_org.id }}').val()});

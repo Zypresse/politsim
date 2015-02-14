@@ -2,7 +2,7 @@
 use app\components\MyHtmlHelper;
 ?>
 <h1><?=htmlspecialchars($region->name)?></h1>
-<? if ($region->state_id) { ?><p><? if ($region->isCapital()) { ?>Столица государства<? } else { ?>Принадлежит государству<? } ?> &laquo;<a href='#' onclick="$('.modal-backdrop').hide(); load_page('state_info',{'id':<?=$region->state_id?>});" ><?=htmlspecialchars($region->state->name)?></a>&raquo;</p><? } ?>
+<? if ($region->state_id) { ?><p><? if ($region->isCapital()) { ?>Столица государства<? } else { ?>Принадлежит государству<? } ?> &laquo;<a href='#' onclick="$('.modal-backdrop').hide(); load_page('state-info',{'id':<?=$region->state_id?>});" ><?=htmlspecialchars($region->state->name)?></a>&raquo;</p><? } ?>
 <h3>Эффективность добычи ресурсов в этом регионе</h3>
 <ul>
 	<? if ($region->oil) { ?><li><?=MyHtmlHelper::icon('oil')?> Нефть — <?=MyHtmlHelper::zeroOne2Human($region->oil)?></li><? } ?>

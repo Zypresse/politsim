@@ -34,7 +34,7 @@
 <a href="#" onclick="load_page('profile',{'uid':<?=$state->executiveOrg->leader->user->id?>})"><img src="<?=$state->executiveOrg->leader->user->photo?>" alt="" style="width:32px;height:32px;"></a>
 <a href="#" onclick="load_page('profile',{'uid':<?=$state->executiveOrg->leader->user->id?>})"><?=htmlspecialchars($state->executiveOrg->leader->user->name)?></a>
 
-(<? if ($state->executiveOrg->leader->user->party) { ?><a href="#" onclick="load_page('party_info',{'id':<?=$state->executiveOrg->leader->user->party_id?>})"><?=htmlspecialchars($state->executiveOrg->leader->user->party->name)?></a><? } else { ?><? if ($state->executiveOrg->leader->user->sex === 1) { ?>Беспартийная<? } else { ?>Беспартийный<? } ?><? } ?>)
+(<? if ($state->executiveOrg->leader->user->party) { ?><a href="#" onclick="load_page('party-info',{'id':<?=$state->executiveOrg->leader->user->party_id?>})"><?=htmlspecialchars($state->executiveOrg->leader->user->party->name)?></a><? } else { ?><? if ($state->executiveOrg->leader->user->sex === 1) { ?>Беспартийная<? } else { ?>Беспартийный<? } ?><? } ?>)
 
 		<span class="star"><?=$state->executiveOrg->leader->user->star?> <?=MyHtmlHelper::icon('star')?></span>
 		<span class="heart"><?=$state->executiveOrg->leader->user->heart?> <?=MyHtmlHelper::icon('star')?></span>
@@ -43,10 +43,10 @@
 не назначен
 <? } ?>
 </p>
-<h4><? if ($state->executiveOrg) { ?><a href="#" onclick="load_page('org_info',{'id':<?=$state->executive?>});"><?=htmlspecialchars($state->executiveOrg->name)?></a><? } else { ?>Не сформирована<? } ?> <small>Исполнительная власть</small></h4>
+<h4><? if ($state->executiveOrg) { ?><a href="#" onclick="load_page('org-info',{'id':<?=$state->executive?>});"><?=htmlspecialchars($state->executiveOrg->name)?></a><? } else { ?>Не сформирована<? } ?> <small>Исполнительная власть</small></h4>
 <? if ($state->executiveOrg->isElected()) { ?>Следующие выборы — <?=date("d-M-Y H:i",$state->executiveOrg->next_elect)?><br><? } ?>
 <? if ($state->executiveOrg->isLeaderElected()) { ?>Следующие выборы лидера организации — <?=date("d-M-Y H:i",$state->executiveOrg->next_elect)?><br><? } ?>
-<h4><? if ($state->legislatureOrg) { ?><a href="#" onclick="load_page('org_info',{'id':<?=$state->legislature?>});"><?=htmlspecialchars($state->legislatureOrg->name)?></a><? } else { ?>Не сформирована<? } ?> <small>Законодательная власть</small></h4>
+<h4><? if ($state->legislatureOrg) { ?><a href="#" onclick="load_page('org-info',{'id':<?=$state->legislature?>});"><?=htmlspecialchars($state->legislatureOrg->name)?></a><? } else { ?>Не сформирована<? } ?> <small>Законодательная власть</small></h4>
 <? if ($state->legislatureOrg->isElected()) { ?>Следующие выборы — <?=date("d-M-Y H:i",$state->legislatureOrg->next_elect)?><br><? } ?>
 <? if ($state->legislatureOrg->isLeaderElected()) { ?>Следующие выборы лидера организации — <?=date("d-M-Y H:i",$state->legislatureOrg->next_elect)?><br><? } ?>
 
@@ -97,9 +97,9 @@
   <ul class="dropdown-menu">
     <!--<li class="divider"></li>-->
     <? if ($user->state_id === $state->id) { ?>
-      <li><a href="#" onclick="json_request('drop_citizenship')" >Отказаться от гражданства</a></li>
+      <li><a href="#" onclick="json_request('drop-citizenship')" >Отказаться от гражданства</a></li>
     <? } else { ?>
-      <li><a href="#" onclick="<? if ($user->state_id === 0) { ?>json_request('get_citizenship',{'state_id':<?=$state->id?>})<? } else { ?>show_custom_error('Вы уже имеете гражданство другого государства. Во время альфа теста иметь двойное гражданство запрещено.')<? } ?>" >Получить гражданство</a></li>
+      <li><a href="#" onclick="<? if ($user->state_id === 0) { ?>json_request('get-citizenship',{'state_id':<?=$state->id?>})<? } else { ?>show_custom_error('Вы уже имеете гражданство другого государства. Во время альфа теста иметь двойное гражданство запрещено.')<? } ?>" >Получить гражданство</a></li>
     <? } ?>
     <!--<li><a href='#' >Запросить политическое убежище</a></li>-->
   </ul>
@@ -114,7 +114,7 @@
     <? if ($user->state_id === $state->id) { ?>
       <? if ($user->party_id === 0 && $state->allow_register_parties) { ?><li><a href='#' onclick="$('#create_party').modal();" >Создать партию</a></li><? } ?>
     <? } ?>
-    <li><a href='#' onclick="load_page('chart_parties',{'state_id':<?=$state->id?>});" >Список партий</a></li>
+    <li><a href='#' onclick="load_page('chart-parties',{'state_id':<?=$state->id?>});" >Список партий</a></li>
     <li><a href='#' onclick="load_page('elections',{'id':<?=$state->id?>});" >Выборы</a></li>
   </ul>
 </div>
@@ -175,8 +175,8 @@
     image = $('#party_image').val();
 		ideology = $('#party_ideology').val();
 		//$('.modal-backdrop').hide(); 
-		json_request('create_party',{'name':name,'name_short':name_short,'image':image,'ideology':ideology,'firsth_of_state':firsth_of_state},false);
-    load_page('party_info',{},500);
+		json_request('create-party',{'name':name,'name_short':name_short,'image':image,'ideology':ideology,'firsth_of_state':firsth_of_state},false);
+    load_page('party-info',{},500);
 		return true;
 	}
 </script><? } ?>
@@ -202,7 +202,7 @@ $(function(){
     function show_region(region) {
   $.ajax(
       {
-        url: '/nodejs?a=region_info&region='+region,
+        url: '/api/modal/region-info?code='+region,
         beforeSend:function() {
             $('#region_info_body').empty();
         },
@@ -210,10 +210,7 @@ $(function(){
             $('#region_info_body').html(d);
             $('#region_info').modal();
         },
-        error:function(){
-          $('#error_text').text('Ошибка соединения с сервером Node.JS');
-          $('#error_block').slideDown();
-        }
+        error:show_error
       });
   return false;
     }
