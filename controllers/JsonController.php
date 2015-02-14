@@ -557,5 +557,27 @@ class JsonController extends MyController
             return $this->_r("Invalid params");
     }
 
+    public function actionRenameParty($name,$short_name)
+    {
+        $name = trim(strip_tags($name));
+        $short_name = mb_strtoupper(mb_substr(trim(strip_tags($short_name)), 0,6));
+        if ($name && $short_name) {
+            $user = User::findByPk($this->viewer_id);
+            if ($user->party_id && $user->isPartyLeader()) {
+                $user->party->name = $name;
+                $user->party->short_name = $short_name;
+
+                if ($user->party->save())
+                    return $this->_rOk();
+                else
+                    return $this->_r($user->party->getErrors());
+
+            } else
+                return $this->_r("Not allowed");
+        } else
+            return $this->_r("Invalid params");
+    }
+
+    
 
 }
