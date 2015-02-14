@@ -15,9 +15,11 @@
 <script>
 var check_nickname = function(callback){
       if ($('#human_nickname').val()) {
-        get_json('userinfo',{'nick':$('#human_nickname').val()},function(userinfo){
+        
+          $.getJSON('/api/json/userinfo?nick='+$('#human_nickname').val(),function(userinfo){
           $('#human_uid').val(0);
-          if (userinfo) {
+          if (userinfo.result != 'error') {
+            userinfo = userinfo.result;
             $('#human_uid').val(userinfo.id)
             $('#human_info').html("<img src=\""+userinfo.photo+"\" alt=\"\"> "+userinfo.name);
             if (typeof(callback)=='function') callback(true);

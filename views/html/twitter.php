@@ -45,7 +45,7 @@ $own = ($viewer_id === $user->id);
               <div class="span4" id="twitter_user_feed"><? if ($own) { ?>
               <h5>Выберите, о чём написать:</h5>
               <p>
-                <button class="btn" onclick="$('#tweet_about_human_body').empty();$.get('/nodejs?a=tweet_about_human_modal',function(data){$('#tweet_about_human_body').html(data);$('#tweet_about_human').modal();})">О человеке</button>
+                <button class="btn" onclick="$('#tweet_about_human_body').empty();$.get('/api/modal/tweet-about-human',function(data){$('#tweet_about_human_body').html(data);$('#tweet_about_human').modal();})">О человеке</button>
                 <button class="btn" disabled="disabled">О событии</button>
                 <button class="btn" disabled="disabled">О погоде</button>
               </p>
