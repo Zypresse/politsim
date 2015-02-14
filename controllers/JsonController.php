@@ -814,13 +814,16 @@ class JsonController extends MyController
         $uid = intval($uid);
 
         if ($text) {
+            $self = User::findByPk($this->viewer_id);
+            if ($self->last_tweet > time()-24*60*60)
+                return $this->_r("timeout",['time'=>($self->last_tweet + 24*60*60)]);
+
             if ($uid) {
                 $user = User::findByPk($uid);
                 if (is_null($user))
                     return $this->_r("User not found");
             }
 
-            $self = User::findByPk($this->viewer_id);
             $retweets = round($self->getTwitterSubscribersCount()/5) + mt_rand(round(-1*$self->getTwitterSubscribersCount()/40),round($self->getTwitterSubscribersCount()/20));
 
             switch ($type) {
@@ -888,9 +891,52 @@ class JsonController extends MyController
         $id = intval($id);
         if ($id>0) {
             $tweet = Twitter::findByPk($id);
+            if (is_null($tweet))
+                return $this->_r("Tweet not found");
             if ($tweet->uid === $this->viewer_id) {
                 $tweet->delete();
                 return $this->_rOk();
+            } else
+                return $this->_r("Not allowed");
+        } else
+            return $this->_r("Invalid tweet ID");
+    }
+
+    public function actionRetweet($id)
+    {
+        $id = intval($id);
+        if ($id>0) {
+            $self = User::findByPk($this->viewer_id);
+            if ($self->last_tweet > time()-24*60*60)
+                return $this->_r("timeout",['time'=>($self->last_tweet + 24*60*60)]);
+
+            $tweet = Twitter::findByPk($id);
+            if (is_null($tweet))
+                return $this->_r("Tweet not found");
+            if ($tweet->uid !== $this->viewer_id) {
+                
+                $retweets = round($self->getTwitterSubscribersCount()/7) + mt_rand(round(-1*$self->getTwitterSubscribersCount()/30),round($self->getTwitterSubscribersCount()/30));
+                $tweet->user->heart += ($self->heart>0)?round($self->heart/100):round(abs($self->heart)/1000);
+                $tweet->user->chart_pie += ($self->chart_pie>$tweet->user->chart_pie)?1:0;
+                $tweet->user->star += round($self->star/100);
+                $tweet->user->save();
+                $tweet->retweets += $retweets;
+                $tweet->save();
+
+                $retweet = new Twitter();
+                $retweet->uid = $this->viewer_id;
+                $retweet->text = $tweet->text;
+                $retweet->retweets = $tweet->retweets;
+                $retweet->date = time();
+                $retweet->original = $tweet->original ? $tweet->original : $tweet->uid;
+                if ($retweet->save()) {
+                    $self->last_tweet = time();
+                    $self->save();
+                    return $this->_rOk();
+                } else {
+                    return $this->_r($retweet->getErrors());
+                }
+                
             } else
                 return $this->_r("Not allowed");
         } else
