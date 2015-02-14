@@ -492,4 +492,47 @@ class JsonController extends MyController
         } else
             return $this->_r("Invalid params");
     }
+
+    public function actionPublicStatement($uid,$type = 'positive')
+    {
+        $uid = intval($uid);
+        if ($uid > 0) {
+            $user = User::findByPk($uid);
+            if (is_null($user))
+                return $this->_r("User not found");
+            $self = User::findByPk($this->viewer_id);
+            if ($self->last_vote > time() - 24*60*60)
+                return $this->_r("timeout",['time'=>($self->last_vote + 24*60*60)]);
+
+            $user->star += round($self->star/10);
+            $self->star += 1;
+            switch ($type) {
+                case 'positive':
+                    $user->heart += ($self->heart > 0) ? round($self->heart/10) : round(abs($self->heart/100));
+                    $self->heart += 1;
+                    $user->chart_pie += ($self->chart_pie > 0) ? 1 : 0;
+                break;
+                case 'negative':
+                    $user->heart += -1 * ($self->heart > 0 ? round($self->heart/10) : round(abs($self->heart/100)));
+                    $self->heart += -1;
+                    $user->chart_pie += ($self->chart_pie > 0) ? -1 : 0;
+                break;
+                default:
+                    $user->heart += -2 * ($self->heart > 0 ? round($self->heart/10) : round(abs($self->heart/100)));
+                    $self->heart += -1 * round(abs($self->heart/10));
+                    $user->chart_pie += -1;
+                    $self->chart_pie += -1;
+                break;
+            }
+
+            $self->last_vote = time();
+            $user->save();
+            $self->save();
+
+            $this->result = "ok";
+            return $this->_r();
+
+        } else
+            return $this->_r("Invalid user ID");
+    }
 }

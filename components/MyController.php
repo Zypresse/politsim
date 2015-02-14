@@ -28,11 +28,16 @@ class MyController extends Controller
     protected $viewer_id = 0;
 	public $layout = 'api';
 
-    protected function _r($e = false) 
+    protected function _r($e = false, $addFields = []) 
     {
+
         if ($e) $this->error = $e;
         if ($this->error) $this->result = 'error';
-        return $this->render('/json',['result'=>$this->result,'error'=>$this->error]);
+        $ar = ['result'=>$this->result,'error'=>$this->error,'addFields'=>[]];
+        foreach ($addFields as $key => $value) {
+            $ar['addFields'][$key] = $value;
+        }
+        return $this->render('/json',$ar);
     }
 
 	public function beforeAction($action)

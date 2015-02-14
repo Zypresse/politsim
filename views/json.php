@@ -2,7 +2,16 @@
 /* @var $this yii\web\View */
 	
 	header('Content-Type: application/json; charset='.Yii::$app->charset);
-	echo json_encode((@$error) ? ['result'=>$result,'error'=>$error] : ['result'=>$result],JSON_UNESCAPED_UNICODE);
+	$ar = ['result'=>$result];
+	if (isset($error) && $error) {
+		$ar['error'] = $error;
+	}
+	if (isset($addFields) && sizeof($addFields)) {
+		foreach ($addFields as $key => $value) {
+			$ar[$key] = $value;
+		}
+	}
+	echo json_encode($ar,JSON_UNESCAPED_UNICODE);
 	Yii::$app->end();
 
 ?>
