@@ -129,7 +129,7 @@ class User extends MyModel
 
     public function isOrgLeader()
     {
-        return (intval(@$this->post->org->leader_post) === intval($this->post_id));
+        return (intval($this->post_id) && intval(@$this->post->org->leader_post) === intval($this->post_id));
     }
 
     public function isStateLeader()

@@ -542,7 +542,7 @@ class JsonController extends MyController
         $id = intval($id);
         if ($id>0 && $name) {
             $org = Org::findByPk($id);
-            if (is_null($org)) {
+            if (is_null($org))
                 return $this->_r("Organisation not found");
             $user = User::findByPk($this->viewer_id);
             if ($user->isOrgLeader()) {
@@ -556,4 +556,6 @@ class JsonController extends MyController
         } else
             return $this->_r("Invalid params");
     }
+
+
 }
