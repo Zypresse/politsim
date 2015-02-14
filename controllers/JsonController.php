@@ -536,15 +536,16 @@ class JsonController extends MyController
             return $this->_r("Invalid user ID");
     }
 
-    public function actionRenameOrg($name,$id)
+    public function actionRenameOrg($name)
     {
         $name = trim(strip_tags($name));
-        $id = intval($id);
-        if ($id>0 && $name) {
-            $org = Org::findByPk($id);
+        if ($name) {
+            $user = User::findByPk($this->viewer_id);
+            if (is_null($user->post))
+                return $this->_r("You have not post");
+            $org = Org::findByPk($user->post->org_id);
             if (is_null($org))
                 return $this->_r("Organisation not found");
-            $user = User::findByPk($this->viewer_id);
             if ($user->isOrgLeader()) {
                 $org->name = $name;
                 if ($org->save()) 
@@ -554,7 +555,7 @@ class JsonController extends MyController
             } else
                 return $this->_r("Not allowed");
         } else
-            return $this->_r("Invalid params");
+            return $this->_r("Invalid name");
     }
 
     public function actionRenameParty($name,$short_name)
@@ -597,6 +598,31 @@ class JsonController extends MyController
             return $this->_r("Invalid image");
     }
 
+    public function actionCreatePost($name)
+    {
+        $name = trim(strip_tags($name));
+        if ($name) {
+            $user = User::findByPk($this->viewer_id);
+            if (is_null($user->post))
+                return $this->_r("You have not post");
+            $org = Org::findByPk($user->post->org_id);
+            if (is_null($org))
+                return $this->_r("Organisation not found");
+            if ($user->isOrgLeader()) {
+                $post = new Post();
+                $post->name = $name;
+                $post->org_id = $org->id;
+                $post->type = "minister";
+                $post->can_delete = 1;
 
+                if ($post->save()) 
+                    return $this->_rOk();
+                else
+                    return $this->_r($org->getErrors());                
+            } else
+                return $this->_r("Not allowed");
+        } else
+            return $this->_r("Invalid name");
+    }
 
 }
