@@ -505,7 +505,7 @@ class JsonController extends MyController
                 return $this->_r("User not found");
             $self = User::findByPk($this->viewer_id);
             if ($self->last_vote > time() - 24*60*60)
-                return $this->_r("timeout",['time'=>($self->last_vote + 24*60*60)]);
+                return $this->_r("timeout",['time'=>($self->last_vote + 24*60*60 - time())]);
 
             $user->star += round($self->star/10);
             $self->star += 1;
@@ -816,7 +816,7 @@ class JsonController extends MyController
         if ($text) {
             $self = User::findByPk($this->viewer_id);
             if ($self->last_tweet > time()-24*60*60)
-                return $this->_r("timeout",['time'=>($self->last_tweet + 24*60*60)]);
+                return $this->_r("timeout",['time'=>($self->last_tweet + 24*60*60 - time())]);
 
             if ($uid) {
                 $user = User::findByPk($uid);
@@ -908,7 +908,7 @@ class JsonController extends MyController
         if ($id>0) {
             $self = User::findByPk($this->viewer_id);
             if ($self->last_tweet > time()-24*60*60)
-                return $this->_r("timeout",['time'=>($self->last_tweet + 24*60*60)]);
+                return $this->_r("timeout",['time'=>($self->last_tweet + 24*60*60 - time())]);
 
             $tweet = Twitter::findByPk($id);
             if (is_null($tweet))
