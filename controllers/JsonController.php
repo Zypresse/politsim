@@ -608,7 +608,7 @@ class JsonController extends MyController
             $org = Org::findByPk($user->post->org_id);
             if (is_null($org))
                 return $this->_r("Organisation not found");
-            if ($user->isOrgLeader()) {
+            if ($user->isOrgLeader() && $user->post->org->leader_can_create_posts) {
                 $post = new Post();
                 $post->name = $name;
                 $post->org_id = $org->id;
@@ -623,6 +623,50 @@ class JsonController extends MyController
                 return $this->_r("Not allowed");
         } else
             return $this->_r("Invalid name");
+    }
+
+    public function actionSetPost($id,$uid)
+    {
+        $id = intval($id);
+        $uid = intval($uid);
+        if ($id>0 && $uid>0) {
+            $user = User::findByPk($this->viewer_id);
+            if (is_null($user->post))
+                return $this->_r("You have not post");
+            $org = Org::findByPk($user->post->org_id);
+            if (is_null($org))
+                return $this->_r("Organisation not found");
+            $post = Post::findByPk($id);
+            if (is_null($post))
+                return $this->_r("Post not found");
+            if ($post->org_id !== $org->id || $post->id === $org->leader_post)
+                return $this->_r("Not allowed");
+            $new = User::findByPk($uid);
+            if (is_null($new))
+                return $this->_r("User not found");
+            if ($new->post_id)
+                return $this->_r("User allready have post");
+            if ($new->state_id !== $user->state_id)
+                return $this->_r("User not have that citizenship");
+
+            if ($user->isOrgLeader() && $user->post->org->dest === 'dest_by_leader') {
+                $old = User::find()->where(['post_id'=>$id])->one();
+                if (!(is_null($old))) {
+                    $old->post_id = 0;
+                    $old->chart_pie -= 1;
+                    $old->save();
+                    // TODO: Notification
+                }
+
+                $new->post_id = $id;
+                $new->save();
+
+                return $this->_rOk();
+                
+            } else
+                return $this->_r("Not allowed");
+        } else
+            return $this->_r("Invalid params");
     }
 
 }
