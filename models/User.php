@@ -127,6 +127,16 @@ class User extends MyModel
         return (intval(@$this->party->leader) === intval($this->id));
     }
 
+    public function isOrgLeader()
+    {
+        return (intval(@$this->post->org->leader_post) === intval($this->post_id));
+    }
+
+    public function isStateLeader()
+    {
+        return ($this->isOrgLeader() && $this->post->org->isExecutive());
+    }
+
     public function leaveParty()
     {
         if ($this->party) {
