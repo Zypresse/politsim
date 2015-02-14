@@ -767,4 +767,12 @@ class JsonController extends MyController
             return $this->_r("Invalid request ID");
     }
 
+    public function actionSelfDropFromPost()
+    {
+        $user = User::findByPk($this->viewer_id);
+        $user->post_id = 0;
+        $user->save();
+        return $this->_rOk();
+    }
+
 }
