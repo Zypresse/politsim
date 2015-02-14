@@ -682,6 +682,39 @@ class JsonController extends MyController
             $post = Post::findByPk($id);
             if (is_null($post))
                 return $this->_r("Post not found");
+            if ($post->org_id !== $org->id || $post->id === $org->leader_post)
+                return $this->_r("Not allowed");            
+
+            if ($user->isOrgLeader() && $user->post->org->dest === 'dest_by_leader') {
+                $old = User::find()->where(['post_id'=>$id])->one();
+                if (!(is_null($old))) {
+                    $old->post_id = 0;
+                    $old->chart_pie -= 1;
+                    $old->save();
+                    // TODO: Notification
+                }
+
+                return $this->_rOk();
+                
+            } else
+                return $this->_r("Not allowed");
+        } else
+            return $this->_r("Invalid post ID");
+    }
+
+    public function actionDeletePost($id)
+    {
+        $id = intval($id);
+        if ($id>0) {
+            $user = User::findByPk($this->viewer_id);
+            if (is_null($user->post))
+                return $this->_r("You have not post");
+            $org = Org::findByPk($user->post->org_id);
+            if (is_null($org))
+                return $this->_r("Organisation not found");
+            $post = Post::findByPk($id);
+            if (is_null($post))
+                return $this->_r("Post not found");
             if ($post->org_id !== $org->id || $post->id === $org->leader_post || !$post->can_delete)
                 return $this->_r("Not allowed");            
 
@@ -693,6 +726,7 @@ class JsonController extends MyController
                     $old->save();
                     // TODO: Notification
                 }
+                $post->delete();
 
                 return $this->_rOk();
                 
