@@ -578,6 +578,25 @@ class JsonController extends MyController
             return $this->_r("Invalid params");
     }
 
-    
+    public function actionChangePartyLogo($image)
+    {
+        $image = trim(strip_tags($image));
+        if ($image) {
+            $user = User::findByPk($this->viewer_id);
+            if ($user->party_id && $user->isPartyLeader()) {
+                $user->party->image = $image;
+
+                if ($user->party->save())
+                    return $this->_rOk();
+                else
+                    return $this->_r($user->party->getErrors());
+
+            } else
+                return $this->_r("Not allowed");
+        } else
+            return $this->_r("Invalid image");
+    }
+
+
 
 }
