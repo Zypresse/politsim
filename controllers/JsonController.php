@@ -775,4 +775,21 @@ class JsonController extends MyController
         return $this->_rOk();
     }
 
+    public function actionMoveTo($id)
+    {
+        $id = intval($id);
+        if ($id>0) {
+            $region = Region::findByPk($id);
+            if (is_null($region))
+                return $this->_r("Region not found");
+            
+            $user = User::findByPk($this->viewer_id);
+            $user->region_id = $id;
+            $user->save();
+
+            return $this->_rOk();
+        } else
+            return $this->_r("Invalid region ID");
+    }
+
 }
