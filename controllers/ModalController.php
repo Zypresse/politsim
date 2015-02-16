@@ -74,10 +74,11 @@ class ModalController extends MyController
             if (is_array($elect_requests)) { 
             foreach ($elect_requests as $request) {
 
-                if (($leader && is_null($request->user)) || is_null($request->party))
-                    return $this->_r("Trololo");
-
-                $abstract_rating = $leader ? $request->user->heart + $request->user->chart_pie/10 + ($request->party->heart + $request->party->chart_pie/10)/10 : $request->party->heart + $request->party->chart_pie/10;
+                if (($leader && is_null($request->user)) || (!$leader && is_null($request->party)))
+                    return $this->_r("Trololo ".$request->id);
+                
+                $pr = is_null($request->party) ? 0 : ($request->party->heart + $request->party->chart_pie/10);
+                $abstract_rating = $leader ? $request->user->heart + $request->user->chart_pie/10 + $pr/10 : $pr;
                 $votes = ElectVote::find()->where(["request_id"=>$request->id])->all();
                 if (is_array($votes)) foreach ($votes as $vote) {
                     $abstract_rating += ($vote->user->star + $vote->user->heart/10 + $vote->user->chart_pie/100)/10;

@@ -6,6 +6,7 @@
 
 	$votes = ['e'=>false,'el'=>false,'l'=>false,'ll'=>false];
 	foreach ($user->votes as $vote) {
+		if ($vote->request) {
 		switch (true) {
 			case ($vote->request->org_id === $state->executive && !$vote->request->leader):
 				$votes['e'] = true;
@@ -19,7 +20,7 @@
 			case ($vote->request->org_id === $state->legislature && $vote->request->leader):
 				$votes['ll'] = true;
 			break;
-		}
+		}}
 	}
 
 	$requests = ['e'=>false,'el'=>false,'l'=>false,'ll'=>false];
@@ -214,8 +215,8 @@ var send_elect_request = function() {
 	json_request('elect-request',{'org_id':org_id,'leader':leader,'candidat':candidat});
 }
 var send_elect_vote = function() {
-	if (request) json_request('elect-vote',{'request':request},!request_child);
-	if (request_child) json_request('elect-vote',{'request':request_child});
+	if (request) json_request('elect-vote',{'request':request},!!request_child);
+	//if (request_child) json_request('elect-vote',{'request':request_child});
 }
 
 function drop_elect_request(org_id,leader) {
@@ -227,13 +228,17 @@ function elect_request(Torg_id,Tleader) {
 	leader = Tleader;
 	$.ajax(
 	{
-		url: '/api/modal/elect-request&org_id='+org_id+'&leader='+leader,
+		url: '/api/modal/elect-request?org_id='+org_id+'&leader='+leader,
 		beforeSend:function() {
 	  		$('#elect_request_body').empty();
 		},
 		success:function(d) {
-	  		$('#elect_request_body').html(d);
-	  		$('#elect_request').modal();
+			if (typeof(d)=='object')
+				show_custom_error(d.error);
+			else {
+	  			$('#elect_request_body').html(d);
+	  			$('#elect_request').modal();
+	  		}
 		},
 		error:show_error
 	});
@@ -244,13 +249,17 @@ function elect_request(Torg_id,Tleader) {
 function elect_vote(org_id,leader) {
 	$.ajax(
 	{
-		url: '/api/modal/elect-vote&org_id='+org_id+'&leader='+leader,
+		url: '/api/modal/elect-vote?org_id='+org_id+'&leader='+leader,
 		beforeSend:function() {
 	  		$('#elect_vote_body').empty();
 		},
 		success:function(d) {
-	  		$('#elect_vote_body').html(d);
-	  		$('#elect_vote').modal();
+			if (typeof(d)=='object')
+				show_custom_error(d.error);
+			else {
+		  		$('#elect_vote_body').html(d);
+		  		$('#elect_vote').modal();
+		  	}
 		},
 		error:show_error
 	});
@@ -259,13 +268,17 @@ function elect_vote(org_id,leader) {
 function elect_exitpolls(org_id,leader) {
 	$.ajax(
 	{
-		url: '/api/modal/elect-exitpolls&org_id='+org_id+'&leader='+leader,
+		url: '/api/modal/elect-exitpolls?org_id='+org_id+'&leader='+leader,
 		beforeSend:function() {
 	  		$('#elect_exitpolls_body').empty();
 		},
 		success:function(d) {
-	  		$('#elect_exitpolls_body').html(d);
-	  		$('#elect_exitpolls').modal();
+			if (typeof(d)=='object')
+				show_custom_error(d.error);
+			else {
+		  		$('#elect_exitpolls_body').html(d);
+		  		$('#elect_exitpolls').modal();
+		  	}
 		},
 		error:show_error
 	});

@@ -39,7 +39,7 @@ $own = ($viewer_id === $user->id);
               </a></p>
               <h4><a href="#" onclick="load_page('profile',{'uid':<?=$user->id?>});"><?=htmlspecialchars($user->name)?></a></h4>
               <? if ($user->twitter_nickname) { ?><h5 style="color:#333">@<?=$user->twitter_nickname?></h5><? } ?>
-                <p><i class="icon-user"></i> <strong><?=number_format($user->getTwitterSubscribersCount(),0,'',' ')?></strong> подписчиков</p>
+                <p><i class="icon-user"></i> <strong><?=MyHtmlHelper::formateNumberword($user->getTwitterSubscribersCount(),'</strong> подписчиков','</strong> подписчик','</strong> подписчика')?></p>
                 <? if ($user->region) { ?><p><i class="icon-map-marker"></i> <?=htmlspecialchars($user->region->name)?> </p><? } ?>
               </div>
               <div class="span4" id="twitter_user_feed"><? if ($own) { ?>

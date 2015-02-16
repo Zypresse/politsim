@@ -507,23 +507,23 @@ class JsonController extends MyController
             if ($self->last_vote > time() - 24*60*60)
                 return $this->_r("timeout",['time'=>($self->last_vote + 24*60*60 - time())]);
 
-            $user->star += round($self->star/10);
-            $self->star += 1;
+            $user->star += round($self->star/mt_rand(10,50));
+            $self->star += round(mt_rand(0,100)/100);
             switch ($type) {
                 case 'positive':
-                    $user->heart += ($self->heart > 0) ? round($self->heart/10) : round(abs($self->heart/100));
-                    $self->heart += 1;
+                    $user->heart += ($self->heart > 0) ? round($self->heart/mt_rand(10,50)) : round(abs($self->heart/mt_rand(100,500)));
+                    $self->heart += round(mt_rand(0,100)/100);
                     $user->chart_pie += ($self->chart_pie > 0) ? 1 : 0;
                 break;
                 case 'negative':
                     $user->heart += -1 * ($self->heart > 0 ? round($self->heart/10) : round(abs($self->heart/100)));
-                    $self->heart += -1;
-                    $user->chart_pie += ($self->chart_pie > 0) ? -1 : 0;
+                    $self->heart += -1 * round(mt_rand(0,100)/100);
+                    $user->chart_pie += ($self->chart_pie > 0) ? -1 * round(mt_rand(0,100)/100) : 0;
                 break;
                 default:
                     $user->heart += -2 * ($self->heart > 0 ? round($self->heart/10) : round(abs($self->heart/100)));
                     $self->heart += -1 * round(abs($self->heart/10));
-                    $user->chart_pie += -1;
+                    $user->chart_pie += -1 * round(mt_rand(0,100)/100);
                     $self->chart_pie += -1;
                 break;
             }
@@ -815,8 +815,8 @@ class JsonController extends MyController
 
         if ($text) {
             $self = User::findByPk($this->viewer_id);
-            if ($self->last_tweet > time()-24*60*60)
-                return $this->_r("timeout",['time'=>($self->last_tweet + 24*60*60 - time())]);
+            if ($self->last_tweet > time()-1*60*60)
+                return $this->_r("timeout",['time'=>($self->last_tweet + 1*60*60 - time())]);
 
             if ($uid) {
                 $user = User::findByPk($uid);
@@ -830,12 +830,12 @@ class JsonController extends MyController
                 case 1:
                     # Положительно
                     if ($uid) {
-                        $user->heart += ($self->heart>0)?round($self->heart/10):round(abs($self->heart)/100);
-                        $user->chart_pie += ($self->chart_pie>0)?1:0;
-                        $user->star += round($self->star/10);
+                        $user->heart += ($self->heart>0)?round($self->heart/mt_rand(100,500)):round(abs($self->heart)/mt_rand(200,1000));
+                        $user->chart_pie += ($self->chart_pie>0)?round(mt_rand(0,5)/9):0;
+                        $user->star += round($self->star/100);
                     }
-                    $self->heart += 1;
-                    $self->star += ceil($retweets/1000);
+                    $self->heart += round(mt_rand(0,5)/9);
+                    $self->star += round($retweets/1000);
                 break;
                 case 2:
                     # Отрицательно
@@ -844,22 +844,22 @@ class JsonController extends MyController
                         $user->chart_pie += ($self->chart_pie>0)?-1:0;
                         $user->star += round($self->star/10);
                     }
-                    $self->heart += -1;
-                    $self->star += ceil($retweets/1000);
+                    $self->heart += -1 * round(mt_rand(0,5)/9);
+                    $self->star += round($retweets/1000);
                 break;
                 case 3:
                     # Оскорбительно
                     if ($uid) {
                         $user->heart += -2*($self->heart>0?round($self->heart/10):round(abs($self->heart)/100));
-                        $user->chart_pie += -1;
+                        $user->chart_pie += -1 * round(mt_rand(0,5)/9);
                         $user->star += round($self->star/10);
                     }
-                    $self->heart += -1*abs(round($self->heart));
+                    $self->heart += -1*abs(ceil($self->heart/100));
                     $self->chart_pie += -1;
-                    $self->star += ceil($retweets/1000);
+                    $self->star += round($retweets/1000);
                 break;
                 default:
-                    $self->star += ceil($retweets/1000);
+                    $self->star += round($retweets/1000);
                 break;
             }
 
@@ -874,8 +874,8 @@ class JsonController extends MyController
             $tweet->retweets = $retweets;
             $tweet->date = time();
             if ($tweet->save()) {
-                $user->last_tweet = time();
-                $user->save();
+                $self->last_tweet = time();
+                $self->save();
 
                 return $this->_rOk();
             } else {
@@ -907,8 +907,8 @@ class JsonController extends MyController
         $id = intval($id);
         if ($id>0) {
             $self = User::findByPk($this->viewer_id);
-            if ($self->last_tweet > time()-24*60*60)
-                return $this->_r("timeout",['time'=>($self->last_tweet + 24*60*60 - time())]);
+            if ($self->last_tweet > time()-1*60*60)
+                return $this->_r("timeout",['time'=>($self->last_tweet + 1*60*60 - time())]);
 
             $tweet = Twitter::findByPk($id);
             if (is_null($tweet))
