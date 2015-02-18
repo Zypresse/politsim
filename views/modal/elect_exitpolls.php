@@ -3,7 +3,14 @@
 use app\components\MyHtmlHelper;
 
 usort($results, function($a, $b) {
-    return $b['rating'] - $a['rating'];
+    switch (true) {
+    	case $b['rating'] < $a['rating']:
+    		return -1;
+    	case $b['rating'] > $a['rating']:
+    		return 1;
+    	default:
+    		return 0;
+    }
 });
 
 ?>

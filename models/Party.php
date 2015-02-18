@@ -67,7 +67,7 @@ class Party extends MyModel
 
     public function getMembers()
     {
-        return $this->hasMany('app\models\User', array('party_id' => 'id'));
+        return $this->hasMany('app\models\User', array('party_id' => 'id'))->orderBy('`star` + `heart`/10 + `chart_pie`/100 DESC');
     }
     public function getLeaderInfo()
     {

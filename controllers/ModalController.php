@@ -81,7 +81,7 @@ class ModalController extends MyController
                 $abstract_rating = $leader ? $request->user->heart + $request->user->chart_pie/10 + $pr/10 : $pr;
                 $votes = ElectVote::find()->where(["request_id"=>$request->id])->all();
                 if (is_array($votes)) foreach ($votes as $vote) {
-                    $abstract_rating += ($vote->user->star + $vote->user->heart/10 + $vote->user->chart_pie/100)/10;
+                    $abstract_rating += ($vote->user->star + $vote->user->heart/10 + $vote->user->chart_pie/100)/sizeof($votes);
                 }
                 $results[] = ['id'=>$request->id,'rating'=>$abstract_rating];
                 $requests[$request->id] = $request;

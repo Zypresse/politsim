@@ -61,4 +61,8 @@ class ElectRequest extends MyModel
     {
         return $this->hasOne('app\models\User', array('id' => 'candidat'));
     }
+    public function getVotes()
+    {
+        return $this->hasMany('app\models\ElectVote', array('request_id' => 'id'));
+    }
 }
