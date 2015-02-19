@@ -37,8 +37,8 @@
 (<? if ($state->executiveOrg->leader->user->party) { ?><a href="#" onclick="load_page('party-info',{'id':<?=$state->executiveOrg->leader->user->party_id?>})"><?=htmlspecialchars($state->executiveOrg->leader->user->party->name)?></a><? } else { ?><? if ($state->executiveOrg->leader->user->sex === 1) { ?>Беспартийная<? } else { ?>Беспартийный<? } ?><? } ?>)
 
 		<span class="star"><?=$state->executiveOrg->leader->user->star?> <?=MyHtmlHelper::icon('star')?></span>
-		<span class="heart"><?=$state->executiveOrg->leader->user->heart?> <?=MyHtmlHelper::icon('star')?></span>
-		<span class="chart_pie"><?=$state->executiveOrg->leader->user->chart_pie?> <?=MyHtmlHelper::icon('star')?></span>
+		<span class="heart"><?=$state->executiveOrg->leader->user->heart?> <?=MyHtmlHelper::icon('heart')?></span>
+		<span class="chart_pie"><?=$state->executiveOrg->leader->user->chart_pie?> <?=MyHtmlHelper::icon('chart_pie')?></span>
 <? } else { ?>
 не назначен
 <? } ?>

@@ -4,9 +4,9 @@
   <? foreach ($people as $player) { ?>
 <tr>
 <td>
-<a href="#" onclick="load_page('profile',{'uid':<?=$player->id?>})"><img src="{{ player.photo }}" alt="" style="width:32px;height:32px;"></a>
+<a href="#" onclick="load_page('profile',{'uid':<?=$player->id?>})"><img src="<?=htmlspecialchars($player->photo)?>" alt="" style="width:32px;height:32px;"></a>
 <a href="#" onclick="load_page('profile',{'uid':<?=$player->id?>})"><?=htmlspecialchars($player->name)?></a></td>
-<td><? if ($player->party_id) { ?><a href="#" onclick="load_page('party-info',{'id':<?=$player->party_id?>})"><?=htmlspecialchars($player->party->name)?></a><? } else { echo ($player->sex == 1) ? 'Беспартийная' : 'Беспартийный'; } ?></td>
+<td><? if ($player->party_id) { ?><a href="#" onclick="load_page('party-info',{'id':<?=$player->party_id?>})"><?=htmlspecialchars($player->party->short_name)?></a><? } else { echo ($player->sex == 1) ? 'Беспартийная' : 'Беспартийный'; } ?></td>
 <td>
 		<span class="star"><?=$player->star?> <img src="/img/star.png" alt="Известность" title="Известность" style=""></span>
 		<span class="heart"><?=$player->heart?> <img src="/img/heart.png" alt="Доверие" title="Доверие" style=""></span>
@@ -18,6 +18,6 @@
 </table>
 <script>
 $(function(){
-	$('#chart_peoples').tablePagination({'rowsPerPage':5})
+	$('#chart_peoples').tablePagination({'rowsPerPage':10})
 })
 </script>

@@ -11,7 +11,7 @@ use app\components\MyHtmlHelper;
 <tbody>
 <? foreach ($dealings as $d) { ?>
 
-<tr><td><? if ($d->is_anonim || $d->from_uid == $viewer_id) { ?><a href="#" onclick="load_page('profile',{'uid':<?=$d->from_uid?>});"><img src="<?=$d->sender->photo?>" alt=""> <?=htmlspecialchars($d->sender->name)?></a><? } else { ?>Неизвестный отправитель<? } ?></td><td><a href="#" onclick="load_page('profile',{'uid':<?=$d->to_uid?>});"><img src="<?=$d->recipient->photo?>" alt=""> <?=htmlspecialchars($d->recipient->name)?></a></td><td><?=number_format($d->sum,2,'.',' ')?> <?=MyHtmlHelper::icon('coins')?></td><td></td><td><? if ($d->is_secret) { ?>Тайный<? } ?> <? if ($d->is_anonim) { ?>Анонимный<? } ?> <? if (!$d->is_secret && !$d->is_anonim) { ?>Обычный<? } ?></td></tr>
+<tr><td><? if (!$d->is_anonim || $d->from_uid == $viewer_id) { ?><a href="#" onclick="load_page('profile',{'uid':<?=$d->from_uid?>});"><img src="<?=$d->sender->photo?>" alt=""> <?=htmlspecialchars($d->sender->name)?></a><? } else { ?>Неизвестный отправитель<? } ?></td><td><a href="#" onclick="load_page('profile',{'uid':<?=$d->to_uid?>});"><img src="<?=$d->recipient->photo?>" alt=""> <?=htmlspecialchars($d->recipient->name)?></a></td><td><?=number_format($d->sum,2,'.',' ')?> <?=MyHtmlHelper::icon('coins')?></td><td></td><td><? if ($d->is_secret) { ?>Тайный<? } ?> <? if ($d->is_anonim) { ?>Анонимный<? } ?> <? if (!$d->is_secret && !$d->is_anonim) { ?>Обычный<? } ?></td></tr>
 
 <? } ?>
 </tbody>

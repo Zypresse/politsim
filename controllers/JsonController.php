@@ -428,10 +428,14 @@ class JsonController extends MyController
         return $this->_r();
     }
 
-    public function actionTransferMoney($count,$uid,$is_anonim = false,$is_secret = false)
+    public function actionTransferMoney($count,$uid,$is_anonim = false,$is_secret = false,$type = 'open')
     {
         $count = intval($count);
         $uid = intval($uid);
+
+        if ($type === 'anonym') $is_anonim = true;
+        if ($type === 'hidden') $is_secret = true;
+
         if ($count && $uid && $uid !== $this->viewer_id) {
             $sender = User::findByPk($this->viewer_id);
             $recipient = User::findByPk($uid);

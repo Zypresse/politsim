@@ -8,6 +8,8 @@ use app\models\ElectResult;
 
 /**
  * Calculate elect results
+ *
+ * Cron hourly
  */
 class ElectionsController extends Controller
 {

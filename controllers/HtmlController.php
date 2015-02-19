@@ -57,7 +57,7 @@ class HtmlController extends MyController
 	{
 		$user = User::findByPk($this->viewer_id);
 		if ($user->post) {
-			$bills = Bill::find()->where(['state_id'=>$user->state_id])->limit(5)->orderBy('vote_ended DESC')->all();
+			$bills = Bill::find()->where(['state_id'=>$user->state_id])->limit(10)->orderBy('vote_ended DESC')->all();
 			
 			return $this->render("work",['user'=>$user,'bills'=>$bills]);
 		} else 

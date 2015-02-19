@@ -74,7 +74,7 @@ class Dealing extends MyModel
         $dealings = static::find()->where("to_uid = {$uid} OR from_uid = {$uid}")->orderBy('time DESC')->all();
         foreach ($dealings as $i => $d) {
             // Some magic
-            if (!((!$d->is_secret && !$d->is_anonim) || (($d->is_secret && $is_own) || ($d->is_anonim && $d->from_uid == $viewer_id && $is_own) || ($d->is_anonim && $d->to_uid == $viewer_id))))
+            if (!((!$d->is_secret && !$d->is_anonim) || (($d->is_secret && $is_own) || ($d->is_anonim && $d->from_uid == $viewer_id && $is_own) || ($d->is_anonim && $d->to_uid == $viewer_id && $d->from_uid !== $uid))))
                 unset($dealings[$i]);
         }
         return $dealings;

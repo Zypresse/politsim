@@ -1,6 +1,11 @@
 <?php
 use app\components\MyHtmlHelper;
 use app\models\BillType;
+use app\models\Region;
+use app\models\GovermentFieldType;
+use app\models\Org;
+
+$gft = null;
 ?>
 <div style="display:none;width: 800px;margin-left: -400px;" class="modal" id="naznach" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-header">
@@ -16,8 +21,8 @@ use app\models\BillType;
   </div>
 </div>
 <h1>Личный кабинет</h1>
-<p>Вы занимаете должность &laquo;<?=htmlspecialchars($user->post->name)?>&raquo; в организации &laquo;<a href="#" onclick="load_page('org_info',{'id':<?=$user->post->org_id?>});"><?=htmlspecialchars($user->post->org->name)?></a>&raquo;
-<? if ($user->post_id === $user->post->org->leader_post) { ?><p>Вы — лидер организации &laquo;<a href="#" onclick="load_page('org_info',{'id':<?=$user->post->org_id?>});"><?=htmlspecialchars($user->post->org->name)?></a>&raquo;<? if ($user->post->org->leader_can_create_posts) { ?> и можете создавать новые должности в ней<? } ?>.</p>
+<p>Вы занимаете должность &laquo;<?=htmlspecialchars($user->post->name)?>&raquo; в организации &laquo;<a href="#" onclick="load_page('org-info',{'id':<?=$user->post->org_id?>});"><?=htmlspecialchars($user->post->org->name)?></a>&raquo;
+<? if ($user->post_id === $user->post->org->leader_post) { ?><p>Вы — лидер организации &laquo;<a href="#" onclick="load_page('org-info',{'id':<?=$user->post->org_id?>});"><?=htmlspecialchars($user->post->org->name)?></a>&raquo;<? if ($user->post->org->leader_can_create_posts) { ?> и можете создавать новые должности в ней<? } ?>.</p>
 <h3>Подчинённые</h3>
 <p>
 <strong>Список членов организации:</strong> <input type="button" class="btn" id="posts_show" value="Показать"></p>
@@ -36,7 +41,7 @@ use app\models\BillType;
 <? if ($player->user) { ?>
 <a href="#" onclick="load_page('profile',{'uid':<?=$player->user->id?>})"><img src="<?=$player->user->photo?>" alt="" style="width:32px;height:32px;"></a>
 <a href="#" onclick="load_page('profile',{'uid':<?=$player->user->id?>})"><?=htmlspecialchars($player->user->name)?></a>
-(<? if ($player->user->party) { ?><a href="#" onclick="load_page('party-info',{'id':<?=$player->user->party_id?>});"><?=htmlspecialchars($player->user->party->name)?></a><? } else { ?><? if ($player->user->sex === 1) { ?>Беспартийная<? } else { ?>Беспартийный<? } ?><? } ?>)
+(<? if ($player->user->party) { ?><a href="#" onclick="load_page('party-info',{'id':<?=$player->user->party_id?>});"><?=htmlspecialchars($player->user->party->short_name)?></a><? } else { ?><? if ($player->user->sex === 1) { ?>Беспартийная<? } else { ?>Беспартийный<? } ?><? } ?>)
 <span class="star"><?=$player->user->star?> <?=MyHtmlHelper::icon('star')?></span>
 		<span class="heart"><?=$player->user->heart?> <?=MyHtmlHelper::icon('heart')?></span>
 		<span class="chart_pie"><?=$player->user->chart_pie?> <?=MyHtmlHelper::icon('chart_pie')?></span>
@@ -85,7 +90,59 @@ use app\models\BillType;
 				}
 			}
 		 ?>
-		<li style="font-size:80%"><?=htmlspecialchars($name)?> — &laquo;<span class="dynamic_field" data-type="<?=$key?>"><?=htmlspecialchars($value)?></span>&raquo;</li>
+		<li style="font-size:80%">
+			<?=htmlspecialchars($name)?> — 
+				<?
+					switch ($key) {
+						case 'new_capital':
+							$region = Region::findByCode($value);
+							$value = $region->city;
+						break;
+						case 'new_flag':
+							$value = "<img src='{$value}' alt='New flag' style='width:50px'>";
+						break;
+						case 'new_color':
+							$value = "<span style=\"background-color:{$val}\"> &nbsp; </span>";
+						break;
+						case 'goverment_field_type':
+							$gft = GovermentFieldType::findByPk($value);							
+							$value = $gft->name;
+						break;
+						case 'elected_variant':
+							$value = explode('_', $value);
+							$org = Org::findByPk($value[0]);
+							$value = ($value[1]) ? "Выборы на пост «{$org->leader->name}» в организации «{$org->name}»" : "Выборы членов организации «{$org->name}»";
+						break;
+						case 'legislature_type':
+							$value = (intval($value) === 1) ? 'Стандартный парламент (10 мест)' : 'Неизвестно';
+						break;
+						case 'goverment_field_value':
+						// var_dump($gft);
+						if ($gft)
+							switch ($gft->type) {
+								case 'checkbox':
+									$value = $value ? 'Да' : 'Нет';
+								break;
+								case 'org_dest_leader':
+								case 'org_dest_members':
+									$value = [
+										'nation_individual_vote'=>'голосование населения за кандидатов',
+										'nation_party_vote'=>'голосование населения за партии',
+										'other_org_vote'=>'голосование членов другой организации',
+										'org_vote'=>'голосование членов этой же организации',
+										'unlimited'=>'пожизненно',
+										'dest_by_leader'=>'назначаются лидером',
+										'nation_one_party_vote'=>'голосование населения за членов единственной партии',
+									][$value];
+								break;
+							}
+						break;
+						default:
+							$value = htmlspecialchars($value);
+						break;
+					}
+				?>
+				&laquo;<span class="dynamic_field" data-type="<?=$key?>"><?=$value?></span>&raquo;</li>
 		<? } ?>
 	</ul></dt>
 	<dd><?
@@ -142,13 +199,17 @@ use app\models\BillType;
 	function naznach(id) {
 		 $.ajax(
 			{
-				url: '/nodejs?a=naznach_modal&id='+id,
+				url: '/api/modal/naznach?id='+id,
 				beforeSend:function() {
 			  		$('#naznach_body').empty();
 				},
 				success:function(d) {
-			  		$('#naznach_body').html(d);
-			  		$('#naznach').modal();
+					if (typeof(d) == 'object' && d.result == 'error')
+						show_custom_error(d.error);
+					else {
+				  		$('#naznach_body').html(d);
+				  		$('#naznach').modal();
+				  	}
 				},
 				error:show_error
 			});
@@ -209,13 +270,17 @@ function new_zakon_form_modal() {
 	bill_id = $('#new_zakon_select').val();
 	$.ajax(
 	{
-		url: '/nodejs?a=new_zakon_modal&id='+bill_id,
+		url: '/api/modal/new-bill?id='+bill_id,
 		beforeSend:function() {
 	  		$('#new_zakon_form_modal_body').empty();
 		},
 		success:function(d) {
-	  		$('#new_zakon_form_modal_body').html(d);
-	  		$('#new_zakon_form_modal').modal();
+			if (typeof(d) == 'object' && d.result == 'error')
+				show_custom_error(d.error);
+			else {
+	  			$('#new_zakon_form_modal_body').html(d);
+	  			$('#new_zakon_form_modal').modal();
+	  		}
 		},
 		error:show_error
 	});
@@ -254,7 +319,7 @@ $(function(){
 </script>
 </div>
 
-<script>
+<script>/*
 var goverment_field_type;
 
 $(function(){
@@ -364,5 +429,5 @@ function update_fields_recursive(fields) {
 			break;
 		}
 	}
-}
+}*/
 </script>
