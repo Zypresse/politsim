@@ -23,6 +23,8 @@ use app\models\Post;
  * @property integer $elect_with_org
  * @property integer $elect_leader_with_org
  * @property integer $group_id
+ * @property integer $can_vote_for_bills
+ * @property integer $can_create_bills
  */
 class Org extends MyModel
 {
@@ -41,7 +43,7 @@ class Org extends MyModel
     {
         return [
             [['state_id', 'name', 'leader_dest', 'dest'], 'required'],
-            [['state_id', 'leader_post', 'leader_can_create_posts', 'next_elect', 'elect_period', 'other_org_id', 'vote_party_id', 'elect_with_org', 'elect_leader_with_org', 'group_id'], 'integer'],
+            [['state_id', 'leader_post', 'leader_can_create_posts', 'next_elect', 'elect_period', 'other_org_id', 'vote_party_id', 'elect_with_org', 'elect_leader_with_org', 'group_id', 'can_vote_for_bills', 'can_create_bills'], 'integer'],
             [['name'], 'string', 'max' => 300],
             [['leader_dest', 'dest'], 'string', 'max' => 100]
         ];
@@ -67,25 +69,8 @@ class Org extends MyModel
             'elect_with_org' => 'Выборы не прямые, а вместе с выборами в другой организации',
             'elect_leader_with_org' => 'Выборы лидера не прямые а вместе с выборами в другой организации',
             'group_id' => 'Group ID',
-        ];
-    }
-
-    public function setPublicAttributes() 
-    {
-        return [
-            'id',
-            'state_id',
-            'name',
-            'leader_post',
-            'leader_dest',
-            'dest',
-            'leader_can_create_posts',
-            'next_elect',
-            'elect_period',
-            'other_org_id',
-            'vote_party_id',
-            'elect_with_org',
-            'elect_leader_with_org'
+            'can_vote_for_bills' => 'Организация может голосовать за законопроекты',
+            'can_create_bills' => 'Организация может создавать законопроекты'
         ];
     }
 

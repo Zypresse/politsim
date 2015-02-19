@@ -43,6 +43,12 @@ use app\components\MyHtmlHelper;
 Способ назначения лидера организации неизвестен.
 <? break;
   } ?></p>
+<? if ($org->can_vote_for_bills) { ?>
+<p>Члены организации могут предлагать законопроекты</p>
+<? } ?>
+<? if ($org->can_create_bills) { ?>
+<p>Члены организации могут создавать законопроекты</p>
+<? } ?>
 <? if ($org->isLeaderElected()) { ?><p>Лидер организации переизбирается раз в <?=MyHtmlHelper::formateNumberword($org->elect_period,'дней','день','дня')?></p><? } ?>
 <h3><? if ($org->leader->name) { ?><?=htmlspecialchars($org->leader->name)?><? } else { ?>Лидер организации<? } ?></h3>
 <? if ($org->leader->user) { ?><p><a href="#" onclick="load_page('profile',{'uid':<?=$org->leader->user->id?>})"><img src="<?=$org->leader->user->photo?>" alt="" style="width:32px;height:32px;"></a>

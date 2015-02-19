@@ -23,6 +23,9 @@ $gft = null;
 <h1>Личный кабинет</h1>
 <p>Вы занимаете должность &laquo;<?=htmlspecialchars($user->post->name)?>&raquo; в организации &laquo;<a href="#" onclick="load_page('org-info',{'id':<?=$user->post->org_id?>});"><?=htmlspecialchars($user->post->org->name)?></a>&raquo;
 <? if ($user->post_id === $user->post->org->leader_post) { ?><p>Вы — лидер организации &laquo;<a href="#" onclick="load_page('org-info',{'id':<?=$user->post->org_id?>});"><?=htmlspecialchars($user->post->org->name)?></a>&raquo;<? if ($user->post->org->leader_can_create_posts) { ?> и можете создавать новые должности в ней<? } ?>.</p>
+<? if ($user->post->can_make_dicktator_bills) { ?>
+<p>Вы можете принимать законы единолично</p>
+<? } ?>
 <h3>Подчинённые</h3>
 <p>
 <strong>Список членов организации:</strong> <input type="button" class="btn" id="posts_show" value="Показать"></p>
