@@ -61,7 +61,7 @@ $own = ($viewer_id === $user->id);
                <h4>Последние посты <small>(всего <?=$user->getTweetsCount()?>)</small></h4>
                <? foreach ($tweets as $i => $tweet) { ?>
                  <div class="tweet <? if ($i === sizeof($tweets)-1) { ?>last<? } ?>">
-                 <strong><a href="#" onclick="load_page('twitter',{'uid':<?=$user->id?>})"><?=htmlspecialchars($user->name)?></a></strong> <span class="date"><?=date('d-M-Y H:i',$tweet->date)?></span>
+                 <strong><a href="#" onclick="load_page('twitter',{'uid':<?=$user->id?>})"><?=htmlspecialchars($user->name)?></a></strong> <span class="date prettyDate" data-unixtime="<?=$tweet->date?>"><?=date('d-M-Y H:i',$tweet->date)?></span>
                  <? if ($tweet->originalUser) { ?><p class="date">Репост от <a href="#" onclick="load_page('twitter',{'uid':<?=$tweet->original?>})"><?=htmlspecialchars($tweet->originalUser->name)?></a></p><? } ?>
                  <p><?=MyHtmlHelper::parseTwitterLinks($tweet->text)?></p>
                  <p class="tweet-footer"><? if ($tweet->uid !== $viewer_id && !$own && $tweet->original !== $viewer_id) { ?><a href="#" class="btn btn-small repost" data-id="<?=$tweet->id?>" title="Репост"><i class="icon-repeat"></i></a><? } else { ?><i class="icon-repeat"></i><? } ?> <?=MyHtmlHelper::formateNumberword($tweet->retweets,'репостов','репост','репоста')?> <? if ($own) { ?><button class="btn btn-danger btn-small delete delete_tweet" title="Удалить" data-id="<?=$tweet->id?>" >X</button><? } ?></p>
@@ -73,7 +73,7 @@ $own = ($viewer_id === $user->id);
                 <h4>Популярные посты</h4>
                <? foreach ($feed as $i => $tweet) { ?>
                  <div class="tweet <? if ($i === sizeof($feed)-1) { ?>last<? } ?>">
-                 <strong><a href="#" onclick="load_page('twitter',{'uid':<?=$tweet->uid?>})"><?=htmlspecialchars($tweet->user->name)?></a></strong> <span class="date"><?=date('d-M-Y H:i',$tweet->date)?></span>
+                 <strong><a href="#" onclick="load_page('twitter',{'uid':<?=$tweet->uid?>})"><?=htmlspecialchars($tweet->user->name)?></a></strong> <span class="date prettyDate" data-unixtime="<?=$tweet->date?>"><?=date('d-M-Y H:i',$tweet->date)?></span>
                  <? if ($tweet->originalUser) { ?><p class="date">Репост от <a href="#" onclick="load_page('twitter',{'uid':<?=$tweet->original?>})"><?=htmlspecialchars($tweet->originalUser->name)?></a></p><? } ?>
                  <p><?=MyHtmlHelper::parseTwitterLinks($tweet->text)?></p>
                  <p class="tweet-footer"><? if ($tweet->uid !== $viewer_id && $tweet->original !== $viewer_id) { ?><a href="#" class="btn btn-small repost" title="Репост" data-id="<?=$tweet->id?>"><i class="icon-repeat"></i></a><? } else { ?><i class="icon-repeat"></i><? } ?> <?=MyHtmlHelper::formateNumberword($tweet->retweets,'репостов','репост','репоста')?></p>

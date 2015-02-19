@@ -147,11 +147,11 @@ $gft = null;
 	</ul></dt>
 	<dd><?
 
-	 if ($bill->creatorpost && $bill->creatorpost->user) { ?>Предложил<? if ($bill->creatorpost->user->sex === 1) { ?>а<? } ?> <a href="#" onclick="load_page('profile',{'id':<?=$bill->creatorpost->user->id ?>})"><?=htmlspecialchars($bill->creatorpost->user->name) ?></a><? } ?> <?=date("d-M-Y H:i",$bill->created) ?><br>
+	 if ($bill->creatorpost && $bill->creatorpost->user) { ?>Предложил<? if ($bill->creatorpost->user->sex === 1) { ?>а<? } ?> <a href="#" onclick="load_page('profile',{'id':<?=$bill->creatorpost->user->id ?>})"><?=htmlspecialchars($bill->creatorpost->user->name) ?></a><? } ?> <span class="formatDate" data-unixtime="<?=$bill->created?>"><?=date("d-M-Y H:i",$bill->created) ?></span><br>
 	<? if ($bill->accepted) { ?>
-		Вступил в силу <?=date("d-M-Y H:i",$bill->accepted) ?>
+		Вступил в силу <span class="formatDate" data-unixtime="<?=$bill->accepted?>"><?=date("d-M-Y H:i",$bill->accepted) ?></span>
 	<? } else { ?>
-		Голосование продлится до <?=date("d-M-Y H:i",$bill->vote_ended) ?>
+		Голосование продлится до <span class="formatDate" data-unixtime="<?=$bill->vote_ended?>"><?=date("d-M-Y H:i",$bill->vote_ended) ?></span>
 	<? } ?>
 	</dd>
 <? } ?>
@@ -318,116 +318,3 @@ $(function(){
 	}	
 </script>
 </div>
-
-<script>/*
-var goverment_field_type;
-
-$(function(){
-	//gf_cache = {};
-	var fields = $('.dynamic_field').toArray();
-	//console.log(fields);
-	update_fields_recursive(fields);
-
-})
-
-
-function update_fields_recursive(fields) {
-	//console.log(fields)
-	var f = fields.shift(),
-		$f = $(f),
-		val= $f.text();
-		console.log(val,$f.data('type'));
-		if (gf_cache[$f.data('type')] && gf_cache[$f.data('type')][val]) {
-			$f.html(gf_cache[$f.data('type')][val]);
-			if (fields.length) update_fields_recursive(fields);
-		} else {
-			gf_cache[$f.data('type')] = {};
-		switch($f.data('type')) {
-			case 'new_capital':
-				$f.text('Город в регионе с кодом '+val);
-				get_json('region-info',{'code':val},function(info){
-					$f.text(info.city);
-					gf_cache['new_capital'][val] = info.city;
-					if (fields.length) update_fields_recursive(fields);
-				})
-				
-			break;
-			case 'new_flag':
-				$f.html("<img src=\""+val+"\" alt=\""+val+"\" style=\"width:50px\">");
-				gf_cache['new_flag'][val] = "<img src=\""+val+"\" alt=\""+val+"\" style=\"width:50px\">";
-				if (fields.length) update_fields_recursive(fields);
-			break;
-			case 'new_color':
-				$f.html("<span style=\"background-color:"+val+"\"> &nbsp; </span>");
-				gf_cache['new_color'][val] = "<span style=\"background-color:"+val+"\"> &nbsp; </span>";
-				if (fields.length) update_fields_recursive(fields);
-			break;
-			case 'goverment_field_type':
-				$f.text('Статья конституции №'+val);
-				gf_cache['goverment_field_type'][val] = 'Статья конституции №'+val;
-				get_json('goverment-field-type-info',{'id':val},function(info){
-					$f.text(info.name);
-					gf_cache['goverment_field_type'][val] = info.name;
-					goverment_field_type = info.type;
-					//console.log(info.city);
-					if (fields.length) update_fields_recursive(fields);
-				})
-			break;
-			case 'elected_variant':
-				
-				var org_id = parseInt(val.split('_')[0]),
-					is_leader = parseInt(val.split('_')[1]);
-
-				$f.text('Выборы '+ (is_leader ? 'лидера организации' : 'в организацию' ) +' №'+org_id);
-				gf_cache['elected_variant'][val] = 'Выборы '+ (is_leader ? 'лидера организации' : 'в организацию' ) +' №'+org_id;
-
-				get_json('org-info',{'id':org_id},function(info){
-					$f.text('Выборы '+ (is_leader ? 'лидера организации' : 'в организацию' ) +' '+info.name+'');
-					gf_cache['elected_variant'][val] = 'Выборы '+ (is_leader ? 'лидера организации' : 'в организацию' ) +' '+info.name+'';
-
-					if (fields.length) update_fields_recursive(fields);
-				})
-			break;
-			case "legislature_type":
-				val = parseInt(val);
-				var legislature_types = [
-					'неизвестный',
-                    'стандартный парламент (10 мест)'
-				];
-				$f.text(legislature_types[val]);
-				gf_cache['legislature_type'][val] = legislature_types[val];
-				if (fields.length) update_fields_recursive(fields);
-			break;
-			case 'goverment_field_value':
-				switch (goverment_field_type) {
-				case "checkbox":
-					$f.text((parseInt(val))?'ДА':'НЕТ');
-					gf_cache['goverment_field_value'][val] = (parseInt(val))?'ДА':'НЕТ';
-				break;
-				case "org_dest_leader":
-				case "org_dest_members":
-					var names = {
-						'nation_individual_vote':'голосование населения за кандидатов',
-						'nation_party_vote':'голосование населения за партии',
-						'other_org_vote':'голосование членов другой организации',
-						'org_vote':'голосование членов этой же организации',
-						'unlimited':'пожизненно',
-						'dest_by_leader':'назначаются лидером',
-						'nation_one_party_vote':'голосование населения за членов единственной партии',
-					};
-					$f.text(names[val]);
-					gf_cache['goverment_field_value'][val] = names[val];
-				break;
-				default:
-					
-				break;
-				} 
-				if (fields.length) update_fields_recursive(fields);
-			break;
-			default:
-				if (fields.length) update_fields_recursive(fields)
-			break;
-		}
-	}
-}*/
-</script>

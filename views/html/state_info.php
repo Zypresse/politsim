@@ -44,11 +44,11 @@
 <? } ?>
 </p>
 <h4><? if ($state->executiveOrg) { ?><a href="#" onclick="load_page('org-info',{'id':<?=$state->executive?>});"><?=htmlspecialchars($state->executiveOrg->name)?></a><? } else { ?>Не сформирована<? } ?> <small>Исполнительная власть</small></h4>
-<? if ($state->executiveOrg->isElected()) { ?>Следующие выборы — <?=date("d-M-Y H:i",$state->executiveOrg->next_elect)?><br><? } ?>
-<? if ($state->executiveOrg->isLeaderElected()) { ?>Следующие выборы лидера организации — <?=date("d-M-Y H:i",$state->executiveOrg->next_elect)?><br><? } ?>
+<? if ($state->executiveOrg->isElected()) { ?>Следующие выборы — <span class="formatDate" data-unixtime="<?=$state->executiveOrg->next_elect?>"><?=date("d-M-Y H:i",$state->executiveOrg->next_elect)?></span><br><? } ?>
+<? if ($state->executiveOrg->isLeaderElected()) { ?>Следующие выборы лидера организации — <span class="formatDate" data-unixtime="<?=$state->executiveOrg->next_elect?>"><?=date("d-M-Y H:i",$state->executiveOrg->next_elect)?></span><br><? } ?>
 <h4><? if ($state->legislatureOrg) { ?><a href="#" onclick="load_page('org-info',{'id':<?=$state->legislature?>});"><?=htmlspecialchars($state->legislatureOrg->name)?></a><? } else { ?>Не сформирована<? } ?> <small>Законодательная власть</small></h4>
-<? if ($state->legislatureOrg->isElected()) { ?>Следующие выборы — <?=date("d-M-Y H:i",$state->legislatureOrg->next_elect)?><br><? } ?>
-<? if ($state->legislatureOrg->isLeaderElected()) { ?>Следующие выборы лидера организации — <?=date("d-M-Y H:i",$state->legislatureOrg->next_elect)?><br><? } ?>
+<? if ($state->legislatureOrg->isElected()) { ?>Следующие выборы — <span class="formatDate" data-unixtime="<?=$state->legislatureOrg->next_elect?>"><?=date("d-M-Y H:i",$state->legislatureOrg->next_elect)?></span><br><? } ?>
+<? if ($state->legislatureOrg->isLeaderElected()) { ?>Следующие выборы лидера организации — <span class="formatDate" data-unixtime="<?=$state->legislatureOrg->next_elect?>"><?=date("d-M-Y H:i",$state->legislatureOrg->next_elect)?></span><br><? } ?>
 
 <h3>Конституция</h3>
 <ul>

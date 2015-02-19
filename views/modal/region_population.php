@@ -27,9 +27,9 @@ use app\components\MyHtmlHelper;
 </table>
 <h4>Все группы:</h4>
 <table class="table">
-<tr><th>Класс</th><th>Пол</th><th>Национальность</th><th>Идеология</th><th>Число</th></tr>
+<tr><th>Класс</th><th>Пол</th><th>Национальность</th><th>Идеология</th><th>Возраст</th><th>Число</th></tr>
 <? foreach ($people as $group) { ?>
-<tr><td><?=$group->classinfo->name?></td><td><? if ($group->sex) { ?>м<? } else { ?>ж<? } ?></td><td><?=$group->nationinfo->name?></td><td><?=$group->ideologyinfo->name?></td><td><?=MyHtmlHelper::formateNumberword($group->count,'человек','человек','человека')?></td></tr>
+<tr><td><?=$group->classinfo->name?></td><td><? if ($group->sex) { ?>м<? } else { ?>ж<? } ?></td><td><?=$group->nationinfo->name?></td><td><?=$group->ideologyinfo->name?></td><td><?=$group->age?></td><td><?=MyHtmlHelper::formateNumberword($group->count,'человек','человек','человека')?></td></tr>
 <? } ?>
 </table>
 
@@ -38,22 +38,22 @@ use app\components\MyHtmlHelper;
 $(function(){
 
 	$(".pie-colours-1").peity("pie", {
-	  fill: [<? foreach ($people_by_class as $j => $group) { ?><?=$j ? ',' : ''?><? $i = 0; foreach ($group['ideologies'] as $ideology) { ?><?=$i ? ',' : ''?>"<?=$ideology['color']?>"<? $i++; } ?><? } ?>],
+	  fill: [<? $j = 0; foreach ($people_by_class as $group) { ?><?=$j ? ',' : ''?><? $i = 0; foreach ($group['ideologies'] as $ideology) { ?><?=$i ? ',' : ''?>"<?=$ideology['color']?>"<? $i++; } ?><? $j++; } ?>],
 	  width: 20,
 	  height:20
 	})
 	$(".pie-colours-2").peity("pie", {
-	  fill: [<? foreach ($people_by_class as $j => $group) { ?><?=$j ? ',' : ''?><? $i = 0; foreach ($group['sex'] as $sex) { ?><?=$i ? ',' : ''?>"<?=$sex['color']?>"<? $i++; } ?><? } ?>],
+	  fill: [<? $j = 0; foreach ($people_by_class as $group) { ?><?=$j ? ',' : ''?><? $i = 0; foreach ($group['sex'] as $sex) { ?><?=$i ? ',' : ''?>"<?=$sex['color']?>"<? $i++; } ?><? $j++; } ?>],
 	  width: 20,
 	  height:20
 	})
 	$(".pie-colours-3").peity("pie", {
-	  fill: [<? foreach ($people_by_class as $j => $group) { ?><?=$j ? ',' : ''?><? $i = 0; foreach ($group['nations'] as $nation) { ?><?=$i ? ',' : ''?>"<?=$nation['color']?>"<? $i++; } ?><? } ?>],
+	  fill: [<? $j = 0; foreach ($people_by_class as $group) { ?><?=$j ? ',' : ''?><? $i = 0; foreach ($group['nations'] as $nation) { ?><?=$i ? ',' : ''?>"<?=$nation['color']?>"<? $i++; } ?><? $j++; } ?>],
 	  width: 20,
 	  height:20
 	})
 	$(".pie-colours-4").peity("pie", {
-	  fill: [<? foreach ($people_by_class as $j => $group) { ?><?=$j ? ',' : ''?><? $i = 0; foreach ($group['age'] as $age) { ?><?=$i ? ',' : ''?>"<?=$age['color']?>"<? $i++; } ?><? } ?>],
+	  fill: [<? $j = 0; foreach ($people_by_class as $group) { ?><?=$j ? ',' : ''?><? $i = 0; foreach ($group['age'] as $age) { ?><?=$i ? ',' : ''?>"<?=$age['color']?>"<? $i++; } ?><? $j++; } ?>],
 	  width: 20,
 	  height:20
 	})
