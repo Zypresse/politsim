@@ -14,6 +14,8 @@ use app\components\MyModel;
  * @property integer $created
  * @property integer $vote_ended
  * @property integer $accepted
+ * @property integer $dicktator
+ * @property integer $state_id
  */
 class Bill extends MyModel
 {
@@ -32,7 +34,7 @@ class Bill extends MyModel
     {
         return [
             [['bill_type', 'creator', 'created', 'vote_ended'], 'required'],
-            [['bill_type', 'creator', 'created', 'vote_ended', 'accepted'], 'integer'],
+            [['bill_type', 'creator', 'created', 'vote_ended', 'accepted', 'dicktator', 'state_id'], 'integer'],
             [['data'], 'string']
         ];
     }
@@ -50,6 +52,8 @@ class Bill extends MyModel
             'vote_ended' => 'Vote Ended',
             'accepted' => 'Accepted',
             'data' => 'Данные',
+            'dicktator' => 'Издан диктатором',
+            'state_id' => 'State ID'
         ];
     }
 
@@ -57,8 +61,17 @@ class Bill extends MyModel
     {
         return $this->hasOne('app\models\BillType', array('id' => 'bill_type'));
     }
+    public function getState()
+    {
+        return $this->hasOne('app\models\State', array('id' => 'state_id'));
+    }
     public function getCreatorpost()
     {
         return $this->hasOne('app\models\Post', array('id' => 'creator'));
+    }
+    
+    public function accept()
+    {
+        return $this->type->accept($this);
     }
 }

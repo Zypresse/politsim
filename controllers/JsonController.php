@@ -21,10 +21,9 @@ use app\models\Party;
 use app\models\Dealing;
 use app\models\Twitter;
 
-class JsonController extends MyController
-{
-    public function actions()
-    {
+class JsonController extends MyController {
+
+    public function actions() {
         return [
             'error' => [
                 'class' => 'app\components\JsonErrorAction',
@@ -32,36 +31,33 @@ class JsonController extends MyController
         ];
     }
 
-    public function actionHello()
-    {
+    public function actionHello() {
         $this->result = 'Hello, world!';
-        return $this->_r(); 
+        return $this->_r();
     }
 
-    public function actionUserinfo($uid = false, $nick = false)
-    {
+    public function actionUserinfo($uid = false, $nick = false) {
         if ($uid === false && $nick === false) {
             $uid = $this->viewer_id;
-        } 
+        }
 
         if ($uid) {
             $uid = intval($uid);
             $user = User::findByPk($uid);
         } else {
             $nick = str_replace("@", "", mb_strtolower($nick));
-            $user = User::find()->where(["twitter_nickname"=>$nick])->one();
+            $user = User::find()->where(["twitter_nickname" => $nick])->one();
         }
         if (is_null($user)) {
             $this->error = 'User not found';
         } else {
             $this->result = ($uid == $this->viewer_id) ? $user->attributes : $user->getPublicAttributes();
         }
-        
+
         return $this->_r();
     }
 
-    public function actionGovermentFieldTypeInfo($id)
-    {
+    public function actionGovermentFieldTypeInfo($id) {
         $id = intval($id);
         if ($id > 0) {
             $govermentFieldType = GovermentFieldType::findByPk($id);
@@ -76,8 +72,7 @@ class JsonController extends MyController
         return $this->_r();
     }
 
-    public function actionOrgInfo($id)
-    {
+    public function actionOrgInfo($id) {
         $id = intval($id);
         if ($id > 0) {
             $org = Org::findByPk($id);
@@ -93,8 +88,7 @@ class JsonController extends MyController
         return $this->_r();
     }
 
-    public function actionRegionInfo($code)
-    {
+    public function actionRegionInfo($code) {
         if ($code) {
             $region = Region::findByCode($code);
             if (is_null($region)) {
@@ -109,8 +103,7 @@ class JsonController extends MyController
         return $this->_r();
     }
 
-    public function actionRegionsResurses($code)
-    {
+    public function actionRegionsResurses($code) {
         if ($code) {
             $resurse = Resurse::findByCode($code);
             if (is_null($resurse)) {
@@ -119,7 +112,7 @@ class JsonController extends MyController
                 $regions = Region::find()->all();
                 $this->result = [];
                 foreach ($regions as $region) {
-                    $this->result[] = ['code'=>$region->code,$code=>$region->attributes[$code]];
+                    $this->result[] = ['code' => $region->code, $code => $region->attributes[$code]];
                 }
             }
         } else {
@@ -129,20 +122,18 @@ class JsonController extends MyController
         return $this->_r();
     }
 
-    public function actionRegionsPopulation()
-    {
-    
+    public function actionRegionsPopulation() {
+
         $regions = Region::find()->all();
         $this->result = [];
         foreach ($regions as $region) {
-            $this->result[] = ['code'=>$region->code,'population'=>$region->population];
-        }    
-        
+            $this->result[] = ['code' => $region->code, 'population' => $region->population];
+        }
+
         return $this->_r();
     }
 
-    public function actionNewBill($bill_type_id)
-    {
+    public function actionNewBill($bill_type_id) {
         $bill_type_id = intval($bill_type_id);
         if ($bill_type_id > 0) {
             $bill_type = BillType::findByPk($bill_type_id);
@@ -150,7 +141,7 @@ class JsonController extends MyController
                 return $this->_r("Bill type not found");
 
             $user = User::findByPk($this->viewer_id);
-            if ($user->post->can_make_dicktator_bills) {
+            if ($user->state->executiveOrg->leader_post === $user->post_id && $user->state->executiveOrg->leader_can_make_dicktator_bills) {
 
                 // находим в запросе данные нужных полей
                 $data = [];
@@ -174,44 +165,42 @@ class JsonController extends MyController
                 $bill->created = time();
                 $bill->vote_ended = time() - 1;
                 $bill->state_id = $user->state_id;
-                $bill->data = json_encode($data,JSON_UNESCAPED_UNICODE);
+                $bill->dicktator = 1;
+                $bill->data = json_encode($data, JSON_UNESCAPED_UNICODE);
                 if ($bill->save()) {
-                    $this->result = "ok";                    
+                    $this->result = "ok";
                 } else {
                     $this->error = $bill->getErrors();
                 }
                 return $this->_r();
-
             } else
                 return $this->_r("Action not allowed");
-
         } else
             return $this->_r("Invalid bill type ID");
     }
 
-    public function actionDropElectRequest($org_id,$leader = 0)
-    {
+    public function actionDropElectRequest($org_id, $leader = 0) {
         $org_id = intval($org_id);
         $leader = intval($leader) ? 1 : 0;
 
         if ($org_id > 0) {
             $user = User::findByPk($this->viewer_id);
             if ($leader) {
-                $org = Org::findByPk($org_id);                    
-                if (is_null($org)) 
+                $org = Org::findByPk($org_id);
+                if (is_null($org))
                     return $this->_r("Organisation not found");
                 if ($org->leader_dest !== 'nation_individual_vote' && !($user->isPartyLeader()))
                     return $this->_r("Not allowed");
 
                 if ($org->leader_dest === 'nation_individual_vote')
-                    $request = ElectRequest::find()->where(['org_id'=>$org_id,'leader'=>1,'candidat'=>$user->id])->one();
+                    $request = ElectRequest::find()->where(['org_id' => $org_id, 'leader' => 1, 'candidat' => $user->id])->one();
                 else
-                    $request = ElectRequest::find()->where(['org_id'=>$org_id,'leader'=>1,'party_id'=>$user->party_id])->one();
+                    $request = ElectRequest::find()->where(['org_id' => $org_id, 'leader' => 1, 'party_id' => $user->party_id])->one();
             } else {
                 if (!($user->isPartyLeader()))
                     return $this->_r("Not allowed");
 
-                $request = ElectRequest::find()->where(['org_id'=>$org_id,'leader'=>0,'party_id'=>$user->party_id])->one();
+                $request = ElectRequest::find()->where(['org_id' => $org_id, 'leader' => 0, 'party_id' => $user->party_id])->one();
             }
 
             if (is_null($request))
@@ -220,13 +209,11 @@ class JsonController extends MyController
             $request->delete();
             $this->result = "ok";
             return $this->_r();
-            
         } else
             return $this->_r("Invalid organisation ID");
     }
 
-    public function actionElectRequest($org_id,$leader = 0,$candidat = 0)
-    {
+    public function actionElectRequest($org_id, $leader = 0, $candidat = 0) {
         $org_id = intval($org_id);
         $candidat = intval($candidat) ? intval($candidat) : $this->viewer_id;
         $leader = intval($leader) ? 1 : 0;
@@ -234,21 +221,21 @@ class JsonController extends MyController
         if ($org_id > 0) {
             $user = User::findByPk($this->viewer_id);
             if ($leader) {
-                $org = Org::findByPk($org_id);                    
-                if (is_null($org)) 
+                $org = Org::findByPk($org_id);
+                if (is_null($org))
                     return $this->_r("Organisation not found");
                 if ($org->leader_dest !== 'nation_individual_vote' && !($user->isPartyLeader()))
                     return $this->_r("Not allowed");
 
                 if ($org->leader_dest === 'nation_individual_vote')
-                    $request = ElectRequest::find()->where(['org_id'=>$org_id,'leader'=>1,'candidat'=>$user->id])->count();
+                    $request = ElectRequest::find()->where(['org_id' => $org_id, 'leader' => 1, 'candidat' => $user->id])->count();
                 else
-                    $request = ElectRequest::find()->where(['org_id'=>$org_id,'leader'=>1,'party_id'=>$user->party_id])->count();
+                    $request = ElectRequest::find()->where(['org_id' => $org_id, 'leader' => 1, 'party_id' => $user->party_id])->count();
             } else {
                 if (!($user->isPartyLeader()))
                     return $this->_r("Not allowed");
 
-                $request = ElectRequest::find()->where(['org_id'=>$org_id,'leader'=>0,'party_id'=>$user->party_id])->count();
+                $request = ElectRequest::find()->where(['org_id' => $org_id, 'leader' => 0, 'party_id' => $user->party_id])->count();
             }
 
             if ($request)
@@ -273,17 +260,15 @@ class JsonController extends MyController
             }
 
             return $this->_r();
-
         } else
             return $this->_r("Invalid organisation ID");
     }
 
-    public function actionCreateState($name,$short_name,$goverment_form,$capital,$color,$flag = false)
-    {
-       
+    public function actionCreateState($name, $short_name, $goverment_form, $capital, $color, $flag = false) {
+
         if ($name && $short_name && $goverment_form && $capital && $color) {
 
-            $flag = ($flag) ? $flag : "http://placehold.it/300x200/eeeeee/000000&text=".urlencode(MyHtmlHelper::transliterate($short_name));
+            $flag = ($flag) ? $flag : "http://placehold.it/300x200/eeeeee/000000&text=" . urlencode(MyHtmlHelper::transliterate($short_name));
 
             $user = User::findByPk($this->viewer_id);
             if ($user->state_id)
@@ -310,7 +295,7 @@ class JsonController extends MyController
 
                 $executive = new Org();
                 $executive->state_id = $state->id;
-                $executive->name = "Правительство ".$short_name;
+                $executive->name = "Правительство " . $short_name;
                 $executive->leader_dest = 'unlimited';
                 $executive->dest = 'dest_by_leader';
                 $executive->leader_can_create_posts = 1;
@@ -323,7 +308,6 @@ class JsonController extends MyController
                     $leader->name = "Президент";
                     $leader->type = "dictator";
                     $leader->can_delete = 0;
-                    $leader->can_make_dicktator_bills = 1;
                     if ($leader->save()) {
                         $executive->leader_post = $leader->id;
                         $executive->save();
@@ -350,28 +334,23 @@ class JsonController extends MyController
 
                         $this->result = 'ok';
                         return $this->_r();
-
                     } else
                         return $this->_r($leader->getErrors());
-
                 } else
-                return $this->_r($executive->getErrors());
-
+                    return $this->_r($executive->getErrors());
             } else
                 return $this->_r($state->getErrors());
-
         } else
             return $this->_r("Invalid params");
     }
 
-    public function actionGetCitizenship($state_id)
-    {
+    public function actionGetCitizenship($state_id) {
         $state_id = intval($state_id);
-        if ($state_id>0) {
+        if ($state_id > 0) {
             $user = User::findByPk($this->viewer_id);
-            if ($user->state_id) 
+            if ($user->state_id)
                 return $this->_r("You allready have citizenship");
-            
+
             $state = State::findByPk($state_id);
             if (is_null($state))
                 return $this->_r("State not found");
@@ -382,27 +361,24 @@ class JsonController extends MyController
             $user->save();
             $this->result = "ok";
             return $this->_r();
-
         } else
             return $this->_r("Invalid state ID");
     }
 
-    public function actionDropCitizenship()
-    {
+    public function actionDropCitizenship() {
         $user = User::findByPk($this->viewer_id);
         $user->leaveState();
         $this->result = "ok";
         return $this->_r();
     }
 
-    public function actionJoinParty($party_id)
-    {
+    public function actionJoinParty($party_id) {
         $party_id = intval($party_id);
-        if ($party_id>0) {
+        if ($party_id > 0) {
             $user = User::findByPk($this->viewer_id);
-            if ($user->party_id) 
+            if ($user->party_id)
                 return $this->_r("You allready have party");
-            
+
             $party = Party::findByPk($party_id);
             if (is_null($party))
                 return $this->_r("Party not found");
@@ -415,26 +391,25 @@ class JsonController extends MyController
             $user->save();
             $this->result = "ok";
             return $this->_r();
-
         } else
             return $this->_r("Invalid party ID");
     }
 
-    public function actionLeaveParty()
-    {
+    public function actionLeaveParty() {
         $user = User::findByPk($this->viewer_id);
         $user->leaveParty();
         $this->result = "ok";
         return $this->_r();
     }
 
-    public function actionTransferMoney($count,$uid,$is_anonim = false,$is_secret = false,$type = 'open')
-    {
+    public function actionTransferMoney($count, $uid, $is_anonim = false, $is_secret = false, $type = 'open') {
         $count = intval($count);
         $uid = intval($uid);
 
-        if ($type === 'anonym') $is_anonim = true;
-        if ($type === 'hidden') $is_secret = true;
+        if ($type === 'anonym')
+            $is_anonim = true;
+        if ($type === 'hidden')
+            $is_secret = true;
 
         if ($count && $uid && $uid !== $this->viewer_id) {
             $sender = User::findByPk($this->viewer_id);
@@ -459,17 +434,15 @@ class JsonController extends MyController
                 return $this->_r();
             } else
                 return $this->_r($dealing->getErrors());
-
         } else
             return $this->_r("Invalid params");
     }
 
-    public function actionCreateParty($name,$short_name,$ideology = 10,$image = false)
-    {
+    public function actionCreateParty($name, $short_name, $ideology = 10, $image = false) {
         $name = trim(strip_tags($name));
-        $short_name = mb_strtoupper(mb_substr(trim(strip_tags($short_name)), 0,6));
+        $short_name = mb_strtoupper(mb_substr(trim(strip_tags($short_name)), 0, 6));
         $image = trim(strip_tags($image));
-        $image = ($image) ? $image : "http://placehold.it/300x200/eeeeee/000000&text=".urlencode(MyHtmlHelper::transliterate($short_name));
+        $image = ($image) ? $image : "http://placehold.it/300x200/eeeeee/000000&text=" . urlencode(MyHtmlHelper::transliterate($short_name));
         $ideology = intval($ideology);
 
         if ($name && $short_name && $image && $ideology) {
@@ -488,48 +461,46 @@ class JsonController extends MyController
             $party->leader = $user->id;
             $party->ideology = $ideology;
 
-            if ($party->save()){
+            if ($party->save()) {
                 $user->party_id = $party->id;
                 $user->save();
                 $this->result = "ok";
             } else
                 $this->error = $party->getErrors();
             return $this->_r();
-
         } else
             return $this->_r("Invalid params");
     }
 
-    public function actionPublicStatement($uid,$type = 'positive')
-    {
+    public function actionPublicStatement($uid, $type = 'positive') {
         $uid = intval($uid);
         if ($uid > 0) {
             $user = User::findByPk($uid);
             if (is_null($user))
                 return $this->_r("User not found");
             $self = User::findByPk($this->viewer_id);
-            if ($self->last_vote > time() - 24*60*60)
-                return $this->_r("timeout",['time'=>($self->last_vote + 24*60*60 - time())]);
+            if ($self->last_vote > time() - 24 * 60 * 60)
+                return $this->_r("timeout", ['time' => ($self->last_vote + 24 * 60 * 60 - time())]);
 
-            $user->star += round($self->star/mt_rand(10,50));
-            $self->star += round(mt_rand(0,100)/100);
+            $user->star += round($self->star / mt_rand(10, 50));
+            $self->star += round(mt_rand(0, 100) / 100);
             switch ($type) {
                 case 'positive':
-                    $user->heart += ($self->heart > 0) ? round($self->heart/mt_rand(10,50)) : round(abs($self->heart/mt_rand(100,500)));
-                    $self->heart += round(mt_rand(0,100)/100);
+                    $user->heart += ($self->heart > 0) ? round($self->heart / mt_rand(10, 50)) : round(abs($self->heart / mt_rand(100, 500)));
+                    $self->heart += round(mt_rand(0, 100) / 100);
                     $user->chart_pie += ($self->chart_pie > 0) ? 1 : 0;
-                break;
+                    break;
                 case 'negative':
-                    $user->heart += -1 * ($self->heart > 0 ? round($self->heart/10) : round(abs($self->heart/100)));
-                    $self->heart += -1 * round(mt_rand(0,100)/100);
-                    $user->chart_pie += ($self->chart_pie > 0) ? -1 * round(mt_rand(0,100)/100) : 0;
-                break;
+                    $user->heart += -1 * ($self->heart > 0 ? round($self->heart / 10) : round(abs($self->heart / 100)));
+                    $self->heart += -1 * round(mt_rand(0, 100) / 100);
+                    $user->chart_pie += ($self->chart_pie > 0) ? -1 * round(mt_rand(0, 100) / 100) : 0;
+                    break;
                 default:
-                    $user->heart += -2 * ($self->heart > 0 ? round($self->heart/10) : round(abs($self->heart/100)));
-                    $self->heart += -1 * round(abs($self->heart/10));
-                    $user->chart_pie += -1 * round(mt_rand(0,100)/100);
+                    $user->heart += -2 * ($self->heart > 0 ? round($self->heart / 10) : round(abs($self->heart / 100)));
+                    $self->heart += -1 * round(abs($self->heart / 10));
+                    $user->chart_pie += -1 * round(mt_rand(0, 100) / 100);
                     $self->chart_pie += -1;
-                break;
+                    break;
             }
 
             $self->last_vote = time();
@@ -538,13 +509,11 @@ class JsonController extends MyController
 
             $this->result = "ok";
             return $this->_r();
-
         } else
             return $this->_r("Invalid user ID");
     }
 
-    public function actionRenameOrg($name)
-    {
+    public function actionRenameOrg($name) {
         $name = trim(strip_tags($name));
         if ($name) {
             $user = User::findByPk($this->viewer_id);
@@ -555,20 +524,19 @@ class JsonController extends MyController
                 return $this->_r("Organisation not found");
             if ($user->isOrgLeader()) {
                 $org->name = $name;
-                if ($org->save()) 
+                if ($org->save())
                     return $this->_rOk();
                 else
-                    return $this->_r($org->getErrors());                
+                    return $this->_r($org->getErrors());
             } else
                 return $this->_r("Not allowed");
         } else
             return $this->_r("Invalid name");
     }
 
-    public function actionRenameParty($name,$short_name)
-    {
+    public function actionRenameParty($name, $short_name) {
         $name = trim(strip_tags($name));
-        $short_name = mb_strtoupper(mb_substr(trim(strip_tags($short_name)), 0,6));
+        $short_name = mb_strtoupper(mb_substr(trim(strip_tags($short_name)), 0, 6));
         if ($name && $short_name) {
             $user = User::findByPk($this->viewer_id);
             if ($user->party_id && $user->isPartyLeader()) {
@@ -579,15 +547,13 @@ class JsonController extends MyController
                     return $this->_rOk();
                 else
                     return $this->_r($user->party->getErrors());
-
             } else
                 return $this->_r("Not allowed");
         } else
             return $this->_r("Invalid params");
     }
 
-    public function actionChangePartyLogo($image)
-    {
+    public function actionChangePartyLogo($image) {
         $image = trim(strip_tags($image));
         if ($image) {
             $user = User::findByPk($this->viewer_id);
@@ -598,15 +564,13 @@ class JsonController extends MyController
                     return $this->_rOk();
                 else
                     return $this->_r($user->party->getErrors());
-
             } else
                 return $this->_r("Not allowed");
         } else
             return $this->_r("Invalid image");
     }
 
-    public function actionCreatePost($name)
-    {
+    public function actionCreatePost($name) {
         $name = trim(strip_tags($name));
         if ($name) {
             $user = User::findByPk($this->viewer_id);
@@ -622,21 +586,20 @@ class JsonController extends MyController
                 $post->type = "minister";
                 $post->can_delete = 1;
 
-                if ($post->save()) 
+                if ($post->save())
                     return $this->_rOk();
                 else
-                    return $this->_r($post->getErrors());                
+                    return $this->_r($post->getErrors());
             } else
                 return $this->_r("Not allowed");
         } else
             return $this->_r("Invalid name");
     }
 
-    public function actionSetPost($id,$uid)
-    {
+    public function actionSetPost($id, $uid) {
         $id = intval($id);
         $uid = intval($uid);
-        if ($id>0 && $uid>0) {
+        if ($id > 0 && $uid > 0) {
             $user = User::findByPk($this->viewer_id);
             if (is_null($user->post))
                 return $this->_r("You have not post");
@@ -657,7 +620,7 @@ class JsonController extends MyController
                 return $this->_r("User not have that citizenship");
 
             if ($user->isOrgLeader() && $user->post->org->dest === 'dest_by_leader') {
-                $old = User::find()->where(['post_id'=>$id])->one();
+                $old = User::find()->where(['post_id' => $id])->one();
                 if (!(is_null($old))) {
                     $old->post_id = 0;
                     $old->chart_pie -= 1;
@@ -669,17 +632,15 @@ class JsonController extends MyController
                 $new->save();
 
                 return $this->_rOk();
-                
             } else
                 return $this->_r("Not allowed");
         } else
             return $this->_r("Invalid params");
     }
 
-    public function actionDropFromPost($id)
-    {
+    public function actionDropFromPost($id) {
         $id = intval($id);
-        if ($id>0) {
+        if ($id > 0) {
             $user = User::findByPk($this->viewer_id);
             if (is_null($user->post))
                 return $this->_r("You have not post");
@@ -690,10 +651,10 @@ class JsonController extends MyController
             if (is_null($post))
                 return $this->_r("Post not found");
             if ($post->org_id !== $org->id || $post->id === $org->leader_post)
-                return $this->_r("Not allowed");            
+                return $this->_r("Not allowed");
 
             if ($user->isOrgLeader() && $user->post->org->dest === 'dest_by_leader') {
-                $old = User::find()->where(['post_id'=>$id])->one();
+                $old = User::find()->where(['post_id' => $id])->one();
                 if (!(is_null($old))) {
                     $old->post_id = 0;
                     $old->chart_pie -= 1;
@@ -702,17 +663,15 @@ class JsonController extends MyController
                 }
 
                 return $this->_rOk();
-                
             } else
                 return $this->_r("Not allowed");
         } else
             return $this->_r("Invalid post ID");
     }
 
-    public function actionDeletePost($id)
-    {
+    public function actionDeletePost($id) {
         $id = intval($id);
-        if ($id>0) {
+        if ($id > 0) {
             $user = User::findByPk($this->viewer_id);
             if (is_null($user->post))
                 return $this->_r("You have not post");
@@ -723,10 +682,10 @@ class JsonController extends MyController
             if (is_null($post))
                 return $this->_r("Post not found");
             if ($post->org_id !== $org->id || $post->id === $org->leader_post || !$post->can_delete)
-                return $this->_r("Not allowed");            
+                return $this->_r("Not allowed");
 
             if ($user->isOrgLeader()) {
-                $old = User::find()->where(['post_id'=>$id])->one();
+                $old = User::find()->where(['post_id' => $id])->one();
                 if (!(is_null($old))) {
                     $old->post_id = 0;
                     $old->chart_pie -= 1;
@@ -736,15 +695,13 @@ class JsonController extends MyController
                 $post->delete();
 
                 return $this->_rOk();
-                
             } else
                 return $this->_r("Not allowed");
         } else
             return $this->_r("Invalid post ID");
     }
 
-    public function actionElectVote($request)
-    {
+    public function actionElectVote($request) {
         $request_id = intval($request);
         if ($request_id > 0) {
             $request = ElectRequest::findByPk($request_id);
@@ -754,40 +711,37 @@ class JsonController extends MyController
             if ($user->state_id !== $request->org->state_id)
                 return $this->_r("Only citizens can vote");
 
-            $elect_requests_ids = implode(",", ArrayHelper::map(ElectRequest::find()->where(["org_id"=>$request->org_id,"leader"=>$request->leader])->asArray()->all(),'id','id'));
+            $elect_requests_ids = implode(",", ArrayHelper::map(ElectRequest::find()->where(["org_id" => $request->org_id, "leader" => $request->leader])->asArray()->all(), 'id', 'id'));
             $allready_voted = ElectVote::find()->where("request_id IN ({$elect_requests_ids}) AND uid = {$this->viewer_id}")->count();
-            if(intval($allready_voted))
+            if (intval($allready_voted))
                 return $this->_r("Allready voted");
 
             $vote = new ElectVote();
             $vote->uid = $user->id;
             $vote->request_id = $request->id;
 
-            if ($vote->save()) 
+            if ($vote->save())
                 return $this->_rOk();
             else
-                return $this->_r($vote->getErrors());     
-
+                return $this->_r($vote->getErrors());
         } else
             return $this->_r("Invalid request ID");
     }
 
-    public function actionSelfDropFromPost()
-    {
+    public function actionSelfDropFromPost() {
         $user = User::findByPk($this->viewer_id);
         $user->post_id = 0;
         $user->save();
         return $this->_rOk();
     }
 
-    public function actionMoveTo($id)
-    {
+    public function actionMoveTo($id) {
         $id = intval($id);
-        if ($id>0) {
+        if ($id > 0) {
             $region = Region::findByPk($id);
             if (is_null($region))
                 return $this->_r("Region not found");
-            
+
             $user = User::findByPk($this->viewer_id);
             $user->region_id = $id;
             $user->save();
@@ -797,11 +751,10 @@ class JsonController extends MyController
             return $this->_r("Invalid region ID");
     }
 
-    public function actionSetTwitterNickname($nick)
-    {
+    public function actionSetTwitterNickname($nick) {
         $nick = mb_strtolower(trim($nick));
 
-        if ($nick && !(preg_match("[^qwertyuiopadsfghjklzxcvbnm0123456789]",$nick)) && strlen($nick) > 3 && strlen($nick) < 20 && !(in_array($nick,['admin','administrator','root','moder','moderator','game','politsim']))) {
+        if ($nick && !(preg_match("[^qwertyuiopadsfghjklzxcvbnm0123456789]", $nick)) && strlen($nick) > 3 && strlen($nick) < 20 && !(in_array($nick, ['admin', 'administrator', 'root', 'moder', 'moderator', 'game', 'politsim']))) {
             $user = User::findByPk($this->viewer_id);
             $user->twitter_nickname = $nick;
             $user->save();
@@ -811,16 +764,15 @@ class JsonController extends MyController
             return $this->_r("Invalid nickname");
     }
 
-    public function actionTweet($text,$type = 0,$uid = 0)
-    {
-        $text = substr(trim(strip_tags($text)),0,280);
+    public function actionTweet($text, $type = 0, $uid = 0) {
+        $text = substr(trim(strip_tags($text)), 0, 280);
         $type = intval($type);
         $uid = intval($uid);
 
         if ($text) {
             $self = User::findByPk($this->viewer_id);
-            if ($self->last_tweet > time()-1*60*60)
-                return $this->_r("timeout",['time'=>($self->last_tweet + 1*60*60 - time())]);
+            if ($self->last_tweet > time() - 1 * 60 * 60)
+                return $this->_r("timeout", ['time' => ($self->last_tweet + 1 * 60 * 60 - time())]);
 
             if ($uid) {
                 $user = User::findByPk($uid);
@@ -828,43 +780,43 @@ class JsonController extends MyController
                     return $this->_r("User not found");
             }
 
-            $retweets = round($self->getTwitterSubscribersCount()/5) + mt_rand(round(-1*$self->getTwitterSubscribersCount()/40),round($self->getTwitterSubscribersCount()/20));
+            $retweets = round($self->getTwitterSubscribersCount() / 5) + mt_rand(round(-1 * $self->getTwitterSubscribersCount() / 40), round($self->getTwitterSubscribersCount() / 20));
 
             switch ($type) {
                 case 1:
                     # Положительно
                     if ($uid) {
-                        $user->heart += ($self->heart>0)?round($self->heart/mt_rand(100,500)):round(abs($self->heart)/mt_rand(200,1000));
-                        $user->chart_pie += ($self->chart_pie>0)?round(mt_rand(0,5)/9):0;
-                        $user->star += round($self->star/100);
+                        $user->heart += ($self->heart > 0) ? round($self->heart / mt_rand(100, 500)) : round(abs($self->heart) / mt_rand(200, 1000));
+                        $user->chart_pie += ($self->chart_pie > 0) ? round(mt_rand(0, 5) / 9) : 0;
+                        $user->star += round($self->star / 100);
                     }
-                    $self->heart += round(mt_rand(0,5)/9);
-                    $self->star += round($retweets/1000);
-                break;
+                    $self->heart += round(mt_rand(0, 5) / 9);
+                    $self->star += round($retweets / 1000);
+                    break;
                 case 2:
                     # Отрицательно
                     if ($uid) {
-                        $user->heart += -1*($self->heart>0?round($self->heart/10):round(abs($self->heart)/100));
-                        $user->chart_pie += ($self->chart_pie>0)?-1:0;
-                        $user->star += round($self->star/10);
+                        $user->heart += -1 * ($self->heart > 0 ? round($self->heart / 10) : round(abs($self->heart) / 100));
+                        $user->chart_pie += ($self->chart_pie > 0) ? -1 : 0;
+                        $user->star += round($self->star / 10);
                     }
-                    $self->heart += -1 * round(mt_rand(0,5)/9);
-                    $self->star += round($retweets/1000);
-                break;
+                    $self->heart += -1 * round(mt_rand(0, 5) / 9);
+                    $self->star += round($retweets / 1000);
+                    break;
                 case 3:
                     # Оскорбительно
                     if ($uid) {
-                        $user->heart += -2*($self->heart>0?round($self->heart/10):round(abs($self->heart)/100));
-                        $user->chart_pie += -1 * round(mt_rand(0,5)/9);
-                        $user->star += round($self->star/10);
+                        $user->heart += -2 * ($self->heart > 0 ? round($self->heart / 10) : round(abs($self->heart) / 100));
+                        $user->chart_pie += -1 * round(mt_rand(0, 5) / 9);
+                        $user->star += round($self->star / 10);
                     }
-                    $self->heart += -1*abs(ceil($self->heart/100));
+                    $self->heart += -1 * abs(ceil($self->heart / 100));
                     $self->chart_pie += -1;
-                    $self->star += round($retweets/1000);
-                break;
+                    $self->star += round($retweets / 1000);
+                    break;
                 default:
-                    $self->star += round($retweets/1000);
-                break;
+                    $self->star += round($retweets / 1000);
+                    break;
             }
 
             if ($uid) {
@@ -885,15 +837,13 @@ class JsonController extends MyController
             } else {
                 return $this->_r($tweet->getErrors());
             }
-
         } else
             return $this->_r("Invalid text");
     }
 
-    public function actionDeleteTweet($id)
-    {
+    public function actionDeleteTweet($id) {
         $id = intval($id);
-        if ($id>0) {
+        if ($id > 0) {
             $tweet = Twitter::findByPk($id);
             if (is_null($tweet))
                 return $this->_r("Tweet not found");
@@ -906,23 +856,22 @@ class JsonController extends MyController
             return $this->_r("Invalid tweet ID");
     }
 
-    public function actionRetweet($id)
-    {
+    public function actionRetweet($id) {
         $id = intval($id);
-        if ($id>0) {
+        if ($id > 0) {
             $self = User::findByPk($this->viewer_id);
-            if ($self->last_tweet > time()-1*60*60)
-                return $this->_r("timeout",['time'=>($self->last_tweet + 1*60*60 - time())]);
+            if ($self->last_tweet > time() - 1 * 60 * 60)
+                return $this->_r("timeout", ['time' => ($self->last_tweet + 1 * 60 * 60 - time())]);
 
             $tweet = Twitter::findByPk($id);
             if (is_null($tweet))
                 return $this->_r("Tweet not found");
             if ($tweet->uid !== $this->viewer_id) {
-                
-                $retweets = round($self->getTwitterSubscribersCount()/7) + mt_rand(round(-1*$self->getTwitterSubscribersCount()/30),round($self->getTwitterSubscribersCount()/30));
-                $tweet->user->heart += ($self->heart>0)?round($self->heart/100):round(abs($self->heart)/1000);
-                $tweet->user->chart_pie += ($self->chart_pie>$tweet->user->chart_pie)?1:0;
-                $tweet->user->star += round($self->star/100);
+
+                $retweets = round($self->getTwitterSubscribersCount() / 7) + mt_rand(round(-1 * $self->getTwitterSubscribersCount() / 30), round($self->getTwitterSubscribersCount() / 30));
+                $tweet->user->heart += ($self->heart > 0) ? round($self->heart / 100) : round(abs($self->heart) / 1000);
+                $tweet->user->chart_pie += ($self->chart_pie > $tweet->user->chart_pie) ? 1 : 0;
+                $tweet->user->star += round($self->star / 100);
                 $tweet->user->save();
                 $tweet->retweets += $retweets;
                 $tweet->save();
@@ -940,7 +889,6 @@ class JsonController extends MyController
                 } else {
                     return $this->_r($retweet->getErrors());
                 }
-                
             } else
                 return $this->_r("Not allowed");
         } else

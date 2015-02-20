@@ -52,4 +52,15 @@ class GovermentFieldValue extends MyModel
     {
         return $this->hasOne('app\models\GovermentFieldType', array('id' => 'type_id'));
     }
+    public function getState()
+    {
+        return $this->hasOne('app\models\State', array('id' => 'state_id'));
+    }
+    
+    public function afterSave($insert, $changedAttributes)
+    {
+        $this->type->syncronize($this);
+        
+        return parent::afterSave($insert, $changedAttributes);
+    }
 }

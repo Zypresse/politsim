@@ -15,6 +15,7 @@ use app\components\MyHtmlHelper;
  * @property integer $ideology
  * @property integer $sex
  * @property integer $count
+ * @property integer $region_id
  */
 class Population extends MyModel
 {

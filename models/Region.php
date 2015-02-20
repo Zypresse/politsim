@@ -150,6 +150,10 @@ class Region extends MyModel
     public function getState()
     {
         return $this->hasOne('app\models\State', array('id' => 'state_id'));
+    }    
+    public function getPopulationGroups()
+    {
+        return $this->hasMany('app\models\Population', array('region_id' => 'id'));
     }
 
     public function isCapital()

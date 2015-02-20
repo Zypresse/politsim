@@ -18,6 +18,10 @@ use app\components\MyModel;
  * @property integer $state_structure
  * @property integer $goverment_form
  * @property integer $group_id
+ * @property integer $population
+ * @property integer $sum_star
+ * @property integer $allow_register_parties
+ * @property integer $leader_can_drop_legislature
  */
 class State extends MyModel
 {
@@ -36,7 +40,7 @@ class State extends MyModel
     {
         return [
             [['name', 'short_name', 'capital'], 'required'],
-            [['legislature', 'executive', 'state_structure', 'goverment_form', 'group_id','allow_register_parties'], 'integer'],
+            [['legislature', 'executive', 'state_structure', 'goverment_form', 'group_id','allow_register_parties','population','sum_star','leader_can_drop_legislature'], 'integer'],
             [['name'], 'string', 'max' => 100],
             [['short_name'], 'string', 'max' => 10],
             [['capital', 'color'], 'string', 'max' => 7]
@@ -95,5 +99,29 @@ class State extends MyModel
     public function getGovermentFields()
     {
         return $this->hasMany('app\models\GovermentFieldValue', array('state_id' => 'id'));
+    }
+    public function getParties()
+    {
+        return $this->hasMany('app\models\Party', array('state_id' => 'id'));
+    }
+    public function getUsers()
+    {
+        return $this->hasMany('app\models\User', array('state_id' => 'id'));
+    }
+    
+    public function afterDelete()
+    {
+        $this->legislatureOrg->delete();
+        $this->executiveOrg->delete();
+        
+        foreach ($this->regions as $region) {
+            $region->state_id = 0;
+        }
+        foreach ($this->govermentFields as $gf) {
+            $gf->delete();
+        }
+        foreach ($this->parties as $party) {
+            $party->delete();
+        }
     }
 }

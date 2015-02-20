@@ -92,7 +92,7 @@ class Party extends MyModel
 
     public function getMembersCount()
     {
-        return User::find()->where(['party_id'=>$this->id])->count();
+        return intval(User::find()->where(['party_id'=>$this->id])->count());
     }
 
     public function afterDelete()

@@ -23,7 +23,7 @@ $gft = null;
 <h1>Личный кабинет</h1>
 <p>Вы занимаете должность &laquo;<?=htmlspecialchars($user->post->name)?>&raquo; в организации &laquo;<a href="#" onclick="load_page('org-info',{'id':<?=$user->post->org_id?>});"><?=htmlspecialchars($user->post->org->name)?></a>&raquo;
 <? if ($user->post_id === $user->post->org->leader_post) { ?><p>Вы — лидер организации &laquo;<a href="#" onclick="load_page('org-info',{'id':<?=$user->post->org_id?>});"><?=htmlspecialchars($user->post->org->name)?></a>&raquo;<? if ($user->post->org->leader_can_create_posts) { ?> и можете создавать новые должности в ней<? } ?>.</p>
-<? if ($user->post->can_make_dicktator_bills) { ?>
+<? if ($user->state->executiveOrg->leader_post === $user->post_id && $user->state->executiveOrg->leader_can_make_dicktator_bills) { ?>
 <p>Вы можете принимать законы единолично</p>
 <? } ?>
 <h3>Подчинённые</h3>
@@ -79,7 +79,7 @@ $gft = null;
  </script>
 <? } ?>
 
-<? if (($user->post_id === $user->post->org->leader_post) && $user->post->can_make_dicktator_bills) { ?>
+
 <h3>Последние законопроекты</h3>
 <p>Список последних законопроектов <input type="button" class="btn" id="bills_show" value="Показать"></p>
 <dl id="bills_list" style="display:none" >
@@ -168,7 +168,6 @@ $gft = null;
     	$('#bills_list').slideUp();
     })
  </script>
-<? } ?>
 
 <h2>Действия</h2>
 
@@ -227,7 +226,7 @@ $gft = null;
 </script>
 <? } ?>
 
-<? if (($user->post_id === $user->post->org->leader_post) && $user->post->can_make_dicktator_bills) { ?>
+<? if ($user->state->executiveOrg->leader_post === $user->post_id && $user->state->executiveOrg->leader_can_make_dicktator_bills) { ?>
 
 <div class="btn-group">
   <button class="btn btn-small btn-primary" onclick="new_zakon_modal()" >

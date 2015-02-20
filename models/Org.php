@@ -25,6 +25,11 @@ use app\models\Post;
  * @property integer $group_id
  * @property integer $can_vote_for_bills
  * @property integer $can_create_bills
+ * @property integer $leader_can_make_dicktator_bills
+ * @property integer $leader_can_vote_for_bills
+ * @property integer $leader_can_create_bills
+ * @property integer $leader_can_veto_bills
+
  */
 class Org extends MyModel
 {
@@ -43,7 +48,7 @@ class Org extends MyModel
     {
         return [
             [['state_id', 'name', 'leader_dest', 'dest'], 'required'],
-            [['state_id', 'leader_post', 'leader_can_create_posts', 'next_elect', 'elect_period', 'other_org_id', 'vote_party_id', 'elect_with_org', 'elect_leader_with_org', 'group_id', 'can_vote_for_bills', 'can_create_bills'], 'integer'],
+            [['state_id', 'leader_post', 'leader_can_create_posts', 'next_elect', 'elect_period', 'other_org_id', 'vote_party_id', 'elect_with_org', 'elect_leader_with_org', 'group_id', 'can_vote_for_bills', 'can_create_bills','leader_can_make_dicktator_bills','leader_can_vote_for_bills','leader_can_create_bills','leader_can_veto_bills'], 'integer'],
             [['name'], 'string', 'max' => 300],
             [['leader_dest', 'dest'], 'string', 'max' => 100]
         ];
