@@ -83,19 +83,19 @@ class ElectionsController extends Controller {
 
                 $used_uids[] = $first['req']->user->id;
                 // TODO Уведомления, новости
-                $resultToSave = [];
+                $resultToSave = [
+                    'yavka_percents' => round($yavka * 100, 2),
+                    'yavka_people' => round($yavka * $org->state->population),
+                    'results' => []
+                ];
                 foreach ($results as $result) {
-                    $resultToSave[] = [
-                        'yavka_percents' => round($yavka * 100, 2),
-                        'yavka_people' => round($yavka * $org->state->population),
-                        'results' => [
-                            'uid' => $result['req']->user->id,
-                            'name' => $result['req']->user->name,
-                            'party_id' => $result['req']->user->party_id,
-                            'party_name' => $result['req']->user->party ? $result['req']->user->party->name : ($result['req']->user->sex === 1 ? 'Беспартийная' : 'Беспартийный'),
-                            'votes_percents' => round(100 * $result['rating'] / $sumRatings, 2),
-                            'votes_population' => round($org->state->population * $result['rating'] / $sumRatings)
-                        ]
+                    $resultToSave['results'][] = [                        
+                        'uid' => $result['req']->user->id,
+                        'name' => $result['req']->user->name,
+                        'party_id' => $result['req']->user->party_id,
+                        'party_name' => $result['req']->user->party ? $result['req']->user->party->name : ($result['req']->user->sex === 1 ? 'Беспартийная' : 'Беспартийный'),
+                        'votes_percents' => round(100 * $result['rating'] / $sumRatings, 2),
+                        'votes_population' => round($org->state->population * $result['rating'] / $sumRatings)
                     ];
                 }
 
@@ -169,17 +169,18 @@ class ElectionsController extends Controller {
 
                 // TODO уведомления, новости
 
-                $resultToSave = [];
+                $resultToSave = [
+                    'yavka_percents' => round($yavka * 100, 2),
+                    'yavka_people' => round($yavka * $org->state->population),
+                    'results' => []
+                ];
                 foreach ($results as $result) {
-                    $resultToSave[] = [
-                        'yavka_percents' => round($yavka * 100, 2),
-                        'yavka_people' => round($yavka * $org->state->population),
-                        'results' => [
-                            'id' => $result['req']->party->id,
-                            'name' => $result['req']->party->name,
-                            'votes_percents' => round(100 * $result['rating'] / $sumRatings, 2),
-                            'votes_population' => round($org->state->population * $result['rating'] / $sumRatings)
-                        ]
+                    $resultToSave['results'][] = [                        
+                        'id' => $result['req']->party->id,
+                        'name' => $result['req']->party->name,
+                        'posts' => round($result['rating'] / $sumRatings * $count),
+                        'votes_percents' => round(100 * $result['rating'] / $sumRatings, 2),
+                        'votes_population' => round($org->state->population * $result['rating'] / $sumRatings)
                     ];
                 }
 

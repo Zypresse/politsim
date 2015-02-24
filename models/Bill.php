@@ -65,9 +65,9 @@ class Bill extends MyModel
     {
         return $this->hasOne('app\models\State', array('id' => 'state_id'));
     }
-    public function getCreatorpost()
+    public function getCreatorUser()
     {
-        return $this->hasOne('app\models\Post', array('id' => 'creator'));
+        return $this->hasOne('app\models\User', array('id' => 'creator'));
     }
     
     public function accept()

@@ -141,7 +141,11 @@ class JsonController extends MyController {
                 return $this->_r("Bill type not found");
 
             $user = User::findByPk($this->viewer_id);
-            if ($user->state->executiveOrg->leader_post === $user->post_id && $user->state->executiveOrg->leader_can_make_dicktator_bills) {
+            if (
+                ($user->isOrgLeader() && $user->post->org->leader_can_make_dicktator_bills)
+                || ($user->isOrgLeader() && $user->post->org->leader_can_create_bills)
+                || ($user->post->org->can_create_bills)
+            ) {
 
                 // находим в запросе данные нужных полей
                 $data = [];
@@ -161,11 +165,11 @@ class JsonController extends MyController {
 
                 $bill = new Bill();
                 $bill->bill_type = $bill_type_id;
-                $bill->creator = $user->post_id;
+                $bill->creator = $user->id;
                 $bill->created = time();
-                $bill->vote_ended = time() - 1;
+                $bill->vote_ended = ($user->isOrgLeader() && $user->post->org->leader_can_make_dicktator_bills) ? time() - 1 : time()+24*60*60;
                 $bill->state_id = $user->state_id;
-                $bill->dicktator = 1;
+                $bill->dicktator = ($user->isOrgLeader() && $user->post->org->leader_can_make_dicktator_bills)?1:0;
                 $bill->data = json_encode($data, JSON_UNESCAPED_UNICODE);
                 if ($bill->save()) {
                     $this->result = "ok";

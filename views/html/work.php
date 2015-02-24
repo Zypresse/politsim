@@ -23,9 +23,6 @@ $gft = null;
 <h1>Личный кабинет</h1>
 <p>Вы занимаете должность &laquo;<?=htmlspecialchars($user->post->name)?>&raquo; в организации &laquo;<a href="#" onclick="load_page('org-info',{'id':<?=$user->post->org_id?>});"><?=htmlspecialchars($user->post->org->name)?></a>&raquo;
 <? if ($user->post_id === $user->post->org->leader_post) { ?><p>Вы — лидер организации &laquo;<a href="#" onclick="load_page('org-info',{'id':<?=$user->post->org_id?>});"><?=htmlspecialchars($user->post->org->name)?></a>&raquo;<? if ($user->post->org->leader_can_create_posts) { ?> и можете создавать новые должности в ней<? } ?>.</p>
-<? if ($user->state->executiveOrg->leader_post === $user->post_id && $user->state->executiveOrg->leader_can_make_dicktator_bills) { ?>
-<p>Вы можете принимать законы единолично</p>
-<? } ?>
 <h3>Подчинённые</h3>
 <p>
 <strong>Список членов организации:</strong> <input type="button" class="btn" id="posts_show" value="Показать"></p>
@@ -78,7 +75,27 @@ $gft = null;
     })
  </script>
 <? } ?>
-
+<? if ($user->isStateLeader() && $user->state->executiveOrg->leader_can_make_dicktator_bills) { ?>
+<p>Вы можете принимать законы единолично</p>
+<? } ?>
+<? if ($user->isStateLeader() && $user->state->leader_can_drop_legislature) { ?>
+<p>Вы можете распустить организацию «<a href="#" onclick="load_page('org-info',{'id':<?=$user->state->legislature?>});"><?=$user->state->legislatureOrg->name?></a>»</p>
+<? } ?>
+<? if ($user->post->org->can_vote_for_bills) { ?>
+<p>Вы можете голосовать за законопроекты</p>
+<? } ?>
+<? if ($user->post->org->can_create_bills) { ?>
+<p>Вы можете создавать новые законопроекты</p>
+<? } ?>
+<? if ($user->post->org->leader_can_vote_for_bills && $user->isOrgLeader()) { ?>
+<p>Вы можете голосовать за законопроекты</p>
+<? } ?>
+<? if ($user->post->org->leader_can_create_bills && $user->isOrgLeader()) { ?>
+<p>Вы можете создавать новые законопроекты</p>
+<? } ?>
+<? if ($user->post->org->leader_can_veto_bills && $user->isOrgLeader()) { ?>
+<p>Вы можете накладывать вето на законопроекты</p>
+<? } ?>
 
 <h3>Последние законопроекты</h3>
 <p>Список последних законопроектов <input type="button" class="btn" id="bills_show" value="Показать"></p>
@@ -150,7 +167,7 @@ $gft = null;
 	</ul></dt>
 	<dd><?
 
-	 if ($bill->creatorpost && $bill->creatorpost->user) { ?>Предложил<? if ($bill->creatorpost->user->sex === 1) { ?>а<? } ?> <a href="#" onclick="load_page('profile',{'id':<?=$bill->creatorpost->user->id ?>})"><?=htmlspecialchars($bill->creatorpost->user->name) ?></a><? } ?> <span class="formatDate" data-unixtime="<?=$bill->created?>"><?=date("d-M-Y H:i",$bill->created) ?></span><br>
+	 if ($bill->creatorUser) { ?>Предложил<? if ($bill->creatorUser->sex === 1) { ?>а<? } ?> <a href="#" onclick="load_page('profile',{'id':<?=$bill->creatorUser->id ?>})"><?=htmlspecialchars($bill->creatorUser->name) ?></a><? } ?> <span class="formatDate" data-unixtime="<?=$bill->created?>"><?=date("d-M-Y H:i",$bill->created) ?></span><br>
 	<? if ($bill->accepted) { ?>
 		Вступил в силу <span class="formatDate" data-unixtime="<?=$bill->accepted?>"><?=date("d-M-Y H:i",$bill->accepted) ?></span>
 	<? } else { ?>
@@ -226,7 +243,13 @@ $gft = null;
 </script>
 <? } ?>
 
-<? if ($user->state->executiveOrg->leader_post === $user->post_id && $user->state->executiveOrg->leader_can_make_dicktator_bills) { ?>
+<? if (
+        ($user->isOrgLeader() && $user->post->org->leader_can_make_dicktator_bills)
+     || ($user->isOrgLeader() && $user->post->org->leader_can_create_bills)
+     || ($user->post->org->can_create_bills)
+    ) { 
+    $isDicktator = !!($user->isOrgLeader() && $user->post->org->leader_can_make_dicktator_bills);
+    ?>
 
 <div class="btn-group">
   <button class="btn btn-small btn-primary" onclick="new_zakon_modal()" >
@@ -240,7 +263,13 @@ $gft = null;
   </div>
   <div id="new_zakon_select_modal_body" class="modal-body">
     <select id="new_zakon_select">
-    	<? foreach (BillType::find()->where(['only_auto'=>0])->all() as $bill_type) { ?>
+    	<? 
+            $where = ['only_auto'=>0];
+            if ($isDicktator) {
+            } else {
+                $where['only_dictator']=0;
+            }
+        foreach (BillType::find()->where($where)->all() as $bill_type) { ?>
     		<option value="<?=$bill_type->id?>" ><?=htmlspecialchars($bill_type->name)?></option>
 	    <? } ?>
     </select>
