@@ -4,6 +4,7 @@ use app\models\BillType;
 use app\models\Region;
 use app\models\GovermentFieldType;
 use app\models\Org;
+use app\models\Bill;
 
 $gft = null;
 ?>
@@ -96,11 +97,28 @@ $gft = null;
 <? if ($user->post->org->leader_can_veto_bills && $user->isOrgLeader()) { ?>
 <p>Вы можете накладывать вето на законопроекты</p>
 <? } ?>
-
+<? if ($user->post->canVoteForBills()) { ?>
+<h3>Законопроекты на голосовании</h3>
+<dl>
+<?
+    $bills = Bill::find()->where(['accepted'=>0,'state_id'=>$user->state_id])->all();
+    foreach ($bills as $bill) {
+?>
+    <dt>
+        <?=$bill->type->name?>
+    </dt>
+    <dd>
+        
+    </dd>
+<? } ?>
+</dl>
+<? } ?>
 <h3>Последние законопроекты</h3>
 <p>Список последних законопроектов <input type="button" class="btn" id="bills_show" value="Показать"></p>
 <dl id="bills_list" style="display:none" >
-<? foreach ($bills as $bill) { ?>
+<? 
+    $bills = Bill::find()->where(['and', 'state_id = '.$user->state_id, "accepted > 0"])->limit(10)->orderBy('vote_ended DESC')->all();
+    foreach ($bills as $bill) { ?>
 	<dt><?=htmlspecialchars($bill->type->name)?> <br><ul>
 		<? foreach (json_decode($bill->data,true) as $key => $value) {
 			foreach ($bill->type->fields as $field) {
@@ -243,11 +261,7 @@ $gft = null;
 </script>
 <? } ?>
 
-<? if (
-        ($user->isOrgLeader() && $user->post->org->leader_can_make_dicktator_bills)
-     || ($user->isOrgLeader() && $user->post->org->leader_can_create_bills)
-     || ($user->post->org->can_create_bills)
-    ) { 
+<? if ($user->post->canCreateBills()) { 
     $isDicktator = !!($user->isOrgLeader() && $user->post->org->leader_can_make_dicktator_bills);
     ?>
 

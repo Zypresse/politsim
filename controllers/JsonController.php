@@ -386,7 +386,7 @@ class JsonController extends MyController {
             $party = Party::findByPk($party_id);
             if (is_null($party))
                 return $this->_r("Party not found");
-            if ($user->state_id === $party->state_id)
+            if ($user->state_id !== $party->state_id)
                 return $this->_r("You have not citizenship for this party");
 
             // тут проверка на тип партии и т.п.

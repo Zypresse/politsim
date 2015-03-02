@@ -61,4 +61,15 @@ class Post extends MyModel
     {
         return $this->hasOne('app\models\User', array('post_id' => 'id'));
     }
+    
+    public function canCreateBills()
+    {
+        return ($this->user->isOrgLeader() && ($this->org->leader_can_make_dicktator_bills || $this->org->leader_can_create_bills))
+                || ($this->org->can_create_bills);
+    }
+    
+    public function canVoteForBills()
+    {
+        return (($this->user->isOrgLeader() && $this->org->leader_can_vote_for_bills) || $this->org->can_vote_for_bills);
+    }
 }

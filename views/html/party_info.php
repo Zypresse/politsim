@@ -85,7 +85,7 @@
   </button>
 </div>
 	
-<? } elseif (!$user->party_id && $user->state_id === $state->id) { ?>
+<? } elseif (!$user->party_id && $user->state_id === $party->state_id) { ?>
 
 <div class="btn-group">
   <button class="btn btn-small dropdown-info btn-info" onclick="json_request('join-party',{'party_id':<?=$party->id?>})">

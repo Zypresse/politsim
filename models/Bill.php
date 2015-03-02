@@ -57,6 +57,10 @@ class Bill extends MyModel
         ];
     }
 
+    public function getVotes()
+    {
+        return $this->hasMany('app\models\BillVote', array('bill_id' => 'id'));
+    }
     public function getType()
     {
         return $this->hasOne('app\models\BillType', array('id' => 'bill_type'));
