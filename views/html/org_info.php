@@ -68,12 +68,12 @@ use app\components\MyHtmlHelper;
 
 <? foreach ($org->posts as $player) { ?>
 <? if ($player->user) { ?>
-<a href="#" onclick="$('.org_member').popover('destroy');load_page('profile',{'uid':<?=$player->user->id?>})" rel="popover" class="org_member" data-content="<img src='<?=$player->user->photo?>' class='img-polaroid popover_avatar' alt='' ><p><strong><?=htmlspecialchars($player->user->name)?></strong> <? if ($player->user->party_id) { ?>(<?=htmlspecialchars($player->user->party->short_name)?>)<? } ?></p><p style='margin-top:10px'><?=$player->user->star?><img src='/img/star.png' alt='' > <?=$player->user->heart?><img src='/img/heart.png' alt=''> <?=$player->user->chart_pie?><img src='/img/chart_pie.png' alt='' ></p>" data-original-title="<?=htmlspecialchars($player->name)?>" >
-<img style="background-color:#eee" src="<?=$player->user->photo?>" class="img-polaroid" alt="<?=htmlspecialchars($player->user->name)?>">
+<a href="#" onclick="$('.org_member').popover('destroy');load_page('profile',{'uid':<?=$player->user->id?>})" rel="popover" class="org_member" data-content="<img src='<?=$player->user->photo?>' class='img-polaroid popover_avatar' alt='' ><p><strong><?=htmlspecialchars($player->user->name)?></strong> <? if ($player->user->party_id) { ?>(<?=htmlspecialchars($player->user->party->short_name)?>)<? } ?></p><p style='margin-top:10px'><?=$player->user->star?><img src='/img/star.png' alt='' > <?=$player->user->heart?><img src='/img/heart.png' alt=''> <?=$player->user->chart_pie?><img src='/img/chart_pie.png' alt='' ><?=$player->partyReserve ? "<br><span style='font-size:70%'>Пост зарезервирован партией «{$player->partyReserve->short_name}»</span>":""?></p>" data-original-title="<?=htmlspecialchars($player->name)?>" >
+<img style="background-color:<?=$player->partyReserve ? MyHtmlHelper::getPartyColor($player->partyReserve->ideologyInfo->d,true) : '#eee'?>" src="<?=$player->user->photo?>" class="img-polaroid" alt="<?=htmlspecialchars($player->user->name)?>">
 </a>
 <? } else { ?>
-<a href="#" rel="popover" class="org_member" data-content="Не назначен" data-original-title="<?=htmlspecialchars($player->name)?>" >
-<img style="background-color:#eee" src="/img/chair.png" class="img-polaroid" alt="<?=htmlspecialchars($player->name)?>">
+<a href="#" rel="popover" class="org_member" data-content="<p>Не назначен<?=$player->partyReserve ? "<br><span style='font-size:70%'>Пост зарезервирован партией «{$player->partyReserve->short_name}»</span>":""?></p>" data-original-title="<?=htmlspecialchars($player->name)?>" >
+    <img style="background-color:<?=$player->partyReserve ? MyHtmlHelper::getPartyColor($player->partyReserve->ideologyInfo->d,true) : '#eee'?>" src="/img/chair.png" class="img-polaroid" alt="<?=htmlspecialchars($player->name)?>">
 </a>
 <? } ?>
 <? } ?>
