@@ -48,7 +48,15 @@
 
 <h3>Действия</h3>
 <div class="btn-toolbar">
-<? if ($user->isPartyLeader()) { ?>
+<? if ($user->isPartyLeader()) {
+    $emptyPosts = [];
+    foreach ($user->state->legislatureOrg->posts as $post) {
+        if ($post->party_reserve === $user->party_id && is_null($post->user)) {
+            $emptyPosts[] = $post;
+        }
+    }
+    if (sizeof($emptyPosts)) echo "<p style='color:red'>Есть свободные посты в правительстве: ". MyHtmlHelper::formateNumberword (sizeof($emptyPosts), "зарезервированных должностей", "зарезервированная должность", "зарезервированные должности")  . "</p>";
+    ?>
 <div class="btn-group">
   <button class="btn btn-small dropdown-toggle btn-info" data-toggle="dropdown">
     Управление <span class="caret"></span>
@@ -56,8 +64,46 @@
   <ul class="dropdown-menu">
     <li><a href="#" onclick="rename_party(<?=$party->id?>)" >Переименовать партию</a></li>
     <li><a href="#" onclick="change_party_logo(<?=$party->id?>)" >Сменить эмблему партии</a></li>
+    <? if (sizeof($emptyPosts)) { ?><li><a href="#" onclick="$('#party-reserve-post-set').modal()">Назначить на зарезервированный пост</a></li><? } ?>
   </ul>
 </div>
+    <? if (sizeof($emptyPosts)) { ?>
+<div style="display:none" class="modal" id="party-reserve-post-set" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel">Создание партии</h3>
+  </div>
+  
+  <div id="party-reserve-post-set_body" class="modal-body">
+     <form class="well form-horizontal">
+      <div class="control-group">
+	    <label class="control-label" for="#post_id">Пост</label>
+	    <div class="controls">
+                <select id="post_id">
+                <? foreach ($emptyPosts as $post) { ?>
+                    <option value="<?=$post->id?>"><?=$post->name?></option>
+                <? } ?>
+                </select>
+	    </div>
+	  </div>
+      <div class="control-group">
+	    <label class="control-label" for="#user_id">Человек</label>
+	    <div class="controls">
+                <select id="user_id">
+                <? foreach ($party->members as $user) { if (!$user->post_id) {?>
+                    <option value="<?=$user->id?>"><?=$user->name?></option>
+                <? }} ?>
+                </select>
+	    </div>
+	  </div>   
+     </form>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true" onclick="party_reserve_post_set()">Назначить</button>
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+  </div>
+</div>
+<? } ?>
 <script type="text/javascript">
   
   function rename_party(id) {
@@ -72,6 +118,9 @@
     if (image != "null" && image) {
       json_request('change-party-logo',{'id':id,'image':image});
     }
+  }
+  function party_reserve_post_set() {
+      json_request('party-reserve-set-post',{'post_id':$('#post_id').val(),'uid':$('#user_id').val()});
   }
 
 </script>

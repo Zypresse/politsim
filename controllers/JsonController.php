@@ -464,7 +464,7 @@ class JsonController extends MyController {
             $party->state_id = $user->state_id;
             $party->leader = $user->id;
             $party->ideology = $ideology;
-
+            
             if ($party->save()) {
                 $user->party_id = $party->id;
                 $user->save();
@@ -897,6 +897,34 @@ class JsonController extends MyController {
                 return $this->_r("Not allowed");
         } else
             return $this->_r("Invalid tweet ID");
+    }
+    
+    public function actionPartyReserveSetPost($uid,$post_id) {
+        $uid = intval($uid);
+        $post_id = intval($post_id);
+        if ($uid && $post_id) {
+            $user = $this->getUser();
+            if (!($user->isPartyLeader()))
+                return $this->_r("Have not permissions");
+            if ($uid === $user->id) {
+                $nuser = $user;
+            } else {
+                $nuser = User::findByPk($uid);
+                if (is_null($nuser))
+                    return $this->_r("User not found");
+                
+                if ($nuser->party_id !== $user->party_id || $nuser->post_id)
+                    return $this->_r("Not allowed");
+            }
+            $post = Post::findByPk($post_id);
+            if (is_null($post))
+                return $this->_r("Post not found");
+            $nuser->post_id = $post->id;
+            $nuser->save();
+            $this->result = "ok";
+            return $this->_r();
+        } else
+            return $this->_r("Invalid fields");
     }
 
 }

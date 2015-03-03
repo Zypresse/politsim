@@ -175,7 +175,7 @@
     image = $('#party_image').val();
 		ideology = $('#party_ideology').val();
 		//$('.modal-backdrop').hide(); 
-		json_request('create-party',{'name':name,'name_short':name_short,'image':image,'ideology':ideology,'firsth_of_state':firsth_of_state},false);
+		json_request('create-party',{'name':name,'short_name':name_short,'image':image,'ideology':ideology,'firsth_of_state':firsth_of_state},false);
     load_page('party-info',{},500);
 		return true;
 	}

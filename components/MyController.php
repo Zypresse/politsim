@@ -20,6 +20,7 @@ namespace app\components;
 
 use yii;
 use yii\web\Controller;
+use app\models\User;
 
 class MyController extends Controller
 {
@@ -66,5 +67,10 @@ class MyController extends Controller
     public function actionInvalidAuthkey()
     {
         return $this->_r("Invalid auth key");
+    }
+    
+    protected function getUser()
+    {
+        return User::findByPk($this->viewer_id);
     }
 }

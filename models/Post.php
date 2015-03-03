@@ -61,6 +61,10 @@ class Post extends MyModel
     {
         return $this->hasOne('app\models\User', array('post_id' => 'id'));
     }
+    public function getPartyReserve()
+    {
+        return $this->hasOne('app\models\Party', array('id' => 'party_reserve'));
+    }
     
     public function canCreateBills()
     {
