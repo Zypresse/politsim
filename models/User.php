@@ -118,6 +118,10 @@ class User extends MyModel
     {
         return $this->hasMany('app\models\ElectVote', array('uid' => 'id'));
     }
+    public function getStocks()
+    {
+        return $this->hasMany('app\models\Stock', array('user_id' => 'id'));
+    }
     public function getRequests()
     {
         return $this->hasMany('app\models\ElectRequest', array('candidat' => 'id'));

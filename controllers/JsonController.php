@@ -21,6 +21,8 @@ use app\models\State;
 use app\models\Party;
 use app\models\Dealing;
 use app\models\Twitter;
+use app\models\Holding;
+use app\models\Stock;
 
 class JsonController extends MyController {
 
@@ -954,5 +956,37 @@ class JsonController extends MyController {
                 return $this->_r("Not allowed");
         } else
             return $this->_r("Invalid fields");
+    }
+    
+    public function actionCreateHolding($name)
+    {
+        $user = $this->getUser();
+        if ($user->state && $user->state->allow_register_holdings) {
+            if ($user->money>=10000) {
+        if ($name) {
+            $holding = new Holding();
+            $holding->name = $name;
+            $holding->state_id = $user->state_id;
+            if ($holding->save()) {
+                $stock = new Stock();
+                $stock->count = 10000;
+                $stock->holding_id = $holding->id;
+                $stock->user_id = $user->id;
+                $stock->save();
+                
+                $user->money -= 10000;
+                $user->save();
+                
+                $this->result = 'ok';
+                return $this->_r();
+            } else {
+                return $this->_r($holding->getErrors());
+            }
+        } else
+            return $this->_r("Invalid fields");
+        } else
+            return $this->_r("Недостаточно денег");
+        } else
+            return $this->_r("Not allowed");
     }
 }

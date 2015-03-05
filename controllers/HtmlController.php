@@ -16,6 +16,8 @@ use app\models\Party;
 use app\models\State;
 use app\models\Ideology;
 use app\models\Twitter;
+use app\models\Holding;
+use app\models\Stock;
 
 class HtmlController extends MyController {
 

@@ -123,6 +123,10 @@ class GovermentFieldType extends MyModel
                 $value->state->leader_can_drop_legislature = ($value->value) ? 1 : 0;
                 $value->state->save();
             break;
+            case 16: // Право создавать холдинги
+                $value->state->allow_register_holdings = ($value->value) ? 1 : 0;
+                $value->state->save();
+            break;
             
         }
     }

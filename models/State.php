@@ -22,6 +22,7 @@ use app\components\MyModel;
  * @property integer $sum_star
  * @property integer $allow_register_parties
  * @property integer $leader_can_drop_legislature
+ * @property integer $allow_register_holdings
  */
 class State extends MyModel
 {
@@ -40,7 +41,7 @@ class State extends MyModel
     {
         return [
             [['name', 'short_name', 'capital'], 'required'],
-            [['legislature', 'executive', 'state_structure', 'goverment_form', 'group_id','allow_register_parties','population','sum_star','leader_can_drop_legislature'], 'integer'],
+            [['legislature', 'executive', 'state_structure', 'goverment_form', 'group_id','allow_register_parties','population','sum_star','leader_can_drop_legislature','allow_register_holdings'], 'integer'],
             [['name'], 'string', 'max' => 100],
             [['short_name'], 'string', 'max' => 10],
             [['capital', 'color'], 'string', 'max' => 7]
