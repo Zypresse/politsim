@@ -13,6 +13,7 @@ use app\models\Resurse;
 use app\models\Region;
 use app\models\BillType;
 use app\models\Bill;
+use app\models\BillVote;
 use app\models\ElectRequest;
 use app\models\ElectVote;
 use app\models\Post;
@@ -926,5 +927,32 @@ class JsonController extends MyController {
         } else
             return $this->_r("Invalid fields");
     }
-
+    
+    public function actionVoteForBill($bill_id,$variant)
+    {
+        $bill_id = intval($bill_id);
+        $variant = intval($variant);
+        
+        if ($bill_id) {
+            $user = $this->getUser();
+            if (is_null($user->post))
+                return $this->_r("Not allowed");
+            if ($user->post->canVoteForBills()) {
+                $bill = Bill::findByPk($bill_id);
+                if ($bill->state_id === $user->state_id) {
+                    $bv = new BillVote();
+                    $bv->bill_id = $bill_id;
+                    $bv->post_id = $user->post_id;
+                    $bv->variant = $variant;
+                    $bv->save();
+                    
+                    $this->result = 'ok';
+                    return $this->_r();
+                } else 
+                    return $this->_r("Not allowed");
+            } else
+                return $this->_r("Not allowed");
+        } else
+            return $this->_r("Invalid fields");
+    }
 }

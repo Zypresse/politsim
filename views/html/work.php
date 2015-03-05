@@ -5,6 +5,7 @@ use app\models\Region;
 use app\models\GovermentFieldType;
 use app\models\Org;
 use app\models\Bill;
+use app\components\widgets\BillListWidget;
 
 $gft = null;
 ?>
@@ -99,101 +100,17 @@ $gft = null;
 <? } ?>
 <? if ($user->post->canVoteForBills()) { ?>
 <h3>Законопроекты на голосовании</h3>
-<dl>
-<?
-    $bills = Bill::find()->where(['accepted'=>0,'state_id'=>$user->state_id])->all();
-    foreach ($bills as $bill) {
-?>
-    <dt>
-        <?=$bill->type->name?>
-    </dt>
-    <dd>
-        
-    </dd>
+<?= BillListWidget::widget(['id'=>'bills_on_vote_list', 'showVoteButtons'=>true,'user'=>$user, 'bills'=>Bill::find()->where(['accepted'=>0,'state_id'=>$user->state_id])->all()]) ?>
 <? } ?>
-</dl>
-<? } ?>
-<h3>Последние законопроекты</h3>
-<p>Список последних законопроектов <input type="button" class="btn" id="bills_show" value="Показать"></p>
-<dl id="bills_list" style="display:none" >
-<? 
-    $bills = Bill::find()->where(['and', 'state_id = '.$user->state_id, "accepted > 0"])->limit(10)->orderBy('vote_ended DESC')->all();
-    foreach ($bills as $bill) { ?>
-	<dt><?=htmlspecialchars($bill->type->name)?> <br><ul>
-		<? foreach (json_decode($bill->data,true) as $key => $value) {
-			foreach ($bill->type->fields as $field) {
-				if ($field->system_name === $key) {
-					$name = $field->name;
-					break;
-				}
-			}
-		 ?>
-		<li style="font-size:80%">
-			<?=htmlspecialchars($name)?> — 
-				<?
-					switch ($key) {
-						case 'new_capital':
-							$region = Region::findByCode($value);
-							$value = $region->city;
-						break;
-						case 'new_flag':
-							$value = "<img src='{$value}' alt='New flag' style='width:50px'>";
-						break;
-						case 'new_color':
-							$value = "<span style=\"background-color:{$val}\"> &nbsp; </span>";
-						break;
-						case 'goverment_field_type':
-							$gft = GovermentFieldType::findByPk($value);							
-							$value = $gft->name;
-						break;
-						case 'elected_variant':
-							$value = explode('_', $value);
-							$org = Org::findByPk($value[0]);
-							$value = ($value[1]) ? "Выборы на пост «{$org->leader->name}» в организации «{$org->name}»" : "Выборы членов организации «{$org->name}»";
-						break;
-						case 'legislature_type':
-							$value = (intval($value) === 1) ? 'Стандартный парламент (10 мест)' : 'Неизвестно';
-						break;
-						case 'goverment_field_value':
-						// var_dump($gft);
-						if ($gft)
-							switch ($gft->type) {
-								case 'checkbox':
-									$value = $value ? 'Да' : 'Нет';
-								break;
-								case 'org_dest_leader':
-								case 'org_dest_members':
-									$value = [
-										'nation_individual_vote'=>'голосование населения за кандидатов',
-										'nation_party_vote'=>'голосование населения за партии',
-										'other_org_vote'=>'голосование членов другой организации',
-										'org_vote'=>'голосование членов этой же организации',
-										'unlimited'=>'пожизненно',
-										'dest_by_leader'=>'назначаются лидером',
-										'nation_one_party_vote'=>'голосование населения за членов единственной партии',
-									][$value];
-								break;
-							}
-						break;
-						default:
-							$value = htmlspecialchars($value);
-						break;
-					}
-				?>
-				&laquo;<span class="dynamic_field" data-type="<?=$key?>"><?=$value?></span>&raquo;</li>
-		<? } ?>
-	</ul></dt>
-	<dd><?
+<script>
+    function voteForBill(bill_id,variant) {
+            json_request('vote-for-bill',{'bill_id':bill_id,'variant':variant});
+    }
+</script>
+<h3>Последние принятые законопроекты</h3>
 
-	 if ($bill->creatorUser) { ?>Предложил<? if ($bill->creatorUser->sex === 1) { ?>а<? } ?> <a href="#" onclick="load_page('profile',{'id':<?=$bill->creatorUser->id ?>})"><?=htmlspecialchars($bill->creatorUser->name) ?></a><? } ?> <span class="formatDate" data-unixtime="<?=$bill->created?>"><?=date("d-M-Y H:i",$bill->created) ?></span><br>
-	<? if ($bill->accepted) { ?>
-		Вступил в силу <span class="formatDate" data-unixtime="<?=$bill->accepted?>"><?=date("d-M-Y H:i",$bill->accepted) ?></span>
-	<? } else { ?>
-		Голосование продлится до <span class="formatDate" data-unixtime="<?=$bill->vote_ended?>"><?=date("d-M-Y H:i",$bill->vote_ended) ?></span>
-	<? } ?>
-	</dd>
-<? } ?>
-</dl>
+<p>Список последних законопроектов <input type="button" class="btn" id="bills_show" value="Показать"></p>
+<?= BillListWidget::widget(['id'=>'bills_list', 'style'=>'display:none', 'showVoteButtons'=>false, 'bills'=>Bill::find()->where(['and', 'state_id = '.$user->state_id, "accepted > 0"])->limit(10)->orderBy('vote_ended DESC')->all()]) ?>
 <script type="text/javascript">
  $('#bills_show').toggle(function() {
     	$(this).val('Скрыть');

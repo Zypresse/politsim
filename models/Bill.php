@@ -78,4 +78,10 @@ class Bill extends MyModel
     {
         return $this->type->accept($this);
     }
+    
+    public function end()
+    {
+        $this->accepted = -1;
+        $this->save();
+    }
 }

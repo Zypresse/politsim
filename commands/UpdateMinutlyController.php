@@ -75,7 +75,22 @@ class UpdateMinutlyController extends Controller {
             // TODO голосование по обычным законопроектам
             if ($bill->dicktator) {
                 $bill->accept();
-            } 
+            } else {
+                $za = 0;
+                $protiv = 0;
+                foreach ($bill->votes as $vote) {
+                    if ($vote->variant === 1) {
+                        $za++;
+                    } elseif ($vote->variant === 2) {
+                        $protiv++;
+                    }
+                }
+                if ($za > $protiv) {
+                    $bill->accept();
+                } else {
+                    $bill->end();
+                }
+            }
         }
         
     }
