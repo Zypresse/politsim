@@ -94,6 +94,7 @@ class ElectionsController extends Controller {
                         'name' => $result['req']->user->name,
                         'party_id' => $result['req']->user->party_id,
                         'party_name' => $result['req']->user->party ? $result['req']->user->party->name : ($result['req']->user->sex === 1 ? 'Беспартийная' : 'Беспартийный'),
+                        'party_short_name' => $result['req']->user->party ? $result['req']->user->party->short_name : ($result['req']->user->sex === 1 ? 'бесп.' : 'бесп.'),
                         'votes_percents' => round(100 * $result['rating'] / $sumRatings, 2),
                         'votes_population' => round($org->state->population * $result['rating'] / $sumRatings)
                     ];
@@ -104,7 +105,7 @@ class ElectionsController extends Controller {
                 $electResult->org_id = $org->id;
                 $electResult->leader = 1;
                 $electResult->date = time();
-                $electResult->data = json_encode($resultToSave);
+                $electResult->data = json_encode($resultToSave,JSON_UNESCAPED_UNICODE);
                 $electResult->save();
             }
             if ($org->isElected()) {
@@ -178,6 +179,7 @@ class ElectionsController extends Controller {
                     $resultToSave['results'][] = [                        
                         'id' => $result['req']->party->id,
                         'name' => $result['req']->party->name,
+                        'short_name' => $result['req']->party->short_name,
                         'posts' => round($result['rating'] / $sumRatings * $count),
                         'votes_percents' => round(100 * $result['rating'] / $sumRatings, 2),
                         'votes_population' => round($org->state->population * $result['rating'] / $sumRatings)
@@ -189,7 +191,7 @@ class ElectionsController extends Controller {
                 $electResult->org_id = $org->id;
                 $electResult->leader = 0;
                 $electResult->date = time();
-                $electResult->data = json_encode($resultToSave);
+                $electResult->data = json_encode($resultToSave,JSON_UNESCAPED_UNICODE);
                 $electResult->save();
             }
 

@@ -61,6 +61,35 @@
 
 ?>
 <h3>Выборы в государстве <a href="#" onclick="load_page('state-info',{'id':<?=$state->id?>})"><?=htmlspecialchars($state->name)?></a></h3>
+<div style="display:none" class="modal" id="old-elections" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel">Прошлые выборы</h3>
+  </div>
+  
+  <div id="old-elections_body" class="modal-body">
+    
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+  </div>
+</div>
+<button class="btn btn-primary" onclick="$.ajax(
+            {
+              url: '/api/modal/old-elections?state_id=<?=$state->id?>',
+              beforeSend:function() {
+                  $('#old-elections_body').empty();
+              },
+              success:function(d) {
+                  if (typeof(d) == 'object' && d.result == 'error') {
+                    show_custom_error(d.error);
+                } else {
+                    $('#old-elections_body').html(d);
+                    $('#old-elections').modal();
+                }
+              },
+                error:show_error
+            }); ">Результаты прошлых выборов</button><br><br>
 
 <? if ($state->executiveOrg->isElected()) { ?>
 <? if ($state->executiveOrg->isGoingElects()) { ?>
@@ -84,8 +113,6 @@
 <li><a href="#" onclick="load_page('party-info',{'id':<?=$request->party_id?>})"><?=htmlspecialchars($request->party->name)?></a></li>
 <? } ?></ul><? } else { ?><strong>Никто ещё не подал заявку на выборы</strong><? } ?>
 </p><br><? } ?><? } ?>
-
-
 
 <? if ($state->executiveOrg->isLeaderElected()) { ?>
 <? if ($state->executiveOrg->isGoingElects()) { ?>

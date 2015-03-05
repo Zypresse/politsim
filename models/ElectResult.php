@@ -49,4 +49,9 @@ class ElectResult extends MyModel
             'data' => 'Data',
         ];
     }
+    
+    public function getOrg()
+    {
+        return $this->hasOne('app\models\Org', array('id' => 'org_id'));
+    }
 }

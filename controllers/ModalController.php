@@ -9,6 +9,7 @@ use app\models\Region;
 use app\models\Post;
 use app\models\User;
 use app\models\Org;
+use app\models\State;
 use app\models\ElectRequest;
 use app\models\ElectVote;
 use app\models\BillType;
@@ -16,6 +17,7 @@ use app\models\BillTypeField;
 use app\models\GovermentFieldType;
 use app\models\Population;
 use app\models\Twitter;
+use app\models\ElectResult;
 
 class ModalController extends MyController {
 
@@ -294,6 +296,31 @@ class ModalController extends MyController {
             }
 
             return $this->render("twitter_feed", ['tweets' => $tweets, 'viewer_id' => $this->viewer_id]);
+        } else
+            return $this->_r("Invalid params");
+    }
+    
+    
+    public function actionOldElections($state_id)
+    {
+        $state_id = intval($state_id);
+        if ($state_id) {
+            $state = State::findByPk($state_id);
+            if (is_null($state))
+                return $this->_r("State not found");
+            
+            $results = ElectResult::find()->where("org_id = {$state->legislature} OR org_id = {$state->executive}")->orderBy('date')->all();
+            return $this->render("old-elections", ['results' => $results]);
+        } else
+            return $this->_r("Invalid params");
+    }
+    
+    public function actionElectionsResult($id) {
+        $id = intval($id);
+        if ($id) {
+            $result = ElectResult::findByPk($id);
+            
+            return $this->render("elect-result", ['result' => $result]);
         } else
             return $this->_r("Invalid params");
     }
