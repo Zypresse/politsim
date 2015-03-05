@@ -141,6 +141,21 @@ class User extends MyModel
     {
         return ($this->isOrgLeader() && $this->post->org->isExecutive());
     }
+    
+    public function isShareholder(Holding $holding)
+    {
+        foreach ($holding->stocks as $stock) {
+            if ($stock->user_id === $this->id) return true;
+        }
+        return false;
+    }
+    public function isHaveControllingStake(Holding $holding)
+    {
+        foreach ($holding->stocks as $stock) {
+            if ($stock->user_id === $this->id && $stock->getPercents()>50.0) return true;
+        }
+        return false;
+    }
 
     public function getTwitterSubscribersCount()
     {

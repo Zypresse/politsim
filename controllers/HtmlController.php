@@ -195,5 +195,18 @@ class HtmlController extends MyController {
 
         return $this->render("twitter", ['viewer_id' => $this->viewer_id, 'timeFeedGenerated' => $time, 'user' => $user, 'tweets' => $tweets, 'feed' => $feed]);
     }
+    
+    public function actionHoldingInfo($id)
+    {
+        $id = intval($id);
+        if ($id) {
+            $holding = Holding::findByPk($id);
+            if (is_null($holding))
+                return $this->_r("Holding not found");
+            
+            return $this->render("holding-info",['holding'=>$holding,'user'=>$this->getUser()]);
+        } else
+            return $this->_r("Invalid holding ID");
+    }
 
 }

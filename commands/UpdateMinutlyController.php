@@ -7,6 +7,7 @@ use app\models\Region;
 use app\models\State;
 use app\models\Party;
 use app\models\Bill;
+use app\models\Holding;
 /**
  * Update all, crontab minutly
  *
@@ -70,9 +71,9 @@ class UpdateMinutlyController extends Controller {
         }
         unset($parties);
         
+        // Update bills
         $bills = Bill::find()->where('accepted = 0 AND vote_ended <= '.time())->all();
         foreach ($bills as $bill) {
-            // TODO голосование по обычным законопроектам
             if ($bill->dicktator) {
                 $bill->accept();
             } else {
@@ -91,6 +92,20 @@ class UpdateMinutlyController extends Controller {
                     $bill->end();
                 }
             }
+        }
+        
+        // update holdings
+        $holdings = Holding::find()->all();
+        foreach ($holdings as $holding) {
+            $capital = 0.0;
+            
+            // пока цена на акции 1 монета
+            $capital += 1* $holding->getSumStocks();
+            
+            $capital += $holding->balance;
+            
+            $holding->capital = $capital;
+            $holding->save();
         }
         
     }

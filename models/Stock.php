@@ -73,5 +73,9 @@ class Stock extends MyModel
     {
         return 100 * $this->count / $this->holding->getSumStocks();
     }
+    public function getCost()
+    {
+        return $this->holding->capital * $this->getPercents() / 100;
+    }
             
 }

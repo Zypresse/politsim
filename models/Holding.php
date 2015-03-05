@@ -11,6 +11,7 @@ use app\components\MyModel;
  * @property integer $id
  * @property string $name
  * @property integer $state_id
+ * @property double $capital
  */
 class Holding extends MyModel
 {
@@ -30,6 +31,7 @@ class Holding extends MyModel
         return [
             [['name', 'state_id'], 'required'],
             [['state_id'], 'integer'],
+            [['capital'], 'number'],
             [['name'], 'string', 'max' => 255],
             [['name'], 'unique']
         ];
@@ -44,6 +46,7 @@ class Holding extends MyModel
             'id' => 'ID',
             'name' => 'Name',
             'state_id' => 'State ID',
+            'capital' => 'Капитализация',
         ];
     }
     
@@ -54,7 +57,7 @@ class Holding extends MyModel
     }
     public function getStocks()
     {
-        return $this->hasMany('app\models\Stock', array('holding_id' => 'id'));
+        return $this->hasMany('app\models\Stock', array('holding_id' => 'id'))->orderBy('count DESC');
     }
     public function getSumStocks()
     {

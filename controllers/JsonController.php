@@ -965,8 +965,9 @@ class JsonController extends MyController {
             if ($user->money>=10000) {
         if ($name) {
             $holding = new Holding();
-            $holding->name = $name;
+            $holding->name = trim(strip_tags($name));
             $holding->state_id = $user->state_id;
+            $holding->balance = 5000;
             if ($holding->save()) {
                 $stock = new Stock();
                 $stock->count = 10000;

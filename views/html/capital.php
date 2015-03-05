@@ -7,12 +7,14 @@ use app\components\MyHtmlHelper;
 <table class="table">
 <? if (sizeof($user->stocks)) { foreach ($user->stocks as $stock) { ?>
     <tr>
-        <td><?=$stock->holding->name?></td>
-        <td><?=MyHtmlHelper::formateNumberword($stock->count, "акций","акция","акции")?> (<?=$stock->getPercents()?>%)</td>
+        <td><a href="#" onclick="load_page('holding-info',{'id':<?=$stock->holding_id?>})"><?=$stock->holding->name?></a></td>
+        <td><?=MyHtmlHelper::formateNumberword($stock->count, "акций","акция","акции")?> (<?=round($stock->getPercents(),2)?>%)</td>
+        <td>≈ <?=number_format($stock->getCost(),0,'',' ')?> <?=MyHtmlHelper::icon('coins')?></td>
     </tr>
 <? }} else { ?>
     <tr><td colspan="2">Не владеет акциями</td></tr>
 <? } ?></table>
+<? if ($viewer_id === $user->id) { ?>
 <p><button class="btn btn-success" onclick="$('#create_holding_dialog').modal()">Создать холдинг</button></p>
 
 <div style="display:none" class="modal" id="create_holding_dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -29,13 +31,14 @@ use app\components\MyHtmlHelper;
       </div>
       </div>
       <p>Создание холдинга отнимет у вас 10 000 <?=MyHtmlHelper::icon('coins')?></p>
+      <p>Из них 5 000 <?=MyHtmlHelper::icon('coins')?> попадут на расчётный счёт фирмы</p>
   </div>
   <div class="modal-footer">
       <button type="submit" onclick="json_request('create-holding',{'name':$('#holding_name').val()})" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Создать</button>
     <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
   </div></form>
 </div>
-
+<? } ?>
 <h4>Последние совершённые сделки:</h4>
 <table class="table">
 <thead>
