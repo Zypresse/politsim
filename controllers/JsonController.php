@@ -990,4 +990,107 @@ class JsonController extends MyController {
         } else
             return $this->_r("Not allowed");
     }
+    
+    public function actionStocksDealing($holding_id, $count, $cost, $uid) {
+        $holding_id = intval($holding_id);
+        $count = intval($count);
+        $cost = intval($cost);
+        $uid = intval($uid);
+        
+        if ($holding_id && $count && $uid) {
+            $accepter = User::findByPk($uid);
+            if (is_null($accepter))
+                return $this->_r("User not found");
+            
+            $stock = Stock::find()->where(['holding_id'=>$holding_id,'user_id'=>$this->viewer_id])->one();
+            
+            if (is_null($stock) || $stock->count < $count)
+                return $this->_r("Not allowed");
+            
+            $dealing = new Dealing();
+            $dealing->from_uid = $this->viewer_id;
+            $dealing->to_uid = $uid;
+            $dealing->sum = -1*$cost;
+            $dealing->items = json_encode([['type'=>'stock','count'=>$count,'holding_id'=>$holding_id]]);
+            $dealing->time = -1;
+            
+            if ($dealing->save())
+                return $this->_rOk();
+            else
+                return $this->_r($dealing->getErrors());
+            
+        } else
+            return $this->_r("Invalid fields");
+    }
+    
+    public function actionAcceptDealing($id) {
+        $id = intval($id);
+        if ($id) {
+            $dealing = Dealing::findByPk($id);
+            if (is_null($dealing))
+                return $this->_r("Dealing not found");
+            
+            if ($dealing->to_uid !== $this->viewer_id)
+                return $this->_r("Not allowed");
+            
+            if ($dealing->sum < 0 && abs($dealing->sum) > $dealing->recipient->money)
+                return $this->_r("У вас недостаточно денег");
+            
+            if ($dealing->sum > 0 && $dealing->sum > $dealing->sender->money)
+                return $this->_r("У отправителя недостаточно денег");
+            
+            $items = json_decode($dealing->items,true);
+            
+            foreach ($items as $item) {
+                switch ($item['type']) {
+                    case "stock":
+                        $stock = Stock::find()->where(['holding_id'=>$item['holding_id'],'user_id'=>$dealing->from_uid])->one();
+                        if (is_null($stock) || $stock->count < $item['count']) {
+                            return $this->_r("Отправитель не имеет акций, которые предлагает");
+                        }
+                    break;
+                }
+            }
+            
+            $dealing->time = time();
+            $dealing->save();
+            
+            if ($dealing->sum) {
+                $dealing->recipient->money += $dealing->sum;
+                $dealing->recipient->save();
+                $dealing->sender->money -= $dealing->sum;
+                $dealing->sender->save();
+            }
+            
+            foreach ($items as $item) {
+                switch ($item['type']) {
+                    case "stock":
+                        $stock = Stock::find()->where(['holding_id'=>$item['holding_id'],'user_id'=>$dealing->from_uid])->one();
+                        
+                        $recStock = Stock::find()->where(['holding_id'=>$item['holding_id'],'user_id'=>$dealing->to_uid])->one();
+                        if (is_null($recStock)) {
+                            $recStock = new Stock();
+                            $recStock->user_id = $dealing->to_uid;
+                            $recStock->holding_id = $item['holding_id'];
+                            $recStock->count = 0;
+                        }
+                        
+                        $stock->count -= $item['count'];
+                        $recStock->count += $item['count'];
+                        
+                        if ($stock->count>0) {
+                            $stock->save();
+                        } else {
+                            $stock->delete();
+                        }
+                        $recStock->save();
+                    break;
+                }
+            }
+            
+            return $this->_rOk();
+            
+        } else
+            return $this->_r("Invalid ID");
+    }
 }

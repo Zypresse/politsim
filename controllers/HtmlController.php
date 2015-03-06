@@ -48,7 +48,7 @@ class HtmlController extends MyController {
             if (is_null($user))
                 return $this->_r("User not found");
 
-            return $this->render("profile", ['user' => $user, 'is_own' => ($this->viewer_id === $user->id)]);
+            return $this->render("profile", ['user' => $user, 'is_own' => ($this->viewer_id === $user->id), 'viewer' => ($this->viewer_id === $user->id) ? $user : $this->getUser()]);
         } else
             return $this->_r("Invalid uid");
     }
@@ -207,6 +207,24 @@ class HtmlController extends MyController {
             return $this->render("holding-info",['holding'=>$holding,'user'=>$this->getUser()]);
         } else
             return $this->_r("Invalid holding ID");
+    }
+    
+    public function actionMyBuisness()
+    {
+        $user = $this->getUser();
+        if (is_null($user->state))
+            return $this->_r("Нужно иметь гражданство какого-то государства");
+        
+        return $this->render("my-buisness",['user'=>$user]);
+    }
+    
+    public function actionDealings() {
+        
+        $user = $this->getUser();
+        
+
+        return $this->render("dealings", ['user' => $user]);
+
     }
 
 }

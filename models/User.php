@@ -5,6 +5,7 @@ namespace app\models;
 use Yii;
 use app\components\MyModel;
 use app\models\Twitter;
+use app\models\Dealing;
 
 /**
  * This is the model class for table "users".
@@ -125,6 +126,16 @@ class User extends MyModel
     public function getRequests()
     {
         return $this->hasMany('app\models\ElectRequest', array('candidat' => 'id'));
+    }
+    
+    public function getMyDealingsList()
+    {
+        return Dealing::getMyList($this->viewer_id);
+    }
+    
+    public function getNotAcceptedDealingsList()
+    {
+        return Dealing::find()->where(['to_uid'=>$this->id,'time'=>-1])->all();
     }
 
     public function isPartyLeader()

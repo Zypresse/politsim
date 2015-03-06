@@ -6,6 +6,7 @@ use Yii;
 use app\components\MyModel;
 use app\models\Org;
 use app\models\GovermentFieldValue;
+use app\components\vkapi\VkNotification;
 
 /**
  * This is the model class for table "bill_types".
@@ -122,6 +123,10 @@ class BillType extends MyModel
         }
         $bill->accepted = time();
         $bill->save();
+        
+        if ($bill->creatorUser && $bill->creatorUser->uid_vk) {
+            VkNotification::send($bill->creatorUser->uid_vk, "Предложенный вами законопроект, предлагающий «".$this->name."» одобрен и вступил в силу");
+        }
         
         return true;
     }

@@ -42,13 +42,13 @@ use app\components\MyHtmlHelper;
 <div class="btn-toolbar">
 	<div class="btn-group">
   <button class="btn btn-small dropdown-toggle" data-toggle="dropdown">
-    Передать деньги <span class="caret"></span>
+    Провести сделку <span class="caret"></span>
   </button>
   <ul class="dropdown-menu">
-    <li><a href='#' onclick="transfer_money('open')" >Передать деньги открыто</a></li>
-    <!--<li class="divider"></li>-->
-    <li><a href='#' onclick="transfer_money('hidden')" >Передать деньги тайно</a></li>
-    <li><a href="#" onclick="transfer_money('anonym')" >Передать деньги анонимно</a></li>
+    <li><a href='#' onclick="transfer_money()" >Передать деньги</a></li>
+    <li><a href='#' onclick="transfer_stocks()" >Передать акции</a></li>
+    <li class="divider"></li>
+    <li><a href="#" onclick="sell_stocks()" >Продать акции</a></li>
   </ul>
 </div><div class="btn-group">
   <button class="btn btn-small dropdown-toggle" data-toggle="dropdown">
@@ -66,14 +66,14 @@ use app\components\MyHtmlHelper;
   <ul class="dropdown-menu">
     <li><a href='#' onclick="load_page('twitter',{'uid':<?=$user->id?>})" >Микроблог</a></li>
   </ul>
- </div><div class="btn-group">
+ </div><!--<div class="btn-group">
   <button class="btn btn-small dropdown-toggle" data-toggle="dropdown">
     Подробная информация <span class="caret"></span>
   </button>
   <ul class="dropdown-menu">
     <li><a href='#' onclick="load_page('capital',{'uid':<?=$user->id?>})" >Капитал</a></li>
   </ul>
- </div>
+ </div>-->
 </div>
 <div style="display:none" class="modal" id="transfer_money_dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-header">
@@ -88,24 +88,114 @@ use app\components\MyHtmlHelper;
         <input type="number" id="money_transfer_count" placeholder="100"> <img src="/img/coins.png" alt="золотых монет" title="золотых монет" style="">
       </div>
       </div>
+      <div class="control-group">
+      <label class="control-label" >Способ</label>
+      <div class="controls">   
+          <label><input type="checkbox" value="hidden" name="money_transfer_hidden" id="money_transfer_hidden"> Тайно</label>
+          <label><input type="checkbox" value="anonym" name="money_transfer_anonym" id="money_transfer_anonym"> Анонимно</label>
       <span id="money_transfer_type_open" class="help-block money_transfer_help-block">О передаче денег узнает любой, кто захочет узнать</span>
+      
       <span id="money_transfer_type_hidden" class="help-block money_transfer_help-block">О передаче денег узнают разве что спецслужбы</span>
       <span id="money_transfer_type_anonym" class="help-block money_transfer_help-block">Получатель не узнает, кто передал деньги</span>
       <input type="hidden" id="money_transfer_type" value="open">
+      </div>
+      </div>
     </form>
   </div>
   <div class="modal-footer">
-    <button onclick="json_request('transfer-money',{'type':$('#money_transfer_type').val(),'count':$('#money_transfer_count').val(),'uid':<?=$user->id?>})" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Передать</button>
+    <button onclick="send_money()" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Передать</button>
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+  </div>
+</div>
+<div style="display:none" class="modal" id="transfer_stocks_dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel">Заключение сделки</h3>
+  </div>
+  <div id="transfer_stocks_dialog_body" class="modal-body">
+     <form class="well form-horizontal">
+      <div class="control-group">
+      <label class="control-label" for="#holding_id">Компания</label>
+      <div class="controls">
+          <select id="holding_id" >
+              <? foreach ($viewer->stocks as $stock) { ?>
+              <option value="<?=$stock->holding_id?>"><?=$stock->holding->name?> (<?=number_format($stock->count,0,'',' ')?>)</option>
+              <? } ?>
+          </select>
+      </div>
+      </div>
+      <div class="control-group" id="dealing_cost_block">
+      <label class="control-label" for="#dealing_cost">Цена</label>
+      <div class="controls">
+          <input type="number" id="dealing_cost" placeholder="" > <?=MyHtmlHelper::icon('coins')?>
+      </div>
+      </div>
+      <div class="control-group">
+      <label class="control-label" for="#dealing_stocks_count">Количество</label>
+      <div class="controls">
+        <input type="number" id="dealing_stocks_count" placeholder="">
+      </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button onclick="create_stocks_dealing()" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Создать</button>
     <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
   </div>
 </div>
 <script type="text/javascript">
   
-  function transfer_money(type) {
+  function transfer_money() {
     $('.money_transfer_help-block').hide();
-    $('#money_transfer_type_'+type).show();
-    $('#money_transfer_type').val(type);
+    $('#money_transfer_type_open').show();
+    $('#money_transfer_hidden').change(function(){
+        if ($(this).prop('checked')) {
+            $('#money_transfer_type_hidden').show();
+            $('#money_transfer_type_open').hide();
+        } else {
+            $('#money_transfer_type_hidden').hide();
+            $('#money_transfer_type_open').show();
+        }
+    });
+    $('#money_transfer_anonym').change(function(){
+        if ($(this).prop('checked')) {
+            $('#money_transfer_type_anonym').show();
+        } else {
+            $('#money_transfer_type_anonym').hide();
+            if (!$('#money_transfer_hidden').prop('checked')) $('#money_transfer_type_open').show();
+        }
+    });
     $('#transfer_money_dialog').modal();
+  }
+  
+  function transfer_stocks(){
+      $('#dealing_cost').val(0);
+      $('#dealing_cost_block').hide();
+      $('#transfer_stocks_dialog').modal();
+  }
+  
+  function sell_stocks() {
+      $('#dealing_cost').val('');
+      $('#dealing_cost_block').show();
+      $('#transfer_stocks_dialog').modal();
+  }
+  
+  function send_money() {
+      json_request('transfer-money',{
+          'count':$('#money_transfer_count').val(),
+          'uid':<?=$user->id?>,
+          'is_anonim':$('#money_transfer_anonym').prop('checked') ? 1 : 0,
+          'is_secret':$('#money_transfer_hidden').prop('checked') ? 1 : 0
+      })
+  }
+  
+  function create_stocks_dealing() {
+        json_request('stocks-dealing',{
+            'holding_id':$('#holding_id').val(),
+            'count':$('#dealing_stocks_count').val(),
+            'cost':$('#dealing_cost').val(),
+            'uid':<?=$user->id?>
+        })
   }
 
   function public_statement(type) {

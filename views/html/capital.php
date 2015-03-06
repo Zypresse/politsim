@@ -14,31 +14,6 @@ use app\components\MyHtmlHelper;
 <? }} else { ?>
     <tr><td colspan="2">Не владеет акциями</td></tr>
 <? } ?></table>
-<? if ($viewer_id === $user->id) { ?>
-<p><button class="btn btn-success" onclick="$('#create_holding_dialog').modal()">Создать холдинг</button></p>
-
-<div style="display:none" class="modal" id="create_holding_dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h3 id="myModalLabel">Создать холдинг</h3>
-  </div><form class="well form-horizontal">
-  <div id="create_holding_dialog_body" class="modal-body">
-     
-      <div class="control-group">
-      <label class="control-label" for="#holding_name">Название</label>
-      <div class="controls">
-        <input type="text" id="holding_name" placeholder="ОАО «Рога и копыта»">
-      </div>
-      </div>
-      <p>Создание холдинга отнимет у вас 10 000 <?=MyHtmlHelper::icon('coins')?></p>
-      <p>Из них 5 000 <?=MyHtmlHelper::icon('coins')?> попадут на расчётный счёт фирмы</p>
-  </div>
-  <div class="modal-footer">
-      <button type="submit" onclick="json_request('create-holding',{'name':$('#holding_name').val()})" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Создать</button>
-    <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
-  </div></form>
-</div>
-<? } ?>
 <h4>Последние совершённые сделки:</h4>
 <table class="table">
 <thead>

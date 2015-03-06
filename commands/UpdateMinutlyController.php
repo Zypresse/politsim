@@ -8,6 +8,8 @@ use app\models\State;
 use app\models\Party;
 use app\models\Bill;
 use app\models\Holding;
+use app\components\vkapi\VkNotification;
+
 /**
  * Update all, crontab minutly
  *
