@@ -59,6 +59,11 @@ class Holding extends MyModel
     {
         return $this->hasMany('app\models\Stock', array('holding_id' => 'id'))->orderBy('count DESC');
     }
+    public function getDecisions()
+    {
+        return $this->hasMany('app\models\HoldingDecision', array('holding_id' => 'id'))->orderBy('accepted ASC, created DESC');
+    }
+    
     public function getSumStocks()
     {
         $sum = 0;

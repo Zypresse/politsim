@@ -9,6 +9,7 @@ use app\models\Party;
 use app\models\Bill;
 use app\models\Holding;
 use app\components\vkapi\VkNotification;
+use app\models\HoldingDecision;
 
 /**
  * Update all, crontab minutly
@@ -108,6 +109,24 @@ class UpdateMinutlyController extends Controller {
             
             $holding->capital = $capital;
             $holding->save();
+        }
+        
+        // update holding decisions
+        $decisions = HoldingDecision::find()->all();
+        foreach ($decisions as $decision) {
+            $za = 0; $protiv = 0;
+            foreach ($decision->votes as $vote) {
+                if (intval($vote->variant) === 1) {
+                    $za+=$vote->stock->getPercents();
+                } elseif (intval($vote->variant) === 2) {
+                    $protiv+=$vote->stock->getPercents();
+                }
+            }
+            if ($za >= 50.0) {
+                $decision->accept();
+            } elseif ($protiv >= 50.0 || $decision->created < time()-7*24*60*60) {
+                $decision->delete();
+            }
         }
         
     }

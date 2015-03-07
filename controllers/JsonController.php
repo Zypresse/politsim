@@ -23,6 +23,8 @@ use app\models\Dealing;
 use app\models\Twitter;
 use app\models\Holding;
 use app\models\Stock;
+use app\models\HoldingDecision;
+use app\models\HoldingDecisionVote;
 
 class JsonController extends MyController {
 
@@ -1092,5 +1094,101 @@ class JsonController extends MyController {
             
         } else
             return $this->_r("Invalid ID");
+    }
+    
+    
+    public function actionDeclineDealing($id) {
+        $id = intval($id);
+        if ($id) {
+            $dealing = Dealing::findByPk($id);
+            if (is_null($dealing))
+                return $this->_r("Dealing not found");
+            
+            if ($dealing->to_uid !== $this->viewer_id)
+                return $this->_r("Not allowed");
+            
+            $dealing->delete();
+            
+            return $this->_rOk();
+            
+        } else
+            return $this->_r("Invalid ID");
+    }
+    
+    public function actionNewHoldingDecision($holding_id,$type) {
+        $holding_id = intval($holding_id);
+        $type = intval($type);
+        if ($holding_id && $type) {
+            $holding = Holding::findByPk($holding_id);
+            if (is_null($holding))
+                return $this->_r("Holding not found");
+            
+            $is_stocker = false;
+            foreach ($holding->stocks as $stock) {
+                if ($stock->user_id === $this->viewer_id) {
+                    $is_stocker = $stock;
+                    break;
+                }
+            }
+            
+            if ($is_stocker) {
+                $decision = new HoldingDecision();
+                $decision->created = time();
+                $decision->accepted = 0;
+                $decision->holding_id = $holding_id;
+                $decision->decision_type = $type;
+                switch ($type) {
+                    case 1:
+                        $decision->data = json_encode(['new_name'=>strip_tags($_REQUEST['new_name'])],JSON_UNESCAPED_UNICODE);
+                    break;
+                    case 2:
+                        $decision->data = json_encode(['sum'=>intval($_REQUEST['sum'])],JSON_UNESCAPED_UNICODE);
+                    break;
+                }
+                
+                if ($decision->save()) {
+                    return $this->_rOk();
+                } else {
+                    return $this->_r(implode(" ",$decision->getErrors()));
+                }
+                
+            } else
+                return $this->_r("Not allowed");
+        } else
+            return $this->_r("Invalid fields");
+    }
+    
+    public function actionVoteForDecision($decision_id,$variant) {
+        $decision_id = intval($decision_id);
+        $variant = intval($variant);
+        if ($decision_id && $variant) {
+            $decision = HoldingDecision::findByPk($decision_id);
+            if (is_null($decision))
+                return $this->_r("Decision not found");
+            
+            foreach ($decision->votes as $vote) {
+                if ($vote->stock->user_id === $this->viewer_id) {
+                    return $this->_r("Allready voted");
+                }
+            }
+            $is_stocker = false;
+            foreach ($decision->holding->stocks as $stock) {
+                if ($stock->user_id === $this->viewer_id) {
+                    $is_stocker = $stock;
+                    break;
+                }
+            }
+            if ($is_stocker) {
+                $vote = new HoldingDecisionVote();
+                $vote->decision_id = $decision_id;
+                $vote->stock_id = $is_stocker->id;
+                $vote->variant = $variant;
+                $vote->save();
+                
+                return $this->_rOk();
+            } else 
+                return $this->_r("Not allowed");
+        } else
+            return $this->_r("Invalid fields");
     }
 }

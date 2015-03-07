@@ -222,9 +222,30 @@ class HtmlController extends MyController {
         
         $user = $this->getUser();
         
-
         return $this->render("dealings", ['user' => $user]);
-
+    }
+    
+    public function actionHoldingControl($id) {
+        $id = intval($id);
+        if ($id) {
+            $holding = Holding::findByPk($id);
+            if (is_null($holding))
+                return $this->_r("Holding not found");
+            
+            $is_stocker = false;
+            foreach ($holding->stocks as $stock) {
+                if ($stock->user_id === $this->viewer_id) {
+                    $is_stocker = true;
+                    break;
+                }
+            }
+            
+            if ($is_stocker)            
+                return $this->render("holding-control",['holding'=>$holding,'user'=>$this->getUser()]);
+            else
+                return $this->_r("Not allowed");
+        } else
+            return $this->_r("Invalid holding ID");
     }
 
 }

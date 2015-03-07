@@ -18,6 +18,7 @@ use yii\helpers\Html;
             <th>Фирма</th>
             <th>Количество акций</th>
             <th>Примерная рыночная стоимость</th>
+            <th>Действия</th>
         </tr>
     </thead>
 <? if (sizeof($user->stocks)) { foreach ($user->stocks as $stock) { ?>
@@ -25,6 +26,7 @@ use yii\helpers\Html;
         <td><a href="#" onclick="load_page('holding-info',{'id':<?=$stock->holding_id?>})"><?=$stock->holding->name?></a></td>
         <td><?=MyHtmlHelper::formateNumberword($stock->count, "акций","акция","акции")?> (<?=round($stock->getPercents(),2)?>%)</td>
         <td>≈ <?=number_format($stock->getCost(),0,'',' ')?> <?=MyHtmlHelper::icon('coins')?></td>
+        <td><?=Html::a("Управление","#",['class'=>'btn btn-primary', 'onclick'=>'load_page("holding-control",{"id":'.$stock->holding_id.'})'])?></td>
     </tr>
 <? }} else { ?>
     <tr><td colspan="2">Не владеет акциями</td></tr>

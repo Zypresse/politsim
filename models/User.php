@@ -130,7 +130,7 @@ class User extends MyModel
     
     public function getMyDealingsList()
     {
-        return Dealing::getMyList($this->viewer_id);
+        return Dealing::getMyList($this->id);
     }
     
     public function getNotAcceptedDealingsList()
