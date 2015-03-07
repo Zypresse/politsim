@@ -95,8 +95,12 @@ function set_regions_names() {
                   $('#region_info_body').empty();
               },
               success:function(d) {
-                  $('#region_info_body').html(d);
-                  $('#region_info').modal();
+                  if (typeof(d) == 'object' && d != null) {
+                      show_custom_error(d.error);
+                  } else {
+                    $('#region_info_body').html(d);
+                    $('#region_info').modal();
+                    }
               },
                 error:show_error
         });          

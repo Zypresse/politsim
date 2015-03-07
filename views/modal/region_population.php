@@ -5,7 +5,14 @@ use app\components\MyHtmlHelper;
 <h2>Состав населения</h2>
 <h4>По классам:</h4>
 <table class="table">
-<tr><th>Класс</th><th>Идеологии</th><th>Пол</th><th>Национальности</th><th>Возраст</th><th>Число</th></tr>
+    <tr>
+        <th>Класс</th>
+        <th title="Идеологии">☭</th>
+        <th title="Пол">♀</th>
+        <th title="Национальности">★</th>
+        <th title="Возраст">❤</th>
+        <th>Число</th>
+    </tr>
 <? foreach ($people_by_class as $group) { ?>
 <tr>
 <td><?=$group['name']?></td>
@@ -25,17 +32,32 @@ use app\components\MyHtmlHelper;
 </tr>
 <? } ?>
 </table>
-<h4>Все группы:</h4>
-<table class="table">
-<tr><th>Класс</th><th>Пол</th><th>Национальность</th><th>Идеология</th><th>Возраст</th><th>Число</th></tr>
+<h4>Все группы: <button class="btn" id="show_all_groups_population">Показать</button></h4>
+<table class="table" id="all_groups_population" style="display: none">
+<tr>
+    <th>Класс</th>
+    <th title="Пол">♀</th>
+    <th title="Национальности">★</th>
+    <th title="Идеологии">☭</th>
+    <th title="Возраст">❤</th>
+    <th>Число</th>
+</tr>
 <? foreach ($people as $group) { ?>
-<tr><td><?=$group->classinfo->name?></td><td><? if ($group->sex) { ?>м<? } else { ?>ж<? } ?></td><td><?=$group->nationinfo->name?></td><td><?=$group->ideologyinfo->name?></td><td><?=$group->age?></td><td><?=MyHtmlHelper::formateNumberword($group->count,'человек','человек','человека')?></td></tr>
+<tr style="font-size: 70%"><td><?=$group->classinfo->name?></td><td><? if ($group->sex) { ?>м<? } else { ?>ж<? } ?></td><td><?=$group->nationinfo->name?></td><td><?=$group->ideologyinfo->name?></td><td><?=$group->age?></td><td><?=MyHtmlHelper::formateNumberword($group->count,'человек','человек','человека')?></td></tr>
 <? } ?>
 </table>
 
 
 <script>
 $(function(){
+
+$('#show_all_groups_population').toggle(function() {
+    	$(this).val('Скрыть');
+    	$('#all_groups_population').slideDown();
+    },function() {
+    	$(this).val('Показать');
+    	$('#all_groups_population').slideUp();
+    })
 
 	$(".pie-colours-1").peity("pie", {
 	  fill: [<? $j = 0; foreach ($people_by_class as $group) { ?><?=$j ? ',' : ''?><? $i = 0; foreach ($group['ideologies'] as $ideology) { ?><?=$i ? ',' : ''?>"<?=$ideology['color']?>"<? $i++; } ?><? $j++; } ?>],

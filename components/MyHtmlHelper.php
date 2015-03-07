@@ -109,6 +109,7 @@ class MyHtmlHelper {
 	}
 	// цвет для партии, красные левые, центристы зеленые, синие правые.
 	public static function getPartyColor($i,$hash = false) {
+            
 	    	$r = round(0xff-$i*0xff/0x65);
 	        $g = round(($i<51)?($i*0xff/0x32):(0xff - ($i-51)*0xff/0x33));
 	        $b = round($i*0xff/0x65);
@@ -123,14 +124,25 @@ class MyHtmlHelper {
 	}
 
 	public static function parseTwitterLinks($text) {
-		return preg_replace_callback("/[@]+[A-Za-z0-9]+/", function($u) {
-			if (isset($u[0])) {
-				$u = $u[0];
-            	$username = str_replace("@", "", $u);
-            	return "<a href='#' onclick='load_page(\"twitter\",{\"nick\":\"".$username."\"})'>".$u."</a>";
-            } else {
-            	return false;
-            }
-        },$text);
+            $text = preg_replace_callback("/[@]+[A-Za-z0-9]+/", function($u) {
+                if (isset($u[0])) {
+                        $u = $u[0];
+                        $username = str_replace("@", "", $u);
+                        return "<a href='#' onclick='load_page(\"twitter\",{\"nick\":\"".$username."\"})'>".$u."</a>";
+                    } else {
+                        return false;
+                    }
+                },$text);
+            $text = preg_replace_callback("/[#]+[A-Za-z0-9]+/", function($u) {
+                if (isset($u[0])) {
+                        $u = $u[0];
+                        $tag = str_replace("#", "", $u);
+                        return "<a href='#' onclick='load_page(\"twitter\",{\"tag\":\"".$tag."\"})'>".$u."</a>";
+                    } else {
+                        return false;
+                    }
+                },$text);
+                        
+            return $text;
 	}
 }

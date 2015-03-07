@@ -110,7 +110,7 @@ class Population extends MyModel
                     $modelsByClass[$model->class]['ideologies'][$model->ideology] = [
                         'name' => $model->ideologyinfo->name,
                         'count' => $model->count,
-                        'color' => MyHtmlHelper::getPartyColor($model->ideologyinfo->d)
+                        'color' => MyHtmlHelper::getPartyColor($model->ideologyinfo->d,true)
                     ];
                 }
                 if (isset($modelsByClass[$model->class]['nations'][$model->nation])) {
@@ -146,7 +146,7 @@ class Population extends MyModel
                     'ideologies' => [$model->ideology => [
                         'name' => $model->ideologyinfo->name,
                         'count' => $model->count,
-                        'color' => MyHtmlHelper::getPartyColor($model->ideologyinfo->d)
+                        'color' => MyHtmlHelper::getPartyColor($model->ideologyinfo->d,true)
                     ]],
                     'nations' => [$model->nation => [
                         'name' => $model->nationinfo->name,
