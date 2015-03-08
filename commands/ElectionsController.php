@@ -101,7 +101,7 @@ class ElectionsController extends Controller {
                         'party_name' => $result['req']->user->party ? $result['req']->user->party->name : ($result['req']->user->sex === 1 ? 'Беспартийная' : 'Беспартийный'),
                         'party_short_name' => $result['req']->user->party ? $result['req']->user->party->short_name : ($result['req']->user->sex === 1 ? 'бесп.' : 'бесп.'),
                         'votes_percents' => round(100 * $result['rating'] / $sumRatings, 2),
-                        'votes_population' => round($org->state->population * $result['rating'] / $sumRatings)
+                        'votes_population' => round(round($yavka * $org->state->population) * $result['rating'] / $sumRatings)
                     ];
                 }
 
@@ -191,7 +191,7 @@ class ElectionsController extends Controller {
                         'short_name' => $result['req']->party->short_name,
                         'posts' => round($result['rating'] / $sumRatings * $count),
                         'votes_percents' => round(100 * $result['rating'] / $sumRatings, 2),
-                        'votes_population' => round($org->state->population * $result['rating'] / $sumRatings)
+                        'votes_population' => round(round($yavka * $org->state->population) * $result['rating'] / $sumRatings)
                     ];
                 }
 

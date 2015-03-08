@@ -91,7 +91,7 @@ class MyHtmlHelper {
 	    $pref = ($n<0)?'-':'';
 	    $n = abs($n);
 	    if ($n === 0) {
-	        return '0 '+$s1;
+	        return '0 '.$s1;
 	    } else if ($n === 1 || ($n%10 === 1 && $n%100 != 11 && $n != 11)) {
 	        return $pref.number_format($n,0,'',' ').' '.$s2;
 	    } else if ($n >100 && $n%100 >=12 && $n%100 <=14) {

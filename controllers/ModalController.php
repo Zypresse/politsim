@@ -135,13 +135,13 @@ class ModalController extends MyController {
                         case 'elected_variants':
                             $additional_data['elected_variants'] = [];
                             if ($user->state->executiveOrg->isElected())
-                                $additional_data['elected_variants'][] = ['key' => $state->executive . '_0', 'name' => 'Выборы в организацию «' . $state->executiveOrg->name . '»'];
+                                $additional_data['elected_variants'][] = ['key' => $user->state->executive . '_0', 'name' => 'Выборы в организацию «' . $user->state->executiveOrg->name . '»'];
                             if ($user->state->executiveOrg->isLeaderElected())
-                                $additional_data['elected_variants'][] = ['key' => $state->executive . '_1', 'name' => 'Выборы лидера организации «' . $state->executiveOrg->name . '»'];
+                                $additional_data['elected_variants'][] = ['key' => $user->state->executive . '_1', 'name' => 'Выборы лидера организации «' . $user->state->executiveOrg->name . '»'];
                             if ($user->state->legislatureOrg->isElected())
-                                $additional_data['elected_variants'][] = ['key' => $state->legislature . '_0', 'name' => 'Выборы в организацию «' . $state->legislatureOrg->name . '»'];
+                                $additional_data['elected_variants'][] = ['key' => $user->state->legislature . '_0', 'name' => 'Выборы в организацию «' . $user->state->legislatureOrg->name . '»'];
                             if ($user->state->legislatureOrg->isLeaderElected())
-                                $additional_data['elected_variants'][] = ['key' => $state->legislature . '_1', 'name' => 'Выборы лидера организации «' . $state->legislatureOrg->name . '»'];
+                                $additional_data['elected_variants'][] = ['key' => $user->state->legislature . '_1', 'name' => 'Выборы лидера организации «' . $user->state->legislatureOrg->name . '»'];
                             break;
                         default:
 

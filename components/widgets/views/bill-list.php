@@ -2,6 +2,7 @@
 
 use app\models\GovermentFieldType;
 use app\models\Region;
+use app\models\Org;
 
 ?>
 <dl id="<?=$id?>" style="<?=$style?>" >

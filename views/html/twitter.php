@@ -69,7 +69,7 @@ $own = ($viewer_id === $user->id);
                <? } ?>
                   <button class="btn btn-block" id="update_user_feed" data-time="<?=$timeFeedGenerated?>" data-offset="3" data-uid="<?=$user->id?>" >Далее</button>
                 </div>
-                <div class="span4" id="twitter_feed">
+                <div class="span4" id="twitter_popular_feed">
                 <h4>Популярные посты</h4>
                <? foreach ($feed as $i => $tweet) { ?>
                  <div class="tweet <? if ($i === sizeof($feed)-1) { ?>last<? } ?>">
@@ -108,9 +108,9 @@ $own = ($viewer_id === $user->id);
       var offset = parseInt($(this).data('offset'));
       get_html('get-twitter-feed',{'time':$(this).data('time'),'offset':offset},function(rows){
 
-          $('#twitter_feed .last').removeClass('last');
-          $('#twitter_feed').append(rows);
-          $('#twitter_feed').append($('#update_feed'));
+          $('#twitter_popular_feed .last').removeClass('last');
+          $('#twitter_popular_feed').append(rows);
+          $('#twitter_popular_feed').append($('#update_feed'));
           $('#update_feed').data('offset',offset+5).removeAttr("disabled");
 
       });
