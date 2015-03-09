@@ -228,11 +228,13 @@ class JsonController extends MyController {
         $leader = intval($leader) ? 1 : 0;
 
         if ($org_id > 0) {
+            $org = Org::findByPk($org_id); 
+            if (is_null($org))
+                return $this->_r("Organisation not found");
+            
             $user = User::findByPk($this->viewer_id);
             if ($leader) {
-                $org = Org::findByPk($org_id);
-                if (is_null($org))
-                    return $this->_r("Organisation not found");
+               
                 if ($org->leader_dest !== 'nation_individual_vote' && !($user->isPartyLeader()))
                     return $this->_r("Not allowed");
 
