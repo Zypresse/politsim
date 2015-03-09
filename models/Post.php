@@ -14,6 +14,8 @@ use app\components\MyModel;
  * @property string $type
  * @property integer $can_delete
  * @property integer $party_reserve
+ * @property double $balance 
+ * @property string $ministry_name 
  */
 class Post extends MyModel
 {
@@ -32,9 +34,11 @@ class Post extends MyModel
     {
         return [
             [['org_id', 'name', 'type'], 'required'],
+            [['balance'], 'number'], 
             [['org_id', 'can_delete', 'party_reserve'], 'integer'],
             [['name'], 'string', 'max' => 300],
-            [['type'], 'string', 'max' => 100]
+            [['type'], 'string', 'max' => 100],
+            [['ministry_name'], 'string', 'max' => 255]
         ];
     }
 
@@ -50,6 +54,8 @@ class Post extends MyModel
             'type' => 'Type',
             'can_delete' => 'Можно ли удалять этот пост',
             'party_reserve' => 'ID партии, которой зарезервирован пост',
+            'balance' => 'Balance', 
+            'ministry_name' => 'Ministry Name', 
         ];
     }
 
@@ -64,6 +70,10 @@ class Post extends MyModel
     public function getPartyReserve()
     {
         return $this->hasOne('app\models\Party', array('id' => 'party_reserve'));
+    }
+    public function getStocks()
+    {
+        return $this->hasMany('app\models\Stock', array('post_id' => 'id'));
     }
     
     public function canCreateBills()

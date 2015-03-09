@@ -21,6 +21,7 @@ use yii\helpers\Html;
             <th>Действия</th>
         </tr>
     </thead>
+    <tbody>
 <? if (sizeof($user->stocks)) { foreach ($user->stocks as $stock) { ?>
     <tr>
         <td><a href="#" onclick="load_page('holding-info',{'id':<?=$stock->holding_id?>})"><?=$stock->holding->name?></a></td>
@@ -30,7 +31,9 @@ use yii\helpers\Html;
     </tr>
 <? }} else { ?>
     <tr><td colspan="2">Не владеет акциями</td></tr>
-<? } ?></table>
+<? } ?>
+    </tbody>
+</table>
 
 <p><button class="btn btn-success" onclick="$('#create_holding_dialog').modal()">Создать холдинг</button></p>
 

@@ -156,10 +156,19 @@ class User extends MyModel
     public function isShareholder(Holding $holding)
     {
         foreach ($holding->stocks as $stock) {
-            if ($stock->user_id === $this->id) return true;
+            if ($stock->user_id === $this->id || $stock->post_id === $this->post_id) return true;
         }
         return false;
     }
+    
+    public function getShareholderStock(Holding $holding)
+    {
+        foreach ($holding->stocks as $stock) {
+            if ($stock->user_id === $this->id || $stock->post_id === $this->post_id) return $stock;
+        }
+        return null;
+    }
+    
     public function isHaveControllingStake(Holding $holding)
     {
         foreach ($holding->stocks as $stock) {

@@ -258,7 +258,7 @@ class JsonController extends MyController {
 
             $request = new ElectRequest();
             $request->org_id = $org_id;
-            $request->party_id = $user->party_id;
+            $request->party_id = ($org->leader_dest === 'nation_party_vote' ? $user->party_id : null);
             $request->candidat = ($leader) ? $candidat : NULL;
             $request->leader = $leader;
 
@@ -1123,15 +1123,9 @@ class JsonController extends MyController {
             if (is_null($holding))
                 return $this->_r("Holding not found");
             
-            $is_stocker = false;
-            foreach ($holding->stocks as $stock) {
-                if ($stock->user_id === $this->viewer_id) {
-                    $is_stocker = $stock;
-                    break;
-                }
-            }
+            $user = $this->getUser();
             
-            if ($is_stocker) {
+            if ($user->isShareholder($holding)) {
                 $decision = new HoldingDecision();
                 $decision->created = time();
                 $decision->accepted = 0;
@@ -1166,22 +1160,20 @@ class JsonController extends MyController {
             if (is_null($decision))
                 return $this->_r("Decision not found");
             
-            foreach ($decision->votes as $vote) {
-                if ($vote->stock->user_id === $this->viewer_id) {
-                    return $this->_r("Allready voted");
-                }
-            }
-            $is_stocker = false;
-            foreach ($decision->holding->stocks as $stock) {
-                if ($stock->user_id === $this->viewer_id) {
-                    $is_stocker = $stock;
-                    break;
-                }
-            }
-            if ($is_stocker) {
+            $user = $this->getUser();
+            $stock = $user->getShareholderStock($decision->holding);
+            
+            if (!(is_null($stock))) {
+                
+                foreach ($decision->votes as $vote) {
+                    if ($vote->stock_id === $stock->id) {
+                        return $this->_r("Allready voted");
+                    }
+                }            
+            
                 $vote = new HoldingDecisionVote();
                 $vote->decision_id = $decision_id;
-                $vote->stock_id = $is_stocker->id;
+                $vote->stock_id = $stock->id;
                 $vote->variant = $variant;
                 $vote->save();
                 

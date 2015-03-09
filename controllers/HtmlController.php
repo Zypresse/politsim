@@ -232,16 +232,10 @@ class HtmlController extends MyController {
             if (is_null($holding))
                 return $this->_r("Holding not found");
             
-            $is_stocker = false;
-            foreach ($holding->stocks as $stock) {
-                if ($stock->user_id === $this->viewer_id) {
-                    $is_stocker = true;
-                    break;
-                }
-            }
+            $user = $this->getUser();
             
-            if ($is_stocker)            
-                return $this->render("holding-control",['holding'=>$holding,'user'=>$this->getUser()]);
+            if ($user->isShareholder($holding))            
+                return $this->render("holding-control",['holding'=>$holding,'user'=>$user]);
             else
                 return $this->_r("Not allowed");
         } else

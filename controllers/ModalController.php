@@ -117,12 +117,16 @@ class ModalController extends MyController {
                 foreach ($fields as $field) {
                     switch ($field->type) {
                         case 'regions': // регионы исключая столицу
-                        case 'cities':
                             $additional_data['regions'] = Region::find()->where("state_id = {$user->state_id} AND code <> '{$user->state->capital}'")->orderBy('name')->all();
                             break;
+                        case 'cities':
+                            $additional_data['regions'] = Region::find()->where("state_id = {$user->state_id} AND code <> '{$user->state->capital}'")->orderBy('city')->all();
+                            break;
                         case 'regions_all': // все регионы
-                        case 'cities_all':
                             $additional_data['regions'] = Region::find()->where(["state_id" => $user->state_id])->orderBy('name')->all();
+                            break;
+                        case 'cities_all':
+                            $additional_data['regions'] = Region::find()->where(["state_id" => $user->state_id])->orderBy('city')->all();
                             break;
                         case 'goverment_field_types': // типы полей конституции
                             $additional_data['goverment_field_types'] = GovermentFieldType::find()->where(['hide' => 0])->all();
@@ -169,9 +173,11 @@ class ModalController extends MyController {
             if (($leader === 0 && $org->isElected()) || ($leader && $org->isLeaderElected())) {
 
                 $elect_requests_ids = implode(",", ArrayHelper::map(ElectRequest::find()->where(["org_id" => $org_id, "leader" => $leader])->asArray()->all(), 'id', 'id'));
-                $allready_voted = ElectVote::find()->where("request_id IN ({$elect_requests_ids}) AND uid = {$this->viewer_id}")->count();
-                if (intval($allready_voted))
-                    return $this->_r("Allready voted");
+                if ($elect_requests_ids) {
+                    $allready_voted = ElectVote::find()->where("request_id IN ({$elect_requests_ids}) AND uid = {$this->viewer_id}")->count();
+                    if (intval($allready_voted))
+                        return $this->_r("Allready voted");
+                }
 
                 $elect_requests = ElectRequest::find()->where(["org_id" => $org_id, "leader" => $leader])->all();
 

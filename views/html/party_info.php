@@ -48,7 +48,7 @@
 
 <h3>Действия</h3>
 <div class="btn-toolbar">
-<? if ($user->isPartyLeader()) {
+<? if ($user->isPartyLeader() && $user->party_id === $party->id) {
     $emptyPosts = [];
     foreach ($user->state->legislatureOrg->posts as $post) {
         if ($post->party_reserve === $user->party_id && is_null($post->user)) {

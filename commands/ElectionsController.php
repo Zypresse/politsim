@@ -29,6 +29,7 @@ class ElectionsController extends Controller {
 
             if ($org->isLeaderElected()) {
                 // Выборы лидера организации
+                if (sizeof($org->lrequests)) {
                 $results = [];
                 $sumStar = 0;
                 $sumRatings = 0;
@@ -112,9 +113,11 @@ class ElectionsController extends Controller {
                 $electResult->date = time();
                 $electResult->data = json_encode($resultToSave,JSON_UNESCAPED_UNICODE);
                 $electResult->save();
+                }
             }
             if ($org->isElected()) {
                 // Выборы членов организации
+                if (sizeof($org->requests)) {
                 $results = [];
                 $sumStar = 0;
                 $sumRatings = 0;
@@ -202,6 +205,7 @@ class ElectionsController extends Controller {
                 $electResult->date = time();
                 $electResult->data = json_encode($resultToSave,JSON_UNESCAPED_UNICODE);
                 $electResult->save();
+                }
             }
 
             $org->next_elect = time() + $org->elect_period * 24 * 60 * 60;

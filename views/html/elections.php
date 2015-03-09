@@ -22,23 +22,29 @@
 			break;
 		}}
 	}
-
+        
 	$requests = ['e'=>false,'el'=>false,'l'=>false,'ll'=>false];
-	if ($user->party) foreach ($user->party->requests as $request) {
+	if ($user->party) {
+            foreach ($user->party->requests as $request) {
 		switch (true) {
-			case ($request->org_id === $state->executive && !$request->leader):
+			case ($request->org_id === $state->executive):
 				$requests['e'] = true;
 			break;
-			case ($request->org_id === $state->executive && $request->leader):
-				$requests['el'] = true;
-			break;
-			case ($request->org_id === $state->legislature && !$request->leader):
+			case ($request->org_id === $state->legislature):
 				$requests['l'] = true;
 			break;
-			case ($request->org_id === $state->legislature && $request->leader):
+		}
+            }
+            foreach ($user->party->lrequests as $request) {
+		switch (true) {
+			case ($request->org_id === $state->executive):
+				$requests['el'] = true;
+			break;
+			case ($request->org_id === $state->legislature):
 				$requests['ll'] = true;
 			break;
 		}
+            }
 	}
 
 	foreach ($user->requests as $request) {
@@ -135,7 +141,7 @@
 <? } ?>
 
 <? if (sizeof($state->executiveOrg->lrequests)) { ?><strong>Список подавших заявку на выборы:</strong><ul><? foreach ($state->executiveOrg->lrequests as $request) { ?>
-<li><a href="#" onclick="load_page('profile',{'uid':<?=$request->candidat?>})"><?=htmlspecialchars($request->user->name)?></a></li>
+<li><a href="#" onclick="load_page('profile',{'uid':<?=$request->candidat?>})"><?=htmlspecialchars($request->user->name)?></a> <? if ($state->executiveOrg->leader_dest === 'nation_party_vote') { ?>(<?=$request->user->party->short_name?>)<? } ?></li>
 <? } ?></ul><? } else { ?><strong>Никто ещё не подал заявку на выборы</strong><? } ?>
 </p><br><? } ?><? } ?>
 
@@ -177,7 +183,7 @@
 <? } ?>
 </p><br>
 <? } else { ?>
-<p>Следующие выборы лидера организации «<a href="#" onclick="load_page('org-info',{'id':<?=$state->legislature?>});"><?=htmlspecialchars($state->legislature_name)?></a>» пройдут с <span class="formatDate" data-unixtime="<?=$state->legislatureOrg->next_elect-24*60*60?>"><?=date('d-M-Y H:i',$state->legislatureOrg->next_elect-24*60*60)?></span> по <span class="formatDate" data-unixtime="<?=$state->legislatureOrg->next_elect?>"><?=date('d-M-Y H:i',$state->legislatureOrg->next_elect)?></span><br>
+<p>Следующие выборы лидера организации «<a href="#" onclick="load_page('org-info',{'id':<?=$state->legislature?>});"><?=htmlspecialchars($state->legislatureOrg->name)?></a>» пройдут с <span class="formatDate" data-unixtime="<?=$state->legislatureOrg->next_elect-24*60*60?>"><?=date('d-M-Y H:i',$state->legislatureOrg->next_elect-24*60*60)?></span> по <span class="formatDate" data-unixtime="<?=$state->legislatureOrg->next_elect?>"><?=date('d-M-Y H:i',$state->legislatureOrg->next_elect)?></span><br>
 <? if ($is_citizen && !$requests['ll']) { if ($state->legislatureOrg->leader_dest === 'nation_party_vote' && $user->isPartyLeader()) { ?>
 <button class="btn" onclick="elect_request(<?=$state->legislature?>,1)">Подать заявку на выборы от партии</button>
 <? } elseif ($state->legislatureOrg->leader_dest === 'nation_individual_vote') { ?>
@@ -188,7 +194,7 @@
 <? } ?>
 
 <? if (sizeof($state->legislatureOrg->lrequests)) { ?><strong>Список подавших заявку на выборы:</strong><ul><? foreach ($state->legislatureOrg->lrequests as $request) { ?>
-<li><a href="#" onclick="load_page('profile',{'uid':<?=$request->candidat?>})"><?=htmlspecialchars($request->user->name)?></a></li>
+<li><a href="#" onclick="load_page('profile',{'uid':<?=$request->candidat?>})"><?=htmlspecialchars($request->user->name)?></a> <? if ($state->legislatureOrg->leader_dest === 'nation_party_vote') { ?>(<?=$request->user->party->short_name?>)<? } ?></li>
 <? } ?></ul><? } else { ?><strong>Никто ещё не подал заявку на выборы</strong><? } ?>
 </p><? } ?><? } ?>
 

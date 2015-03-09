@@ -6,6 +6,7 @@ use app\models\GovermentFieldType;
 use app\models\Org;
 use app\models\Bill;
 use app\components\widgets\BillListWidget;
+use yii\helpers\Html;
 
 $gft = null;
 ?>
@@ -24,6 +25,7 @@ $gft = null;
 </div>
 <h1>Личный кабинет</h1>
 <p>Вы занимаете должность &laquo;<?=htmlspecialchars($user->post->name)?>&raquo; в организации &laquo;<a href="#" onclick="load_page('org-info',{'id':<?=$user->post->org_id?>});"><?=htmlspecialchars($user->post->org->name)?></a>&raquo;
+<p>На данной должности вам доступен бюджет в размере <?=  number_format($user->post->balance,0,'',' ')?> <?=  MyHtmlHelper::icon('coins')?></p>
 <? if ($user->post_id === $user->post->org->leader_post) { ?><p>Вы — лидер организации &laquo;<a href="#" onclick="load_page('org-info',{'id':<?=$user->post->org_id?>});"><?=htmlspecialchars($user->post->org->name)?></a>&raquo;<? if ($user->post->org->leader_can_create_posts) { ?> и можете создавать новые должности в ней<? } ?>.</p>
 <h3>Подчинённые</h3>
 <p>
@@ -121,6 +123,30 @@ $gft = null;
     })
  </script>
 
+<? if (sizeof($user->post->stocks)) { ?>
+<h3>Управление предприятиями</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Фирма</th>
+            <th>Количество акций</th>
+            <th>Примерная рыночная стоимость</th>
+            <th>Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+<? foreach ($user->post->stocks as $stock) { ?>
+    <tr>
+        <td><a href="#" onclick="load_page('holding-info',{'id':<?=$stock->holding_id?>})"><?=$stock->holding->name?></a></td>
+        <td><?=MyHtmlHelper::formateNumberword($stock->count, "акций","акция","акции")?> (<?=round($stock->getPercents(),2)?>%)</td>
+        <td>≈ <?=number_format($stock->getCost(),0,'',' ')?> <?=MyHtmlHelper::icon('coins')?></td>
+        <td><?=Html::a("Управление","#",['class'=>'btn btn-primary', 'onclick'=>'load_page("holding-control",{"id":'.$stock->holding_id.'})'])?></td>
+    </tr>
+<? } ?>
+    </tbody>
+</table>
+<? } ?>
+ 
 <h2>Действия</h2>
 
 <div class="btn-toolbar">

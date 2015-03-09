@@ -8,6 +8,8 @@
 use app\components\MyHtmlHelper;
 use yii\helpers\Html;
 
+$userStock = $user->getShareholderStock($holding);
+
 ?>
 <h1>Управление «<?=$holding->name?>»</h1>
 <p>Капитализация: <?=number_format($holding->capital,0,'',' ')?> <?=MyHtmlHelper::icon('coins')?></p>
@@ -66,7 +68,7 @@ foreach ($holding->decisions as $decision) {
             <?  
             $allreadyVoted = false;
             foreach ($decision->votes as $vote) { 
-                if ($vote->stock->user_id === $user->id) {
+                if ($vote->stock_id === $userStock->id) {
                     $allreadyVoted = true;
                 }
             }
