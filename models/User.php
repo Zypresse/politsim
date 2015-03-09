@@ -127,6 +127,10 @@ class User extends MyModel
     {
         return $this->hasMany('app\models\ElectRequest', array('candidat' => 'id'));
     }
+    public function getNotifications()
+    {
+        return $this->hasMany('app\models\Notification', array('uid' => 'id'));
+    }
     
     public function getMyDealingsList()
     {

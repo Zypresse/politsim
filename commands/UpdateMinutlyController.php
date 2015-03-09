@@ -8,7 +8,7 @@ use app\models\State;
 use app\models\Party;
 use app\models\Bill;
 use app\models\Holding;
-use app\components\vkapi\VkNotification;
+use app\models\Notification;
 use app\models\HoldingDecision;
 
 /**

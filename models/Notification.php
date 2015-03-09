@@ -4,6 +4,7 @@ namespace app\models;
 
 use Yii;
 use app\components\MyModel;
+use app\components\vkapi\VkNotification;
 
 /**
  * This is the model class for table "notifications".
@@ -44,5 +45,27 @@ class Notification extends MyModel
             'uid' => 'Uid',
             'text' => 'Text',
         ];
+    }
+    
+    public function getUser()
+    {
+        return $this->hasOne('app\models\User', array('id' => 'uid'));
+    }
+    
+    public function afterSave($insert,$changedAttributes)
+    {
+        if ($insert && $this->user->uid_vk) {
+            VkNotification::send($this->user->uid_vk, $this->text);
+        }
+        
+        return parent::afterSave($insert,$changedAttributes);
+    }
+    
+    public static function send($uid,$text)
+    {
+        $notification = new Notification();
+        $notification->text = $text;
+        $notification->uid = $uid;
+        return $notification->save();
     }
 }

@@ -241,5 +241,9 @@ class HtmlController extends MyController {
         } else
             return $this->_r("Invalid holding ID");
     }
+    
+    public function actionNotifications() {
+        return $this->render("notifications",['user'=>$this->getUser()]);
+    }
 
 }

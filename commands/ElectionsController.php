@@ -5,7 +5,7 @@ namespace app\commands;
 use yii\console\Controller;
 use app\models\Org;
 use app\models\ElectResult;
-use app\components\vkapi\VkNotification;
+use app\models\Notification;
 
 /**
  * Calculate elect results
@@ -75,9 +75,7 @@ class ElectionsController extends Controller {
                 $first['req']->user->star += ceil($first['req']->user->state->sum_star / 50);
                 $first['req']->user->save();
                 
-                if ($first['req']->user->uid_vk) {
-                    VkNotification::send($first['req']->user->uid_vk, "Вы победили на выборах и заняли должность «".$org->leader->name."»");
-                }
+                Notification::send($first['req']->user->id, "Вы победили на выборах и заняли должность «".$org->leader->name."»");                
 
                 foreach ($results as $i => $result) {
                     if ($i) {
@@ -173,10 +171,8 @@ class ElectionsController extends Controller {
                         $post->party_reserve = $result['req']->party->id;
                         $post->save();
                         $member->link('post', $post);
-                        
-                        if ($member->uid_vk) {
-                            VkNotification::send($member->uid_vk, "По результатам выборов вы заняли должность «".$org->leader->name."»");
-                        }
+                           
+                        Notification::send($member->id, "По результатам выборов вы заняли должность «".$org->leader->name."»");
                     }
                 }
 
