@@ -40,7 +40,7 @@ class VkApi {
 		$sig .= $this->api_secret;
 		$params['sig'] = md5($sig);
 		$query = $this->api_url.'?'.http_build_query($params);
-                echo "<pre>".htmlspecialchars($query)."</pre>";
+                
 		$res = file_get_contents($query);
 		return json_decode($res, true);
 	}

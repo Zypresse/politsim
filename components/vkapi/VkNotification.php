@@ -27,9 +27,9 @@ class VkNotification {
     public static function send($uids, $message) {
         $VK = new VkApi(4671275,'VdZhp8XPsCeyWiHSSm7i');
        
-        var_dump($VK->api('secure.sendNotification', [
+        return $VK->api('secure.sendNotification', [
                 'user_ids' => $uids,
                 'message' => $message
-        ]));
+        ]);
     }
 }

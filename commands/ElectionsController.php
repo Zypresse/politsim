@@ -39,7 +39,7 @@ class ElectionsController extends Controller {
                         if ($request->user->party)
                             $ar += $request->user->party->heart / 10 + $request->user->party->chart_pie / 100;
                         foreach ($request->votes as $vote) {
-                            $ar += ($vote->user->star + $vote->user->heart / 10 + $vote->user->chart_pie / 100) / sizeof($request->votes);
+                            $ar += ($vote->user->star + $vote->user->heart / 10 + $vote->user->chart_pie / 100) / 10;
                         }
                         $sumStar += $request->user->star;
                         $sumRatings += $ar;
@@ -172,7 +172,7 @@ class ElectionsController extends Controller {
                         $post->save();
                         $member->link('post', $post);
                            
-                        Notification::send($member->id, "По результатам выборов вы заняли должность «".$org->leader->name."»");
+                        Notification::send($member->id, "По результатам выборов вы заняли должность «".$post->name."»");
                     }
                 }
 

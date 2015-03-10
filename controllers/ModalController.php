@@ -18,6 +18,7 @@ use app\models\GovermentFieldType;
 use app\models\Population;
 use app\models\Twitter;
 use app\models\ElectResult;
+use app\models\HoldingLicenseType;
 
 class ModalController extends MyController {
 
@@ -79,7 +80,7 @@ class ModalController extends MyController {
                     $votes = ElectVote::find()->where(["request_id" => $request->id])->all();
                     if (is_array($votes))
                         foreach ($votes as $vote) {
-                            $abstract_rating += ($vote->user->star + $vote->user->heart / 10 + $vote->user->chart_pie / 100) / sizeof($votes);
+                            $abstract_rating += ($vote->user->star + $vote->user->heart / 10 + $vote->user->chart_pie / 100) / 10;
                         }
                     $results[] = ['id' => $request->id, 'rating' => $abstract_rating];
                     $requests[$request->id] = $request;
@@ -143,9 +144,12 @@ class ModalController extends MyController {
                             if ($user->state->executiveOrg->isLeaderElected())
                                 $additional_data['elected_variants'][] = ['key' => $user->state->executive . '_1', 'name' => 'Выборы лидера организации «' . $user->state->executiveOrg->name . '»'];
                             if ($user->state->legislatureOrg->isElected())
-                                $additional_data['elected_variants'][] = ['key' => $user->state->legislature . '_0', 'name' => 'Выборы в организацию «' . $user->state->legislatureOrg->name . '»'];
+                                $additional_data['elected_variants'][] = ['key' => $user->state->legislature . '_0', 'name' => 'Выборы в организации «' . $user->state->legislatureOrg->name . '»'];
                             if ($user->state->legislatureOrg->isLeaderElected())
                                 $additional_data['elected_variants'][] = ['key' => $user->state->legislature . '_1', 'name' => 'Выборы лидера организации «' . $user->state->legislatureOrg->name . '»'];
+                            break;
+                        case 'licenses':
+                            $additional_data['licenses'] = HoldingLicenseType::find()->all();
                             break;
                         default:
 

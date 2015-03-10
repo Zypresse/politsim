@@ -14,12 +14,12 @@ usort($results, function($a, $b) {
 });
 
 ?>
-<div class="row"><div class="span4">
+<div class="row"><div class="span6">
 	<p>Явка на данный момент составила <?=round($yavka*100,2)?>%</p>
 	<p>На выборы пришло <?=MyHtmlHelper::formateNumberword($yavka*$org->state->population,'человек','человек','человека')?></p>
 </div></div>
 <div class="row">
-<div class="span2">
+<div class="span3" style="text-align: center;">
 
 <span class="pie-colours-1"><? foreach ($results as $i => $result) { echo ($i ? ',' : '') . round(100*$result["rating"]/$sum_a_r,2); } ?></span>
 

@@ -24,16 +24,19 @@ use app\models\User;
 
 class MyController extends Controller
 {
-	protected $result = 'undefined';
+    protected $result = 'undefined';
     protected $error = false;
     protected $viewer_id = 0;
-	public $layout = 'api';
+    public $layout = 'api';
 
     protected function _r($e = false, $addFields = []) 
     {
 
         if ($e) $this->error = $e;
         if ($this->error) $this->result = 'error';
+        
+        if (is_array($this->error)) $this->error = implode('<br>',  $this->error);
+        
         $ar = ['result'=>$this->result,'error'=>$this->error,'addFields'=>[]];
         foreach ($addFields as $key => $value) {
             $ar['addFields'][$key] = $value;
@@ -47,7 +50,7 @@ class MyController extends Controller
         return $this->_r();
     }
 
-	public function beforeAction($action)
+    public function beforeAction($action)
     {
         if (isset($_REQUEST['viewer_id']) && isset($_REQUEST['auth_key'])) {
             $viewer_id = intval($_REQUEST['viewer_id']);

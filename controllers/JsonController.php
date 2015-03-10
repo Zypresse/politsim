@@ -25,6 +25,7 @@ use app\models\Holding;
 use app\models\Stock;
 use app\models\HoldingDecision;
 use app\models\HoldingDecisionVote;
+use app\models\Notification;
 
 class JsonController extends MyController {
 
@@ -928,8 +929,10 @@ class JsonController extends MyController {
                 return $this->_r("Post not found");
             $nuser->post_id = $post->id;
             $nuser->save();
-            $this->result = "ok";
-            return $this->_r();
+            
+            Notification::send($nuser->id, "Вы назначены на пост «".$post->name."»");
+            
+            return $this->_rOk();
         } else
             return $this->_r("Invalid fields");
     }
