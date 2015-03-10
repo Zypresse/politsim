@@ -4,6 +4,8 @@ namespace app\models;
 
 use Yii;
 use app\components\MyModel;
+use app\models\HoldingLicense;
+use app\models\StateLicense;
 
 /**
  * This is the model class for table "holding_decisions".
@@ -96,6 +98,39 @@ class HoldingDecision extends MyModel
                 $this->holding->balance -= $data->sum;
                 $this->holding->save();
                 }
+            break;
+            case 3: // Получение лицензии
+                $stateLicense = StateLicense::find()->where(['state_id'=>$this->holding->state_id,'license_id'=>$data->license_id])->one();
+                $allow = true;
+                if (!(is_null($stateLicense))) {
+                    
+                    if ($stateLicense->is_only_goverment) {
+                        $allow = false;
+                        foreach ($this->holding->stocks as $stock) {
+                            if ($stock->post_id) {
+                                $allow = true;
+                                break;
+                            }
+                        }
+                    }
+                    if ($stateLicense->cost) {
+                        if ($this->holding->balance<$stateLicense->cost) {
+                            $allow = false;
+                        }
+                    }
+                }
+                    if ($allow) {
+                        $hl = new HoldingLicense();
+                        $hl->holding_id = $this->holding_id;
+                        $hl->license_id = $data->license_id;
+                        $hl->save();
+                        
+                        if ($stateLicense && $stateLicense->cost) {
+                            $this->holding->balance -= $stateLicense->cost;
+                            $this->holding->save();
+                        }
+                    }
+                
             break;
         }
         

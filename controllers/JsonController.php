@@ -1137,18 +1137,22 @@ class JsonController extends MyController {
                 $decision->holding_id = $holding_id;
                 $decision->decision_type = $type;
                 switch ($type) {
-                    case 1:
-                        $decision->data = json_encode(['new_name'=>strip_tags($_REQUEST['new_name'])],JSON_UNESCAPED_UNICODE);
+                    case 1: // Переименование
+                        $decision->data = ['new_name'=>strip_tags($_REQUEST['new_name'])];
                     break;
-                    case 2:
-                        $decision->data = json_encode(['sum'=>intval($_REQUEST['sum'])],JSON_UNESCAPED_UNICODE);
+                    case 2: // Выплата дивидентов
+                        $decision->data = ['sum'=>intval($_REQUEST['sum'])];
+                    break;
+                    case 3: // Получение новой лицензии
+                        $decision->data = ['license_id'=>intval($_REQUEST['license_id'])];
                     break;
                 }
+                $decision->data = json_encode($decision->data,JSON_UNESCAPED_UNICODE);
                 
                 if ($decision->save()) {
                     return $this->_rOk();
                 } else {
-                    return $this->_r(implode(" ",$decision->getErrors()));
+                    return $this->_r($decision->getErrors());
                 }
                 
             } else
