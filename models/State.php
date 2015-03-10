@@ -4,6 +4,8 @@ namespace app\models;
 
 use Yii;
 use app\components\MyModel;
+use app\models\GovermentFieldType;
+use app\models\GovermentFieldValue;
 
 /**
  * This is the model class for table "states".
@@ -124,5 +126,21 @@ class State extends MyModel
         foreach ($this->parties as $party) {
             $party->delete();
         }
+    }
+    
+    public function afterSave($insert, $changedAttributes)
+    {
+        if ($insert) {
+            $gftAr = GovermentFieldType::find()->all();
+            foreach ($gftAr as $gft) {
+                $gfv = new GovermentFieldValue();
+                $gfv->state_id = $this->id;
+                $gfv->type_id = $gft->id;
+                $gfv->value = $gft->default;
+                $gfv->save();
+            }
+        }
+        
+        return parent::afterSave($insert,$changedAttributes);
     }
 }

@@ -14,22 +14,28 @@ use yii\db\ActiveRecord;
 
 abstract class MyModel extends ActiveRecord
 {
-	public static function findByPk($id)
-	{
-		return static::find()->where(["id"=>$id])->one();
-	}
+    /*
+     * Поиск по ID
+     * 
+     * @var integer $id
+     * @return MyModel
+     */
+    public static function findByPk($id)
+    {
+            return static::find()->where(["id"=>$id])->one();
+    }
 
-	public static function findByCode($code)
-	{
-		return static::find()->where(["code"=>$code])->one();
-	}
+    public static function findByCode($code)
+    {
+            return static::find()->where(["code"=>$code])->one();
+    }
 
-	// Массив имен аттрибутов, доступных для кого угодно
-	// true — доступны все
-	public function setPublicAttributes() 
-	{
-		return true;
-	}
+    // Массив имен аттрибутов, доступных для кого угодно
+    // true — доступны все
+    public function setPublicAttributes() 
+    {
+            return true;
+    }
 
     public function getPublicAttributes()
     {
@@ -43,4 +49,5 @@ abstract class MyModel extends ActiveRecord
         }
         return $ar;
     }
+    
 }
