@@ -98,6 +98,14 @@ class State extends MyModel
     {
         return $this->hasMany('app\models\Region', array('state_id' => 'id'))->orderBy('name');
     }
+    public function getCities()
+    {
+        return $this->hasMany('app\models\Region', array('state_id' => 'id'))->orderBy('city');
+    }
+    public function getLicenses()
+    {
+        return $this->hasMany('app\models\StateLicense', array('state_id' => 'id'));
+    }
 
     public function getGovermentFields()
     {
