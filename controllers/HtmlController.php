@@ -191,7 +191,7 @@ class HtmlController extends MyController {
 
         $time = time();
         $tweets = Twitter::find()->where(["uid" => $user->id])->limit(3)->orderBy('date DESC')->all();
-        $feed = Twitter::find()->where("retweets > 0 AND original = 0 AND date < " . $time)->limit(5)->orderBy('date DESC')->all();
+        $feed = Twitter::find()->where("retweets > 0 AND original = 0 AND date <= " . $time)->limit(5)->orderBy('date DESC')->all();
 
         return $this->render("twitter", ['viewer_id' => $this->viewer_id, 'timeFeedGenerated' => $time, 'user' => $user, 'tweets' => $tweets, 'feed' => $feed]);
     }
