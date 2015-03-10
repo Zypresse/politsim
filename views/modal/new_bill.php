@@ -1,3 +1,6 @@
+<?
+use app\components\MyHtmlHelper;
+?>
 <p>Новый законопроект, предлагающий &laquo;<?=htmlspecialchars($bill_type->name)?>&raquo;</p>
 <form class="form-horizontal">
 <? foreach ($fields as $field) { ?>
@@ -50,7 +53,7 @@
 		 </script>
 		 <? break;
 		 case 'money': ?>
-
+                 <input type="number" class="bill_field" value="0" id="bill<?=$bill_type->id?>_<?=$field->system_name?>" name="<?=$field->system_name?>" onchange="$(this).val($(this).val() < 0 ? 0 : parseInt($(this).val()))" > <?=MyHtmlHelper::icon('coins')?>
 		 <? break;
 		 case 'regions':
 		 case 'regions_all': ?>
@@ -117,6 +120,20 @@
 				<? break; } ?>
 		 	
 		 <? break;
+                 case 'checkbox':
+                ?>
+                    <input type="checkbox" value="1" class="bill_field" id="bill<?=$bill_type->id?>_<?=$field->system_name?>" name="<?=$field->system_name?>">
+                <?   
+                 break;
+                case 'licenses':
+                ?>
+                <select class="bill_field" id="bill<?=$bill_type->id?>_<?=$field->system_name?>" name="<?=$field->system_name?>">
+		 	<? foreach ($additional_data['licenses'] as $license) { ?>
+		 	<option value="<?=$license->id?>"><?=$license->name?></option>
+		 	<? } ?>
+		 </select>
+                <?
+                    break;
 		 default: ?>
 		 	<input type="text" class="bill_field" id="bill<?=$bill_type->id?>_<?=$field->system_name?>" name="<?=$field->system_name?>" >
 		 <? break; 

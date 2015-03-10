@@ -7,6 +7,7 @@ use app\components\MyModel;
 use app\models\Org;
 use app\models\GovermentFieldValue;
 use app\models\Notification;
+use app\models\StateLicense;
 
 /**
  * This is the model class for table "bill_types".
@@ -118,6 +119,18 @@ class BillType extends MyModel
                 $org = Org::findByPk($org_id);
                 $org->next_elect = time()+48*60*60;
                 $org->save();
+            break;
+            case 11: // Сменить порядок выдачи лицензий
+                $sl = StateLicense::find()->where(['state_id'=>$bill->state_id,'license_id'=>$data->license_id])->one();
+                if (is_null($sl)) {
+                    $sl = new StateLicense();
+                    $sl->state_id = $bill->state_id;
+                    $sl->license_id = intval($data->license_id);
+                }
+                $sl->cost = floatval($data->cost);
+                $sl->is_need_confirm = ($data->is_need_confirm ? 1 : 0);
+                $sl->is_only_goverment = ($data->is_only_goverment ? 1 : 0);
+                $sl->save();
             break;
             
         }

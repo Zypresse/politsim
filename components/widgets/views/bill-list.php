@@ -3,6 +3,8 @@
 use app\models\GovermentFieldType;
 use app\models\Region;
 use app\models\Org;
+use app\models\HoldingLicenseType;
+use app\components\MyHtmlHelper;
 
 ?>
 <dl id="<?=$id?>" style="<?=$style?>" >
@@ -21,6 +23,14 @@ use app\models\Org;
 			<?=htmlspecialchars($name)?> — 
 				<? 
 					switch ($key) {
+                                                case 'cost':
+                                                case 'money':
+                                                    $value = $value.' '.MyHtmlHelper::icon('coins');
+                                                break;
+                                                case 'is_only_goverment':
+                                                case 'is_need_confirm':
+                                                    $value = ($value ? 'ДА' : 'НЕТ');
+                                                break;
 						case 'new_capital':
 							$region = Region::findByCode($value);
 							$value = $region->city;
@@ -38,6 +48,10 @@ use app\models\Org;
 						case 'goverment_field_type':
 							$gft = GovermentFieldType::findByPk($value);							
 							$value = $gft->name;
+						break;
+						case 'license_id':
+							$hlt = HoldingLicenseType::findByPk($value);							
+							$value = $hlt->name;
 						break;
 						case 'elected_variant':
 							$value = explode('_', $value);

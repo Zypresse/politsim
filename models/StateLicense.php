@@ -51,4 +51,12 @@ class StateLicense extends MyModel
             'cost' => 'Cost',
         ];
     }
+    public function getType()
+    {
+        return $this->hasOne('app\models\HoldingLicenseType', array('id' => 'license_id'));
+    }
+    public function getState()
+    {
+        return $this->hasOne('app\models\State', array('id' => 'state_id'));
+    }
 }

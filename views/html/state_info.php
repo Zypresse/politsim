@@ -66,6 +66,22 @@
 <? } ?>
 </ul>
 
+<h3>Экономика</h3>
+<ul>
+    <?    foreach ($state->licenses as $license) { ?>
+    <li><strong><?=$license->type->name?>:</strong><br>
+        <? if ($license->is_only_goverment) { ?>
+        Гос. монополия
+        <? } else { ?>
+        Стоимость лицензии: <?=$license->cost?> <?=MyHtmlHelper::icon('coins')?>
+        <? if ($license->is_need_confirm) { ?>
+        <br> Требуется подтверждение министра
+        <? } ?>
+        <? } ?>
+    </li>
+    <? } ?>
+</ul>
+
 <h3>Территория</h3>
 <strong>Список регионов:</strong> <input type="button" class="btn" id="regions_show" value="Показать">
 <ul id="region_list" >
