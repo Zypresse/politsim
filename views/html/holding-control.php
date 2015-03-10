@@ -94,7 +94,7 @@ foreach ($holding->decisions as $decision) {
 <div class="btn-toolbar">
 <div class="btn-group">
   <button class="btn btn-small dropdown-toggle btn-main" data-toggle="dropdown">
-    Новые предложения <span class="caret"></span>
+    Общие предложения <span class="caret"></span>
   </button>
   <ul class="dropdown-menu">
     <!--<li class="divider"></li>-->
@@ -102,9 +102,37 @@ foreach ($holding->decisions as $decision) {
     <li><a href="#" onclick="$('#stock_dividents_modal').modal();" >Выплатить дивиденты</a></li>
   </ul>
 </div>
+<div class="btn-group">
+  <button class="btn btn-small dropdown-toggle btn-main" data-toggle="dropdown">
+    Управление счётом <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu">
+    <!--<li class="divider"></li>-->
+    <li><a href="#" onclick="$('#insert_money_modal').modal();" >Внести деньги на счёт</a></li>
+  </ul>
+</div>
 </div>
 
 
+<div style="display:none;" class="modal" id="insert_money_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel123" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel123">Выплата дивидентов акционерам</h3>
+  </div>
+  <div id="insert_money_modal_body" class="modal-body">
+    <div class="control-group">
+      <label class="control-label" for="#dividents_sum">Сумма для внесения на счёт</label>
+      <div class="controls">
+        <input type="number" id="insert_sum" value="0"> <?=MyHtmlHelper::icon('coins')?>
+      </div>
+    </div>
+      <p>Деньги будут сняты с вашего счёта и внесены на баланс компании. Снять их будет проблематично, если вы не владеете 100% акций.</p>
+  </div>
+  <div class="modal-footer">
+  	<button class="btn btn-primary" data-dismiss="modal"  onclick="insert_money(<?=$holding->id?>)">Внести</button>
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+  </div>
+</div>
 <div style="display:none;" class="modal" id="stock_dividents_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel123" aria-hidden="true">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -153,6 +181,12 @@ function vote_for_decision(id,variant) {
 
 function pay_dividents(id) {
     json_request('new-holding-decision',{'holding_id':id,'type':2,'sum':$('#dividents_sum').val()});
+}
+
+function insert_money(id) {
+    if (confirm("Вы действительно безвозмездно внести деньги на счёт фирмы?")) {
+        json_request('insert-money-to-holding',{'holding_id':id,'sum':$('#insert_sum').val()});
+    }
 }
 
 $('#dividents_sum').change(function(){

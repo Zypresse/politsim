@@ -1188,4 +1188,44 @@ class JsonController extends MyController {
         } else
             return $this->_r("Invalid fields");
     }
+    
+    public function actionInsertMoneyToHolding($holding_id,$sum) {
+        $holding_id = intval($holding_id);
+        $sum = intval($sum);
+        if ($holding_id && $sum>0) {
+            $holding = Holding::findByPk($holding_id);
+            if (is_null($holding))
+                return $this->_r("Holding not found");
+            
+            $user = $this->getUser();
+            
+            if ($user->isShareholder($holding)) {
+                $stock = $user->getShareholderStock($holding);
+                switch (get_class($stock->master)) {
+                    case 'app\models\User':
+                        if ($user->money < $sum)
+                            return $this->_r("У вас недостаточно денег");
+                        $user->money -= $sum;
+                        $user->save();
+                        break;
+                    case 'app\models\Post':
+                    case 'app\models\Holding':
+                        if ($stock->master->balance < $sum)
+                            return $this->_r("У держателя акций недостаточно денег");
+                        $stock->master->balance -= $sum;
+                        $stock->master->save();
+                        break;
+                }
+                $holding->balance += $sum;
+                $holding->save();
+                
+                return $this->_rOk();
+            } else {
+                return $this->_r("Not allowed");
+            }
+        } else {
+            return $this->_r("Invalid fields");
+        }
+        
+    }
 }
