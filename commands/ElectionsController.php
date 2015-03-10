@@ -74,6 +74,9 @@ class ElectionsController extends Controller {
                 $first['req']->user->chart_pie += ceil($first['req']->user->state->sum_star / 10);
                 $first['req']->user->star += ceil($first['req']->user->state->sum_star / 50);
                 $first['req']->user->save();
+                if ($org->leader_dest === 'nation_party_vote') {
+                    $org->leader->party_reserve = $first['req']->user->party_id;
+                }
                 
                 Notification::send($first['req']->user->id, "Вы победили на выборах и заняли должность «".$org->leader->name."»");                
 

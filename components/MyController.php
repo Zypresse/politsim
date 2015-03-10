@@ -34,8 +34,8 @@ class MyController extends Controller
 
         if ($e) $this->error = $e;
         if ($this->error) $this->result = 'error';
-        
-        if (is_array($this->error)) $this->error = implode('<br>',  $this->error);
+
+        if (is_array($this->error)) $this->error = print_r($this->error,true);
         
         $ar = ['result'=>$this->result,'error'=>$this->error,'addFields'=>[]];
         foreach ($addFields as $key => $value) {
