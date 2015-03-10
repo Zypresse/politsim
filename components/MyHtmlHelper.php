@@ -133,7 +133,7 @@ class MyHtmlHelper {
                         return false;
                     }
                 },$text);
-            $text = preg_replace_callback("/[#]+[A-Za-z0-9]+/", function($u) {
+            $text = preg_replace_callback("/[#]+[A-Za-zАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя0-9_\-]+/u", function($u) {
                 if (isset($u[0])) {
                         $u = $u[0];
                         $tag = str_replace("#", "", $u);
