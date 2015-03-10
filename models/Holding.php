@@ -63,6 +63,10 @@ class Holding extends MyModel
     {
         return $this->hasMany('app\models\HoldingDecision', array('holding_id' => 'id'))->orderBy('accepted ASC, created DESC');
     }
+    public function getLicenses()
+    {
+        return $this->hasMany('app\models\HoldingLicense', array('holding_id' => 'id'));
+    }
     
     public function getSumStocks()
     {
