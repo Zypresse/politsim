@@ -11,8 +11,8 @@ use app\components\MyHtmlHelper;
 use yii\helpers\Html;
 ?>
 <h1><?=htmlspecialchars($holding->name)?></h1>
-<p>Капитализация: <?=number_format($holding->capital,0,'',' ')?> <?=MyHtmlHelper::icon('coins')?></p>
-<? if ($user->isShareholder($holding)) { ?><p>Баланс: <?=number_format($holding->balance,0,'',' ')?> <?=MyHtmlHelper::icon('coins')?></p><? } ?>
+<p>Капитализация: <?=MyHtmlHelper::aboutNumber($holding->capital)?> <?=MyHtmlHelper::icon('money')?></p>
+<? if ($user->isShareholder($holding)) { ?><p>Баланс: <?=number_format($holding->balance,0,'',' ')?> <?=MyHtmlHelper::icon('money')?></p><? } ?>
 <h3>Акционеры компании:</h3>
 <table class="table">
 <? foreach ($holding->stocks as $stock) { 

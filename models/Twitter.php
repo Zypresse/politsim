@@ -33,7 +33,7 @@ class Twitter extends MyModel
         return [
             [['uid', 'text', 'retweets', 'date'], 'required'],
             [['uid', 'retweets', 'date', 'original'], 'integer'],
-            [['text'], 'string', 'max' => 140]
+            [['text'], 'string', 'max' => 200]
         ];
     }
 

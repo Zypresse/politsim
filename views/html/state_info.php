@@ -73,7 +73,7 @@
         <? if ($license->is_only_goverment) { ?>
         Гос. монополия
         <? } else { ?>
-        Стоимость лицензии: <?=$license->cost?> <?=MyHtmlHelper::icon('coins')?>
+        Стоимость лицензии: <?=$license->cost?> <?=MyHtmlHelper::icon('money')?>
         <? if ($license->is_need_confirm) { ?>
         <br> Требуется подтверждение министра
         <? } ?>

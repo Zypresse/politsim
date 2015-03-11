@@ -777,7 +777,7 @@ class JsonController extends MyController {
     }
 
     public function actionTweet($text, $type = 0, $uid = 0) {
-        $text = substr(trim(strip_tags($text)), 0, 280);
+        $text = nl2br(substr(trim(strip_tags($text)), 0, 280));
         $type = intval($type);
         $uid = intval($uid);
 
@@ -842,7 +842,7 @@ class JsonController extends MyController {
             $tweet->retweets = $retweets;
             $tweet->date = time();
             if ($tweet->save()) {
-                $self->last_tweet = time();
+                if ($self->id > 1) $self->last_tweet = time();
                 $self->save();
 
                 return $this->_rOk();

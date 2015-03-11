@@ -29,7 +29,8 @@ class HoldingLicense extends MyModel
     {
         return [
             [['holding_id', 'license_id'], 'required'],
-            [['holding_id', 'license_id'], 'integer']
+            [['holding_id', 'license_id'], 'integer'],
+            [['holding_id', 'license_id'], 'unique', 'targetAttribute' => ['holding_id', 'license_id'], 'message' => 'The combination of Holding ID and License ID has already been taken.']
         ];
     }
 

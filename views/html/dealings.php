@@ -17,7 +17,7 @@ if (sizeof($nadl)) { ?>
     ?>
     <tr id="dealing_line<?=$dealing->id?>">
         <td><?= ($dealing->is_anonim) ? 'Неизвестный отправитель' : Html::a(Html::img($dealing->sender->photo,['style'=>'width:20px']).' '.$dealing->sender->name,'#',['onclick'=>'load_page("profile",{"uid":'.$dealing->from_uid.'})']) ?></td>
-        <td><? if (intval($dealing->sum) !== 0) { ?><?= ($dealing->sum>0 ? 'Вы получите ' : 'Вы затратите ').  number_format(abs($dealing->sum),0,'',' ').' '.MyHtmlHelper::icon('coins')?><? } ?></td>
+        <td><? if (intval($dealing->sum) !== 0) { ?><?= ($dealing->sum>0 ? 'Вы получите ' : 'Вы затратите ').  number_format(abs($dealing->sum),0,'',' ').' '.MyHtmlHelper::icon('money')?><? } ?></td>
         <td>
             <? 
             if (is_array($items) && sizeof($items)) {
@@ -80,7 +80,7 @@ $mdl = $user->getMyDealingsList();
         <td class="prettyDate" data-unixtime="<?=$dealing->time?>"><?=date('d-m-Y H:i',$dealing->time)?></td>
         <td><?= ($dealing->is_anonim && !($dealing->from_uid === $user->id)) ? 'Неизвестный отправитель' : Html::a(Html::img($dealing->sender->photo,['style'=>'width:20px']).' '.$dealing->sender->name,'#',['onclick'=>'load_page("profile",{"uid":'.$dealing->from_uid.'})']) ?></td>
         <td><?= Html::a(Html::img($dealing->recipient->photo,['style'=>'width:20px']).' '.$dealing->recipient->name,'#',['onclick'=>'load_page("profile",{"uid":'.$dealing->to_uid.'})'])?></td>
-        <td><?=$dealing->sum?> <?=MyHtmlHelper::icon('coins')?></td>
+        <td><?=$dealing->sum?> <?=MyHtmlHelper::icon('money')?></td>
         <td>
         <? 
             if (is_array($items) && sizeof($items)) {

@@ -25,7 +25,7 @@ $gft = null;
 </div>
 <h1>Личный кабинет</h1>
 <p>Вы занимаете должность &laquo;<?=htmlspecialchars($user->post->name)?>&raquo; в организации &laquo;<a href="#" onclick="load_page('org-info',{'id':<?=$user->post->org_id?>});"><?=htmlspecialchars($user->post->org->name)?></a>&raquo;
-<p>На данной должности вам доступен бюджет в размере <?=  number_format($user->post->balance,0,'',' ')?> <?=  MyHtmlHelper::icon('coins')?></p>
+<p>На данной должности вам доступен бюджет в размере <?=  number_format($user->post->balance,0,'',' ')?> <?=  MyHtmlHelper::icon('money')?></p>
 <? if ($user->post_id === $user->post->org->leader_post) { ?><p>Вы — лидер организации &laquo;<a href="#" onclick="load_page('org-info',{'id':<?=$user->post->org_id?>});"><?=htmlspecialchars($user->post->org->name)?></a>&raquo;<? if ($user->post->org->leader_can_create_posts) { ?> и можете создавать новые должности в ней<? } ?>.</p>
 <h3>Подчинённые</h3>
 <p>
@@ -139,7 +139,7 @@ $gft = null;
     <tr>
         <td><a href="#" onclick="load_page('holding-info',{'id':<?=$stock->holding_id?>})"><?=$stock->holding->name?></a></td>
         <td><?=MyHtmlHelper::formateNumberword($stock->count, "акций","акция","акции")?> (<?=round($stock->getPercents(),2)?>%)</td>
-        <td>≈ <?=number_format($stock->getCost(),0,'',' ')?> <?=MyHtmlHelper::icon('coins')?></td>
+        <td>≈ <?=number_format($stock->getCost(),0,'',' ')?> <?=MyHtmlHelper::icon('money')?></td>
         <td><?=Html::a("Управление","#",['class'=>'btn btn-primary', 'onclick'=>'load_page("holding-control",{"id":'.$stock->holding_id.'})'])?></td>
     </tr>
 <? } ?>
@@ -158,7 +158,7 @@ $gft = null;
   <ul class="dropdown-menu">
     <!--<li class="divider"></li>-->
     <? if ($user->post->org->leader_can_create_posts) { ?><li><a href="#" onclick="create_new_post(<?=$user->post->org_id?>)" >Создать новую должность</a></li><? } ?>
-    <li><a href="#" onclick="rename_org(<?=$user->post->org_id?>)" >Переименовать организацию</a></li>
+    <!--<li><a href="#" onclick="rename_org(<?=$user->post->org_id?>)" >Переименовать организацию</a></li>-->
   </ul>
 </div>
 <script type="text/javascript">

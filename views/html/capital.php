@@ -2,14 +2,14 @@
 use app\components\MyHtmlHelper;
 ?>
 <h3>Капитал пользователя по имени <?=htmlspecialchars($user->name)?></h3>
-<p>Наличные: <?=number_format($user->money,2,'.',' ')?> <?=MyHtmlHelper::icon('coins')?></p>
+<p>Наличные: <?=number_format($user->money,2,'.',' ')?> <?=MyHtmlHelper::icon('money')?></p>
 <h4>Акции:</h4>
 <table class="table">
 <? if (sizeof($user->stocks)) { foreach ($user->stocks as $stock) { ?>
     <tr>
         <td><a href="#" onclick="load_page('holding-info',{'id':<?=$stock->holding_id?>})"><?=$stock->holding->name?></a></td>
         <td><?=MyHtmlHelper::formateNumberword($stock->count, "акций","акция","акции")?> (<?=round($stock->getPercents(),2)?>%)</td>
-        <td>≈ <?=number_format($stock->getCost(),0,'',' ')?> <?=MyHtmlHelper::icon('coins')?></td>
+        <td>≈ <?=number_format($stock->getCost(),0,'',' ')?> <?=MyHtmlHelper::icon('money')?></td>
     </tr>
 <? }} else { ?>
     <tr><td colspan="2">Не владеет акциями</td></tr>
@@ -25,7 +25,7 @@ use app\components\MyHtmlHelper;
 <tr>
     <td class="prettyDate" data-unixtime="<?=$d->time?>"></td>
     <td><? if (!$d->is_anonim || $d->from_uid == $viewer_id) { ?><a href="#" onclick="load_page('profile',{'uid':<?=$d->from_uid?>});"><img src="<?=$d->sender->photo?>" alt=""> <?=htmlspecialchars($d->sender->name)?></a><? } else { ?>Неизвестный отправитель<? } ?></td>
-    <td><a href="#" onclick="load_page('profile',{'uid':<?=$d->to_uid?>});"><img src="<?=$d->recipient->photo?>" alt=""> <?=htmlspecialchars($d->recipient->name)?></a></td><td><?=number_format($d->sum,2,'.',' ')?> <?=MyHtmlHelper::icon('coins')?></td><td></td><td><? if ($d->is_secret) { ?>Тайный<? } ?> <? if ($d->is_anonim) { ?>Анонимный<? } ?> <? if (!$d->is_secret && !$d->is_anonim) { ?>Обычный<? } ?></td></tr>
+    <td><a href="#" onclick="load_page('profile',{'uid':<?=$d->to_uid?>});"><img src="<?=$d->recipient->photo?>" alt=""> <?=htmlspecialchars($d->recipient->name)?></a></td><td><?=number_format($d->sum,2,'.',' ')?> <?=MyHtmlHelper::icon('money')?></td><td></td><td><? if ($d->is_secret) { ?>Тайный<? } ?> <? if ($d->is_anonim) { ?>Анонимный<? } ?> <? if (!$d->is_secret && !$d->is_anonim) { ?>Обычный<? } ?></td></tr>
 
 <? } ?>
 </tbody>

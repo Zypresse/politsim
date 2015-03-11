@@ -26,7 +26,7 @@ use yii\helpers\Html;
     <tr>
         <td><a href="#" onclick="load_page('holding-info',{'id':<?=$stock->holding_id?>})"><?=$stock->holding->name?></a></td>
         <td><?=MyHtmlHelper::formateNumberword($stock->count, "акций","акция","акции")?> (<?=round($stock->getPercents(),2)?>%)</td>
-        <td>≈ <?=number_format($stock->getCost(),0,'',' ')?> <?=MyHtmlHelper::icon('coins')?></td>
+        <td>≈ <?=number_format($stock->getCost(),0,'',' ')?> <?=MyHtmlHelper::icon('money')?></td>
         <td><?=Html::a("Управление","#",['class'=>'btn btn-primary', 'onclick'=>'load_page("holding-control",{"id":'.$stock->holding_id.'})'])?></td>
     </tr>
 <? }} else { ?>
@@ -50,8 +50,8 @@ use yii\helpers\Html;
         <input type="text" id="holding_name" placeholder="ОАО «Рога и копыта»">
       </div>
       </div>
-      <p>Создание холдинга отнимет у вас 10 000 <?=MyHtmlHelper::icon('coins')?></p>
-      <p>Из них 5 000 <?=MyHtmlHelper::icon('coins')?> попадут на расчётный счёт фирмы</p>
+      <p>Создание холдинга отнимет у вас 10 000 <?=MyHtmlHelper::icon('money')?></p>
+      <p>Из них 5 000 <?=MyHtmlHelper::icon('money')?> попадут на расчётный счёт фирмы</p>
   </div>
   <div class="modal-footer">
       <button type="submit" onclick="json_request('create-holding',{'name':$('#holding_name').val()})" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Создать</button>

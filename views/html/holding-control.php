@@ -12,8 +12,8 @@ $userStock = $user->getShareholderStock($holding);
 
 ?>
 <h1>Управление «<?=$holding->name?>»</h1>
-<p>Капитализация: <?=number_format($holding->capital,0,'',' ')?> <?=MyHtmlHelper::icon('coins')?></p>
-<p>Баланс: <?=number_format($holding->balance,0,'',' ')?> <?=MyHtmlHelper::icon('coins')?></p>
+<p>Капитализация: <?=number_format($holding->capital,0,'',' ')?> <?=MyHtmlHelper::icon('money')?></p>
+<p>Баланс: <?=number_format($holding->balance,0,'',' ')?> <?=MyHtmlHelper::icon('money')?></p>
 <h3>Лицензии:</h3>
 <? if (sizeof($holding->licenses)) { ?>
 <ul>
@@ -59,7 +59,7 @@ foreach ($holding->decisions as $decision) {
                 echo 'Переименование холдинга в «'.$data->new_name.'»';
             break;
             case 2:
-                echo 'Выплата дивидентов в размере '.$data->sum.' '.MyHtmlHelper::icon('coins');
+                echo 'Выплата дивидентов в размере '.$data->sum.' '.MyHtmlHelper::icon('money');
             break;
             case 3:
                 $license = app\models\HoldingLicenseType::findByPk($data->license_id);
@@ -175,7 +175,7 @@ foreach ($holding->decisions as $decision) {
                             }
                         }
                         if ($stateLicense->cost) {
-                            $text = number_format($stateLicense->cost,0,'',' ').' '.MyHtmlHelper::icon('coins');
+                            $text = number_format($stateLicense->cost,0,'',' ').' '.MyHtmlHelper::icon('money');
                         }
                         if ($stateLicense->is_need_confirm) {
                             $text .= "<br>Необходимо подтверждение министра";
@@ -204,7 +204,7 @@ foreach ($holding->decisions as $decision) {
     <div class="control-group">
       <label class="control-label" for="#dividents_sum">Сумма для внесения на счёт</label>
       <div class="controls">
-        <input type="number" id="insert_sum" value="0"> <?=MyHtmlHelper::icon('coins')?>
+        <input type="number" id="insert_sum" value="0"> <?=MyHtmlHelper::icon('money')?>
       </div>
     </div>
       <p>Деньги будут сняты с вашего счёта и внесены на баланс компании. Снять их будет проблематично, если вы не владеете 100% акций.</p>
@@ -223,7 +223,7 @@ foreach ($holding->decisions as $decision) {
     <div class="control-group">
       <label class="control-label" for="#dividents_sum">Сумма для списания со счёта</label>
       <div class="controls">
-        <input type="number" id="dividents_sum" value="<?=$holding->balance?>"> <?=MyHtmlHelper::icon('coins')?>
+        <input type="number" id="dividents_sum" value="<?=$holding->balance?>"> <?=MyHtmlHelper::icon('money')?>
       </div>
     </div>
   </div>

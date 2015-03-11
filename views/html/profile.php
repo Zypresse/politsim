@@ -127,7 +127,7 @@ use app\components\MyHtmlHelper;
       <div class="control-group" id="dealing_cost_block">
       <label class="control-label" for="#dealing_cost">Цена</label>
       <div class="controls">
-          <input type="number" id="dealing_cost" placeholder="" > <?=MyHtmlHelper::icon('coins')?>
+          <input type="number" id="dealing_cost" placeholder="" > <?=MyHtmlHelper::icon('money')?>
       </div>
       </div>
       <div class="control-group">
