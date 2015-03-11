@@ -43,7 +43,8 @@ class MyHtmlHelper {
 			'fish' => 'Рыба и морепродукты',
 			'meat' => 'Мясо и молочная продукция',
 			'wool' => 'Шерсть и кожа',
-			'b_materials' => 'Стройматериалы (добываемые)'
+			'b_materials' => 'Стройматериалы (добываемые)',
+                    'money' => 'долларов',
 		];
 	    if (isset($lang[$str])) {
 
@@ -145,4 +146,33 @@ class MyHtmlHelper {
                         
             return $text;
 	}
+        
+        public static function aboutNumber($n) {
+            switch (true) {
+                case $n < 0:
+                    return '< 0';
+                case $n < 1000:
+                    return '< 1 000';
+                case $n < 10000:
+                    return round($n/1000).'K';
+                case $n < 100000:
+                    return round($n/10000).'0K';
+                case $n < 1000000:
+                    return round($n/100000).'00K';
+                case $n < 10000000:
+                    return round($n/1000000).'KK';
+                case $n < 100000000:
+                    return round($n/10000000).'0KK';
+                case $n < 1000000000:
+                    return round($n/100000000).'00KK';
+                case $n < 10000000000:
+                    return round($n/1000000000).'KKK';
+                case $n < 100000000000:
+                    return round($n/10000000000).'0KKK';
+                case $n < 1000000000000:
+                    return round($n/100000000000).'00KKK';
+                default:
+                    return 'ПИЗДЕЦ ДОХРЕНА';
+            }
+        }
 }

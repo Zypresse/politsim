@@ -122,6 +122,12 @@ class HtmlController extends MyController {
 
         return $this->render("chart_states", ['states' => $states]);
     }
+    
+    public function actionChartHoldings() {
+        $holdings = Holding::find()->orderBy('capital DESC')->all();
+
+        return $this->render("chart_holdings", ['holdings' => $holdings]);
+    }
 
     public function actionElections($state_id = true) {
         if (intval($state_id) > 0) {
