@@ -134,6 +134,15 @@ use app\components\MyHtmlHelper;
 		 </select>
                 <?
                     break;
+                case 'orgs':
+                ?>
+                <select class="bill_field" id="bill<?=$bill_type->id?>_<?=$field->system_name?>" name="<?=$field->system_name?>">
+		 	<? foreach ($additional_data['orgs'] as $org) { ?>
+		 	<option value="<?=$org->id?>"><?=$org->name?></option>
+		 	<? } ?>
+		 </select>
+                <?
+                    break;
 		 default: ?>
 		 	<input type="text" class="bill_field" id="bill<?=$bill_type->id?>_<?=$field->system_name?>" name="<?=$field->system_name?>" >
 		 <? break; 

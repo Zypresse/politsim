@@ -53,6 +53,10 @@ use app\components\MyHtmlHelper;
 							$hlt = HoldingLicenseType::findByPk($value);							
 							$value = $hlt->name;
 						break;
+						case 'org_id':
+							$org = Org::findByPk($value);							
+							$value = $org->name;
+						break;
 						case 'elected_variant':
 							$value = explode('_', $value);
 							$org = Org::findByPk($value[0]);

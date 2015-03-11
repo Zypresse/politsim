@@ -74,24 +74,24 @@ class BillType extends MyModel
             break;
             case 3: // Переименование региона
                 $region = Region::findByCode($data->region_code);
-                if ($region) {
+                if ($region && $region->state_id === $bill->state_id) {
                     $region->name = $data->new_name;
+                    $region->save();
                 }
-                $region->save();
             break;
             case 4: // Переименование города
                 $region = Region::findByCode($data->region_code);
-                if ($region) {
+                if ($region && $region->state_id === $bill->state_id) {
                     $region->city = $data->new_city_name;
+                    $region->save();
                 }
-                $region->save();
             break;
             case 5: // Дать региону независимость
                 $region = Region::findByCode($data->region_code);
-                if ($region) {
+                if ($region && $region->state_id === $bill->state_id) {
                     $region->state_id = 0;
+                    $region->save();
                 }
-                $region->save();
             break;
             case 6: // Смена флага
                 $bill->state->flag = $data->new_flag;
@@ -117,8 +117,10 @@ class BillType extends MyModel
             case 10: // провести перевыборы
                 $org_id = explode('_', $data->elected_variant)[0];
                 $org = Org::findByPk($org_id);
-                $org->next_elect = time()+48*60*60;
-                $org->save();
+                if ($org && $org->state_id === $bill->state_id) {
+                    $org->next_elect = time()+48*60*60;
+                    $org->save();
+                }
             break;
             case 11: // Сменить порядок выдачи лицензий
                 $sl = StateLicense::find()->where(['state_id'=>$bill->state_id,'license_id'=>$data->license_id])->one();
@@ -131,6 +133,13 @@ class BillType extends MyModel
                 $sl->is_need_confirm = ($data->is_need_confirm ? 1 : 0);
                 $sl->is_only_goverment = ($data->is_only_goverment ? 1 : 0);
                 $sl->save();
+            break;
+            case 12: // Переименовать организацию
+                $org = Org::findByPk($data->org_id);
+                if ($org && $org->state_id === $bill->state_id) {
+                    $org->name = $data->new_name;
+                    $org->save();
+                }
             break;
             
         }

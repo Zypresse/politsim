@@ -151,6 +151,9 @@ class ModalController extends MyController {
                         case 'licenses':
                             $additional_data['licenses'] = HoldingLicenseType::find()->all();
                             break;
+                        case 'orgs':
+                            $additional_data['orgs'] = Org::find()->where(['state_id'=>$user->state_id])->all();
+                            break;
                         default:
 
                             break;
