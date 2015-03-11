@@ -55,9 +55,14 @@ class JsonController extends MyController {
             $user = User::find()->where(["twitter_nickname" => $nick])->one();
         }
         if (is_null($user)) {
-            $this->error = 'User not found';
-        } else {
-            $this->result = ($uid == $this->viewer_id) ? $user->attributes : $user->getPublicAttributes();
+            $this->_r('User not found');
+        } 
+        
+        $this->result = ($uid == $this->viewer_id) ? $user->attributes : $user->getPublicAttributes();
+                
+        $dealingsCount = $user->getNotAcceptedDealingsCount();
+        if ($dealingsCount) {
+            $this->result['new_dealings_count'] = $dealingsCount;
         }
 
         return $this->_r();

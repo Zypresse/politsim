@@ -45,14 +45,14 @@ if (sizeof($nadl)) { ?>
 <script>
     function accept_dealing(id) {
         if (confirm("Вы действительно хотите заключить эту сделку?")) {
-            json_request('accept-dealing',{'id':id},true);
+            json_request('accept-dealing',{'id':id});
             $('#dealing_line'+id).remove();
         }
     }
     
     function decline_dealing(id) {
         if (confirm("Вы действительно хотите отказаться от этой сделки?")) {
-            json_request('decline-dealing',{'id':id},true);
+            json_request('decline-dealing',{'id':id});
             $('#dealing_line'+id).remove();
         }
     }

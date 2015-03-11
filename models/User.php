@@ -141,6 +141,11 @@ class User extends MyModel
     {
         return Dealing::find()->where(['to_uid'=>$this->id,'time'=>-1])->all();
     }
+    
+    public function getNotAcceptedDealingsCount()
+    {
+        return Dealing::find()->where(['to_uid'=>$this->id,'time'=>-1])->count();
+    }
 
     public function isPartyLeader()
     {
