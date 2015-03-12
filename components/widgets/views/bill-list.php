@@ -94,7 +94,7 @@ use app\components\MyHtmlHelper;
 				&laquo;<span class="dynamic_field" data-type="<?=$key?>"><?=$value?></span>&raquo;</li>
 		<? } ?>
 	</ul></dt>
-	<dd><? if ($bill->creatorUser) { ?>Предложил<? if ($bill->creatorUser->sex === 1) { ?>а<? } ?> <a href="#" onclick="load_page('profile',{'id':<?=$bill->creatorUser->id ?>})"><?=htmlspecialchars($bill->creatorUser->name) ?></a><? } ?> <span class="formatDate" data-unixtime="<?=$bill->created?>"><?=date("d-M-Y H:i",$bill->created) ?></span><br>
+	<dd><? if ($bill->creatorUser) { ?>Предложил<? if (intval($bill->creatorUser->sex) === 1) { ?>а<? } ?> <a href="#" onclick="load_page('profile',{'uid':<?=$bill->creatorUser->id ?>})"><?=htmlspecialchars($bill->creatorUser->name) ?></a><? } ?> <span class="formatDate" data-unixtime="<?=$bill->created?>"><?=date("d-M-Y H:i",$bill->created) ?></span><br>
 	<? if ($bill->accepted) { ?>
 		Вступил в силу <span class="formatDate" data-unixtime="<?=$bill->accepted?>"><?=date("d-M-Y H:i",$bill->accepted) ?></span>
 	<? } else { ?>
