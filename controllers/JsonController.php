@@ -1143,13 +1143,25 @@ class JsonController extends MyController {
                 $decision->decision_type = $type;
                 switch ($type) {
                     case 1: // Переименование
-                        $decision->data = ['new_name'=>strip_tags($_REQUEST['new_name'])];
+                        if (empty(strip_tags($_REQUEST['new_name']))) {
+                            return $this->_r("Invalid name");
+                        } else {
+                            $decision->data = ['new_name'=>strip_tags($_REQUEST['new_name'])];
+                        }
                     break;
                     case 2: // Выплата дивидентов
-                        $decision->data = ['sum'=>intval($_REQUEST['sum'])];
+                        if (intval($_REQUEST['sum']) > 0) {
+                            $decision->data = ['sum'=>intval($_REQUEST['sum'])];
+                        } else {
+                            return $this->_r("Invalid sum");
+                        }
                     break;
                     case 3: // Получение новой лицензии
-                        $decision->data = ['license_id'=>intval($_REQUEST['license_id'])];
+                        if (intval($_REQUEST['license_id']) > 0) {
+                            $decision->data = ['license_id'=>intval($_REQUEST['license_id'])];
+                        } else {
+                            return $this->_r("Invalid license ID");
+                        }
                     break;
                 }
                 $decision->data = json_encode($decision->data,JSON_UNESCAPED_UNICODE);

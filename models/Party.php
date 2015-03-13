@@ -97,10 +97,11 @@ class Party extends MyModel
 
     public function afterDelete()
     {
-        foreach ($this->requests as $request) 
+        foreach ($this->requests as $request) {
             $request->delete();
-        foreach ($this->lrequests as $request) 
+        }
+        foreach ($this->lrequests as $request) {
             $request->delete();
-        
+        }
     }
 }
