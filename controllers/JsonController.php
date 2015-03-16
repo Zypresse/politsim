@@ -266,10 +266,13 @@ class JsonController extends MyController {
 
             $request = new ElectRequest();
             $request->org_id = $org_id;
-            $request->party_id = ($org->leader_dest === 'nation_party_vote' ? $user->party_id : null);
+            if ($leader)
+                $request->party_id = (($org->leader_dest === 'nation_party_vote') ? $user->party_id : null);
+            else
+                $request->party_id = $user->party_id;
             $request->candidat = ($leader) ? $candidat : NULL;
             $request->leader = $leader;
-
+            
             if ($request->save()) {
                 $this->result = 'ok';
             } else {

@@ -63,6 +63,8 @@ class ModalController extends MyController {
             $org = Org::findByPk($org_id);
             if (is_null($org))
                 return $this->_r("Organisation not found");
+            
+            if ($org->next_elect>  time()) {
 
             $elect_requests = ElectRequest::find()->where(["org_id" => $org_id, "leader" => $leader])->all();
             $results = [];
@@ -96,6 +98,9 @@ class ModalController extends MyController {
                 return $this->render("elect_exitpolls", ['requests' => $requests, 'results' => $results, 'sum_a_r' => $sum_a_r, 'org' => $org, 'yavka' => $yavka, 'leader' => $leader]);
             } else
                 return $this->_r("No requests on elections");
+            } else {
+                return $this->render("cap/elects-ended", ['org' => $org]);
+            }
         } else
             return $this->_r("Invalid organisation ID");
     }
