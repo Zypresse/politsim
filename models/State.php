@@ -25,6 +25,7 @@ use app\models\GovermentFieldValue;
  * @property integer $allow_register_parties
  * @property integer $leader_can_drop_legislature
  * @property integer $allow_register_holdings
+ * @property integer $register_parties_cost
  */
 class State extends MyModel
 {
@@ -43,7 +44,7 @@ class State extends MyModel
     {
         return [
             [['name', 'short_name', 'capital'], 'required'],
-            [['legislature', 'executive', 'state_structure', 'goverment_form', 'group_id','allow_register_parties','population','sum_star','leader_can_drop_legislature','allow_register_holdings'], 'integer'],
+            [['legislature', 'executive', 'state_structure', 'goverment_form', 'group_id','allow_register_parties','population','sum_star','leader_can_drop_legislature','allow_register_holdings','register_parties_cost'], 'integer'],
             [['name'], 'string', 'max' => 100],
             [['short_name'], 'string', 'max' => 10],
             [['capital', 'color'], 'string', 'max' => 7]

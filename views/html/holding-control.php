@@ -161,7 +161,7 @@ foreach ($holding->decisions as $decision) {
                     }
                     if (!$allowed) continue;
                     
-                    foreach ($user->state->licenses as $sl) {
+                    foreach ($holding->state->licenses as $sl) {
                         if ($sl->license_id === $license->id) {
                             $stateLicense = $sl;
                             break;

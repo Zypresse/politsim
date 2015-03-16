@@ -175,4 +175,8 @@ class MyHtmlHelper {
                     return 'ПИЗДЕЦ ДОХРЕНА';
             }
         }
+        
+        public static function moneyFormat($money,$decimals = 0) {
+            return number_format($money,$decimals,'.',' ').' '.static::icon('coins');
+        }
 }

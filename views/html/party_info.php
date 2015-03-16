@@ -129,7 +129,7 @@
 <? if ($party->id === $user->party_id) { ?>
 
 <div class="btn-group">
-  <button class="btn btn-small dropdown-toggle btn-warning" onclick="json_request('leave-party',{},true); load_page('profile');">
+  <button class="btn btn-small dropdown-toggle btn-warning" onclick="if (confirm('Вы действительно хотите выйти из партии?')) { json_request('leave-party',{});  }">
     Выйти из партии
   </button>
 </div>

@@ -58,7 +58,7 @@ class HtmlController extends MyController {
         if ($user->post) {
             return $this->render("work", ['user' => $user]);
         } else
-            return $this->_r("No works");
+            return $this->render("not-have-work", ['user' => $user]);
     }
 
     public function actionOrgInfo($id) {
@@ -129,14 +129,20 @@ class HtmlController extends MyController {
         return $this->render("chart_holdings", ['holdings' => $holdings]);
     }
 
-    public function actionElections($state_id = true) {
+    public function actionElections($state_id = false) {
+        $user = User::findByPk($this->viewer_id);
+        if ($state_id === false) {
+                if ($user->state_id) {
+                    $state_id = $user->state_id;
+                } else {
+                    return $this->render("not-have-state",['user'=>$user]);
+                }
+        }
         if (intval($state_id) > 0) {
-            $user = User::findByPk($this->viewer_id);
-            if ($state_id === true) {
-                $state_id = $user->state_id;
+            
+            if ($state_id === $user->state_id) {
                 $state = $user->state;
             } else {
-                $state_id = intval($state_id);
                 $state = State::findByPk($state_id);
             }
             if (is_null($state))
@@ -151,7 +157,11 @@ class HtmlController extends MyController {
         $user = User::findByPk($this->viewer_id);
 
         if ($id === false) {
-            $id = $user->state_id;
+            if ($user->state_id) {
+                $id = $user->state_id;
+            } else {
+                return $this->render("not-have-state",['user'=>$user]);
+            }
         }
         $id = intval($id);
 
@@ -171,7 +181,12 @@ class HtmlController extends MyController {
         $user = User::findByPk($this->viewer_id);
 
         if ($id === false) {
-            $id = $user->party_id;
+            
+            if ($user->party_id) {
+                $id = $user->party_id;
+            } else {
+                return $this->render("not-have-party",['user'=>$user]);
+            }
         }
         $id = intval($id);
 
@@ -231,8 +246,6 @@ class HtmlController extends MyController {
     public function actionMyBuisness()
     {
         $user = $this->getUser();
-        if (is_null($user->state))
-            return $this->_r("Нужно иметь гражданство какого-то государства");
         
         return $this->render("my-buisness",['user'=>$user]);
     }

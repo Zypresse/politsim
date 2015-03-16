@@ -27,6 +27,8 @@ use app\models\Dealing;
  * @property integer $star
  * @property integer $heart
  * @property integer $chart_pie
+ * 
+ * @property \app\models\State $state
  */
 class User extends MyModel
 {
@@ -200,7 +202,7 @@ class User extends MyModel
     {
         if ($this->party) {
             if (intval($this->party->getMembersCount()) === 1) {
-                $party->delete();
+                $this->party->delete();
             }            
         }
         $this->party_id = 0;
