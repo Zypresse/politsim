@@ -1,6 +1,5 @@
 <?php
   use app\components\MyHtmlHelper;
-
   $KN = [
     'nation_individual_vote'=>'голосование населения за кандидатов',
     'nation_party_vote'=>'голосование населения за партии',

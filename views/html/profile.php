@@ -18,7 +18,7 @@ use app\components\MyHtmlHelper;
 <? } else { ?>
 	<? if ($user->sex === 1) { ?>Беспартийная<? } else { ?>Беспартийный<? } ?>
 <? } ?></p>
-<p><? if ($user->state_id) { ?>
+<p><? if ($user->state) { ?>
 	<? if ($user->sex === 1) { ?>Гражданка<? } else { ?>Гражданин<? } ?> государства <a href="#" onclick="load_page('state-info',{'id':<?=$user->state_id?>})"><?=htmlspecialchars($user->state->name)?></a>
 <? } else { ?>
 	<? if ($user->sex === 1) { ?>Гражданка<? } else { ?>Гражданин<? } ?> мира
