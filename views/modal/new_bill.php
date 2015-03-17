@@ -78,6 +78,13 @@ use app\components\MyHtmlHelper;
 		 	<? } ?>
 		 </select>
 		 <? break;
+		 case 'cores': ?>
+		 <select class="bill_field" id="bill<?=$bill_type->id?>_<?=$field->system_name?>" name="<?=$field->system_name?>">
+		 	<? foreach ($additional_data['cores'] as $i => $type) { ?>
+                        <? if (is_object($type)) { ?><option value="<?=$type->id?>"><?=$type->name?></option><? } else { ?><option value="<?=$i?>"><?=$type?></option><? } ?>
+		 	<? } ?>
+		 </select>
+		 <? break;
 		 case 'legislature_types': ?>
 		 <select class="bill_field" id="bill<?=$bill_type->id?>_<?=$field->system_name?>" name="<?=$field->system_name?>">
 		 	<? foreach ($additional_data['legislature_types'] as $type) { ?>

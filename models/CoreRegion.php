@@ -45,9 +45,4 @@ class CoreRegion extends MyModel
             'region_id' => 'Region ID',
         ];
     }
-
-    public function getCores() {
-        return $this->hasMany('app\models\CoreCountry', ['id' => 'core_id'])
-          ->viaTable('cores_regions', ['region_id' => 'id']);
-    }
 }

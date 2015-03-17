@@ -5,9 +5,12 @@ namespace app\models;
 use Yii;
 use app\components\MyModel;
 use app\models\Org;
+use app\models\State;
 use app\models\GovermentFieldValue;
 use app\models\Notification;
 use app\models\StateLicense;
+use app\models\CoreCountry;
+use app\components\MyHtmlHelper;
 
 /**
  * This is the model class for table "bill_types".
@@ -139,6 +142,40 @@ class BillType extends MyModel
                 if ($org && $org->state_id === $bill->state_id) {
                     $org->name = $data->new_name;
                     $org->save();
+                }
+            break;
+            
+            case 13: // Создание сателлита
+                if ($data->core_id) {
+                    $core = CoreCountry::findByPk($data->core_id);
+                }
+                $region = Region::findByCode($data->new_capital);
+                if ($region && $region->state_id === $bill->state_id)  {
+                    $state = new State();
+                    $state->name = $data->new_name;
+                    $state->short_name = $data->new_short_name;
+                    $state->flag = "http://placehold.it/300x200/eeeeee/000000&text=" . urlencode(MyHtmlHelper::transliterate($data->new_short_name));
+                    $state->capital = $data->new_capital;
+                    $state->color = MyHtmlHelper::getSomeColor(mt_rand(0, 100));
+                    $state->core_id = $data->core_id;
+                    $state->allow_register_parties = $bill->state->allow_register_parties;
+                    $state->leader_can_drop_legislature = $bill->state->leader_can_drop_legislature;
+                    $state->allow_register_holdings = $bill->state->allow_register_holdings;
+                    $state->register_parties_cost = $bill->state->register_parties_cost;
+                    $state->save();
+                    
+                    $executive = new Org();
+                    $executive->state_id = $state->id;
+                    // Здесь создание организаций
+                    
+                    if ($data->core_id && $core) {
+                        foreach ($core->regions as $region) {
+                            if ($region->state_id === $bill->state_id) {
+                                $region->state_id = $state->id;
+                                $region->save();
+                            }
+                        }
+                    }
                 }
             break;
             

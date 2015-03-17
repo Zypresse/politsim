@@ -319,6 +319,8 @@ class JsonController extends MyController {
                 $executive->leader_dest = 'unlimited';
                 $executive->dest = 'dest_by_leader';
                 $executive->leader_can_create_posts = 1;
+                $executive->leader_can_make_dicktator_bills = 1;
+                $executive->leader_can_veto_bills = 1;
                 if ($executive->save()) {
                     $state->executive = $executive->id;
                     $state->save();

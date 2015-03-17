@@ -19,6 +19,7 @@ use app\models\Population;
 use app\models\Twitter;
 use app\models\ElectResult;
 use app\models\HoldingLicenseType;
+use app\models\CoreCountry;
 
 class ModalController extends MyController {
 
@@ -158,6 +159,18 @@ class ModalController extends MyController {
                             break;
                         case 'orgs':
                             $additional_data['orgs'] = Org::find()->where(['state_id'=>$user->state_id])->all();
+                            break;
+                        case 'cores':
+                            $additional_data['cores'] = ['Не выделять'];
+                            foreach ($user->state->regions as $region) {
+                                foreach ($region->cores as $core) {
+                                    if (!(in_array($core, $additional_data['cores']))) {
+                                        $additional_data['cores'][] = $core;
+                                    }
+                                }
+                            }
+                            
+                            
                             break;
                         default:
 

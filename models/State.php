@@ -145,7 +145,7 @@ class State extends MyModel
                 $gfv = new GovermentFieldValue();
                 $gfv->state_id = $this->id;
                 $gfv->type_id = $gft->id;
-                $gfv->value = $gft->default;
+                $gfv->value = $gft->default_value;
                 $gfv->save();
             }
         }

@@ -82,7 +82,7 @@ $gft = null;
 <? if ($user->isStateLeader() && $user->state->executiveOrg->leader_can_make_dicktator_bills) { ?>
 <p>Вы можете принимать законы единолично</p>
 <? } ?>
-<? if ($user->isStateLeader() && $user->state->leader_can_drop_legislature) { ?>
+<? if ($user->isStateLeader() && $user->state->leader_can_drop_legislature && $user->state->legislatureOrg) { ?>
 <p>Вы можете распустить организацию «<a href="#" onclick="load_page('org-info',{'id':<?=$user->state->legislature?>});"><?=$user->state->legislatureOrg->name?></a>»</p>
 <? } ?>
 <? if ($user->post->org->can_vote_for_bills) { ?>

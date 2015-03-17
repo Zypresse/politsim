@@ -65,6 +65,14 @@ use app\components\MyHtmlHelper;
 						case 'legislature_type':
 							$value = (intval($value) === 1) ? 'Стандартный парламент (10 мест)' : 'Неизвестно';
 						break;
+                                                case 'core_id':
+                                                    $core = app\models\CoreCountry::findByPk($value);
+                                                    if ($core) {
+                                                        $value = $core->name;
+                                                    } else {
+                                                        $value = "Нет";
+                                                    }
+                                                    break;
 						case 'goverment_field_value':
 						// var_dump($gft);
 						if ($gft)

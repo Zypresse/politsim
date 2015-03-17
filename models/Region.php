@@ -160,4 +160,9 @@ class Region extends MyModel
     {
         return ($this->state->capital === $this->code);
     }
+
+    public function getCores() {
+        return $this->hasMany('app\models\CoreCountry', ['id' => 'core_id'])
+          ->viaTable('cores_regions', ['region_id' => 'id']);
+    }
 }

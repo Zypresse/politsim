@@ -55,7 +55,7 @@
     $(function(){
 $('#create_state_submit').click(function(){
 	json_request("create-state",{'name':$('#create_state_form_name').val(),'short_name':$('#create_state_form_short_name').val(),'goverment_form':$('#goverment_form').val(),'capital':$('#create_state_form_capital').val(),'color':$('#create_state_form_color').val(),'flag':$('#create_state_form_flag').val()},true);
-	load_page("state-info",{'show_create_party':1},500);
+	//load_page("state-info",{'show_create_party':1},500);
 });
 
 

@@ -41,13 +41,17 @@ use app\components\MyHtmlHelper;
 		$('#create_state_btn').click(function(){
     $.ajax(
       {
-        url: '/api/modal/create_state_dialog&region=<?=$region->code?>',
+        url: '/api/modal/create-state-dialog?code=<?=$region->code?>',
         beforeSend:function() {
             $('#create_state_dialog_body').empty();
         },
         success:function(d) {
-            $('#create_state_dialog_body').html(d);
-            $('#create_state_dialog').modal();
+            if (typeof(d) == 'object' && d.error) {
+                show_custom_error(d.error);
+            } else {
+                $('#create_state_dialog_body').html(d);
+                $('#create_state_dialog').modal();
+            }
         },
         error:show_error
       });
