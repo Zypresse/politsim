@@ -78,6 +78,11 @@ class HtmlController extends MyController {
 
         return $this->render("map_politic", ['regions' => $regions]);
     }
+    public function actionMapCores() {
+        $regions = Region::find()->all();
+
+        return $this->render("map_cores", ['regions' => $regions]);
+    }
 
     public function actionMapPopulation() {
         $regions = Region::find()->all();
