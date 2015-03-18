@@ -97,7 +97,7 @@
                 error:show_error
             }); ">Результаты прошлых выборов</button><br><br>
 
-<? if ($state->executiveOrg->isElected()) { ?>
+<? if ($state->executiveOrg && $state->executiveOrg->isElected()) { ?>
 <? if ($state->executiveOrg->isGoingElects()) { ?>
 <p>
 Сейчас идут выборы в огранизацию «<a href="#" onclick="load_page('org-info',{'id':<?=$state->executive?>});"><?=htmlspecialchars($state->executiveOrg->name)?></a>» и будут длиться до <span class="formatDate" data-unixtime="<?=$state->executiveOrg->next_elect?>"><?=date('d-M-Y H:i',$state->executiveOrg->next_elect)?></span>
@@ -120,7 +120,7 @@
 <? } ?></ul><? } else { ?><strong>Никто ещё не подал заявку на выборы</strong><? } ?>
 </p><br><? } ?><? } ?>
 
-<? if ($state->executiveOrg->isLeaderElected()) { ?>
+<? if ($state->executiveOrg && $state->executiveOrg->isLeaderElected()) { ?>
 <? if ($state->executiveOrg->isGoingElects()) { ?>
 <p>
 Сейчас идут выборы лидера огранизации «<a href="#" onclick="load_page('org-info',{'id':<?=$state->executive?>});"><?=htmlspecialchars($state->executiveOrg->name)?></a>» и будут длиться до <span class="formatDate" data-unixtime="<?=$state->executiveOrg->next_elect?>"><?=date('d-M-Y H:i',$state->executiveOrg->next_elect)?></span>
@@ -147,7 +147,7 @@
 
 
 
-<? if ($state->legislatureOrg->isElected()) { ?>
+<? if ($state->legislatureOrg && $state->legislatureOrg->isElected()) { ?>
 <? if ($state->legislatureOrg->isGoingElects()) { ?>
 <p>
 Сейчас идут выборы в огранизацию «<a href="#" onclick="load_page('org-info',{'id':<?=$state->legislature?>});"><?=htmlspecialchars($state->legislatureOrg->name)?></a>» и будут длиться до <span class="formatDate" data-unixtime="<?=$state->legislatureOrg->next_elect?>"><?=date('d-M-Y H:i',$state->legislatureOrg->next_elect)?></span>
@@ -173,7 +173,7 @@
 
 
 
-<? if ($state->legislatureOrg->isLeaderElected()) { ?>
+<? if ($state->legislatureOrg && $state->legislatureOrg->isLeaderElected()) { ?>
 <? if ($state->legislatureOrg->isGoingElects()) { ?>
 <p>
 Сейчас идут выборы лидера огранизации «<a href="#" onclick="load_page('org-info',{'id':<?=$state->legislature?>});"><?=htmlspecialchars($state->legislatureOrg->name)?></a>» и будут длиться до <span class="formatDate" data-unixtime="<?=$state->legislatureOrg->next_elect?>"><?=date('d-M-Y H:i',$state->legislatureOrg->next_elect)?></span>

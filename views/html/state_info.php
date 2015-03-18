@@ -28,12 +28,12 @@
 </p></div></div>
 <div class="span12">
 <h3>Правительство</h3>
-<p><strong><? if ($state->executiveOrg->leader) { ?><?=htmlspecialchars($state->executiveOrg->leader->name)?><? } else { ?>Лидер государства<? } ?></strong>:
-<? if ($state->executiveOrg->leader->user) { ?>
+<p><strong><? if ($state->executiveOrg && $state->executiveOrg->leader) { ?><?=htmlspecialchars($state->executiveOrg->leader->name)?><? } else { ?>Лидер государства<? } ?></strong>:
+<? if ($state->executiveOrg && $state->executiveOrg->leader->user) { ?>
 <a href="#" onclick="load_page('profile',{'uid':<?=$state->executiveOrg->leader->user->id?>})"><img src="<?=$state->executiveOrg->leader->user->photo?>" alt="" style="width:32px;height:32px;"></a>
 <a href="#" onclick="load_page('profile',{'uid':<?=$state->executiveOrg->leader->user->id?>})"><?=htmlspecialchars($state->executiveOrg->leader->user->name)?></a>
 
-(<? if ($state->executiveOrg->leader->user->party) { ?><a href="#" onclick="load_page('party-info',{'id':<?=$state->executiveOrg->leader->user->party_id?>})"><?=htmlspecialchars($state->executiveOrg->leader->user->party->name)?></a><? } else { ?><? if ($state->executiveOrg->leader->user->sex === 1) { ?>Беспартийная<? } else { ?>Беспартийный<? } ?><? } ?>)
+(<? if ($state->executiveOrg && $state->executiveOrg->leader->user->party) { ?><a href="#" onclick="load_page('party-info',{'id':<?=$state->executiveOrg->leader->user->party_id?>})"><?=htmlspecialchars($state->executiveOrg->leader->user->party->name)?></a><? } else { ?><? if ($state->executiveOrg->leader->user->sex === 1) { ?>Беспартийная<? } else { ?>Беспартийный<? } ?><? } ?>)
 
 		<span class="star"><?=$state->executiveOrg->leader->user->star?> <?=MyHtmlHelper::icon('star')?></span>
 		<span class="heart"><?=$state->executiveOrg->leader->user->heart?> <?=MyHtmlHelper::icon('heart')?></span>
@@ -43,8 +43,8 @@
 <? } ?>
 </p>
 <h4><? if ($state->executiveOrg) { ?><a href="#" onclick="load_page('org-info',{'id':<?=$state->executive?>});"><?=htmlspecialchars($state->executiveOrg->name)?></a><? } else { ?>Не сформирована<? } ?> <small>Исполнительная власть</small></h4>
-<? if ($state->executiveOrg->isElected()) { ?>Следующие выборы — <span class="formatDate" data-unixtime="<?=$state->executiveOrg->next_elect?>"><?=date("d-M-Y H:i",$state->executiveOrg->next_elect)?></span><br><? } ?>
-<? if ($state->executiveOrg->isLeaderElected()) { ?>Следующие выборы лидера организации — <span class="formatDate" data-unixtime="<?=$state->executiveOrg->next_elect?>"><?=date("d-M-Y H:i",$state->executiveOrg->next_elect)?></span><br><? } ?>
+<? if ($state->executiveOrg && $state->executiveOrg->isElected()) { ?>Следующие выборы — <span class="formatDate" data-unixtime="<?=$state->executiveOrg->next_elect?>"><?=date("d-M-Y H:i",$state->executiveOrg->next_elect)?></span><br><? } ?>
+<? if ($state->executiveOrg && $state->executiveOrg->isLeaderElected()) { ?>Следующие выборы лидера организации — <span class="formatDate" data-unixtime="<?=$state->executiveOrg->next_elect?>"><?=date("d-M-Y H:i",$state->executiveOrg->next_elect)?></span><br><? } ?>
 <h4><? if ($state->legislatureOrg) { ?><a href="#" onclick="load_page('org-info',{'id':<?=$state->legislature?>});"><?=htmlspecialchars($state->legislatureOrg->name)?></a><? } else { ?>Не сформирована<? } ?> <small>Законодательная власть</small></h4>
 <? if ($state->legislatureOrg && $state->legislatureOrg->isElected()) { ?>Следующие выборы — <span class="formatDate" data-unixtime="<?=$state->legislatureOrg->next_elect?>"><?=date("d-M-Y H:i",$state->legislatureOrg->next_elect)?></span><br><? } ?>
 <? if ($state->legislatureOrg && $state->legislatureOrg->isLeaderElected()) { ?>Следующие выборы лидера организации — <span class="formatDate" data-unixtime="<?=$state->legislatureOrg->next_elect?>"><?=date("d-M-Y H:i",$state->legislatureOrg->next_elect)?></span><br><? } ?>
@@ -130,7 +130,7 @@
       <? if ($user->party_id === 0 && $state->allow_register_parties) { ?><li><a href='#' onclick="$('#create_party').modal();" >Создать партию</a></li><? } ?>
     <? } ?>
     <li><a href='#' onclick="load_page('chart-parties',{'state_id':<?=$state->id?>});" >Список партий</a></li>
-    <li><a href='#' onclick="load_page('elections',{'id':<?=$state->id?>});" >Выборы</a></li>
+    <li><a href='#' onclick="load_page('elections',{'state_id':<?=$state->id?>});" >Выборы</a></li>
   </ul>
 </div>
 </div><? if ($state->allow_register_parties || $show_create_party) { ?>

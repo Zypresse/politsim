@@ -156,7 +156,7 @@ class BillType extends MyModel
                     $state->short_name = $data->new_short_name;
                     $state->flag = "http://placehold.it/300x200/eeeeee/000000&text=" . urlencode(MyHtmlHelper::transliterate($data->new_short_name));
                     $state->capital = $data->new_capital;
-                    $state->color = MyHtmlHelper::getSomeColor(mt_rand(0, 100));
+                    $state->color = MyHtmlHelper::getSomeColor(mt_rand(0, 100),true);
                     $state->core_id = $data->core_id;
                     $state->allow_register_parties = $bill->state->allow_register_parties;
                     $state->leader_can_drop_legislature = $bill->state->leader_can_drop_legislature;
@@ -166,7 +166,43 @@ class BillType extends MyModel
                     
                     $executive = new Org();
                     $executive->state_id = $state->id;
-                    // Здесь создание организаций
+                    $executive->dest = $bill->state->executiveOrg->dest;
+                    $executive->leader_dest = $bill->state->executiveOrg->leader_dest;
+                    $executive->can_create_bills = $bill->state->executiveOrg->can_create_bills;
+                    $executive->can_vote_for_bills = $bill->state->executiveOrg->can_vote_for_bills;
+                    $executive->elect_period = $bill->state->executiveOrg->elect_period;
+                    $executive->leader_can_create_bills = $bill->state->executiveOrg->leader_can_create_bills;
+                    $executive->leader_can_create_posts = $bill->state->executiveOrg->leader_can_create_posts;
+                    $executive->leader_can_make_dicktator_bills = $bill->state->executiveOrg->leader_can_make_dicktator_bills;
+                    $executive->leader_can_veto_bills = $bill->state->executiveOrg->leader_can_veto_bills;
+                    $executive->leader_can_vote_for_bills = $bill->state->executiveOrg->dleader_can_vote_for_billsest;
+                    $executive->next_elect = time()+2*24*60*60;
+                    $executive->name = "Правительство ".$state->short_name;
+                    $executive->save();
+                    $state->executive = $executive->id;
+                    
+                    if ($bill->state->legislature) {
+                        
+                        $legislature = new Org();
+                        $legislature->state_id = $state->id;
+                        $legislature->dest = $bill->state->legislatureOrg->dest;
+                        $legislature->leader_dest = $bill->state->legislatureOrg->leader_dest;
+                        $legislature->can_create_bills = $bill->state->legislatureOrg->can_create_bills;
+                        $legislature->can_vote_for_bills = $bill->state->legislatureOrg->can_vote_for_bills;
+                        $legislature->elect_period = $bill->state->legislatureOrg->elect_period;
+                        $legislature->leader_can_create_bills = $bill->state->legislatureOrg->leader_can_create_bills;
+                        $legislature->leader_can_create_posts = $bill->state->legislatureOrg->leader_can_create_posts;
+                        $legislature->leader_can_make_dicktator_bills = $bill->state->legislatureOrg->leader_can_make_dicktator_bills;
+                        $legislature->leader_can_veto_bills = $bill->state->legislatureOrg->leader_can_veto_bills;
+                        $legislature->leader_can_vote_for_bills = $bill->state->legislatureOrg->dleader_can_vote_for_billsest;
+                        $legislature->next_elect = time()+2*24*60*60;
+                        $legislature->name = "Правительство ".$state->short_name;
+                        $legislature->save();
+                        
+                        $state->legislature = $legislature->id;
+                    }
+                    
+                    $state->save();
                     
                     if ($data->core_id && $core) {
                         foreach ($core->regions as $region) {

@@ -17,13 +17,16 @@ class ElectionsController extends Controller {
     public function actionIndex() {
         $used_uids = [];
         $orgs = Org::find()->where('next_elect <= ' . time())->all();
+
         foreach ($orgs as $org) {
-            foreach ($org->posts as $post) {
-                if ($post->user)
-                    $post->unlink('user', $post->user);
-                if ($post->party_reserve) {
-                    $post->party_reserve = 0;
-                    $post->save();
+            if ($org->isLeaderElected() || $org->isElected()) {
+                foreach ($org->posts as $post) {
+                    if ($post->user)
+                        $post->unlink('user', $post->user);
+                    if ($post->party_reserve) {
+                        $post->party_reserve = 0;
+                        $post->save();
+                    }
                 }
             }
 
@@ -170,7 +173,7 @@ class ElectionsController extends Controller {
                         $post = array_shift($posts);
                         do {
                             $member = array_shift($list);
-                        } while (in_array($member->id, $used_uids));
+                        } while (in_array($member->id, $used_uids) || $member->org);
                         $post->party_reserve = $result['req']->party->id;
                         $post->save();
                         $member->link('post', $post);

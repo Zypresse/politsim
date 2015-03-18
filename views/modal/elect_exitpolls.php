@@ -35,7 +35,7 @@ usort($results, function($a, $b) {
 	<td style="background-color:<?=MyHtmlHelper::getSomeColor($i,true)?>; width:20px;"> &nbsp; </td>
 	<td style="font-size:80%">
 	<? if ($leader) { ?>
-		<?=htmlspecialchars($elect_request->user->name)?> (<?=$elect_request->party ? htmlspecialchars($elect_request->party->short_name) : ($elect_request->user->sex == 1 ? 'беспартийная' : 'беспартийный')?>)
+		<?=htmlspecialchars($elect_request->user->name)?> (<?=$elect_request->user->party ? htmlspecialchars($elect_request->user->party->short_name) : ($elect_request->user->sex == 1 ? 'беспартийная' : 'беспартийный')?>)
 	<? } else { ?>
 		<?=htmlspecialchars($elect_request->party->name)?>
 	<? } ?>
