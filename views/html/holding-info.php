@@ -24,7 +24,7 @@ use yii\helpers\Html;
                     echo Html::a($stock->master->name,'#',['onclick'=>"load_page('profile',{'uid':{$stock->master->id}})"]);
                 break;
                 case 'app\models\Post':
-                    echo $stock->master->name.' ('.Html::a($stock->master->org->name,'#',['onclick'=>"load_page('org-info',{'id':{$stock->master->org_id}})"]).')';
+                    echo ($stock->master->ministry_name ? $stock->master->ministry_name : $stock->master->name).' ('.Html::a($stock->master->org->name,'#',['onclick'=>"load_page('org-info',{'id':{$stock->master->org_id}})"]).')';
                 break;
                 case 'app\models\Holding':
                     echo Html::a($stock->master->name,'#',['onclick'=>"load_page('holding-info',{'id':{$stock->master->id}})"]);

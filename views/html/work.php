@@ -25,7 +25,7 @@ $gft = null;
 </div>
 <h1>Личный кабинет</h1>
 <p>Вы занимаете должность &laquo;<?=htmlspecialchars($user->post->name)?>&raquo; в организации &laquo;<a href="#" onclick="load_page('org-info',{'id':<?=$user->post->org_id?>});"><?=htmlspecialchars($user->post->org->name)?></a>&raquo;
-<p>На данной должности вам доступен бюджет в размере <?=  number_format($user->post->balance,0,'',' ')?> <?=  MyHtmlHelper::icon('money')?></p>
+<? if ($user->post->balance) { ?><p>На данной должности вам доступен бюджет в размере <?=  number_format($user->post->balance,0,'',' ')?> <?=  MyHtmlHelper::icon('money')?></p><? } ?>
 <? if ($user->post_id === $user->post->org->leader_post) { ?><p>Вы — лидер организации &laquo;<a href="#" onclick="load_page('org-info',{'id':<?=$user->post->org_id?>});"><?=htmlspecialchars($user->post->org->name)?></a>&raquo;<? if ($user->post->org->leader_can_create_posts) { ?> и можете создавать новые должности в ней<? } ?>.</p>
 <h3>Подчинённые</h3>
 <p>

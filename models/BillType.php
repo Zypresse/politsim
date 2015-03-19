@@ -116,7 +116,7 @@ class BillType extends MyModel
             break;
             case 9: // Сформировать законодательную власть
                 if (is_null($bill->state->legislatureOrg)) {
-                    $org = Org::generateOrg($bill->state_id, Org::LEGISLATURE_PARLIAMENT10);
+                    $org = Org::generateOrg($bill->state, Org::LEGISLATURE_PARLIAMENT10);
                     $bill->state->legislature = $org->id;
                     $bill->state->save();
                 }
