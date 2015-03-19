@@ -162,16 +162,16 @@ class BillType extends MyModel
                     $state->capital = $data->new_capital;
                     $state->color = MyHtmlHelper::getSomeColor(mt_rand(0, 100),true);
                     $state->core_id = $data->core_id;
-                    $state->allow_register_parties = $bill->state->allow_register_parties;
-                    $state->leader_can_drop_legislature = $bill->state->leader_can_drop_legislature;
-                    $state->allow_register_holdings = $bill->state->allow_register_holdings;
-                    $state->register_parties_cost = $bill->state->register_parties_cost;
+                    $state->allow_register_parties = 1;
+                    $state->leader_can_drop_legislature = 1;
+                    $state->allow_register_holdings = 1;
+                    $state->register_parties_cost = 0;
                     $state->save();
                     
-                    $executive = Org::generateOrg($state->id, Org::EXECUTIVE_PRESIDENT);
+                    $executive = Org::generateOrg($state, Org::EXECUTIVE_PRESIDENT);
                     $state->executive = $executive->id;
                     
-                    $legislature = Org::generateOrg($state->id, Org::LEGISLATURE_PARLIAMENT10);
+                    $legislature = Org::generateOrg($state, Org::LEGISLATURE_PARLIAMENT10);
                     $state->legislature = $legislature->id;
                     
                     $state->save();

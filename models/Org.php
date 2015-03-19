@@ -146,12 +146,11 @@ class Org extends MyModel
     
     /**
      * Генерация организации по одному из типов выше
-     * @param int $state_id
+     * @param \app\models\State $state
      * @param int $type
      */
-    public static function generateOrg($state_id,$type)
+    public static function generateOrg(\app\models\State $state, $type)
     {
-        $state = State::findByPk($state_id);
         $org = new Org();
         $org->state_id = $state->id;
         switch ($type) {
@@ -195,6 +194,7 @@ class Org extends MyModel
                 $org->leader_can_veto_bills = 1;
                 $org->leader_can_create_posts = 1;
                 $org->elect_period = 14;
+                $org->next_elect = time() + 2*24*60*60;
                 $org->save();
                     $post = new Post();
                     $post->name = 'Президент';
@@ -226,6 +226,7 @@ class Org extends MyModel
                 $org->leader_dest = static::DEST_NATION_PARTY_VOTE;
                 $org->leader_can_create_posts = 1;
                 $org->elect_period = 14;
+                $org->next_elect = time() + 2*24*60*60;
                 $org->save();
                     $post = new Post();
                     $post->name = 'Президент';

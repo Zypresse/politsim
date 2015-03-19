@@ -123,8 +123,8 @@ class State extends MyModel
     
     public function afterDelete()
     {
-        $this->legislatureOrg->delete();
-        $this->executiveOrg->delete();
+        if ($this->legislatureOrg) $this->legislatureOrg->delete();
+        if ($this->executiveOrg) $this->executiveOrg->delete();
         
         foreach ($this->regions as $region) {
             $region->state_id = 0;
