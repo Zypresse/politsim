@@ -130,4 +130,153 @@ class Org extends MyModel
     {
         return $this->hasMany('app\models\ElectRequest', array('org_id' => 'id'))->where(['leader'=>1]);
     }
+    
+    const DEST_NATION_INDIVIDUAL_VOTE = 'nation_individual_vote';
+    const DEST_NATION_PARTY_VOTE = 'nation_party_vote';
+    const DEST_ORG_VOTE = 'org_vote';
+    const DEST_UNLIMITED = 'unlimited';
+    const DEST_BY_LEADER = 'dest_by_leader';
+    
+
+
+    const EXECUTIVE_JUNTA = 12340;
+    const EXECUTIVE_PRESIDENT = 12341;
+    const EXECUTIVE_PRIMEMINISTER = 12342;
+    const LEGISLATURE_PARLIAMENT10 = 12345;
+    
+    /**
+     * Генерация организации по одному из типов выше
+     * @param int $state_id
+     * @param int $type
+     */
+    public static function generateOrg($state_id,$type)
+    {
+        $state = State::findByPk($state_id);
+        $org = new Org();
+        $org->state_id = $state->id;
+        switch ($type) {
+            case static::EXECUTIVE_JUNTA:
+                $org->name = "Правительство ".$state->short_name;
+                $org->dest = static::DEST_BY_LEADER;
+                $org->leader_dest = static::DEST_UNLIMITED;
+                $org->leader_can_veto_bills = 1;
+                $org->leader_can_make_dicktator_bills = 1;
+                $org->leader_can_create_posts = 1;
+                $org->save();
+                    $post = new Post();
+                    $post->name = 'Президент';
+                    $post->org_id = $org->id;
+                    $post->save();
+                    $org->leader_post = $post->id;
+                    
+                    $post = new Post();
+                    $post->name = 'Министр обороны';
+                    $post->ministry_name = 'Министерство обороны';
+                    $post->org_id = $org->id;
+                    $post->save();
+                    
+                    $post = new Post();
+                    $post->name = 'Министр экономики';
+                    $post->ministry_name = 'Министерство экономики';
+                    $post->org_id = $org->id;
+                    $post->save();
+                    
+                    $post = new Post();
+                    $post->name = 'Министр промышленности';
+                    $post->ministry_name = 'Министерство промышленности';
+                    $post->org_id = $org->id;
+                    $post->save();
+                    
+                break;
+            case static::EXECUTIVE_PRESIDENT:
+                $org->name = "Правительство ".$state->short_name;
+                $org->dest = static::DEST_BY_LEADER;
+                $org->leader_dest = static::DEST_NATION_INDIVIDUAL_VOTE;
+                $org->leader_can_veto_bills = 1;
+                $org->leader_can_create_posts = 1;
+                $org->elect_period = 14;
+                $org->save();
+                    $post = new Post();
+                    $post->name = 'Президент';
+                    $post->org_id = $org->id;
+                    $post->save();
+                    $org->leader_post = $post->id;
+                    
+                    $post = new Post();
+                    $post->name = 'Министр обороны';
+                    $post->ministry_name = 'Министерство обороны';
+                    $post->org_id = $org->id;
+                    $post->save();
+                    
+                    $post = new Post();
+                    $post->name = 'Министр экономики';
+                    $post->ministry_name = 'Министерство экономики';
+                    $post->org_id = $org->id;
+                    $post->save();
+                    
+                    $post = new Post();
+                    $post->name = 'Министр промышленности';
+                    $post->ministry_name = 'Министерство промышленности';
+                    $post->org_id = $org->id;
+                    $post->save();
+                break;
+            case static::EXECUTIVE_PRIMEMINISTER:
+                $org->name = "Правительство ".$state->short_name;
+                $org->dest = static::DEST_BY_LEADER;
+                $org->leader_dest = static::DEST_NATION_PARTY_VOTE;
+                $org->leader_can_create_posts = 1;
+                $org->elect_period = 14;
+                $org->save();
+                    $post = new Post();
+                    $post->name = 'Президент';
+                    $post->org_id = $org->id;
+                    $post->save();
+                    $org->leader_post = $post->id;
+                    
+                    $post = new Post();
+                    $post->name = 'Министр обороны';
+                    $post->ministry_name = 'Министерство обороны';
+                    $post->org_id = $org->id;
+                    $post->save();
+                    
+                    $post = new Post();
+                    $post->name = 'Министр экономики';
+                    $post->ministry_name = 'Министерство экономики';
+                    $post->org_id = $org->id;
+                    $post->save();
+                    
+                    $post = new Post();
+                    $post->name = 'Министр промышленности';
+                    $post->ministry_name = 'Министерство промышленности';
+                    $post->org_id = $org->id;
+                    $post->save();
+                break;
+            case static::LEGISLATURE_PARLIAMENT10:
+                $org->name = "Парламент ".$state->short_name;
+                $org->dest = static::DEST_NATION_PARTY_VOTE;
+                $org->leader_dest = static::DEST_ORG_VOTE;
+                $org->leader_can_vote_for_bills = 1;
+                $org->leader_can_create_bills = 1;
+                $org->can_vote_for_bills = 1;
+                $org->can_create_bills = 1;
+                $org->elect_period = 14;
+                $org->next_elect = time() + 2*24*60*60;
+                $org->save();
+                    $post = new Post();
+                    $post->name = 'Спикер';
+                    $post->org_id = $org->id;
+                    $post->save();
+                    $org->leader_post = $post->id;
+                    
+                    for ($i=0;$i<10;$i++) {
+                        $post = new Post();
+                        $post->name = 'Парламентарий';
+                        $post->org_id = $org->id;
+                        $post->save();
+                    }
+                break;
+        }
+        $org->save();
+        return $org;
+    }
 }

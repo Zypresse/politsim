@@ -14,11 +14,11 @@ use yii\db\ActiveRecord;
 
 abstract class MyModel extends ActiveRecord
 {
-    /*
+    /**
      * Поиск по ID
      * 
      * @var integer $id
-     * @return MyModel
+     * @return self
      */
     public static function findByPk($id)
     {

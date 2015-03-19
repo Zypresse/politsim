@@ -11,7 +11,6 @@ use app\components\MyModel;
  * @property integer $id
  * @property integer $org_id
  * @property string $name
- * @property string $type
  * @property integer $can_delete
  * @property integer $party_reserve
  * @property double $balance 
@@ -33,11 +32,10 @@ class Post extends MyModel
     public function rules()
     {
         return [
-            [['org_id', 'name', 'type'], 'required'],
+            [['org_id', 'name'], 'required'],
             [['balance'], 'number'], 
             [['org_id', 'can_delete', 'party_reserve'], 'integer'],
             [['name'], 'string', 'max' => 300],
-            [['type'], 'string', 'max' => 100],
             [['ministry_name'], 'string', 'max' => 255]
         ];
     }
@@ -51,7 +49,6 @@ class Post extends MyModel
             'id' => 'ID',
             'org_id' => 'Org ID',
             'name' => 'Name',
-            'type' => 'Type',
             'can_delete' => 'Можно ли удалять этот пост',
             'party_reserve' => 'ID партии, которой зарезервирован пост',
             'balance' => 'Balance', 

@@ -50,8 +50,8 @@ use app\components\MyHtmlHelper;
 <p>Члены организации могут создавать законопроекты</p>
 <? } ?>
 <? if ($org->isLeaderElected()) { ?><p>Лидер организации переизбирается раз в <?=MyHtmlHelper::formateNumberword($org->elect_period,'дней','день','дня')?></p><? } ?>
-<h3><? if ($org->leader->name) { ?><?=htmlspecialchars($org->leader->name)?><? } else { ?>Лидер организации<? } ?></h3>
-<? if ($org->leader->user) { ?><p><a href="#" onclick="load_page('profile',{'uid':<?=$org->leader->user->id?>})"><img src="<?=$org->leader->user->photo?>" alt="" style="width:32px;height:32px;"></a>
+<h3><? if ($org->leader && $org->leader->name) { ?><?=htmlspecialchars($org->leader->name)?><? } else { ?>Лидер организации<? } ?></h3>
+<? if ($org->leader && $org->leader->user) { ?><p><a href="#" onclick="load_page('profile',{'uid':<?=$org->leader->user->id?>})"><img src="<?=$org->leader->user->photo?>" alt="" style="width:32px;height:32px;"></a>
 <a href="#" onclick="load_page('profile',{'uid':<?=$org->leader->user->id?>})"><?=htmlspecialchars($org->leader->user->name)?></a>
 (<? if ($org->leader->user->party_id) { ?><a href="#" onclick="load_page('party-info',{'id':<?=$org->leader->user->party_id?>});"><?=htmlspecialchars($org->leader->user->party->name)?></a><? } else {  if ($org->leader->user->sex === 1) { ?>Беспартийная<? } else { ?>Беспартийный<? } ?><? } ?>)
 <span class="star"><?=$org->leader->user->star?> <?=MyHtmlHelper::icon('star')?></span>

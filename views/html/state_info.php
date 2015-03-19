@@ -29,7 +29,7 @@
 <div class="span12">
 <h3>Правительство</h3>
 <p><strong><? if ($state->executiveOrg && $state->executiveOrg->leader) { ?><?=htmlspecialchars($state->executiveOrg->leader->name)?><? } else { ?>Лидер государства<? } ?></strong>:
-<? if ($state->executiveOrg && $state->executiveOrg->leader->user) { ?>
+<? if ($state->executiveOrg && $state->executiveOrg->leader && $state->executiveOrg->leader->user) { ?>
 <a href="#" onclick="load_page('profile',{'uid':<?=$state->executiveOrg->leader->user->id?>})"><img src="<?=$state->executiveOrg->leader->user->photo?>" alt="" style="width:32px;height:32px;"></a>
 <a href="#" onclick="load_page('profile',{'uid':<?=$state->executiveOrg->leader->user->id?>})"><?=htmlspecialchars($state->executiveOrg->leader->user->name)?></a>
 
