@@ -190,7 +190,8 @@ class User extends MyModel
 
     public function getTwitterSubscribersCount()
     {
-        return $this->star*100 + $this->chart_pie*10 + abs($this->heart);
+        $count = $this->star*100 + $this->chart_pie*10 + abs($this->heart);
+        return $count > 0 ? $count : 0;
     }
 
     public function getTweetsCount()
