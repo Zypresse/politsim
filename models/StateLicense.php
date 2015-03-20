@@ -2,18 +2,20 @@
 
 namespace app\models;
 
-use Yii;
 use app\components\MyModel;
 
 /**
- * This is the model class for table "state_licenses".
+ * Пункты «экономической конституции» государств. Партия "state_licenses".
  *
  * @property integer $id
- * @property integer $state_id
- * @property integer $license_id
- * @property integer $is_only_goverment
- * @property integer $is_need_confirm
- * @property double $cost
+ * @property integer $state_id ID государства
+ * @property integer $license_id ID типа лицензии
+ * @property integer $is_only_goverment Гос. монополия на л.
+ * @property integer $is_need_confirm Для л. требуется подтверждение министра
+ * @property double $cost Цена л.
+ * 
+ * @property \app\models\HoldingLicenseType $type Тип лицензии
+ * @property \app\models\State $state Государство
  */
 class StateLicense extends MyModel
 {

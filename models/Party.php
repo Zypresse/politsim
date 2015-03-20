@@ -2,24 +2,30 @@
 
 namespace app\models;
 
-use Yii;
 use app\components\MyModel;
 use app\models\User;
 
 /**
- * This is the model class for table "parties".
+ * Партия. Таблица "parties".
  *
  * @property integer $id
- * @property string $name
- * @property string $short_name
- * @property string $image
- * @property integer $state_id
- * @property integer $leader
- * @property integer $ideology
- * @property integer $group_id
- * @property integer $star
- * @property integer $heart
- * @property integer $chart_pie
+ * @property string $name Название
+ * @property string $short_name Короткое название (2-3 буквы)
+ * @property string $image Ссылка на логотип
+ * @property integer $state_id ID государства
+ * @property integer $leader ID лидера
+ * @property integer $ideology ID идеологии
+ * @property integer $group_id ID группы партии в вк
+ * @property integer $star Известность
+ * @property integer $heart Доверие
+ * @property integer $chart_pie Успешность
+ * 
+ * @property \app\models\User[] $members Члены партии
+ * @property \app\models\ElectRequest[] $requests Заявки на выборы участников организаций
+ * @property \app\models\ElectRequest[] $lrequests Заявки на выборы лидеров организаций
+ * @property \app\models\User $leaderInfo Лидер
+ * @property \app\models\State $state Государство
+ * @property \app\models\Ideology $ideologyInfo Идеология
  */
 class Party extends MyModel
 {
@@ -90,11 +96,18 @@ class Party extends MyModel
         return $this->hasOne('app\models\Ideology', array('id' => 'ideology'));
     }
 
+    /**
+     * Возвращает число членов
+     * @return integer
+     */
     public function getMembersCount()
     {
         return intval(User::find()->where(['party_id'=>$this->id])->count());
     }
 
+    /**
+     * Подчистка после удаления
+     */
     public function afterDelete()
     {
         foreach ($this->requests as $request) {

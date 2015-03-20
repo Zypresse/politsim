@@ -2,14 +2,13 @@
 
 namespace app\models;
 
-use Yii;
 use app\components\MyModel;
 
 /**
- * This is the model class for table "structures".
+ * Государственная структура (унитарная, федеративная и проч.). Таблица "structures".
  *
  * @property integer $id
- * @property string $name
+ * @property string $name Название гос. структуры
  */
 class Structure extends MyModel
 {

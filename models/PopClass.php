@@ -2,37 +2,36 @@
 
 namespace app\models;
 
-use Yii;
 use app\components\MyModel;
 
 /**
- * This is the model class for table "pop_classes".
+ * Класс населения (напр. рабочие). Таблица "pop_classes".
  *
  * @property integer $id
- * @property string $name
- * @property double $food_min_count
- * @property double $food_min_type
- * @property double $food_max_count
- * @property double $food_max_type
- * @property double $dress_min_count
- * @property double $dress_min_type
- * @property double $dress_max_count
- * @property double $dress_max_type
- * @property double $furniture_min_count
- * @property double $furniture_min_type
- * @property double $furniture_max_count
- * @property double $furniture_max_type
- * @property double $alcohol_min_type
- * @property double $alcohol_min_count
- * @property double $alcohol_max_type
- * @property double $alcohol_max_count
- * @property double $energy_min
- * @property double $energy_max
- * @property double $base_speed
- * @property string $work_type
- * @property integer $awareness
- * @property integer $threshold
- * @property integer $aggression
+ * @property string $name Название
+ * @property double $food_min_count Минимальное необходимое количество еды
+ * @property double $food_min_type Минимальное необходимое качество еды
+ * @property double $food_max_count Максимальное необходимое количество еды
+ * @property double $food_max_type Минимальное необходимое качество еды
+ * @property double $dress_min_count Минимальное необходимое количество одежды
+ * @property double $dress_min_type Минимальное необходимое качество одежды
+ * @property double $dress_max_count Максимальное необходимое количество одежды
+ * @property double $dress_max_type Минимальное необходимое качество одежды
+ * @property double $furniture_min_count Минимальное необходимое количество мебели
+ * @property double $furniture_min_type Минимальное необходимое качество мебели
+ * @property double $furniture_max_count Максимальное необходимое количество мебели
+ * @property double $furniture_max_type Минимальное необходимое качество мебели
+ * @property double $alcohol_min_type Минимальное необходимое количество алкоголя и табака
+ * @property double $alcohol_min_count Минимальное необходимое качество алкоголя и табака
+ * @property double $alcohol_max_type Максимальное необходимое количество алкоголя и табака
+ * @property double $alcohol_max_count Минимальное необходимое качество алкоголя и табака
+ * @property double $energy_min @todo ???
+ * @property double $energy_max @todo ???
+ * @property double $base_speed Базовая (идеальная) скорость обучения этого типа из безработных
+ * @property string $work_type Тип работы @todo ???
+ * @property integer $awareness Сознательность @todo ???
+ * @property integer $threshold @todo ???
+ * @property integer $aggression Агрессивность (0-1)
  */
 class PopClass extends MyModel
 {

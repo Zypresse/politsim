@@ -178,7 +178,7 @@ class BillType extends MyModel
                     
                     if ($data->core_id && $core) {
                         foreach ($core->regions as $region) {
-                            if ($region->state_id === $bill->state_id) {
+                            if ($region->state_id === $bill->state_id && !($region->isCapital())) {
                                 $region->state_id = $state->id;
                                 $region->save();
                             }

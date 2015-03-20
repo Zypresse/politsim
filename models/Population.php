@@ -2,20 +2,24 @@
 
 namespace app\models;
 
-use Yii;
 use app\components\MyModel;
 use app\components\MyHtmlHelper;
 
 /**
- * This is the model class for table "population".
+ * Минимальная группа населения. Таблица "population".
  *
  * @property integer $id
- * @property integer $class
- * @property integer $nation
- * @property integer $ideology
- * @property integer $sex
- * @property integer $count
- * @property integer $region_id
+ * @property integer $class ID класса населения
+ * @property integer $nation ID национальности
+ * @property integer $ideology ID идеологии
+ * @property integer $sex Пол (0 - неопр., 1 - женский, 2 - мужской)
+ * @property integer $count Число людей
+ * @property integer $region_id ID региона
+ * 
+ * @property \app\models\PopClass $classinfo Класс населения
+ * @property \app\models\PopNation $nationinfo Национальность
+ * @property \app\models\Region $region Регион
+ * @property \app\models\Ideology $ideologyinfo Идеология
  */
 class Population extends MyModel
 {
@@ -72,6 +76,11 @@ class Population extends MyModel
         return $this->hasOne('app\models\Ideology', array('id' => 'ideology'));
     }
 
+    /**
+     * Получить все группы
+     * @param ActiveRecord $query
+     * @return \app\models\Population[]
+     */
     public static function getAllGroups($query = false)
     {
         if ($query === false) $query = static::find();
@@ -79,6 +88,11 @@ class Population extends MyModel
         return $query->all();
     }
 
+    /**
+     * Название и id возрастной группы
+     * @param integer $age
+     * @return array
+     */
     private static function ageGroup($age)
     {
         switch (true) {
@@ -93,6 +107,11 @@ class Population extends MyModel
         }
     }
 
+    /**
+     * Получить группы, сгруппированные по классам
+     * @param ActiveRecord $query
+     * @return array
+     */
     public static function getGroupsByClass($query = false)
     {
         if ($query === false) $query = static::find();

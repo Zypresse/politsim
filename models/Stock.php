@@ -2,18 +2,20 @@
 
 namespace app\models;
 
-use Yii;
 use app\components\MyModel;
 
 /**
- * This is the model class for table "stocks".
+ * «Пакет» акций. Таблица "stocks".
  *
  * @property integer $id
- * @property integer $holding_id
- * @property integer $user_id
- * @property integer $post_id
- * @property integer $hholding_id
- * @property integer $count
+ * @property integer $holding_id ID холдинга акции которого имеются ввиду
+ * @property integer $user_id ID юзера, которому принадлежит
+ * @property integer $post_id ID поста, которому принадлежит
+ * @property integer $hholding_id ID холдинга, которому принадлежит
+ * @property integer $count Число акций
+ * 
+ * @property mixed $master Владелец пакета
+ * @holding \app\models\Holding $holding АО, акции которого имеются ввиду
  */
 class Stock extends MyModel
 {
@@ -68,11 +70,19 @@ class Stock extends MyModel
         return $this->hasOne('app\models\Holding', array('id' => 'holding_id'));
     }
 
-
+    /**
+     * Процент этого пакета
+     * @return float
+     */
     public function getPercents()
     {
         return 100 * $this->count / $this->holding->getSumStocks();
     }
+    
+    /**
+     * Возвращает рыночную стоимость акций (из капитализации компании)
+     * @return float
+     */
     public function getCost()
     {
         return $this->holding->capital * $this->getPercents() / 100;

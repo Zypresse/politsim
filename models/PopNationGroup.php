@@ -2,14 +2,13 @@
 
 namespace app\models;
 
-use Yii;
 use app\components\MyModel;
 
 /**
- * This is the model class for table "pop_nations_groups".
+ * Категория наций. Таблица "pop_nations_groups".
  *
  * @property integer $id
- * @property string $name
+ * @property string $name Название категории национальностей (напр. "славяне")
  */
 class PopNationGroup extends MyModel
 {

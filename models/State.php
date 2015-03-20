@@ -2,30 +2,41 @@
 
 namespace app\models;
 
-use Yii;
 use app\components\MyModel;
 use app\models\GovermentFieldType;
 use app\models\GovermentFieldValue;
 
 /**
- * This is the model class for table "states".
+ * Государство. Таблица "states".
  *
  * @property integer $id
- * @property string $name
- * @property string $short_name
- * @property string $capital
- * @property string $color
- * @property integer $legislature
- * @property integer $executive
- * @property integer $state_structure
- * @property integer $goverment_form
- * @property integer $group_id
- * @property integer $population
- * @property integer $sum_star
- * @property integer $allow_register_parties
- * @property integer $leader_can_drop_legislature
- * @property integer $allow_register_holdings
- * @property integer $register_parties_cost
+ * @property string $name Название
+ * @property string $short_name Короткое название (2-3 буквы)
+ * @property string $capital Код региона-столицы
+ * @property string $color Цвет страны на карте (с #)
+ * @property integer $legislature ID организации законодательной власти
+ * @property integer $executive ID организации исполнительной власти
+ * @property integer $state_structure ID «структуры» государства
+ * @property integer $goverment_form ID формы правления государства
+ * @property integer $group_id ID группы страны в вк
+ * @property integer $population Население
+ * @property integer $sum_star Сумма известности жителей
+ * @property integer $allow_register_parties Разрешено ли регистрировать партии
+ * @property integer $leader_can_drop_legislature Может ли лидер распустить парламент
+ * @property integer $allow_register_holdings Разрешено ли регистировать АО
+ * @property integer $register_parties_cost Стоимость регистрации партии
+ * 
+ * @property \app\models\Org $executiveOrg Исполнительная власть
+ * @property \app\models\Org $legislatureOrg Законодательная власть
+ * @property \app\models\Structure $structure Структура
+ * @property \app\models\GovermentForm $govermentForm Форма правления
+ * @property \app\models\Region $capitalRegion Столичный регион
+ * @property \app\models\Region[] $regions Список регионов
+ * @property \app\models\Region[] $cities Список городов
+ * @property \app\models\StateLicense[] $licenses Список экономических правил
+ * @property \app\models\GovermentFieldValue[] $govermentFields Список пунктов конституции
+ * @property \app\models\Party[] $parties Список партий
+ * @property \app\models\User[] $users Список игроков
  */
 class State extends MyModel
 {
@@ -36,7 +47,7 @@ class State extends MyModel
     {
         return 'states';
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -121,6 +132,9 @@ class State extends MyModel
         return $this->hasMany('app\models\User', array('state_id' => 'id'));
     }
     
+    /**
+     * Подчищаем то что осталось после удаления государства
+     */
     public function afterDelete()
     {
         if ($this->legislatureOrg) $this->legislatureOrg->delete();
@@ -137,6 +151,9 @@ class State extends MyModel
         }
     }
     
+    /**
+     * Автосоздание всего, что нужно для создания государства
+     */
     public function afterSave($insert, $changedAttributes)
     {
         if ($insert) {

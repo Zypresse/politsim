@@ -2,16 +2,15 @@
 
 namespace app\models;
 
-use Yii;
 use app\components\MyModel;
 
 /**
- * This is the model class for table "resurses".
+ * Тип ресурса. Таблица "resurses".
  *
  * @property integer $id
- * @property string $code
- * @property string $name
- * @property integer $level
+ * @property string $code Код ресурса (напр. "oil")
+ * @property string $name Имя ресурса (напр. "Нефть")
+ * @property integer $level Уровень ресурса (0 - добываемые, 1 - переработанные, 2 - конечный продукт, 3 - люди, 4 - временные ресурсы)
  */
 class Resurse extends MyModel
 {

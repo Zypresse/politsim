@@ -2,19 +2,23 @@
 
 namespace app\models;
 
-use Yii;
 use app\components\MyModel;
 
 /**
- * This is the model class for table "posts".
+ * Должность в правительстве. Таблица "posts".
  *
  * @property integer $id
- * @property integer $org_id
- * @property string $name
- * @property integer $can_delete
- * @property integer $party_reserve
- * @property double $balance 
- * @property string $ministry_name 
+ * @property integer $org_id ID организации
+ * @property string $name Название поста
+ * @property integer $can_delete Может ли этот пост быть удалён
+ * @property integer $party_reserve ID партии, которой принадлежит этот пост (для назначаемых по голосованию за партии)
+ * @property double $balance Бюджет поста
+ * @property string $ministry_name Название министерства, министром которого является пост
+ * 
+ * @property \app\models\Org $org Организация
+ * @property \app\models\Party $partyReserve Партия, которой принадлежит этот пост
+ * @property \app\models\User $user Игрок, занимающий этот пост
+ * @property \app\models\Stock[] $stocks Акции, принадлежащие этому посту
  */
 class Post extends MyModel
 {
@@ -73,12 +77,20 @@ class Post extends MyModel
         return $this->hasMany('app\models\Stock', array('post_id' => 'id'));
     }
     
+    /**
+     * Может ли создавать законопроекты
+     * @return boolean
+     */
     public function canCreateBills()
     {
         return ($this->user->isOrgLeader() && ($this->org->leader_can_make_dicktator_bills || $this->org->leader_can_create_bills))
                 || ($this->org->can_create_bills);
     }
     
+    /**
+     * Может ли голосовать по законопроектам
+     * @return boolean
+     */
     public function canVoteForBills()
     {
         return (($this->user->isOrgLeader() && $this->org->leader_can_vote_for_bills) || $this->org->can_vote_for_bills);

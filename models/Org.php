@@ -2,15 +2,14 @@
 
 namespace app\models;
 
-use Yii;
 use app\components\MyModel;
 use app\models\Post;
 
 /**
- * This is the model class for table "orgs".
+ * Организация. Таблица "orgs".
  *
  * @property integer $id
- * @property integer $state_id
+ * @property integer $state_id 
  * @property string $name
  * @property integer $leader_post
  * @property string $leader_dest
@@ -29,7 +28,8 @@ use app\models\Post;
  * @property integer $leader_can_vote_for_bills
  * @property integer $leader_can_create_bills
  * @property integer $leader_can_veto_bills
-
+ * 
+ * @todo Relations
  */
 class Org extends MyModel
 {
@@ -79,31 +79,64 @@ class Org extends MyModel
         ];
     }
 
+    /**
+     * Выбираются ли члены организации народным голосованием
+     * @return boolean
+     */
     public function isElected()
     {
-        return in_array($this->dest, ['nation_party_vote','nation_individual_vote']);
+        return in_array($this->dest, [static::DEST_NATION_PARTY_VOTE,static::DEST_NATION_INDIVIDUAL_VOTE]);
     }
+    
+    /**
+     * Выбирается ли лидер народным голосованием
+     * @return boolean
+     */
     public function isLeaderElected()
     {
-        return in_array($this->leader_dest, ['nation_party_vote','nation_individual_vote']);
+        return in_array($this->leader_dest, [static::DEST_NATION_PARTY_VOTE,static::DEST_NATION_INDIVIDUAL_VOTE]);
     }
+    
+    /**
+     * Это законодательная власть?
+     * @return boolean
+     */
     public function isLegislature()
     {
-        return ($this->id === $this->state->legislature);
+        return $this->state && ($this->id === $this->state->legislature);
     }
+    
+    /**
+     * Это исполнительная власть?
+     * @return boolean
+     */
     public function isExecutive()
     {
-        return ($this->id === $this->state->executive);
+        return $this->state && ($this->id === $this->state->executive);
     }
+    
+    /**
+     * Идут ли прямо сейчас выборы
+     * @return boolean
+     */
     public function isGoingElects()
     {
-        return ($this->next_elect - time() < 60*60*24);
+        return $this->next_elect && ($this->next_elect - time() < 60*60*24);
     }
 
+    /**
+     * Возвращает число заполненных постов в организации
+     * @return integer
+     */
     public function getUsersCount()
     {
-        return Post::find()->join('LEFT JOIN','users','users.post_id = posts.id')->where('posts.org_id = '.$this->id.' AND users.id IS NOT NULL')->count();
+        return intval(Post::find()->join('LEFT JOIN','users','users.post_id = posts.id')->where('posts.org_id = '.$this->id.' AND users.id IS NOT NULL')->count());
     }
+    
+    /**
+     * Возвращает общее число постов в организации
+     * @return integer
+     */
     public function getPostsCount()
     {
         return sizeof($this->posts);
@@ -131,6 +164,9 @@ class Org extends MyModel
         return $this->hasMany('app\models\ElectRequest', array('org_id' => 'id'))->where(['leader'=>1]);
     }
     
+    /*
+     * Типы назначения членов и/или лидера организации
+     */
     const DEST_NATION_INDIVIDUAL_VOTE = 'nation_individual_vote';
     const DEST_NATION_PARTY_VOTE = 'nation_party_vote';
     const DEST_ORG_VOTE = 'org_vote';
@@ -138,16 +174,20 @@ class Org extends MyModel
     const DEST_BY_LEADER = 'dest_by_leader';
     
 
-
-    const EXECUTIVE_JUNTA = 12340;
-    const EXECUTIVE_PRESIDENT = 12341;
-    const EXECUTIVE_PRIMEMINISTER = 12342;
-    const LEGISLATURE_PARLIAMENT10 = 12345;
+    /*
+     * Стандартные типы организаций
+     * Используются для только генераций новых
+     */
+    const EXECUTIVE_JUNTA = 12340; // Исполнительная власть хунты
+    const EXECUTIVE_PRESIDENT = 12341; // Исполнительная власть президентской республики
+    const EXECUTIVE_PRIMEMINISTER = 12342; // Исполнительная власть парламентской республики
+    const LEGISLATURE_PARLIAMENT10 = 12345; // Стандартный парламент на 10 парламентариев и спикера
     
     /**
      * Генерация организации по одному из типов выше
      * @param \app\models\State $state
      * @param int $type
+     * @return \app\models\Org
      */
     public static function generateOrg(\app\models\State $state, $type)
     {

@@ -2,36 +2,39 @@
 
 namespace app\models;
 
-use Yii;
 use app\components\MyModel;
 
 /**
  * This is the model class for table "regions".
  *
  * @property integer $id
- * @property string $code
- * @property integer $state_id
- * @property string $name
- * @property string $city
- * @property string $b
- * @property double $lat
- * @property double $lng
- * @property double $separate_risk
- * @property integer $population
- * @property double $oil
- * @property double $natural_gas
- * @property double $coal
- * @property double $nf_ores
- * @property double $f_ores
- * @property double $re_ores
- * @property double $u_ores
- * @property double $wood
- * @property double $corn
- * @property double $fruits
- * @property double $fish
- * @property double $meat
- * @property double $wool
- * @property double $b_materials
+ * @property string $code Код региона
+ * @property integer $state_id IS государства
+ * @property string $name Название региона
+ * @property string $city Название города
+ * @property string $b Через запятую — коды соседних регионов
+ * @property double $lat Широта центра
+ * @property double $lng Долгота центра
+ * @property double $separate_risk Риск восстаний (0-1)
+ * @property integer $population Население
+ * @property double $oil Эффективность добычи нефти (0-1)
+ * @property double $natural_gas Эффективность добычи газа (0-1)
+ * @property double $coal Эффективность добычи угля (0-1)
+ * @property double $nf_ores Эффективность добычи руд цвет. металов (0-1)
+ * @property double $f_ores Эффективность добычи руд железа (0-1)
+ * @property double $re_ores Эффективность добычи руд редкозем. металов (0-1)
+ * @property double $u_ores Эффективность добычи урановой руды (0-1)
+ * @property double $wood Эффективность добычи древесины (0-1)
+ * @property double $corn Эффективность выращивания зерновых (0-1)
+ * @property double $fruits Эффективность выращивания фруктов и овощей (0-1)
+ * @property double $fish Эффективность вылова рыбы и морепродуктов (0-1)
+ * @property double $meat Эффективность производства мяса и молока (0-1)
+ * @property double $wool Эффективность производства шерсти и кожи (0-1)
+ * @property double $b_materials Эффективность добычи добываемых стройматериалов (0-1)
+ * 
+ * @property \app\models\State $state Государство
+ * @property \app\models\Population[] $populationGroups Группы населения
+ * @property \app\models\CoreCountry[] $cores "Щитки"
  */
 class Region extends MyModel
 {
@@ -122,7 +125,11 @@ class Region extends MyModel
             'b_materials'
         ];
     }
-
+    
+    /**
+     * Список пограничных регионов
+     * @return Region[]
+     */
     public function getBorders()
     {
         $b = [];
@@ -136,17 +143,6 @@ class Region extends MyModel
         return $b;
     }
 
-    public function beforeSave($insert)
-    {
-        
-        if (is_array($this->b)) {
-        
-            $this->b = implode(',', $this->b);
-        }
-        return parent::beforeSave($insert);
-    }
-
-
     public function getState()
     {
         return $this->hasOne('app\models\State', array('id' => 'state_id'));
@@ -156,9 +152,13 @@ class Region extends MyModel
         return $this->hasMany('app\models\Population', array('region_id' => 'id'));
     }
 
+    /**
+     * Является ли столицей государства
+     * @return boolean
+     */
     public function isCapital()
     {
-        return ($this->state->capital === $this->code);
+        return ($this->state && $this->state->capital === $this->code);
     }
 
     public function getCores() {

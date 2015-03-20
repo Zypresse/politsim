@@ -2,18 +2,20 @@
 
 namespace app\models;
 
-use Yii;
 use app\components\MyModel;
 
 /**
- * This is the model class for table "twitter".
+ * Твит. Таблица "twitter".
  *
  * @property integer $id
- * @property integer $uid
- * @property string $text
- * @property integer $retweets
- * @property integer $date
- * @property integer $original
+ * @property integer $uid ID юзера
+ * @property string $text Текст твита
+ * @property integer $retweets Число ретвитов
+ * @property integer $date Дата публикации
+ * @property integer $original Если является ретвитом, то здесь ID юзера, запостившего оригинал
+ * 
+ * @property \app\models\User $user Автор твита
+ * @property \app\models\User $user Автор оригинального твита (если это ретвит)
  */
 class Twitter extends MyModel
 {
