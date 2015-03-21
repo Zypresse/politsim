@@ -14,6 +14,7 @@ $userStock = $user->getShareholderStock($holding);
 <h1>Управление «<?=$holding->name?>»</h1>
 <p>Капитализация: <?=number_format($holding->capital,0,'',' ')?> <?=MyHtmlHelper::icon('money')?></p>
 <p>Баланс: <?=number_format($holding->balance,0,'',' ')?> <?=MyHtmlHelper::icon('money')?></p>
+<p>Компания зарегистрирована в государстве: <?=Html::a($holding->state->name,'#',['onclick'=>"load_page('state-info',{'id':{$holding->state_id}})"])?></p>
 <h3>Лицензии:</h3>
 <? if (sizeof($holding->licenses)) { ?>
 <ul>

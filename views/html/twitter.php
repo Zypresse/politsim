@@ -89,7 +89,24 @@ $own = ($viewer_id === $user->id);
                     }
                     return false;
                  }
- $(function () {
+function bind_twitter_events() {
+    
+    $( ".repost" ).off("click").on( "click", function() {
+      if (confirm('Вы действительно хотите сделать репост?')) {
+        json_request('retweet',{'id':$(this).data('id')});
+      }
+      return false;
+    });
+    $( ".delete_tweet" ).off("click").on( "click", function() {
+      if (confirm('Вы действительно хотите удалить пост?')) {
+        json_request('delete-tweet',{'id':$(this).data('id')});
+      }
+      return false;
+    });
+
+}
+    
+    $(function () {
     <? if ($own) { ?>
       $('#set_twitter_nickname').modal();
 
@@ -99,7 +116,7 @@ $own = ($viewer_id === $user->id);
           json_request('set-twitter-nickname',{'nick':nick});
         else 
           alert('Ник должен содержать только латинские буквы и быть от 4 до 20 знаков в длину');
-      })
+      });
 
     <? } ?>
 
@@ -112,9 +129,9 @@ $own = ($viewer_id === $user->id);
           $('#twitter_popular_feed').append(rows);
           $('#twitter_popular_feed').append($('#update_feed'));
           $('#update_feed').data('offset',offset+5).removeAttr("disabled");
-
+          bind_twitter_events();
       });
-    })
+    });
 
     $('#update_user_feed').click(function(){
       $(this).attr("disabled","disabled");
@@ -125,21 +142,8 @@ $own = ($viewer_id === $user->id);
           $('#twitter_user_feed').append(rows);
           $('#twitter_user_feed').append($('#update_user_feed'));
           $('#update_user_feed').data('offset',offset+5).removeAttr("disabled");
-
+          bind_twitter_events();
       });
-    })
-
-    $( ".repost" ).on( "click", function() {
-      if (confirm('Вы действительно хотите сделать репост?')) {
-        json_request('retweet',{'id':$(this).data('id')});
-      }
-      return false;
-    });
-    $( ".delete_tweet" ).on( "click", function() {
-      if (confirm('Вы действительно хотите удалить пост?')) {
-        json_request('delete-tweet',{'id':$(this).data('id')});
-      }
-      return false;
     });
 
     $('#new_message').keydown(function(e){
@@ -160,6 +164,8 @@ $own = ($viewer_id === $user->id);
     }).keyup(function(){
       var c = ($(this).val().length>110)?'<span style="color:red">':'<span>'
       $('#symbols_count').html(c + (140 - $(this).val().length) + ' символов осталось</span>');
-    })
-  })
+    });
+    
+    bind_twitter_events();
+  });
     </script>

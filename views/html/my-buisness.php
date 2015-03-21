@@ -35,12 +35,13 @@ use yii\helpers\Html;
     </tbody>
 </table>
 
-<p><button class="btn btn-success" onclick="$('#create_holding_dialog').modal()">Создать холдинг</button></p>
+<? if ($user->state && $user->state->allow_register_holdings) { ?>
+<p><button class="btn btn-success" onclick="$('#create_holding_dialog').modal()">Создать акционерное общество</button></p>
 
 <div style="display:none" class="modal" id="create_holding_dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h3 id="myModalLabel">Создать холдинг</h3>
+    <h3 id="myModalLabel">Создать акционерное общество</h3>
   </div><form class="well form-horizontal">
   <div id="create_holding_dialog_body" class="modal-body">
      
@@ -54,7 +55,8 @@ use yii\helpers\Html;
       <p>Из них 5 000 <?=MyHtmlHelper::icon('money')?> попадут на расчётный счёт фирмы</p>
   </div>
   <div class="modal-footer">
-      <button type="submit" onclick="json_request('create-holding',{'name':$('#holding_name').val()})" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Создать</button>
+    <button type="submit" onclick="json_request('create-holding',{'name':$('#holding_name').val()})" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Создать</button>
     <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
   </div></form>
 </div>
+<? } ?>

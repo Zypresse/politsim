@@ -214,8 +214,8 @@ class HtmlController extends MyController {
 
             $time = time();
             //var_dump(Twitter::find()->where(['like','text','%#'.$tag.'%'])->limit(4)->orderBy('date DESC')->prepare(Yii::$app->db->queryBuilder)->createCommand()->rawSql);
-            $tweets = Twitter::find()->where('text LIKE :query')->addParams([':query'=>'%#'.$tag.'%'])->limit(4)->orderBy('date DESC')->all();
-            $feed = Twitter::find()->where("retweets > 0 AND original = 0 AND date <= " . $time)->limit(5)->orderBy('date DESC')->all();
+            $tweets = Twitter::find()->where('original = 0 AND text LIKE :query')->addParams([':query'=>'%#'.$tag.'%'])->limit(4)->orderBy('date DESC')->all();
+            $feed = Twitter::find()->where("retweets > 0 AND date <= " . $time)->limit(5)->orderBy('date DESC')->all();
             
             return $this->render("twitter-feed", ['tag' => $tag, 'viewer_id' => $this->viewer_id, 'timeFeedGenerated' => $time, 'tweets' => $tweets, 'feed' => $feed]);
         } else {
@@ -229,7 +229,7 @@ class HtmlController extends MyController {
 
             $time = time();
             $tweets = Twitter::find()->where(["uid" => $user->id])->limit(3)->orderBy('date DESC')->all();
-            $feed = Twitter::find()->where("retweets > 0 AND original = 0 AND date <= " . $time)->limit(5)->orderBy('date DESC')->all();
+            $feed = Twitter::find()->where("retweets > 0 AND date <= " . $time)->limit(5)->orderBy('date DESC')->all();
 
             return $this->render("twitter", ['viewer_id' => $this->viewer_id, 'timeFeedGenerated' => $time, 'user' => $user, 'tweets' => $tweets, 'feed' => $feed]);
         }
