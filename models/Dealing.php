@@ -2,11 +2,10 @@
 
 namespace app\models;
 
-use Yii;
 use app\components\MyModel;
 
 /**
- * This is the model class for table "dealings".
+ * Сделка между игроками. Таблица "dealings".
  *
  * @property integer $id
  * @property integer $from_uid
@@ -67,6 +66,12 @@ class Dealing extends MyModel
         return $this->hasOne('app\models\User', array('id' => 'to_uid'));
     }
 
+    /**
+     * Получить видимый для игрока viewer_id список сделок игрока uid
+     * @param integer $uid
+     * @param integer $viewer_id
+     * @return Dealing[]
+     */
     public static function getMyList($uid,$viewer_id = false)
     {
         if ($viewer_id === false) $viewer_id = $uid;

@@ -2,17 +2,16 @@
 
 namespace app\models;
 
-use Yii;
 use app\components\MyModel;
 
 /**
- * This is the model class for table "elect_results".
+ * Результат выборов. Таблица "elect_results".
  *
  * @property integer $id
  * @property integer $org_id
  * @property integer $leader
  * @property integer $date
- * @property string $data
+ * @property string $data Данные в JSON
  */
 class ElectResult extends MyModel
 {

@@ -2,11 +2,10 @@
 
 namespace app\models;
 
-use Yii;
 use app\components\MyModel;
 
 /**
- * This is the model class for table "goverment_field_values".
+ * Пункт конституции. Таблица "goverment_field_values".
  *
  * @property integer $id
  * @property integer $type_id

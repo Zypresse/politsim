@@ -2,11 +2,10 @@
 
 namespace app\models;
 
-use Yii;
 use app\components\MyModel;
 
 /**
- * This is the model class for table "goverment_field_types".
+ * Тип пункта конституции. Таблица "goverment_field_types".
  *
  * @property integer $id
  * @property string $name
@@ -64,6 +63,10 @@ class GovermentFieldType extends MyModel
         ];
     }
     
+    /**
+     * Установление реальных настроек по этому пункту конституции
+     * @param \StdClass $value
+     */
     public function syncronize($value)
     {
         switch ($this->id) {

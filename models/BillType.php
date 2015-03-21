@@ -2,7 +2,6 @@
 
 namespace app\models;
 
-use Yii;
 use app\components\MyModel;
 use app\models\Org;
 use app\models\State;
@@ -13,7 +12,7 @@ use app\models\CoreCountry;
 use app\components\MyHtmlHelper;
 
 /**
- * This is the model class for table "bill_types".
+ * Тип законопроекта. Таблица "bill_types".
  *
  * @property integer $id
  * @property string $name
@@ -116,7 +115,7 @@ class BillType extends MyModel
             break;
             case 9: // Сформировать законодательную власть
                 if (is_null($bill->state->legislatureOrg)) {
-                    $org = Org::generateOrg($bill->state, Org::LEGISLATURE_PARLIAMENT10);
+                    $org = Org::generate($bill->state, Org::LEGISLATURE_PARLIAMENT10);
                     $bill->state->legislature = $org->id;
                     $bill->state->save();
                 }
@@ -168,10 +167,10 @@ class BillType extends MyModel
                     $state->register_parties_cost = 0;
                     $state->save();
                     
-                    $executive = Org::generateOrg($state, Org::EXECUTIVE_PRESIDENT);
+                    $executive = Org::generate($state, Org::EXECUTIVE_PRESIDENT);
                     $state->executive = $executive->id;
                     
-                    $legislature = Org::generateOrg($state, Org::LEGISLATURE_PARLIAMENT10);
+                    $legislature = Org::generate($state, Org::LEGISLATURE_PARLIAMENT10);
                     $state->legislature = $legislature->id;
                     
                     $state->save();

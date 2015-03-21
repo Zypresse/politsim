@@ -2,13 +2,12 @@
 
 namespace app\models;
 
-use Yii;
 use app\components\MyModel;
 use app\models\HoldingLicense;
 use app\models\StateLicense;
 
 /**
- * This is the model class for table "holding_decisions".
+ * Решение по управлению АО. Таблица "holding_decisions".
  *
  * @property integer $id
  * @property integer $decision_type
@@ -70,6 +69,9 @@ class HoldingDecision extends MyModel
         }
     }
     
+    /**
+     * Принять решение
+     */
     public function accept()
     {
         $data = json_decode($this->data);

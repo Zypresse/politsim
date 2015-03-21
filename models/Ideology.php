@@ -2,15 +2,14 @@
 
 namespace app\models;
 
-use Yii;
 use app\components\MyModel;
 
 /**
- * This is the model class for table "ideologies".
+ * Идеология. Таблица "ideologies".
  *
  * @property integer $id
  * @property string $name
- * @property integer $d
+ * @property integer $d Уровень «правости» 0 — коммунизм, 50 социал-либерализм, 100 — фашизм
  */
 class Ideology extends MyModel
 {

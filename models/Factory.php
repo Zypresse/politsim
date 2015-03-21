@@ -2,18 +2,17 @@
 
 namespace app\models;
 
-use Yii;
 use app\components\MyModel;
 
 /**
- * This is the model class for table "factories".
+ * Фабрика/завод/сх-предприятие. Таблица "factories".
  *
  * @property integer $id
  * @property integer $type_id
  * @property integer $builded
  * @property integer $holding_id
  * @property integer $region_id
- * @property integer $status
+ * @property integer $status Статус работы: 0 - undefined, 1 - active, 2 - stopped, 3 - not enought resurses, 4 - autostopped
  * @property string $name
  * @property integer $level
  */

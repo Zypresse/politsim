@@ -95,4 +95,55 @@ class Post extends MyModel
     {
         return (($this->user->isOrgLeader() && $this->org->leader_can_vote_for_bills) || $this->org->can_vote_for_bills);
     }
+    
+    /*
+     * Типы постов
+     */
+    const TYPE_PRESIDENT = 543; // Президент
+    const TYPE_MINISTER_PRIME = 5430; // Премьер-министр
+    const TYPE_MINISTER_DEFENCE = 544; // Министр обороны
+    const TYPE_MINISTER_ECONOMY = 545; // Министр экономики
+    const TYPE_MINISTER_INDUSTRY = 546; // Министр промышленности
+    const TYPE_SPEAKER = 547; // Спикер
+    const TYPE_PARLAMENTARIAN = 548; // Парламентарий
+
+    /**
+     * Генерирует пост по заданому шаблону
+     * @param \app\models\Org $org Организация
+     * @param integer $type Тип (см. константы TYPE_*)
+     * @return \app\models\Post
+     */
+    public static function generate(\app\models\Org $org, $type) {
+        $post = new Post();
+        $post->org_id = $org->id;
+        switch ($type) {
+            case static::TYPE_PRESIDENT:
+                    $post->name = 'Президент';
+                break;
+            case static::TYPE_MINISTER_PRIME:
+                    $post->name = 'Премьер-министр';
+                break;
+            case static::TYPE_MINISTER_DEFENCE:
+                    $post->name = 'Министр обороны';
+                    $post->ministry_name = 'Министерство обороны';
+                break;
+            case static::TYPE_MINISTER_ECONOMY:
+                    $post->name = 'Министр экономики';
+                    $post->ministry_name = 'Министерство экономики';
+                break;
+            case static::TYPE_MINISTER_INDUSTRY:
+                    $post->name = 'Министр промышленности';
+                    $post->ministry_name = 'Министерство промышленности';
+                break;
+            case static::TYPE_SPEAKER:
+                    $post->name = 'Спикер';
+                break;
+            case static::TYPE_PARLAMENTARIAN:
+                    $post->name = 'Парламентарий';
+                break;
+        }
+        $post->save();
+        return $post;
+    }
+    
 }

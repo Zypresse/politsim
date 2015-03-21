@@ -2,16 +2,15 @@
 
 namespace app\models;
 
-use Yii;
 use app\components\MyModel;
 
 /**
- * This is the model class for table "factory_kits".
+ * Набор ресурсов для работы завода. Таблица "factory_kits".
  *
  * @property integer $id
  * @property integer $resurse_id
  * @property integer $count
- * @property integer $direction
+ * @property integer $direction Направление: 1 - потребляемые, 2 - производимые, 3 - блокируемые
  * @property integer $type_id
  */
 class FactoryKit extends MyModel

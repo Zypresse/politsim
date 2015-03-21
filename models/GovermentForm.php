@@ -1,12 +1,11 @@
 <?php
-
+// @todo Вроде не используется, удалить
 namespace app\models;
 
-use Yii;
 use app\components\MyModel;
 
 /**
- * This is the model class for table "goverment_forms".
+ * Форма правления. Таблица "goverment_forms".
  *
  * @property integer $id
  * @property string $name

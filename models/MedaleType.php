@@ -2,11 +2,10 @@
 
 namespace app\models;
 
-use Yii;
 use app\components\MyModel;
 
 /**
- * This is the model class for table "medales_types".
+ * Тип значка. Таблица "medales_types".
  *
  * @property integer $id
  * @property string $name

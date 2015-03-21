@@ -2,15 +2,17 @@
 
 namespace app\models;
 
-use Yii;
 use app\components\MyModel;
 
 /**
- * This is the model class for table "holding_licenses".
+ * Привязка холдингов к лицензиям. Таблица "holding_licenses".
  *
  * @property integer $id
  * @property integer $holding_id
  * @property integer $license_id
+ * 
+ * @property \app\models\Holding $holding Акционерное общество
+ * @property \app\models\HoldingLicenseType $type Тип лицензии
  */
 class HoldingLicense extends MyModel
 {

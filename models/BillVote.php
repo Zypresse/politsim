@@ -2,16 +2,15 @@
 
 namespace app\models;
 
-use Yii;
 use app\components\MyModel;
 
 /**
- * This is the model class for table "bill_votes".
+ * Голос по законопроекту. Таблица "bill_votes".
  *
  * @property integer $id
  * @property integer $bill_id
  * @property integer $post_id
- * @property integer $variant
+ * @property integer $variant Выбранный вариант: 1 - да, 2 - нет, 0 - воздержался (или номер варианта, при выборе)
  */
 class BillVote extends MyModel
 {

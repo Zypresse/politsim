@@ -2,11 +2,10 @@
 
 namespace app\models;
 
-use Yii;
 use app\components\MyModel;
 
 /**
- * This is the model class for table "cores_regions".
+ * Щиток на регион. Таблица "cores_regions".
  *
  * @property integer $id
  * @property integer $core_id

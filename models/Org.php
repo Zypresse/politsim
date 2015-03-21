@@ -29,7 +29,11 @@ use app\models\Post;
  * @property integer $leader_can_create_bills
  * @property integer $leader_can_veto_bills
  * 
- * @todo Relations
+ * @property \app\models\Post $leader Лидер организации
+ * @property \app\models\State $state Государство
+ * @property \app\models\Post[] $posts Посты
+ * @property \app\models\ElectRequest[] $requests Заявки на выборы членов
+ * @property \app\models\ElectRequest[] $lrequests Заявки на выборы лидера
  */
 class Org extends MyModel
 {
@@ -189,7 +193,7 @@ class Org extends MyModel
      * @param int $type
      * @return \app\models\Org
      */
-    public static function generateOrg(\app\models\State $state, $type)
+    public static function generate(\app\models\State $state, $type)
     {
         $org = new Org();
         $org->state_id = $state->id;
@@ -202,29 +206,12 @@ class Org extends MyModel
                 $org->leader_can_make_dicktator_bills = 1;
                 $org->leader_can_create_posts = 1;
                 $org->save();
-                    $post = new Post();
-                    $post->name = 'Президент';
-                    $post->org_id = $org->id;
-                    $post->save();
+                    $post = Post::generate($org, Post::TYPE_PRESIDENT);
                     $org->leader_post = $post->id;
                     
-                    $post = new Post();
-                    $post->name = 'Министр обороны';
-                    $post->ministry_name = 'Министерство обороны';
-                    $post->org_id = $org->id;
-                    $post->save();
-                    
-                    $post = new Post();
-                    $post->name = 'Министр экономики';
-                    $post->ministry_name = 'Министерство экономики';
-                    $post->org_id = $org->id;
-                    $post->save();
-                    
-                    $post = new Post();
-                    $post->name = 'Министр промышленности';
-                    $post->ministry_name = 'Министерство промышленности';
-                    $post->org_id = $org->id;
-                    $post->save();
+                    Post::generate($org, Post::TYPE_MINISTER_DEFENCE);
+                    Post::generate($org, Post::TYPE_MINISTER_ECONOMY);
+                    Post::generate($org, Post::TYPE_MINISTER_INDUSTRY);
                     
                 break;
             case static::EXECUTIVE_PRESIDENT:
@@ -236,29 +223,12 @@ class Org extends MyModel
                 $org->elect_period = 14;
                 $org->next_elect = time() + 2*24*60*60;
                 $org->save();
-                    $post = new Post();
-                    $post->name = 'Президент';
-                    $post->org_id = $org->id;
-                    $post->save();
+                    $post = Post::generate($org, Post::TYPE_PRESIDENT);
                     $org->leader_post = $post->id;
                     
-                    $post = new Post();
-                    $post->name = 'Министр обороны';
-                    $post->ministry_name = 'Министерство обороны';
-                    $post->org_id = $org->id;
-                    $post->save();
-                    
-                    $post = new Post();
-                    $post->name = 'Министр экономики';
-                    $post->ministry_name = 'Министерство экономики';
-                    $post->org_id = $org->id;
-                    $post->save();
-                    
-                    $post = new Post();
-                    $post->name = 'Министр промышленности';
-                    $post->ministry_name = 'Министерство промышленности';
-                    $post->org_id = $org->id;
-                    $post->save();
+                    Post::generate($org, Post::TYPE_MINISTER_DEFENCE);
+                    Post::generate($org, Post::TYPE_MINISTER_ECONOMY);
+                    Post::generate($org, Post::TYPE_MINISTER_INDUSTRY);
                 break;
             case static::EXECUTIVE_PRIMEMINISTER:
                 $org->name = "Правительство ".$state->short_name;
@@ -268,29 +238,12 @@ class Org extends MyModel
                 $org->elect_period = 14;
                 $org->next_elect = time() + 2*24*60*60;
                 $org->save();
-                    $post = new Post();
-                    $post->name = 'Президент';
-                    $post->org_id = $org->id;
-                    $post->save();
+                    $post = Post::generate($org, Post::TYPE_MINISTER_PRIME);
                     $org->leader_post = $post->id;
                     
-                    $post = new Post();
-                    $post->name = 'Министр обороны';
-                    $post->ministry_name = 'Министерство обороны';
-                    $post->org_id = $org->id;
-                    $post->save();
-                    
-                    $post = new Post();
-                    $post->name = 'Министр экономики';
-                    $post->ministry_name = 'Министерство экономики';
-                    $post->org_id = $org->id;
-                    $post->save();
-                    
-                    $post = new Post();
-                    $post->name = 'Министр промышленности';
-                    $post->ministry_name = 'Министерство промышленности';
-                    $post->org_id = $org->id;
-                    $post->save();
+                    Post::generate($org, Post::TYPE_MINISTER_DEFENCE);
+                    Post::generate($org, Post::TYPE_MINISTER_ECONOMY);
+                    Post::generate($org, Post::TYPE_MINISTER_INDUSTRY);
                 break;
             case static::LEGISLATURE_PARLIAMENT10:
                 $org->name = "Парламент ".$state->short_name;
@@ -303,17 +256,11 @@ class Org extends MyModel
                 $org->elect_period = 14;
                 $org->next_elect = time() + 2*24*60*60;
                 $org->save();
-                    $post = new Post();
-                    $post->name = 'Спикер';
-                    $post->org_id = $org->id;
-                    $post->save();
+                    $post = Post::generate($org, Post::TYPE_SPEAKER);
                     $org->leader_post = $post->id;
                     
                     for ($i=0;$i<10;$i++) {
-                        $post = new Post();
-                        $post->name = 'Парламентарий';
-                        $post->org_id = $org->id;
-                        $post->save();
+                        Post::generate($org, Post::TYPE_PARLAMENTARIAN);
                     }
                 break;
         }

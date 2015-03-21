@@ -2,16 +2,17 @@
 
 namespace app\models;
 
-use Yii;
 use app\components\MyModel;
 
 /**
- * This is the model class for table "medales".
+ * Значки. Таблица "medales".
  *
  * @property integer $id
  * @property integer $uid
  * @property integer $uid_vk
  * @property integer $type
+ * 
+ * @property \app\models\MedaleType $medaletype Тип значка
  */
 class Medale extends MyModel
 {

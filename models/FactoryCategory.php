@@ -2,11 +2,10 @@
 
 namespace app\models;
 
-use Yii;
 use app\components\MyModel;
 
 /**
- * This is the model class for table "factory_categories".
+ * Категория фабрик. Таблица "factory_categories".
  *
  * @property integer $id
  * @property string $name

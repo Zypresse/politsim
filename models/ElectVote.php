@@ -2,11 +2,10 @@
 
 namespace app\models;
 
-use Yii;
 use app\components\MyModel;
 
 /**
- * This is the model class for table "elect_votes".
+ * Голос на выборах. Таблица "elect_votes".
  *
  * @property integer $id
  * @property integer $uid

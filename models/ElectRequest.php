@@ -2,17 +2,16 @@
 
 namespace app\models;
 
-use Yii;
 use app\components\MyModel;
 
 /**
- * This is the model class for table "elect_requests".
+ * Заявка на выборы. Таблица "elect_requests".
  *
  * @property integer $id
  * @property integer $org_id
  * @property integer $party_id
  * @property integer $candidat
- * @property integer $leader
+ * @property integer $leader Выборы лидера - 1, выборы участников - 2
  */
 class ElectRequest extends MyModel
 {

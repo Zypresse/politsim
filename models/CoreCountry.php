@@ -2,11 +2,10 @@
 
 namespace app\models;
 
-use Yii;
 use app\components\MyModel;
 
 /**
- * This is the model class for table "cores_countries".
+ * Историческая страна, имеющая щитки. Таблица "cores_countries".
  *
  * @property integer $id
  * @property string $name

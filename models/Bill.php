@@ -2,11 +2,10 @@
 
 namespace app\models;
 
-use Yii;
 use app\components\MyModel;
 
 /**
- * This is the model class for table "bills".
+ * Законопроект. Таблица "bills".
  *
  * @property integer $id
  * @property integer $bill_type

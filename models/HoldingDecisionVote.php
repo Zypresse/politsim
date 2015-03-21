@@ -2,11 +2,10 @@
 
 namespace app\models;
 
-use Yii;
 use app\components\MyModel;
 
 /**
- * This is the model class for table "holding_decisions_votes".
+ * Голос по решениюв управлении АО. Таблица "holding_decisions_votes".
  *
  * @property integer $id
  * @property integer $decision_id

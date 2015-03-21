@@ -2,11 +2,10 @@
 
 namespace app\models;
 
-use Yii;
 use app\components\MyModel;
 
 /**
- * This is the model class for table "holding_licenses_types".
+ * Типы лицензий (напр. банковское дело или добыча нефти). Таблица "holding_licenses_types".
  *
  * @property integer $id
  * @property string $name

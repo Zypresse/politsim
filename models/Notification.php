@@ -2,16 +2,17 @@
 
 namespace app\models;
 
-use Yii;
 use app\components\MyModel;
 use app\components\vkapi\VkNotification;
 
 /**
- * This is the model class for table "notifications".
+ * Уведомления. В будущем будет типа системы важных сообщений. Таблица "notifications".
  *
  * @property integer $id
  * @property integer $uid
  * @property string $text
+ * 
+ * @property \app\models\User $user Пользователь
  */
 class Notification extends MyModel
 {
@@ -52,6 +53,9 @@ class Notification extends MyModel
         return $this->hasOne('app\models\User', array('id' => 'uid'));
     }
     
+    /**
+     * Отправляем уведомление в вк, если возможно
+     */
     public function afterSave($insert,$changedAttributes)
     {
         if ($insert && $this->user->uid_vk) {
@@ -61,6 +65,12 @@ class Notification extends MyModel
         return parent::afterSave($insert,$changedAttributes);
     }
     
+    /**
+     * Отправка уведомления
+     * @param intval $uid
+     * @param string $text
+     * @return boolean
+     */
     public static function send($uid,$text)
     {
         $notification = new Notification();

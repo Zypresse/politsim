@@ -2,11 +2,10 @@
 
 namespace app\models;
 
-use Yii;
 use app\components\MyModel;
 
 /**
- * This is the model class for table "holdings".
+ * Акционерное общество. Таблица "holdings".
  *
  * @property integer $id
  * @property string $name
@@ -68,6 +67,10 @@ class Holding extends MyModel
         return $this->hasMany('app\models\HoldingLicense', array('holding_id' => 'id'));
     }
     
+    /**
+     * Общее число акций
+     * @return integer
+     */
     public function getSumStocks()
     {
         $sum = 0;

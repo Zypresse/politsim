@@ -1,12 +1,11 @@
 <?php
-
+// @todo Не используется, удалить
 namespace app\models;
 
-use Yii;
 use app\components\MyModel;
 
 /**
- * This is the model class for table "default_post_names".
+ * Названия постов по умолчанию. Таблица "default_post_names".
  *
  * @property string $type
  * @property string $name
