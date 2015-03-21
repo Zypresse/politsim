@@ -1010,7 +1010,7 @@ class JsonController extends MyController {
     
     public function actionStocksDealing($holding_id, $count, $cost, $uid) {
         $holding_id = intval($holding_id);
-        $count = intval($count);
+        $count = abs(intval($count));
         $cost = intval($cost);
         $uid = intval($uid);
         
@@ -1062,7 +1062,7 @@ class JsonController extends MyController {
                 switch ($item['type']) {
                     case "stock":
                         $stock = Stock::find()->where(['holding_id'=>$item['holding_id'],'user_id'=>$dealing->from_uid])->one();
-                        if (is_null($stock) || $stock->count < $item['count']) {
+                        if (is_null($stock) || $stock->count < abs($item['count'])) {
                             return $this->_r("Отправитель не имеет акций, которые предлагает");
                         }
                     break;
@@ -1092,8 +1092,8 @@ class JsonController extends MyController {
                             $recStock->count = 0;
                         }
                         
-                        $stock->count -= $item['count'];
-                        $recStock->count += $item['count'];
+                        $stock->count -= abs($item['count']);
+                        $recStock->count += abs($item['count']);
                         
                         if ($stock->count>0) {
                             $stock->save();

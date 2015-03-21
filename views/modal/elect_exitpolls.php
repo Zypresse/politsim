@@ -21,7 +21,7 @@ usort($results, function($a, $b) {
 <div class="row">
 <div class="span3" style="text-align: center;">
 
-<span class="pie-colours-1"><? foreach ($results as $i => $result) { echo ($i ? ',' : '') . round(100*$result["rating"]/$sum_a_r,2); } ?></span>
+<span class="pie-colours-1"><? foreach ($results as $i => $result) { echo ($i ? ',' : '') . ($sum_a_r?round(100*$result["rating"]/$sum_a_r,2):($i?0:100)); } ?></span>
 
 </div>
 <div class="span3">
@@ -41,7 +41,7 @@ usort($results, function($a, $b) {
 	<? } ?>
 	</td>
 	<td style="font-size:80%">
-		<?=round(100*$result['rating']/$sum_a_r,2)?>%
+		<?=($sum_a_r?round(100*$result["rating"]/$sum_a_r,2):($i?0:100))?>%
 	</td>
 </tr>
 <? } ?>
