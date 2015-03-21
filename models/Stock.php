@@ -87,5 +87,14 @@ class Stock extends MyModel
     {
         return $this->holding->capital * $this->getPercents() / 100;
     }
+    
+    /**
+     * Принадлежит государству
+     * @return boolean
+     */
+    public function isGos()
+    {
+        return !!$this->post_id;
+    }
             
 }

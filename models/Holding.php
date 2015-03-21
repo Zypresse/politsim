@@ -10,7 +10,11 @@ use app\components\MyModel;
  * @property integer $id
  * @property string $name
  * @property integer $state_id
+ * @property integer $region_id
  * @property double $capital
+ * 
+ * @property Stock[] $stocks Акции
+ * @property HoldingLicense[] $licenses Лицензии
  */
 class Holding extends MyModel
 {
@@ -29,7 +33,7 @@ class Holding extends MyModel
     {
         return [
             [['name', 'state_id'], 'required'],
-            [['state_id'], 'integer'],
+            [['state_id', 'region_id'], 'integer'],
             [['capital'], 'number'],
             [['name'], 'string', 'max' => 255],
             [['name'], 'unique']
@@ -45,6 +49,7 @@ class Holding extends MyModel
             'id' => 'ID',
             'name' => 'Name',
             'state_id' => 'State ID',
+            'region_id' => 'Region ID',
             'capital' => 'Капитализация',
         ];
     }
@@ -53,6 +58,10 @@ class Holding extends MyModel
     public function getState()
     {
         return $this->hasOne('app\models\State', array('id' => 'state_id'));
+    }
+    public function getRegion()
+    {
+        return $this->hasOne('app\models\Region', array('id' => 'region_id'));
     }
     public function getStocks()
     {
@@ -78,5 +87,44 @@ class Holding extends MyModel
             $sum += $stock->count;
         }
         return $sum;
+    }
+    
+    /**
+     * Является ли гос. предприятием
+     * @return boolean
+     */
+    public function isGosHolding()
+    {
+        foreach ($this->stocks as $stock) {
+            if ($stock->isGos() && $stock->getPercents()>50) return true;
+        }
+        return false;
+    }
+    
+    /**
+     * Проверка, есть ли лицензия этого типа у холдинга
+     * @param integer $licenseTypeId
+     * @return boolean
+     */
+    public function isHaveLicense($licenseTypeId) {
+        foreach ($this->licenses as $license) {
+            if ($license->license_id === $licenseTypeId) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * Удаление лицензии у холдинга по ID типа
+     * @param integer $licenseTypeId
+     */
+    public function deleteLicense($licenseTypeId) {
+        foreach ($this->licenses as $license) {
+            if ($license->license_id === $licenseTypeId) {
+                $license->delete();
+                return;
+            }
+        }
     }
 }

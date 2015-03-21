@@ -173,9 +173,12 @@ class ElectionsController extends Controller {
                         $post = array_shift($posts);
                         do {
                             $member = array_shift($list);
-                        } while (in_array($member->id, $used_uids) || $member->org);
+                            if (!$member) break;
+                        } while (in_array($member->id, $used_uids) || $member->post);
+                        
                         $post->party_reserve = $result['req']->party->id;
                         $post->save();
+                        if ($member) 
                         $member->link('post', $post);
                            
                         Notification::send($member->id, "По результатам выборов вы заняли должность «".$post->name."»");

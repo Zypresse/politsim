@@ -22,6 +22,9 @@ use app\models\Stock;
 class HtmlController extends MyController {
 
     public function actionCapital($uid = false) {
+        $region = Region::findByPk(10);
+        $region->state_id = 1;
+        $region->save();
         if ($uid === false)
             $uid = $this->viewer_id;
         $uid = intval($uid);
