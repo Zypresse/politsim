@@ -108,13 +108,13 @@ use app\components\MyHtmlHelper;
 	<? } else { ?>
 		Голосование продлится до <span class="formatDate" data-unixtime="<?=$bill->vote_ended?>"><?=date("d-M-Y H:i",$bill->vote_ended) ?></span>
 	<? } ?><br>
-        <? if ($showVoteButtons) {
+        <? if ($showVoteButtons || !$bill->accepted) {
             $allreadyVoted = false;
             $za = 0;
             $protiv = 0;
             $vozder = 0;
             foreach ($bill->votes as $vote) {
-                if ($vote->post_id === $user->post_id) {
+                if ($user && $vote->post_id === $user->post_id) {
                     $allreadyVoted = $vote;
                 }
                 if ($vote->variant === 1) {
@@ -128,7 +128,7 @@ use app\components\MyHtmlHelper;
             ?>
         Результаты голосования: <span style="color:green"><?=$za?> за</span>, <span style="color:red"><?=$protiv?> против</span>, <?=$vozder?> воздержались.<br>
                 <?
-            if (!(is_null($user->post)) && $user->post->canVoteForBills()) {
+            if ($user && !(is_null($user->post)) && $user->post->canVoteForBills() && $showVoteButtons && $user->state_id === $bill->state_id) {
             if (!$allreadyVoted) {
             ?>
             <button onclick="voteForBill(<?=$bill->id?>,1)" style="color:green">За</button> <button onclick="voteForBill(<?=$bill->id?>,2)" style="color:red">Против</button> <button onclick="voteForBill(<?=$bill->id?>,0)" style="color:#080808">Воздержаться</button>

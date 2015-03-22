@@ -1,5 +1,7 @@
 <?php
 use app\components\MyHtmlHelper;
+use app\components\widgets\BillListWidget;
+use app\models\Bill;
 ?>
 <h1><?=htmlspecialchars($org->name)?></h1>
 <p><? if ($org->isLegislature()) { ?>Законодательная власть<? } elseif ($org->isExecutive()) { ?>Исполнительная власть<? } else { ?>Организация<? } ?> государства &laquo;<a href="#" onclick="load_page('state-info',{'id':<?=$org->state_id?>});"><?=htmlspecialchars($org->state->name)?></a>&raquo;</p>
@@ -59,6 +61,21 @@ use app\components\MyHtmlHelper;
 		<span class="chart_pie"><?=$org->leader->user->chart_pie?> <?=MyHtmlHelper::icon('chart_pie')?></span>
 		 </p>
 <? } else { ?><p>Лидер организации не назначен</p><? } ?>
+
+<? if ($org->can_vote_for_bills || $org->can_create_bills || $org->leader_can_vote_for_bills || $org->leader_can_create_bills) { ?>
+<h3>Законопроекты на голосовании</h3>
+<p>Список последних законопроектов <input type="button" class="btn" id="bills_show" value="Показать"></p>
+<?= BillListWidget::widget(['id'=>'bills_list', 'style'=>'display:none', 'showVoteButtons'=>false, 'bills'=>Bill::find()->where(['accepted'=>0,'state_id'=>$org->state_id])->all()]) ?>
+<script type="text/javascript">
+ $('#bills_show').toggle(function() {
+    	$(this).val('Скрыть');
+    	$('#bills_list').slideDown();
+    },function() {
+    	$(this).val('Показать');
+    	$('#bills_list').slideUp();
+    })
+ </script>
+<? } ?>
 
 <h3>Члены организации</h3>
 <p>В организации <?=$org->getUsersCount()?> из <?=$org->getPostsCount()?> участников<br>
