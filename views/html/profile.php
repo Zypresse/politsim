@@ -151,6 +151,14 @@ use app\components\MyHtmlHelper;
 </div>
 <script type="text/javascript">
   
+  function update_stocks_count() {
+    if ($('#dealing_stocks_count').val()) {
+        $('#dealing_stocks_pricebyone').val($('#dealing_cost').val()/$('#dealing_stocks_count').val());
+    } else {
+        $('#dealing_stocks_pricebyone').val(0);
+    }
+  }
+  
   function transfer_money() {
     $('.money_transfer_help-block').hide();
     $('#money_transfer_type_open').show();
@@ -190,22 +198,17 @@ use app\components\MyHtmlHelper;
       $('#transfer_stocks_dialog').modal();
   }
   
+  
   function sell_stocks() {
       $('#dealing_cost').val('');
       $('#dealing_cost_block').show();
       $('#dealing_stocks_pricebyone_block').show();
       
-      $('#dealing_cost').keydown(function(){
-        if ($('#dealing_stocks_count').val()) {
-            $('#dealing_stocks_pricebyone').val($(this).val()/$('#dealing_stocks_count').val());
-        } else {
-            $('#dealing_stocks_pricebyone').val(0);
-        }
-      });
+      $('#dealing_cost').keyup(update_stocks_count);
+      $('#dealing_cost').change(update_stocks_count);
       
-      $('#dealing_stocks_count').keydown(function(){
-        $('#dealing_stocks_pricebyone').val($('#dealing_cost').val()/$(this).val());
-      });
+      $('#dealing_stocks_count').keyup(update_stocks_count);
+      $('#dealing_stocks_count').change(update_stocks_count);
       $('#transfer_stocks_dialog').modal();
   }
   
