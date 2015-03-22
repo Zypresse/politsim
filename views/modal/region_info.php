@@ -20,7 +20,7 @@ use app\components\MyHtmlHelper;
 <? } else { ?>
 <p>В этом регионе царит анархия</p>
 <div class="btn-toolbar">
-  <button class="btn" <? if ($user->state_id) { ?> disabled="disabled" title="Вы не можете создать государство, имя гражданство другого государства" <? } ?> id="create_state_btn" >
+  <button class="btn" <? if ($user->state_id) { ?> disabled="disabled" title="Вы не можете создать государство, имея гражданство другого государства" <? } ?> id="create_state_btn" >
     Основать государство
   </button>
 

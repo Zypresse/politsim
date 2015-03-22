@@ -72,6 +72,10 @@ class MyController extends Controller
         return $this->_r("Invalid auth key");
     }
     
+    /**
+     * Текущий юзер
+     * @return \app\model\User
+     */
     protected function getUser()
     {
         return User::findByPk($this->viewer_id);

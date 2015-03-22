@@ -136,6 +136,12 @@ use app\components\MyHtmlHelper;
         <input type="number" id="dealing_stocks_count" placeholder="">
       </div>
       </div>
+      <div class="control-group" id="dealing_stocks_pricebyone_block">
+      <label class="control-label" >Цена за акцию</label>
+      <div class="controls">
+          <input type="number" id="dealing_stocks_pricebyone" readonly="readonly" placeholder=""> <?=MyHtmlHelper::icon('money')?>
+      </div>
+      </div>
     </form>
   </div>
   <div class="modal-footer">
@@ -165,18 +171,41 @@ use app\components\MyHtmlHelper;
             if (!$('#money_transfer_hidden').prop('checked')) $('#money_transfer_type_open').show();
         }
     });
+    $('#money_transfer_count').change(function(){
+        if ($(this).val()<0) {
+            $(this).val(0);
+        } else if ($(this).val()><?=$user->money?>) {
+            $(this).val(<?=$user->money?>);
+        }
+        
+        
+    });
     $('#transfer_money_dialog').modal();
   }
   
   function transfer_stocks(){
       $('#dealing_cost').val(0);
       $('#dealing_cost_block').hide();
+      $('#dealing_stocks_pricebyone_block').hide();
       $('#transfer_stocks_dialog').modal();
   }
   
   function sell_stocks() {
       $('#dealing_cost').val('');
       $('#dealing_cost_block').show();
+      $('#dealing_stocks_pricebyone_block').show();
+      
+      $('#dealing_cost').keydown(function(){
+        if ($('#dealing_stocks_count').val()) {
+            $('#dealing_stocks_pricebyone').val($(this).val()/$('#dealing_stocks_count').val());
+        } else {
+            $('#dealing_stocks_pricebyone').val(0);
+        }
+      });
+      
+      $('#dealing_stocks_count').keydown(function(){
+        $('#dealing_stocks_pricebyone').val($('#dealing_cost').val()/$(this).val());
+      });
       $('#transfer_stocks_dialog').modal();
   }
   
@@ -186,7 +215,7 @@ use app\components\MyHtmlHelper;
           'uid':<?=$user->id?>,
           'is_anonim':$('#money_transfer_anonym').prop('checked') ? 1 : 0,
           'is_secret':$('#money_transfer_hidden').prop('checked') ? 1 : 0
-      })
+      });
   }
   
   function create_stocks_dealing() {
@@ -195,7 +224,7 @@ use app\components\MyHtmlHelper;
             'count':$('#dealing_stocks_count').val(),
             'cost':$('#dealing_cost').val(),
             'uid':<?=$user->id?>
-        })
+        });
   }
 
   function public_statement(type) {

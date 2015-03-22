@@ -425,7 +425,7 @@ class JsonController extends MyController {
     }
 
     public function actionTransferMoney($count, $uid, $is_anonim = false, $is_secret = false, $type = 'open') {
-        $count = intval($count);
+        $count = abs(intval($count));
         $uid = intval($uid);
 
         if ($type === 'anonym')
@@ -434,7 +434,9 @@ class JsonController extends MyController {
             $is_secret = true;
 
         if ($count && $uid && $uid !== $this->viewer_id) {
-            $sender = User::findByPk($this->viewer_id);
+            $sender = $this->getUser();
+            if ($sender->money < $count)
+                return $this->_r("Недостаточно денег на счету");
             $recipient = User::findByPk($uid);
             if (is_null($recipient))
                 return $this->_r("User not found");
@@ -510,7 +512,7 @@ class JsonController extends MyController {
                 case 'positive':
                     $user->heart += ($self->heart > 0) ? round($self->heart / mt_rand(10, 50)) : round(abs($self->heart / mt_rand(100, 500)));
                     $self->heart += round(mt_rand(0, 100) / 100);
-                    $user->chart_pie += ($self->chart_pie > 0) ? 1 : 0;
+                    $user->chart_pie += ($self->chart_pie > 0) ? 1* round(mt_rand(0, 100) / 100) : 0;
                     break;
                 case 'negative':
                     $user->heart += -1 * ($self->heart > 0 ? round($self->heart / 10) : round(abs($self->heart / 100)));
@@ -905,7 +907,7 @@ class JsonController extends MyController {
                 $retweet->date = time();
                 $retweet->original = $tweet->original ? $tweet->original : $tweet->uid;
                 if ($retweet->save()) {
-                    $self->last_tweet = time();
+                    if ($self->id > 1) $self->last_tweet = time();
                     $self->save();
                     return $this->_rOk();
                 } else {
