@@ -53,7 +53,7 @@ class ElectionsController extends Controller {
                 $yavkaTime = 1 - ($org->next_elect - time()) / (24 * 60 * 60);
                 if ($yavkaTime > 1)
                     $yavkaTime = 1;
-                $yavkaStar = $sumStar / $org->state->sum_star;
+                $yavkaStar = ($org->state->sum_star) ? $sumStar / $org->state->sum_star : 0;
                 $yavka = $yavkaTime * $yavkaStar;
 
 
@@ -105,8 +105,8 @@ class ElectionsController extends Controller {
                         'party_id' => $result['req']->user->party_id,
                         'party_name' => $result['req']->user->party ? $result['req']->user->party->name : ($result['req']->user->sex === 1 ? 'Беспартийная' : 'Беспартийный'),
                         'party_short_name' => $result['req']->user->party ? $result['req']->user->party->short_name : ($result['req']->user->sex === 1 ? 'бесп.' : 'бесп.'),
-                        'votes_percents' => round(100 * $result['rating'] / $sumRatings, 2),
-                        'votes_population' => round(round($yavka * $org->state->population) * $result['rating'] / $sumRatings)
+                        'votes_percents' => $sumRatings ? round(100 * $result['rating'] / $sumRatings, 2) : 0,
+                        'votes_population' => $sumRatings ? round(round($yavka * $org->state->population) * $result['rating'] / $sumRatings) : 0
                     ];
                 }
 
@@ -140,7 +140,7 @@ class ElectionsController extends Controller {
                 $yavkaTime = 1 - ($org->next_elect - time()) / (24 * 60 * 60);
                 if ($yavkaTime > 1)
                     $yavkaTime = 1;
-                $yavkaStar = $sumStar / $org->state->sum_star;
+                $yavkaStar = $org->state->sum_star ? $sumStar / $org->state->sum_star : 0;
                 $yavka = $yavkaTime * $yavkaStar;
 
 
@@ -166,7 +166,7 @@ class ElectionsController extends Controller {
                         $posts[] = $post;
                 }
                 foreach ($results as $result) {
-                    $thisCount = round($result['rating'] / $sumRatings * $count);
+                    $thisCount = $sumRatings ? round($result['rating'] / $sumRatings * $count) : 0;
                     $list = $result['req']->party->members;
 
                     for ($i = 0; $i < $thisCount; $i++) {
@@ -178,10 +178,10 @@ class ElectionsController extends Controller {
                         
                         $post->party_reserve = $result['req']->party->id;
                         $post->save();
-                        if ($member) 
-                        $member->link('post', $post);
-                           
-                        Notification::send($member->id, "По результатам выборов вы заняли должность «".$post->name."»");
+                        if ($member) {
+                            $member->link('post', $post);
+                            Notification::send($member->id, "По результатам выборов вы заняли должность «".$post->name."»");
+                        }
                     }
                 }
 
@@ -197,9 +197,9 @@ class ElectionsController extends Controller {
                         'id' => $result['req']->party->id,
                         'name' => $result['req']->party->name,
                         'short_name' => $result['req']->party->short_name,
-                        'posts' => round($result['rating'] / $sumRatings * $count),
-                        'votes_percents' => round(100 * $result['rating'] / $sumRatings, 2),
-                        'votes_population' => round(round($yavka * $org->state->population) * $result['rating'] / $sumRatings)
+                        'posts' => $sumRatings ? round($result['rating'] / $sumRatings * $count) : 0,
+                        'votes_percents' => $sumRatings ? round(100 * $result['rating'] / $sumRatings, 2) : 0,
+                        'votes_population' => $sumRatings ? round(round($yavka * $org->state->population) * $result['rating'] / $sumRatings) : $sumRatings
                     ];
                 }
 

@@ -93,7 +93,7 @@ class ModalController extends MyController {
                 $yavka_time = 1 - ($org->next_elect - time()) / (24 * 60 * 60);
                 if ($yavka_time > 1)
                     $yavka_time = 1;
-                $yavka_star = $sum_star / $org->state->sum_star;
+                $yavka_star = ($org->state->sum_star) ? $sum_star / $org->state->sum_star : 0;
                 $yavka = $yavka_time * $yavka_star;
 
                 return $this->render("elect_exitpolls", ['requests' => $requests, 'results' => $results, 'sum_a_r' => $sum_a_r, 'org' => $org, 'yavka' => $yavka, 'leader' => $leader]);
