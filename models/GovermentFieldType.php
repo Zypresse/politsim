@@ -99,13 +99,13 @@ class GovermentFieldType extends MyModel
                 }
             break;
             case 6: // Срок полномочий исполнительной власти в днях
-                if ($value->state->executiveOrg) {
+                if ($value->state->executiveOrg && $value->value > 1) {
                     $value->state->executiveOrg->elect_period = intval($value->value);
                     $value->state->executiveOrg->save();
                 }
             break;
             case 7: // Срок полномочий законодательной власти в днях
-                if ($value->state->legislatureOrg) {
+                if ($value->state->legislatureOrg && $value->value > 1) {
                     $value->state->legislatureOrg->elect_period = intval($value->value);
                     $value->state->legislatureOrg->save();
                 }

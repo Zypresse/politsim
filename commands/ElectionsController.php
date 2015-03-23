@@ -40,9 +40,9 @@ class ElectionsController extends Controller {
                     if ($request->user) {
                         $ar = $request->user->heart + $request->user->chart_pie / 10;
                         if ($request->user->party)
-                            $ar += $request->user->party->heart / 10 + $request->user->party->chart_pie / 100;
+                            $ar += ($request->user->party->heart>0 ? $request->user->party->heart / 10 : 0) + ($request->user->party->chart_pie ? $request->user->party->chart_pie / 100 : 0);
                         foreach ($request->votes as $vote) {
-                            $ar += ($vote->user->star + $vote->user->heart / 10 + $vote->user->chart_pie / 100) / 10;
+                            $ar += ($vote->user->star + ($vote->user->heart ? $vote->user->heart / 10 : 0) + ($vote->user->chart_pie ? $vote->user->chart_pie / 100 : 0)) / 10;
                         }
                         $sumStar += $request->user->star;
                         $sumRatings += $ar;
@@ -129,7 +129,7 @@ class ElectionsController extends Controller {
                     if ($request->party) {
                         $ar = $request->party->heart + $request->party->chart_pie / 10;
                         foreach ($request->votes as $vote) {
-                            $ar += ($vote->user->star + $vote->user->heart / 10 + $vote->user->chart_pie / 100) / sizeof($request->votes);
+                            $ar += ($vote->user->star + ($vote->user->heart ? $vote->user->heart / 10 : 0) + ($vote->user->chart_pie ? $vote->user->chart_pie / 100 : 0)) / sizeof($request->votes);
                         }
                         $sumStar += $request->party->star;
                         $sumRatings += $ar;
