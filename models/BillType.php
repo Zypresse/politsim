@@ -61,45 +61,116 @@ class BillType extends MyModel
         return $this->hasMany('app\models\BillTypeField', array('bill_id' => 'id'));
     }
     
+    /**
+     * Переименование государства
+     */
+    const TYPE_RENAME_STATE = 1;
+    
+    /**
+     * Перенос столицы государства
+     */
+    const TYPE_CHANGE_CAPITAL = 2;
+    
+    /**
+     * Переименование региона
+     */
+    const TYPE_RENAME_REGION = 3;
+    
+    /**
+     * Переименование города
+     */
+    const TYPE_RENAME_CITY = 4;
+    
+    /**
+     * Дать региону независимость
+     */
+    const TYPE_INDEPENDENCE_REGION = 5;
+    
+    /**
+     * Смена флага
+     */
+    const TYPE_CHANGE_FLAG = 6;
+    
+    /**
+     * Поправка в конституцию
+     */
+    const TYPE_CONSTITUTION_UPDATE = 7;
+    
+    /**
+     * Смена цвета государства
+     */
+    const TYPE_CHANGE_COLOR = 8;
+    
+    /**
+     * Сформировать законодательную власть
+     */
+    const TYPE_FORM_LEGISLATURE = 9;
+    
+    /**
+     * провести перевыборы
+     */
+    const TYPE_MAKE_REELECTS = 10;
+    
+    /**
+     * Сменить порядок выдачи лицензий
+     */
+    const TYPE_CHANGE_STATELICENSE = 11;
+    
+    /**
+     * Переименовать организацию
+     */
+    const TYPE_RENAME_ORG = 12;
+    
+    /**
+     * Создание сателлита
+     */
+    const TYPE_CREATE_SATELLITE = 13;
+    
+
+    /**
+     * Принятие законопроекта
+     * @param Bill $bill
+     * @return boolean
+     */
     public function accept($bill)
     {
         $data = json_decode($bill->data);
         switch ($this->id) {
-            case 1: // Переименование государства
+            case static::TYPE_RENAME_STATE: // Переименование государства
                 $bill->state->name = $data->new_name;
                 $bill->state->short_name = $data->new_short_name;
                 $bill->state->save();
             break;
-            case 2: // Перенос столицы государства
+            case static::TYPE_CHANGE_CAPITAL: // Перенос столицы государства
                 $bill->state->capital = $data->new_capital;
                 $bill->state->save();
             break;
-            case 3: // Переименование региона
+            case static::TYPE_RENAME_REGION: // Переименование региона
                 $region = Region::findByCode($data->region_code);
                 if ($region && $region->state_id === $bill->state_id) {
                     $region->name = $data->new_name;
                     $region->save();
                 }
             break;
-            case 4: // Переименование города
+            case static::TYPE_RENAME_CITY: // Переименование города
                 $region = Region::findByCode($data->region_code);
                 if ($region && $region->state_id === $bill->state_id) {
                     $region->city = $data->new_city_name;
                     $region->save();
                 }
             break;
-            case 5: // Дать региону независимость
+            case static::TYPE_INDEPENDENCE_REGION: // Дать региону независимость
                 $region = Region::findByCode($data->region_code);
                 if ($region && $region->state_id === $bill->state_id) {
                     $region->state_id = 0;
                     $region->save();
                 }
             break;
-            case 6: // Смена флага
+            case static::TYPE_CHANGE_FLAG: // Смена флага
                 $bill->state->flag = $data->new_flag;
                 $bill->state->save();
             break;
-            case 7: // Поправка в конституцию
+            case static::TYPE_CONSTITUTION_UPDATE: // Поправка в конституцию
                 $gfv = GovermentFieldValue::find()->where(['state_id'=>$bill->state_id,'type_id'=>$data->goverment_field_type])->one();
                 if (is_null($gfv)) {
                     $gfv = new GovermentFieldValue();
@@ -109,18 +180,18 @@ class BillType extends MyModel
                 $gfv->value = $data->goverment_field_value;
                 $gfv->save();
             break;
-            case 8: // Смена цвета государства
+            case static::TYPE_CHANGE_COLOR: // Смена цвета государства
                 $bill->state->color = $data->new_color;
                 $bill->state->save();
             break;
-            case 9: // Сформировать законодательную власть
+            case static::TYPE_FORM_LEGISLATURE: // Сформировать законодательную власть
                 if (is_null($bill->state->legislatureOrg)) {
                     $org = Org::generate($bill->state, Org::LEGISLATURE_PARLIAMENT10);
                     $bill->state->legislature = $org->id;
                     $bill->state->save();
                 }
             break;
-            case 10: // провести перевыборы
+            case static::TYPE_MAKE_REELECTS: // провести перевыборы
                 $org_id = explode('_', $data->elected_variant)[0];
                 $org = Org::findByPk($org_id);
                 if ($org && $org->state_id === $bill->state_id) {
@@ -128,7 +199,7 @@ class BillType extends MyModel
                     $org->save();
                 }
             break;
-            case 11: // Сменить порядок выдачи лицензий
+            case static::TYPE_CHANGE_STATELICENSE: // Сменить порядок выдачи лицензий
                 $sl = StateLicense::find()->where(['state_id'=>$bill->state_id,'license_id'=>$data->license_id])->one();
                 if (is_null($sl)) {
                     $sl = new StateLicense();
@@ -140,7 +211,7 @@ class BillType extends MyModel
                 $sl->is_only_goverment = ($data->is_only_goverment ? 1 : 0);
                 $sl->save();
             break;
-            case 12: // Переименовать организацию
+            case static::TYPE_RENAME_ORG: // Переименовать организацию
                 $org = Org::findByPk($data->org_id);
                 if ($org && $org->state_id === $bill->state_id) {
                     $org->name = $data->new_name;
@@ -148,7 +219,7 @@ class BillType extends MyModel
                 }
             break;
             
-            case 13: // Создание сателлита
+            case static::TYPE_CREATE_SATELLITE: // Создание сателлита
                 if ($data->core_id) {
                     $core = CoreCountry::findByPk($data->core_id);
                 }

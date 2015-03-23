@@ -8,13 +8,16 @@ use app\components\MyModel;
  * Сделка между игроками. Таблица "dealings".
  *
  * @property integer $id
- * @property integer $from_uid
- * @property integer $to_uid
- * @property double $sum
- * @property string $items
- * @property integer $is_anonim
- * @property integer $is_secret
- * @property integer $time
+ * @property integer $from_uid ID отправителя
+ * @property integer $to_uid ID получателя
+ * @property double $sum Переданная сумма денег
+ * @property string $items Список вещей в JSON
+ * @property integer $is_anonim Является ли сделка анонимной
+ * @property integer $is_secret Является ли сделка тайной
+ * @property integer $time Время совершения сделки (-1 для непринятой)
+ * 
+ * @property User $sender Отправитель
+ * @property User $recipient Получатель
  */
 class Dealing extends MyModel
 {

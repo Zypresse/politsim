@@ -11,6 +11,9 @@ use app\components\MyModel;
  * @property integer $bill_id
  * @property integer $post_id
  * @property integer $variant Выбранный вариант: 1 - да, 2 - нет, 0 - воздержался (или номер варианта, при выборе)
+ * 
+ * @property Bill $bill Законопроект
+ * @property Post $post Пост
  */
 class BillVote extends MyModel
 {

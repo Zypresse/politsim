@@ -9,6 +9,8 @@ use app\components\MyModel;
  *
  * @property integer $id
  * @property string $name
+ * 
+ * @property Region[] $regions Регионы
  */
 class CoreCountry extends MyModel
 {

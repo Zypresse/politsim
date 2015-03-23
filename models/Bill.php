@@ -15,6 +15,11 @@ use app\components\MyModel;
  * @property integer $accepted
  * @property integer $dicktator
  * @property integer $state_id
+ * 
+ * @property BillVote[] $votes Голоса
+ * @property BillType $type Тип законопроекта
+ * @property State $state Государство
+ * @property User $user Автор законопроекта
  */
 class Bill extends MyModel
 {
@@ -73,11 +78,18 @@ class Bill extends MyModel
         return $this->hasOne('app\models\User', array('id' => 'creator'));
     }
     
+    /**
+     * Принимает законопроект и выполняет его
+     * @return boolean
+     */
     public function accept()
     {
         return $this->type->accept($this);
     }
     
+    /**
+     * Завершить голосование по законопроекту без принятия
+     */
     public function end()
     {
         $this->accepted = -1;
