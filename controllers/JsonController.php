@@ -309,57 +309,16 @@ class JsonController extends MyController {
             $state->goverment_form = $goverment_form;
 
             if ($state->save()) {
-
-                $region->state_id = $state->id;
-                $region->save();
-
-                $executive = new Org();
-                $executive->state_id = $state->id;
-                $executive->name = "Правительство " . $short_name;
-                $executive->leader_dest = 'unlimited';
-                $executive->dest = 'dest_by_leader';
-                $executive->leader_can_create_posts = 1;
-                $executive->leader_can_make_dicktator_bills = 1;
-                $executive->leader_can_veto_bills = 1;
-                if ($executive->save()) {
+                
+                    $executive = Org::generate($state, Org::EXECUTIVE_PRESIDENT);
                     $state->executive = $executive->id;
+                    
+                    $legislature = Org::generate($state, Org::LEGISLATURE_PARLIAMENT10);
+                    $state->legislature = $legislature->id;
+                    
+                    $user->post_id = $state->executive->leader_post;
                     $state->save();
-
-                    $leader = new Post();
-                    $leader->org_id = $executive->id;
-                    $leader->name = "Президент";
-                    $leader->type = "dictator";
-                    $leader->can_delete = 0;
-                    if ($leader->save()) {
-                        $executive->leader_post = $leader->id;
-                        $executive->save();
-
-                        $user->state_id = $state->id;
-                        $user->post_id = $leader->id;
-                        $user->save();
-
-                        $minister1 = new Post();
-                        $minister1->org_id = $executive->id;
-                        $minister1->name = "Министр обороны";
-                        $minister1->type = "military_minister";
-                        $minister1->save();
-                        $minister2 = new Post();
-                        $minister2->org_id = $executive->id;
-                        $minister2->name = "Министр промышленности";
-                        $minister2->type = "industry_minister";
-                        $minister2->save();
-                        $minister3 = new Post();
-                        $minister3->org_id = $executive->id;
-                        $minister3->name = "Министр экономики";
-                        $minister3->type = "economy_minister";
-                        $minister3->save();
-
-                        $this->result = 'ok';
-                        return $this->_r();
-                    } else
-                        return $this->_r($leader->getErrors());
-                } else
-                    return $this->_r($executive->getErrors());
+                    $user->save();
             } else
                 return $this->_r($state->getErrors());
         } else
@@ -607,7 +566,6 @@ class JsonController extends MyController {
                 $post = new Post();
                 $post->name = $name;
                 $post->org_id = $org->id;
-                $post->type = "minister";
                 $post->can_delete = 1;
 
                 if ($post->save())
