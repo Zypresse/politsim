@@ -6,21 +6,16 @@ class UserTest extends PHPUnit_Framework_TestCase
     public static function setUpBeforeClass()
     {
 
-        require(__DIR__ . '/../vendor/autoload.php');
-        require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+        if (!defined("MY_YII_INITIALIZED")) {
+            require_once(__DIR__ . '/../vendor/autoload.php');
+            require_once(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
 
-        $config = require(__DIR__ . '/../config/console.php');
+            $config = require_once(__DIR__ . '/../config/console.php');
 
-        $application = new yii\console\Application($config);
-//        $application->run();
-        
-    }
+            new yii\console\Application($config);
 
-    public function testCreating() 
-    {
-        
-        $user = new app\models\User;
-        $this->assertInstanceOf("app\models\User", $user);
+            define("MY_YII_INITIALIZED", true);
+        }
         
     }
     
