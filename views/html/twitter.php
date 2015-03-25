@@ -60,7 +60,7 @@ $own = ($viewer_id === $user->id);
               <? } ?>
                <h4>Последние посты <small>(всего <?=$user->getTweetsCount()?>)</small></h4>
                <? foreach ($tweets as $i => $tweet) { ?>
-                 <div class="tweet <? if ($i === sizeof($tweets)-1) { ?>last<? } ?>">
+                 <div class="tweet <? if ($i === count($tweets)-1) { ?>last<? } ?>">
                  <strong><a href="#" onclick="load_page('twitter',{'uid':<?=$user->id?>})"><?=htmlspecialchars($user->name)?></a></strong> <span class="date prettyDate" data-unixtime="<?=$tweet->date?>"><?=date('d-M-Y H:i',$tweet->date)?></span>
                  <? if ($tweet->originalUser) { ?><p class="date">Репост от <a href="#" onclick="load_page('twitter',{'uid':<?=$tweet->original?>})"><?=htmlspecialchars($tweet->originalUser->name)?></a></p><? } ?>
                  <p><?=MyHtmlHelper::parseTwitterLinks($tweet->text)?></p>
@@ -72,7 +72,7 @@ $own = ($viewer_id === $user->id);
                 <div class="span4" id="twitter_popular_feed">
                 <h4>Популярные посты</h4>
                <? foreach ($feed as $i => $tweet) { ?>
-                 <div class="tweet <? if ($i === sizeof($feed)-1) { ?>last<? } ?>">
+                 <div class="tweet <? if ($i === count($feed)-1) { ?>last<? } ?>">
                  <strong><a href="#" onclick="load_page('twitter',{'uid':<?=$tweet->uid?>})"><?=htmlspecialchars($tweet->user->name)?></a></strong> <span class="date prettyDate" data-unixtime="<?=$tweet->date?>"><?=date('d-M-Y H:i',$tweet->date)?></span>
                  <? if ($tweet->originalUser) { ?><p class="date">Репост от <a href="#" onclick="load_page('twitter',{'uid':<?=$tweet->original?>})"><?=htmlspecialchars($tweet->originalUser->name)?></a></p><? } ?>
                  <p><?=MyHtmlHelper::parseTwitterLinks($tweet->text)?></p>

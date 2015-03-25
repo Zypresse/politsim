@@ -14,6 +14,7 @@ use app\components\MyModel;
  */
 class GovermentFieldValue extends MyModel
 {
+
     /**
      * @inheritdoc
      */
@@ -40,10 +41,10 @@ class GovermentFieldValue extends MyModel
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'type_id' => 'Type ID',
+            'id'       => 'ID',
+            'type_id'  => 'Type ID',
             'state_id' => 'State ID',
-            'value' => 'Value',
+            'value'    => 'Value',
         ];
     }
 
@@ -51,15 +52,17 @@ class GovermentFieldValue extends MyModel
     {
         return $this->hasOne('app\models\GovermentFieldType', array('id' => 'type_id'));
     }
+
     public function getState()
     {
         return $this->hasOne('app\models\State', array('id' => 'state_id'));
     }
-    
+
     public function afterSave($insert, $changedAttributes)
     {
         $this->type->syncronize($this);
-        
+
         return parent::afterSave($insert, $changedAttributes);
     }
+
 }

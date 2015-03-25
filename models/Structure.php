@@ -12,6 +12,7 @@ use app\components\MyModel;
  */
 class Structure extends MyModel
 {
+
     /**
      * @inheritdoc
      */
@@ -37,8 +38,9 @@ class Structure extends MyModel
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
+            'id'   => 'ID',
             'name' => 'Name',
         ];
     }
+
 }

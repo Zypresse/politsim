@@ -16,7 +16,7 @@ $userStock = $user->getShareholderStock($holding);
 <p>Баланс: <?=number_format($holding->balance,0,'',' ')?> <?=MyHtmlHelper::icon('money')?></p>
 <p>Компания зарегистрирована в государстве: <?=Html::a($holding->state->name,'#',['onclick'=>"load_page('state-info',{'id':{$holding->state_id}})"])?></p>
 <h3>Лицензии:</h3>
-<? if (sizeof($holding->licenses)) { ?>
+<? if (count($holding->licenses)) { ?>
 <ul>
      <? foreach ($holding->licenses as $license) { ?>
     <li>
@@ -47,7 +47,7 @@ $userStock = $user->getShareholderStock($holding);
     <? } ?>
 </ul>
 <h3>Решения на голосовании:</h3>
-<? if (sizeof($holding->decisions)) { ?>
+<? if (count($holding->decisions)) { ?>
 <table class="table">
 <?
 foreach ($holding->decisions as $decision) {
@@ -284,8 +284,8 @@ $(function(){
     $('#new_license_id').change(updateLicenseInfo);
 
     $('#dividents_sum').change(function(){
-        if ($(this).val()<=<?=sizeof($holding->stocks)?>) {
-            $(this).val(<?=sizeof($holding->stocks)?>);
+        if ($(this).val()<=<?=count($holding->stocks)?>) {
+            $(this).val(<?=count($holding->stocks)?>);
         } else if ($(this).val()><?=$holding->balance?>) {
             $(this).val(<?=$holding->balance?>);
         }

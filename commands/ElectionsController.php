@@ -32,7 +32,7 @@ class ElectionsController extends Controller {
 
             if ($org->isLeaderElected()) {
                 // Выборы лидера организации
-                if (sizeof($org->lrequests)) {
+                if (count($org->lrequests)) {
                 $results = [];
                 $sumStar = 0;
                 $sumRatings = 0;
@@ -121,7 +121,7 @@ class ElectionsController extends Controller {
             }
             if ($org->isElected()) {
                 // Выборы членов организации
-                if (sizeof($org->requests)) {
+                if (count($org->requests)) {
                 $results = [];
                 $sumStar = 0;
                 $sumRatings = 0;
@@ -129,7 +129,7 @@ class ElectionsController extends Controller {
                     if ($request->party) {
                         $ar = $request->party->heart + $request->party->chart_pie / 10;
                         foreach ($request->votes as $vote) {
-                            $ar += ($vote->user->star + ($vote->user->heart ? $vote->user->heart / 10 : 0) + ($vote->user->chart_pie ? $vote->user->chart_pie / 100 : 0)) / sizeof($request->votes);
+                            $ar += ($vote->user->star + ($vote->user->heart ? $vote->user->heart / 10 : 0) + ($vote->user->chart_pie ? $vote->user->chart_pie / 100 : 0)) / count($request->votes);
                         }
                         $sumStar += $request->party->star;
                         $sumRatings += $ar;

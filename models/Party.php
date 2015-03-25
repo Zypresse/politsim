@@ -29,6 +29,7 @@ use app\models\User;
  */
 class Party extends MyModel
 {
+
     /**
      * @inheritdoc
      */
@@ -57,17 +58,17 @@ class Party extends MyModel
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'name' => 'Name',
+            'id'         => 'ID',
+            'name'       => 'Name',
             'short_name' => 'Short Name',
-            'image' => 'Image',
-            'state_id' => 'State ID',
-            'leader' => 'Leader',
-            'ideology' => 'Ideology',
-            'group_id' => 'Group ID',
-            'star' => 'Star',
-            'heart' => 'Heart',
-            'chart_pie' => 'Chart Pie',
+            'image'      => 'Image',
+            'state_id'   => 'State ID',
+            'leader'     => 'Leader',
+            'ideology'   => 'Ideology',
+            'group_id'   => 'Group ID',
+            'star'       => 'Star',
+            'heart'      => 'Heart',
+            'chart_pie'  => 'Chart Pie',
         ];
     }
 
@@ -75,22 +76,27 @@ class Party extends MyModel
     {
         return $this->hasMany('app\models\User', array('party_id' => 'id'))->orderBy('`star` + `heart`/10 + `chart_pie`/100 DESC');
     }
+
     public function getLeaderInfo()
     {
         return $this->hasOne('app\models\User', array('id' => 'leader'));
     }
+
     public function getRequests()
     {
-        return $this->hasMany('app\models\ElectRequest', array('party_id' => 'id'))->where(['leader'=>0]);
+        return $this->hasMany('app\models\ElectRequest', array('party_id' => 'id'))->where(['leader' => 0]);
     }
+
     public function getLrequests()
     {
-        return $this->hasMany('app\models\ElectRequest', array('party_id' => 'id'))->where(['leader'=>1]);
+        return $this->hasMany('app\models\ElectRequest', array('party_id' => 'id'))->where(['leader' => 1]);
     }
+
     public function getState()
     {
         return $this->hasOne('app\models\State', array('id' => 'state_id'));
     }
+
     public function getIdeologyInfo()
     {
         return $this->hasOne('app\models\Ideology', array('id' => 'ideology'));
@@ -102,7 +108,7 @@ class Party extends MyModel
      */
     public function getMembersCount()
     {
-        return intval(User::find()->where(['party_id'=>$this->id])->count());
+        return intval(User::find()->where(['party_id' => $this->id])->count());
     }
 
     /**
@@ -117,4 +123,5 @@ class Party extends MyModel
             $request->delete();
         }
     }
+
 }

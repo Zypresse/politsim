@@ -21,6 +21,7 @@ use app\components\MyModel;
  */
 class Dealing extends MyModel
 {
+
     /**
      * @inheritdoc
      */
@@ -48,14 +49,14 @@ class Dealing extends MyModel
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'from_uid' => 'From Uid',
-            'to_uid' => 'To Uid',
-            'sum' => 'Sum',
-            'items' => 'Items',
+            'id'        => 'ID',
+            'from_uid'  => 'From Uid',
+            'to_uid'    => 'To Uid',
+            'sum'       => 'Sum',
+            'items'     => 'Items',
             'is_anonim' => 'Is Anonim',
             'is_secret' => 'Is Secret',
-            'time' => 'Time',
+            'time'      => 'Time',
         ];
     }
 
@@ -75,10 +76,11 @@ class Dealing extends MyModel
      * @param integer $viewer_id
      * @return Dealing[]
      */
-    public static function getMyList($uid,$viewer_id = false)
+    public static function getMyList($uid, $viewer_id = false)
     {
-        if ($viewer_id === false) $viewer_id = $uid;
-        $is_own = ($viewer_id === $uid);
+        if ($viewer_id === false)
+            $viewer_id = $uid;
+        $is_own    = ($viewer_id === $uid);
 
         $dealings = static::find()->where("(to_uid = {$uid} OR from_uid = {$uid}) AND time>0")->orderBy('time DESC')->all();
         foreach ($dealings as $i => $d) {
@@ -88,4 +90,5 @@ class Dealing extends MyModel
         }
         return $dealings;
     }
+
 }

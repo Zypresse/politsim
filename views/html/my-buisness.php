@@ -22,7 +22,7 @@ use yii\helpers\Html;
         </tr>
     </thead>
     <tbody>
-<? if (sizeof($user->stocks)) { foreach ($user->stocks as $stock) { ?>
+<? if (count($user->stocks)) { foreach ($user->stocks as $stock) { ?>
     <tr>
         <td><a href="#" onclick="load_page('holding-info',{'id':<?=$stock->holding_id?>})"><?=$stock->holding->name?></a></td>
         <td><?=MyHtmlHelper::formateNumberword($stock->count, "акций","акция","акции")?> (<?=round($stock->getPercents(),2)?>%)</td>

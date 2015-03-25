@@ -22,6 +22,7 @@ use app\components\MyModel;
  */
 class Post extends MyModel
 {
+
     /**
      * @inheritdoc
      */
@@ -37,7 +38,7 @@ class Post extends MyModel
     {
         return [
             [['org_id', 'name'], 'required'],
-            [['balance'], 'number'], 
+            [['balance'], 'number'],
             [['org_id', 'can_delete', 'party_reserve'], 'integer'],
             [['name'], 'string', 'max' => 300],
             [['ministry_name'], 'string', 'max' => 255]
@@ -50,13 +51,13 @@ class Post extends MyModel
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'org_id' => 'Org ID',
-            'name' => 'Name',
-            'can_delete' => 'Можно ли удалять этот пост',
+            'id'            => 'ID',
+            'org_id'        => 'Org ID',
+            'name'          => 'Name',
+            'can_delete'    => 'Можно ли удалять этот пост',
             'party_reserve' => 'ID партии, которой зарезервирован пост',
-            'balance' => 'Balance', 
-            'ministry_name' => 'Ministry Name', 
+            'balance'       => 'Balance',
+            'ministry_name' => 'Ministry Name',
         ];
     }
 
@@ -64,29 +65,31 @@ class Post extends MyModel
     {
         return $this->hasOne('app\models\Org', array('id' => 'org_id'));
     }
+
     public function getUser()
     {
         return $this->hasOne('app\models\User', array('post_id' => 'id'));
     }
+
     public function getPartyReserve()
     {
         return $this->hasOne('app\models\Party', array('id' => 'party_reserve'));
     }
+
     public function getStocks()
     {
         return $this->hasMany('app\models\Stock', array('post_id' => 'id'));
     }
-    
+
     /**
      * Может ли создавать законопроекты
      * @return boolean
      */
     public function canCreateBills()
     {
-        return ($this->user->isOrgLeader() && ($this->org->leader_can_make_dicktator_bills || $this->org->leader_can_create_bills))
-                || ($this->org->can_create_bills);
+        return ($this->user->isOrgLeader() && ($this->org->leader_can_make_dicktator_bills || $this->org->leader_can_create_bills)) || ($this->org->can_create_bills);
     }
-    
+
     /**
      * Может ли голосовать по законопроектам
      * @return boolean
@@ -95,17 +98,18 @@ class Post extends MyModel
     {
         return (($this->user->isOrgLeader() && $this->org->leader_can_vote_for_bills) || $this->org->can_vote_for_bills);
     }
-    
+
     /*
      * Типы постов
      */
-    const TYPE_PRESIDENT = 543; // Президент
-    const TYPE_MINISTER_PRIME = 5430; // Премьер-министр
-    const TYPE_MINISTER_DEFENCE = 544; // Министр обороны
-    const TYPE_MINISTER_ECONOMY = 545; // Министр экономики
+
+    const TYPE_PRESIDENT         = 543; // Президент
+    const TYPE_MINISTER_PRIME    = 5430; // Премьер-министр
+    const TYPE_MINISTER_DEFENCE  = 544; // Министр обороны
+    const TYPE_MINISTER_ECONOMY  = 545; // Министр экономики
     const TYPE_MINISTER_INDUSTRY = 546; // Министр промышленности
-    const TYPE_SPEAKER = 547; // Спикер
-    const TYPE_PARLAMENTARIAN = 548; // Парламентарий
+    const TYPE_SPEAKER           = 547; // Спикер
+    const TYPE_PARLAMENTARIAN    = 548; // Парламентарий
 
     /**
      * Генерирует пост по заданому шаблону
@@ -113,37 +117,39 @@ class Post extends MyModel
      * @param integer $type Тип (см. константы TYPE_*)
      * @return \app\models\Post
      */
-    public static function generate(\app\models\Org $org, $type) {
-        $post = new Post();
+
+    public static function generate(\app\models\Org $org, $type)
+    {
+        $post         = new Post();
         $post->org_id = $org->id;
         switch ($type) {
             case static::TYPE_PRESIDENT:
-                    $post->name = 'Президент';
+                $post->name          = 'Президент';
                 break;
             case static::TYPE_MINISTER_PRIME:
-                    $post->name = 'Премьер-министр';
+                $post->name          = 'Премьер-министр';
                 break;
             case static::TYPE_MINISTER_DEFENCE:
-                    $post->name = 'Министр обороны';
-                    $post->ministry_name = 'Министерство обороны';
+                $post->name          = 'Министр обороны';
+                $post->ministry_name = 'Министерство обороны';
                 break;
             case static::TYPE_MINISTER_ECONOMY:
-                    $post->name = 'Министр экономики';
-                    $post->ministry_name = 'Министерство экономики';
+                $post->name          = 'Министр экономики';
+                $post->ministry_name = 'Министерство экономики';
                 break;
             case static::TYPE_MINISTER_INDUSTRY:
-                    $post->name = 'Министр промышленности';
-                    $post->ministry_name = 'Министерство промышленности';
+                $post->name          = 'Министр промышленности';
+                $post->ministry_name = 'Министерство промышленности';
                 break;
             case static::TYPE_SPEAKER:
-                    $post->name = 'Спикер';
+                $post->name          = 'Спикер';
                 break;
             case static::TYPE_PARLAMENTARIAN:
-                    $post->name = 'Парламентарий';
+                $post->name          = 'Парламентарий';
                 break;
         }
         $post->save();
         return $post;
     }
-    
+
 }

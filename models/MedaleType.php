@@ -14,6 +14,7 @@ use app\components\MyModel;
  */
 class MedaleType extends MyModel
 {
+
     /**
      * @inheritdoc
      */
@@ -41,10 +42,11 @@ class MedaleType extends MyModel
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'name' => 'Name',
-            'desc' => 'Desc',
+            'id'    => 'ID',
+            'name'  => 'Name',
+            'desc'  => 'Desc',
             'image' => 'Image',
         ];
     }
+
 }

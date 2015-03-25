@@ -19,6 +19,7 @@ use app\components\MyModel;
  */
 class Twitter extends MyModel
 {
+
     /**
      * @inheritdoc
      */
@@ -45,22 +46,23 @@ class Twitter extends MyModel
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'uid' => 'Uid',
-            'text' => 'Text',
+            'id'       => 'ID',
+            'uid'      => 'Uid',
+            'text'     => 'Text',
             'retweets' => 'Retweets',
-            'date' => 'Date',
+            'date'     => 'Date',
             'original' => 'uid юзера, автора оригинального твита (это ретвит)',
         ];
     }
-
 
     public function getUser()
     {
         return $this->hasOne('app\models\User', array('id' => 'uid'));
     }
+
     public function getOriginalUser()
     {
         return $this->hasOne('app\models\User', array('id' => 'original'));
     }
+
 }

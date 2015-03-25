@@ -6,7 +6,7 @@
 	if (isset($error) && $error) {
 		$ar['error'] = $error;
 	}
-	if (isset($addFields) && sizeof($addFields)) {
+	if (isset($addFields) && count($addFields)) {
 		foreach ($addFields as $key => $value) {
 			$ar[$key] = $value;
 		}

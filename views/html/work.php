@@ -123,7 +123,7 @@ $gft = null;
     })
  </script>
 
-<? if (sizeof($user->post->stocks)) { ?>
+<? if (count($user->post->stocks)) { ?>
 <h3>Управление предприятиями</h3>
 <table class="table">
     <thead>

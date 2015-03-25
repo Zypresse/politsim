@@ -16,6 +16,7 @@ use app\components\MyModel;
  */
 class FactoryType extends MyModel
 {
+
     /**
      * @inheritdoc
      */
@@ -42,26 +43,28 @@ class FactoryType extends MyModel
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'name' => 'Name',
-            'level' => 'Level',
-            'system_name' => 'System Name',
-            'category_id' => 'Category ID',
+            'id'            => 'ID',
+            'name'          => 'Name',
+            'level'         => 'Level',
+            'system_name'   => 'System Name',
+            'category_id'   => 'Category ID',
             'can_build_npc' => 'Can Build Npc',
         ];
     }
-    
+
     public function getCategory()
     {
         return $this->hasOne('app\models\FactoryCategory', array('id' => 'category_id'));
     }
-    
+
     public function getExport()
     {
-        return $this->hasMany('app\models\FactoryKit', array('type_id' => 'id'))->where(['direction'=>2]);
+        return $this->hasMany('app\models\FactoryKit', array('type_id' => 'id'))->where(['direction' => 2]);
     }
+
     public function getImport()
     {
-        return $this->hasMany('app\models\FactoryKit', array('type_id' => 'id'))->where(['direction'=>1]);
+        return $this->hasMany('app\models\FactoryKit', array('type_id' => 'id'))->where(['direction' => 1]);
     }
+
 }

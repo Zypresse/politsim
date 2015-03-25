@@ -10,7 +10,7 @@ use yii\helpers\Html;
 <h3>Предложения сделок:</h3>
 <? 
 $nadl = $user->getNotAcceptedDealingsList();
-if (sizeof($nadl)) { ?>
+if (count($nadl)) { ?>
 <table class="table">
 <? foreach ($nadl as $dealing) {
     $items = json_decode($dealing->items,true);
@@ -20,7 +20,7 @@ if (sizeof($nadl)) { ?>
         <td><? if (intval($dealing->sum) !== 0) { ?><?= ($dealing->sum>0 ? 'Вы получите ' : 'Вы затратите ').  number_format(abs($dealing->sum),0,'',' ').' '.MyHtmlHelper::icon('money')?><? } ?></td>
         <td>
             <? 
-            if (is_array($items) && sizeof($items)) {
+            if (is_array($items) && count($items)) {
                 echo "Вы получите: <ul>";
             foreach ($items as $item) {
                 echo "<li>";
@@ -83,7 +83,7 @@ $mdl = $user->getMyDealingsList();
         <td><?=$dealing->sum?> <?=MyHtmlHelper::icon('money')?></td>
         <td>
         <? 
-            if (is_array($items) && sizeof($items)) {
+            if (is_array($items) && count($items)) {
                 echo "<ul>";
             foreach ($items as $item) {
                 echo "<li>";

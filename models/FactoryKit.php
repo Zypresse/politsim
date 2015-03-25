@@ -15,6 +15,7 @@ use app\components\MyModel;
  */
 class FactoryKit extends MyModel
 {
+
     /**
      * @inheritdoc
      */
@@ -40,21 +41,22 @@ class FactoryKit extends MyModel
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
+            'id'         => 'ID',
             'resurse_id' => 'Resurse ID',
-            'count' => 'Count',
-            'direction' => '1 — in, 2 — out',
-            'type_id' => 'Type ID',
+            'count'      => 'Count',
+            'direction'  => '1 — in, 2 — out',
+            'type_id'    => 'Type ID',
         ];
     }
-    
+
     public function getResurse()
     {
         return $this->hasOne('app\models\Resurse', array('id' => 'resurse_id'));
     }
-    
+
     public function getType()
     {
         return $this->hasOne('app\models\FactoryType', array('id' => 'type_id'));
     }
+
 }

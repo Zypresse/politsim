@@ -51,7 +51,18 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+
 config
 web
+assets
+mail
+runtime
+vendor
+
+requirements.php
+yii
+
+nbproject
 sftp-config.json
-/nbproject/private/
+

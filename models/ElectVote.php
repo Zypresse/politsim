@@ -13,6 +13,7 @@ use app\components\MyModel;
  */
 class ElectVote extends MyModel
 {
+
     /**
      * @inheritdoc
      */
@@ -39,8 +40,8 @@ class ElectVote extends MyModel
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'uid' => 'Uid',
+            'id'         => 'ID',
+            'uid'        => 'Uid',
             'request_id' => 'Request ID',
         ];
     }
@@ -49,8 +50,10 @@ class ElectVote extends MyModel
     {
         return $this->hasOne('app\models\User', array('id' => 'uid'));
     }
+
     public function getRequest()
     {
         return $this->hasOne('app\models\ElectRequest', array('id' => 'request_id'));
     }
+
 }

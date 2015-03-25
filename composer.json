@@ -6,10 +6,10 @@
     "type": "project",
     "license": "BSD-3-Clause",
     "support": {
-        "issues": "https://github.com/yiisoft/yii2/issues?state=open",
-        "forum": "http://vk.com/political_simulator/",
+        "issues": "https://github.com/LazzyTeam/politsim/issues?state=open",
+        "forum": "http://vk.com/politsim/",
         "wiki": "http://wiki.politsim.net/",
-        "source": "https://github.com/tairesh/politsim"
+        "source": "https://github.com/LazzyTeam/politsim"
     },
     "minimum-stability": "stable",
     "require": {

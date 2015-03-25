@@ -16,6 +16,7 @@ use app\components\MyModel;
  */
 class Medale extends MyModel
 {
+
     /**
      * @inheritdoc
      */
@@ -41,16 +42,16 @@ class Medale extends MyModel
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'uid' => 'Uid',
+            'id'     => 'ID',
+            'uid'    => 'Uid',
             'uid_vk' => 'Uid Vk',
-            'type' => 'Type',
+            'type'   => 'Type',
         ];
     }
-
 
     public function getMedaletype()
     {
         return $this->hasOne('app\models\MedaleType', array('id' => 'type'));
     }
+
 }

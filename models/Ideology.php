@@ -13,6 +13,7 @@ use app\components\MyModel;
  */
 class Ideology extends MyModel
 {
+
     /**
      * @inheritdoc
      */
@@ -39,9 +40,10 @@ class Ideology extends MyModel
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
+            'id'   => 'ID',
             'name' => 'Name',
-            'd' => 'Уровень \"правости\" 0 — коммунизм, 50 социал-либерализм, 100 — фашизм',
+            'd'    => 'Уровень \"правости\" 0 — коммунизм, 50 социал-либерализм, 100 — фашизм',
         ];
     }
+
 }

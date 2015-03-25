@@ -23,6 +23,7 @@ use app\components\MyModel;
  */
 class Bill extends MyModel
 {
+
     /**
      * @inheritdoc
      */
@@ -49,15 +50,15 @@ class Bill extends MyModel
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'bill_type' => 'Bill Type',
-            'creator' => 'Creator',
-            'created' => 'Created',
+            'id'         => 'ID',
+            'bill_type'  => 'Bill Type',
+            'creator'    => 'Creator',
+            'created'    => 'Created',
             'vote_ended' => 'Vote Ended',
-            'accepted' => 'Accepted',
-            'data' => 'Данные',
-            'dicktator' => 'Издан диктатором',
-            'state_id' => 'State ID'
+            'accepted'   => 'Accepted',
+            'data'       => 'Данные',
+            'dicktator'  => 'Издан диктатором',
+            'state_id'   => 'State ID'
         ];
     }
 
@@ -65,19 +66,22 @@ class Bill extends MyModel
     {
         return $this->hasMany('app\models\BillVote', array('bill_id' => 'id'));
     }
+
     public function getType()
     {
         return $this->hasOne('app\models\BillType', array('id' => 'bill_type'));
     }
+
     public function getState()
     {
         return $this->hasOne('app\models\State', array('id' => 'state_id'));
     }
+
     public function getCreatorUser()
     {
         return $this->hasOne('app\models\User', array('id' => 'creator'));
     }
-    
+
     /**
      * Принимает законопроект и выполняет его
      * @return boolean
@@ -86,7 +90,7 @@ class Bill extends MyModel
     {
         return $this->type->accept($this);
     }
-    
+
     /**
      * Завершить голосование по законопроекту без принятия
      */
@@ -95,4 +99,5 @@ class Bill extends MyModel
         $this->accepted = -1;
         $this->save();
     }
+
 }

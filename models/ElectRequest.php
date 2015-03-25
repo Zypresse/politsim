@@ -15,6 +15,7 @@ use app\components\MyModel;
  */
 class ElectRequest extends MyModel
 {
+
     /**
      * @inheritdoc
      */
@@ -40,11 +41,11 @@ class ElectRequest extends MyModel
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'org_id' => 'Org ID',
+            'id'       => 'ID',
+            'org_id'   => 'Org ID',
             'party_id' => 'Party ID',
             'candidat' => 'Candidat',
-            'leader' => '1 — заявка на выборы лидера, 0 — на выборы в организаицю',
+            'leader'   => '1 — заявка на выборы лидера, 0 — на выборы в организаицю',
         ];
     }
 
@@ -52,16 +53,20 @@ class ElectRequest extends MyModel
     {
         return $this->hasOne('app\models\Org', array('id' => 'org_id'));
     }
+
     public function getParty()
     {
         return $this->hasOne('app\models\Party', array('id' => 'party_id'));
     }
+
     public function getUser()
     {
         return $this->hasOne('app\models\User', array('id' => 'candidat'));
     }
+
     public function getVotes()
     {
         return $this->hasMany('app\models\ElectVote', array('request_id' => 'id'));
     }
+
 }
