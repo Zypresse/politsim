@@ -736,18 +736,22 @@ class JsonController extends MyController {
                 return $this->_r("Only citizens can vote");
 
             $elect_requests_ids = implode(",", ArrayHelper::map(ElectRequest::find()->where(["org_id" => $request->org_id, "leader" => $request->leader])->asArray()->all(), 'id', 'id'));
-            $allready_voted = ElectVote::find()->where("request_id IN ({$elect_requests_ids}) AND uid = {$this->viewer_id}")->count();
-            if (intval($allready_voted))
-                return $this->_r("Allready voted");
+            if (count($elect_requests_ids)) {
+                $allready_voted = ElectVote::find()->where("request_id IN ({$elect_requests_ids}) AND uid = {$this->viewer_id}")->count();
+                if (intval($allready_voted))
+                    return $this->_r("Allready voted");
+            
 
-            $vote = new ElectVote();
-            $vote->uid = $user->id;
-            $vote->request_id = $request->id;
+                $vote = new ElectVote();
+                $vote->uid = $user->id;
+                $vote->request_id = $request->id;
 
-            if ($vote->save())
-                return $this->_rOk();
-            else
-                return $this->_r($vote->getErrors());
+                if ($vote->save())
+                    return $this->_rOk();
+                else
+                    return $this->_r($vote->getErrors());
+            } else
+                return $this->_r("Здесь должен быть текст ошибки, но его нет. Вы всё равно не читаете тексты ошибок, так для кого я их буду писать?");
         } else
             return $this->_r("Invalid request ID");
     }
