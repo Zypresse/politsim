@@ -71,20 +71,20 @@ use app\components\MyHtmlHelper;
 		 	<? } ?>
 		 </select>
 		 <? break;
-		 case 'elected_variants': ?>
+                 case 'elected_variants': if (sizeof($additional_data['elected_variants'])) { ?>
 		 <select class="bill_field" id="bill<?=$bill_type->id?>_<?=$field->system_name?>" name="<?=$field->system_name?>">
 		 	<? foreach ($additional_data['elected_variants'] as $type) { ?>
 		 	<option value="<?=$type['key']?>"><?=$type['name']?></option>
 		 	<? } ?>
 		 </select>
-		 <? break;
-		 case 'cores': ?>
+                 <? } break;
+		 case 'cores': if (sizeof($additional_data['cores'])) { ?>
 		 <select class="bill_field" id="bill<?=$bill_type->id?>_<?=$field->system_name?>" name="<?=$field->system_name?>">
 		 	<? foreach ($additional_data['cores'] as $i => $type) { ?>
                         <? if (is_object($type)) { ?><option value="<?=$type->id?>"><?=$type->name?></option><? } else { ?><option value="<?=$i?>"><?=$type?></option><? } ?>
 		 	<? } ?>
 		 </select>
-		 <? break;
+                 <? } break;
 		 case 'legislature_types': ?>
 		 <select class="bill_field" id="bill<?=$bill_type->id?>_<?=$field->system_name?>" name="<?=$field->system_name?>">
 		 	<? foreach ($additional_data['legislature_types'] as $type) { ?>
@@ -119,7 +119,7 @@ use app\components\MyHtmlHelper;
 						<option value="unlimited">Пожизненно</option>
 						<option value="nation_individual_vote">Голосование населения за кандидатов</option>
 						<option value="nation_party_vote">Голосование населения за партии</option>
-						<option value="other_org_vote">Голосуют члены другой организации</option>
+						<!--<option value="other_org_vote">Голосуют члены другой организации</option>-->
 						<option value="org_vote">Голосуют члены этой же организации</option>
 					</select>
 				<? break; default: ?>
@@ -141,14 +141,14 @@ use app\components\MyHtmlHelper;
 		 </select>
                 <?
                     break;
-                case 'orgs':
+                case 'orgs': if (sizeof($additional_data['orgs'])) { 
                 ?>
                 <select class="bill_field" id="bill<?=$bill_type->id?>_<?=$field->system_name?>" name="<?=$field->system_name?>">
 		 	<? foreach ($additional_data['orgs'] as $org) { ?>
 		 	<option value="<?=$org->id?>"><?=$org->name?></option>
 		 	<? } ?>
 		 </select>
-                <?
+                <? }
                     break;
 		 default: ?>
 		 	<input type="text" class="bill_field" id="bill<?=$bill_type->id?>_<?=$field->system_name?>" name="<?=$field->system_name?>" >
