@@ -15,6 +15,7 @@ use app\components\MyModel;
  */
 class ElectResult extends MyModel
 {
+
     /**
      * @inheritdoc
      */
@@ -41,16 +42,17 @@ class ElectResult extends MyModel
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
+            'id'     => 'ID',
             'org_id' => 'Org ID',
             'leader' => 'Leader',
-            'date' => 'Date',
-            'data' => 'Data',
+            'date'   => 'Date',
+            'data'   => 'Data',
         ];
     }
-    
+
     public function getOrg()
     {
         return $this->hasOne('app\models\Org', array('id' => 'org_id'));
     }
+
 }

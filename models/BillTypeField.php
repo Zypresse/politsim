@@ -14,6 +14,7 @@ use app\components\MyModel;
  */
 class BillTypeField extends MyModel
 {
+
     /**
      * @inheritdoc
      */
@@ -31,8 +32,8 @@ class BillTypeField extends MyModel
             [['bill_id', 'name', 'system_name', 'type'], 'required'],
             [['bill_id'], 'integer'],
             [['name'], 'string', 'max' => 1000],
-            [['system_name', 'type'], 'string', 'max' => 255]/*,
-            [['system_name'], 'unique']*/
+            [['system_name', 'type'], 'string', 'max' => 255]/* ,
+              [['system_name'], 'unique'] */
         ];
     }
 
@@ -42,10 +43,11 @@ class BillTypeField extends MyModel
     public function attributeLabels()
     {
         return [
-            'bill_id' => 'Bill ID',
-            'name' => 'Name',
+            'bill_id'     => 'Bill ID',
+            'name'        => 'Name',
             'system_name' => 'System Name',
-            'type' => 'Type',
+            'type'        => 'Type',
         ];
     }
+
 }

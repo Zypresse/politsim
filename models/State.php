@@ -40,6 +40,7 @@ use app\models\GovermentFieldValue;
  */
 class State extends MyModel
 {
+
     /**
      * @inheritdoc
      */
@@ -47,7 +48,7 @@ class State extends MyModel
     {
         return 'states';
     }
-    
+
     /**
      * @inheritdoc
      */
@@ -55,7 +56,7 @@ class State extends MyModel
     {
         return [
             [['name', 'short_name', 'capital'], 'required'],
-            [['legislature', 'executive', 'state_structure', 'goverment_form', 'group_id','allow_register_parties','population','sum_star','leader_can_drop_legislature','allow_register_holdings','register_parties_cost'], 'integer'],
+            [['legislature', 'executive', 'state_structure', 'goverment_form', 'group_id', 'allow_register_parties', 'population', 'sum_star', 'leader_can_drop_legislature', 'allow_register_holdings', 'register_parties_cost'], 'integer'],
             [['name'], 'string', 'max' => 100],
             [['short_name'], 'string', 'max' => 10],
             [['capital', 'color'], 'string', 'max' => 7]
@@ -68,24 +69,24 @@ class State extends MyModel
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'name' => 'Name',
-            'short_name' => 'Short Name',
-            'capital' => 'Capital',
-            'color' => 'Color',
-            'legislature' => 'Legislature',
-            'executive' => 'Executive',
+            'id'              => 'ID',
+            'name'            => 'Name',
+            'short_name'      => 'Short Name',
+            'capital'         => 'Capital',
+            'color'           => 'Color',
+            'legislature'     => 'Legislature',
+            'executive'       => 'Executive',
             'state_structure' => 'State Structure',
-            'goverment_form' => 'Goverment Form',
-            'group_id' => 'Group ID',
+            'goverment_form'  => 'Goverment Form',
+            'group_id'        => 'Group ID',
         ];
     }
-    
+
     public function getLegislatureOrg()
     {
         return $this->hasOne('app\models\Org', array('id' => 'legislature'));
     }
-    
+
     public function getExecutiveOrg()
     {
         return $this->hasOne('app\models\Org', array('id' => 'executive'));
@@ -110,10 +111,12 @@ class State extends MyModel
     {
         return $this->hasMany('app\models\Region', array('state_id' => 'id'))->orderBy('name');
     }
+
     public function getCities()
     {
         return $this->hasMany('app\models\Region', array('state_id' => 'id'))->orderBy('city');
     }
+
     public function getLicenses()
     {
         return $this->hasMany('app\models\StateLicense', array('state_id' => 'id'));
@@ -123,23 +126,27 @@ class State extends MyModel
     {
         return $this->hasMany('app\models\GovermentFieldValue', array('state_id' => 'id'));
     }
+
     public function getParties()
     {
         return $this->hasMany('app\models\Party', array('state_id' => 'id'));
     }
+
     public function getUsers()
     {
         return $this->hasMany('app\models\User', array('state_id' => 'id'));
     }
-    
+
     /**
      * Подчищаем то что осталось после удаления государства
      */
     public function afterDelete()
     {
-        if ($this->legislatureOrg) $this->legislatureOrg->delete();
-        if ($this->executiveOrg) $this->executiveOrg->delete();
-        
+        if ($this->legislatureOrg)
+            $this->legislatureOrg->delete();
+        if ($this->executiveOrg)
+            $this->executiveOrg->delete();
+
         foreach ($this->regions as $region) {
             $region->state_id = 0;
         }
@@ -150,7 +157,7 @@ class State extends MyModel
             $party->delete();
         }
     }
-    
+
     /**
      * Автосоздание всего, что нужно для создания государства
      */
@@ -159,14 +166,15 @@ class State extends MyModel
         if ($insert) {
             $gftAr = GovermentFieldType::find()->all();
             foreach ($gftAr as $gft) {
-                $gfv = new GovermentFieldValue();
+                $gfv           = new GovermentFieldValue();
                 $gfv->state_id = $this->id;
-                $gfv->type_id = $gft->id;
-                $gfv->value = $gft->default_value;
+                $gfv->type_id  = $gft->id;
+                $gfv->value    = $gft->default_value;
                 $gfv->save();
             }
         }
-        
-        return parent::afterSave($insert,$changedAttributes);
+
+        return parent::afterSave($insert, $changedAttributes);
     }
+
 }

@@ -14,6 +14,7 @@ use app\components\MyModel;
  */
 class CoreCountry extends MyModel
 {
+
     /**
      * @inheritdoc
      */
@@ -39,14 +40,15 @@ class CoreCountry extends MyModel
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
+            'id'   => 'ID',
             'name' => 'Name',
         ];
     }
-    
 
-    public function getRegions() {
+    public function getRegions()
+    {
         return $this->hasMany('app\models\Region', ['id' => 'region_id'])
-          ->viaTable('cores_regions', ['core_id' => 'id']);
+                ->viaTable('cores_regions', ['core_id' => 'id']);
     }
+
 }

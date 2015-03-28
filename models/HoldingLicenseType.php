@@ -13,6 +13,7 @@ use app\components\MyModel;
  */
 class HoldingLicenseType extends MyModel
 {
+
     /**
      * @inheritdoc
      */
@@ -39,9 +40,10 @@ class HoldingLicenseType extends MyModel
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
+            'id'   => 'ID',
             'name' => 'Name',
             'code' => 'Code',
         ];
     }
+
 }

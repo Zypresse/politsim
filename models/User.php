@@ -39,6 +39,7 @@ use app\models\Dealing;
  */
 class User extends MyModel
 {
+
     /**
      * @inheritdoc
      */
@@ -65,27 +66,27 @@ class User extends MyModel
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'uid_vk' => 'Uid Vk',
-            'name' => 'Name',
-            'photo' => 'Photo',
-            'photo_big' => 'Photo Big',
-            'last_vote' => 'Last Vote',
-            'last_tweet' => 'Last Tweet',
+            'id'          => 'ID',
+            'uid_vk'      => 'Uid Vk',
+            'name'        => 'Name',
+            'photo'       => 'Photo',
+            'photo_big'   => 'Photo Big',
+            'last_vote'   => 'Last Vote',
+            'last_tweet'  => 'Last Tweet',
             'last_salary' => 'Last Salary',
-            'party_id' => 'Party ID',
-            'state_id' => 'State ID',
-            'post_id' => 'Post ID',
-            'region_id' => 'Region ID',
-            'money' => 'Money',
-            'sex' => 'Sex',
-            'star' => 'Star',
-            'heart' => 'Heart',
-            'chart_pie' => 'Chart Pie',
+            'party_id'    => 'Party ID',
+            'state_id'    => 'State ID',
+            'post_id'     => 'Post ID',
+            'region_id'   => 'Region ID',
+            'money'       => 'Money',
+            'sex'         => 'Sex',
+            'star'        => 'Star',
+            'heart'       => 'Heart',
+            'chart_pie'   => 'Chart Pie',
         ];
     }
 
-    public function setPublicAttributes() 
+    public function setPublicAttributes()
     {
         return [
             'id',
@@ -108,39 +109,47 @@ class User extends MyModel
     {
         return $this->hasOne('app\models\Party', array('id' => 'party_id'));
     }
+
     public function getState()
     {
         return $this->hasOne('app\models\State', array('id' => 'state_id'));
     }
+
     public function getPost()
     {
         return $this->hasOne('app\models\Post', array('id' => 'post_id'));
     }
+
     public function getRegion()
     {
         return $this->hasOne('app\models\Region', array('id' => 'region_id'));
     }
+
     public function getMedales()
     {
         return $this->hasMany('app\models\Medale', array('uid' => 'id'));
     }
+
     public function getVotes()
     {
         return $this->hasMany('app\models\ElectVote', array('uid' => 'id'));
     }
+
     public function getStocks()
     {
         return $this->hasMany('app\models\Stock', array('user_id' => 'id'));
     }
+
     public function getRequests()
     {
         return $this->hasMany('app\models\ElectRequest', array('candidat' => 'id'));
     }
+
     public function getNotifications()
     {
         return $this->hasMany('app\models\Notification', array('uid' => 'id'));
     }
-    
+
     /**
      * Список сделок юзера
      * @return \app\models\Dealing[]
@@ -149,23 +158,23 @@ class User extends MyModel
     {
         return Dealing::getMyList($this->id);
     }
-    
+
     /**
      * Список непринятых сделок юзера
      * @return \app\models\Dealing[]
      */
     public function getNotAcceptedDealingsList()
     {
-        return Dealing::find()->where(['to_uid'=>$this->id,'time'=>-1])->all();
+        return Dealing::find()->where(['to_uid' => $this->id, 'time' => -1])->all();
     }
-    
+
     /**
      * Число непринятых сделок
      * @return integer
      */
     public function getNotAcceptedDealingsCount()
     {
-        return intval(Dealing::find()->where(['to_uid'=>$this->id,'time'=>-1])->count());
+        return intval(Dealing::find()->where(['to_uid' => $this->id, 'time' => -1])->count());
     }
 
     /**
@@ -194,7 +203,7 @@ class User extends MyModel
     {
         return ($this->isOrgLeader() && $this->post->org->isExecutive());
     }
-    
+
     /**
      * Является ли держателем акций переданного АО
      * @return boolean
@@ -202,11 +211,12 @@ class User extends MyModel
     public function isShareholder(Holding $holding)
     {
         foreach ($holding->stocks as $stock) {
-            if ($stock->user_id === $this->id || $stock->post_id === $this->post_id) return true;
+            if ($stock->user_id === $this->id || $stock->post_id === $this->post_id)
+                return true;
         }
         return false;
     }
-    
+
     /**
      * Получить стопку акций этого предприятия, принадлежащую юзеру
      * @param \app\models\Holding $holding
@@ -215,11 +225,12 @@ class User extends MyModel
     public function getShareholderStock(Holding $holding)
     {
         foreach ($holding->stocks as $stock) {
-            if ($stock->user_id === $this->id || $stock->post_id === $this->post_id) return $stock;
+            if ($stock->user_id === $this->id || $stock->post_id === $this->post_id)
+                return $stock;
         }
         return null;
     }
-    
+
     /**
      * Имеет ли контрольный пакет акций переданого АО
      * @param \app\models\Holding $holding
@@ -228,7 +239,8 @@ class User extends MyModel
     public function isHaveControllingStake(Holding $holding)
     {
         foreach ($holding->stocks as $stock) {
-            if ($stock->user_id === $this->id && $stock->getPercents()>50.0) return true;
+            if ($stock->user_id === $this->id && $stock->getPercents() > 50.0)
+                return true;
         }
         return false;
     }
@@ -239,7 +251,7 @@ class User extends MyModel
      */
     public function getTwitterSubscribersCount()
     {
-        $count = $this->star*100 + $this->chart_pie*10 + abs($this->heart);
+        $count = $this->star * 100 + $this->chart_pie * 10 + abs($this->heart);
         return $count > 0 ? $count : 0;
     }
 
@@ -249,7 +261,7 @@ class User extends MyModel
      */
     public function getTweetsCount()
     {
-        return intval(Twitter::find()->where(['uid'=>$this->id])->count());
+        return intval(Twitter::find()->where(['uid' => $this->id])->count());
     }
 
     /**
@@ -261,7 +273,7 @@ class User extends MyModel
         if ($this->party) {
             if (intval($this->party->getMembersCount()) === 1) {
                 $this->party->delete();
-            }            
+            }
         }
         $this->party_id = 0;
         if ($this->post && $this->post->party_reserve) {
@@ -270,7 +282,7 @@ class User extends MyModel
 
         return $this->save();
     }
-    
+
     /**
      * Покинуть государство и обсчитать нужные после этого дела
      * @return boolean
@@ -282,8 +294,9 @@ class User extends MyModel
         }
 
         $this->state_id = 0;
-        $this->post_id = 0;
-        
+        $this->post_id  = 0;
+
         return $this->leaveParty();
     }
+
 }

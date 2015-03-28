@@ -5,7 +5,7 @@ use app\components\MyHtmlHelper;
 <p>Наличные: <?=number_format($user->money,2,'.',' ')?> <?=MyHtmlHelper::icon('money')?></p>
 <h4>Акции:</h4>
 <table class="table">
-<? if (sizeof($user->stocks)) { foreach ($user->stocks as $stock) { ?>
+<? if (count($user->stocks)) { foreach ($user->stocks as $stock) { ?>
     <tr>
         <td><a href="#" onclick="load_page('holding-info',{'id':<?=$stock->holding_id?>})"><?=$stock->holding->name?></a></td>
         <td><?=MyHtmlHelper::formateNumberword($stock->count, "акций","акция","акции")?> (<?=round($stock->getPercents(),2)?>%)</td>

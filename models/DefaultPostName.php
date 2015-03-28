@@ -1,5 +1,7 @@
 <?php
+
 // @todo Не используется, удалить
+
 namespace app\models;
 
 use app\components\MyModel;
@@ -12,6 +14,7 @@ use app\components\MyModel;
  */
 class DefaultPostName extends MyModel
 {
+
     /**
      * @inheritdoc
      */
@@ -42,4 +45,5 @@ class DefaultPostName extends MyModel
             'name' => 'Name',
         ];
     }
+
 }

@@ -12,6 +12,7 @@ use app\components\MyModel;
  */
 class PopNationGroup extends MyModel
 {
+
     /**
      * @inheritdoc
      */
@@ -37,8 +38,9 @@ class PopNationGroup extends MyModel
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
+            'id'   => 'ID',
             'name' => 'Name',
         ];
     }
+
 }

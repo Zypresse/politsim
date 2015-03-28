@@ -14,6 +14,7 @@ use app\components\MyModel;
  */
 class HoldingDecisionVote extends MyModel
 {
+
     /**
      * @inheritdoc
      */
@@ -39,20 +40,21 @@ class HoldingDecisionVote extends MyModel
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
+            'id'          => 'ID',
             'decision_id' => 'Decision ID',
-            'variant' => 'Variant',
-            'stock_id' => 'Stock ID',
+            'variant'     => 'Variant',
+            'stock_id'    => 'Stock ID',
         ];
     }
-    
+
     public function getDecision()
     {
         return $this->hasOne('app\models\HoldingDecision', array('id' => 'decision_id'));
     }
-    
+
     public function getStock()
     {
         return $this->hasOne('app\models\Stock', array('id' => 'stock_id'));
     }
+
 }

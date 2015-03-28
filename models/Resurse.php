@@ -14,6 +14,7 @@ use app\components\MyModel;
  */
 class Resurse extends MyModel
 {
+
     /**
      * @inheritdoc
      */
@@ -41,10 +42,11 @@ class Resurse extends MyModel
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'code' => 'Code',
-            'name' => 'Name',
+            'id'    => 'ID',
+            'code'  => 'Code',
+            'name'  => 'Name',
             'level' => 'Level',
         ];
     }
+
 }

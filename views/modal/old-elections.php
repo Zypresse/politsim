@@ -1,6 +1,6 @@
+<?php if ($results) { ?>
 <table class="table"> 
-<?php
-
+<?
 foreach ($results as $result) {
 ?>
     <tr>
@@ -13,7 +13,7 @@ foreach ($results as $result) {
                   $('#old-elections_body').html('<br><br><br>Загрузка...<br><br><br><br><br>');
               },
               success:function(d) {
-                  if (typeof(d) == 'object' && d.result == 'error') {
+                if (typeof(d) == 'object' && d.result == 'error') {
                     show_custom_error(d.error);
                 } else {
                     $('#old-elections_body').html(d);
@@ -21,9 +21,13 @@ foreach ($results as $result) {
                 }
               },
                 error:show_error
-            });" class="btn btn-sm btn-primary">Результаты</button></td>
+            });" class="btn btn-sm btn-primary">Просмотр</button></td>
     </tr>
 <?
 }
 ?>
 </table>
+
+<? } else { ?>
+<p>Выборов не проводилось</p>
+<? } ?>

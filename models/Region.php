@@ -39,6 +39,7 @@ use app\components\MyModel;
  */
 class Region extends MyModel
 {
+
     /**
      * @inheritdoc
      */
@@ -53,13 +54,13 @@ class Region extends MyModel
     public function rules()
     {
         return [
-            [['code', 'name', 'city', /*'b', */'lat', 'lng', 'natural_gas', 'coal', 'nf_ores', 'f_ores', 're_ores', 'u_ores', 'wood', 'corn', 'fruits', 'fish', 'meat', 'wool', 'b_materials'], 'required'],
+            [['code', 'name', 'city', /* 'b', */ 'lat', 'lng', 'natural_gas', 'coal', 'nf_ores', 'f_ores', 're_ores', 'u_ores', 'wood', 'corn', 'fruits', 'fish', 'meat', 'wool', 'b_materials'], 'required'],
             [['state_id', 'population'], 'integer'],
             [['lat', 'lng', 'separate_risk', 'oil', 'natural_gas', 'coal', 'nf_ores', 'f_ores', 're_ores', 'u_ores', 'wood', 'corn', 'fruits', 'fish', 'meat', 'wool', 'b_materials'], 'number'],
             [['code'], 'string', 'max' => 7],
             [['name', 'city'], 'string', 'max' => 300],
             //[['b'], 'string', 'max' => 2555],
-            [['b'],'default','value'=>''],
+            [['b'], 'default', 'value' => ''],
             [['code'], 'unique']
         ];
     }
@@ -70,35 +71,35 @@ class Region extends MyModel
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'code' => 'Code',
-            'state_id' => 'State ID',
-            'name' => 'Name',
-            'city' => 'City',
-            'b' => 'B',
-            'lat' => 'Lat',
-            'lng' => 'Lng',
+            'id'            => 'ID',
+            'code'          => 'Code',
+            'state_id'      => 'State ID',
+            'name'          => 'Name',
+            'city'          => 'City',
+            'b'             => 'B',
+            'lat'           => 'Lat',
+            'lng'           => 'Lng',
             'separate_risk' => 'Separate Risk',
-            'population' => 'Population',
-            'oil' => 'Oil',
-            'natural_gas' => 'Natural Gas',
-            'coal' => 'Coal',
-            'nf_ores' => 'Nf Ores',
-            'f_ores' => 'F Ores',
-            're_ores' => 'Re Ores',
-            'u_ores' => 'U Ores',
-            'wood' => 'Wood',
-            'corn' => 'Corn',
-            'fruits' => 'Fruits',
-            'fish' => 'Fish',
-            'meat' => 'Meat',
-            'wool' => 'Wool',
-            'b_materials' => 'B Materials',
+            'population'    => 'Population',
+            'oil'           => 'Oil',
+            'natural_gas'   => 'Natural Gas',
+            'coal'          => 'Coal',
+            'nf_ores'       => 'Nf Ores',
+            'f_ores'        => 'F Ores',
+            're_ores'       => 'Re Ores',
+            'u_ores'        => 'U Ores',
+            'wood'          => 'Wood',
+            'corn'          => 'Corn',
+            'fruits'        => 'Fruits',
+            'fish'          => 'Fish',
+            'meat'          => 'Meat',
+            'wool'          => 'Wool',
+            'b_materials'   => 'B Materials',
         ];
     }
 
     public function setPublicAttributes()
-    { 
+    {
         return [
             'id',
             'code',
@@ -126,7 +127,7 @@ class Region extends MyModel
             'b_materials'
         ];
     }
-    
+
     /**
      * Список пограничных регионов
      * @return Region[]
@@ -135,7 +136,7 @@ class Region extends MyModel
     {
         $b = [];
         if ($this->b) {
-            $models = Region::find(['condition'=>'code IN ('.implode(",", $this->b).')'])->all();
+            $models = Region::find(['condition' => 'code IN (' . implode(",", $this->b) . ')'])->all();
             foreach ($models as $model) {
                 $b[$model->code] = $model->name;
             }
@@ -147,7 +148,8 @@ class Region extends MyModel
     public function getState()
     {
         return $this->hasOne('app\models\State', array('id' => 'state_id'));
-    }    
+    }
+
     public function getPopulationGroups()
     {
         return $this->hasMany('app\models\Population', array('region_id' => 'id'));
@@ -166,9 +168,10 @@ class Region extends MyModel
         return ($this->state && $this->state->capital === $this->code);
     }
 
-    public function getCores() {
+    public function getCores()
+    {
         return $this->hasMany('app\models\CoreCountry', ['id' => 'core_id'])
-          ->viaTable('cores_regions', ['region_id' => 'id']);
+                ->viaTable('cores_regions', ['region_id' => 'id']);
     }
     
     public function afterSave($insert,$changedAttributes)

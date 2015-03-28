@@ -35,6 +35,7 @@ use app\components\MyModel;
  */
 class PopClass extends MyModel
 {
+
     /**
      * @inheritdoc
      */
@@ -62,31 +63,32 @@ class PopClass extends MyModel
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'name' => 'Name',
-            'food_min_count' => 'Food Min Count',
-            'food_min_type' => 'Food Min Type',
-            'food_max_count' => 'Food Max Count',
-            'food_max_type' => 'Food Max Type',
-            'dress_min_count' => 'Dress Min Count',
-            'dress_min_type' => 'Dress Min Type',
-            'dress_max_count' => 'Dress Max Count',
-            'dress_max_type' => 'Dress Max Type',
+            'id'                  => 'ID',
+            'name'                => 'Name',
+            'food_min_count'      => 'Food Min Count',
+            'food_min_type'       => 'Food Min Type',
+            'food_max_count'      => 'Food Max Count',
+            'food_max_type'       => 'Food Max Type',
+            'dress_min_count'     => 'Dress Min Count',
+            'dress_min_type'      => 'Dress Min Type',
+            'dress_max_count'     => 'Dress Max Count',
+            'dress_max_type'      => 'Dress Max Type',
             'furniture_min_count' => 'Furniture Min Count',
-            'furniture_min_type' => 'Furniture Min Type',
+            'furniture_min_type'  => 'Furniture Min Type',
             'furniture_max_count' => 'Furniture Max Count',
-            'furniture_max_type' => 'Furniture Max Type',
-            'alcohol_min_type' => 'Alcohol Min Type',
-            'alcohol_min_count' => 'Alcohol Min Count',
-            'alcohol_max_type' => 'Alcohol Max Type',
-            'alcohol_max_count' => 'Alcohol Max Count',
-            'energy_min' => 'Energy Min',
-            'energy_max' => 'Energy Max',
-            'base_speed' => 'Base Speed',
-            'work_type' => 'Work Type',
-            'awareness' => 'Awareness',
-            'threshold' => 'Threshold',
-            'aggression' => 'Aggression',
+            'furniture_max_type'  => 'Furniture Max Type',
+            'alcohol_min_type'    => 'Alcohol Min Type',
+            'alcohol_min_count'   => 'Alcohol Min Count',
+            'alcohol_max_type'    => 'Alcohol Max Type',
+            'alcohol_max_count'   => 'Alcohol Max Count',
+            'energy_min'          => 'Energy Min',
+            'energy_max'          => 'Energy Max',
+            'base_speed'          => 'Base Speed',
+            'work_type'           => 'Work Type',
+            'awareness'           => 'Awareness',
+            'threshold'           => 'Threshold',
+            'aggression'          => 'Aggression',
         ];
     }
+
 }

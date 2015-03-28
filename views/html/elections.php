@@ -115,7 +115,7 @@
 <button class="btn btn-danger" onclick="drop_elect_request(<?=$state->executive?>,0)">Отозвать заявку на выборы</button><br>
 <? } ?>
 
-<? if (sizeof($state->executiveOrg->requests)) { ?><strong>Список подавших заявку на выборы:</strong><ul><? foreach ($state->executiveOrg->requests as $request) { ?>
+<? if (count($state->executiveOrg->requests)) { ?><strong>Список подавших заявку на выборы:</strong><ul><? foreach ($state->executiveOrg->requests as $request) { ?>
 <li><a href="#" onclick="load_page('party-info',{'id':<?=$request->party_id?>})"><?=htmlspecialchars($request->party->name)?></a></li>
 <? } ?></ul><? } else { ?><strong>Никто ещё не подал заявку на выборы</strong><? } ?>
 </p><br><? } ?><? } ?>
@@ -140,7 +140,7 @@
 <button class="btn btn-danger" onclick="drop_elect_request(<?=$state->executive?>,1)">Отозвать заявку на выборы</button><br>
 <? } ?>
 
-<? if (sizeof($state->executiveOrg->lrequests)) { ?><strong>Список подавших заявку на выборы:</strong><ul><? foreach ($state->executiveOrg->lrequests as $request) { ?>
+<? if (count($state->executiveOrg->lrequests)) { ?><strong>Список подавших заявку на выборы:</strong><ul><? foreach ($state->executiveOrg->lrequests as $request) { ?>
 <li><a href="#" onclick="load_page('profile',{'uid':<?=$request->candidat?>})"><?=htmlspecialchars($request->user->name)?></a> <? if ($state->executiveOrg->leader_dest === 'nation_party_vote') { ?>(<?=$request->user->party->short_name?>)<? } ?></li>
 <? } ?></ul><? } else { ?><strong>Никто ещё не подал заявку на выборы</strong><? } ?>
 </p><br><? } ?><? } ?>
@@ -165,7 +165,7 @@
 <button class="btn btn-danger" onclick="drop_elect_request(<?=$state->legislature?>,0)">Отозвать заявку на выборы</button><br>
 <? } ?>
 
-<? if (sizeof($state->legislatureOrg->requests)) { ?><strong>Список подавших заявку на выборы:</strong><ul><? foreach ($state->legislatureOrg->requests as $request) { ?>
+<? if (count($state->legislatureOrg->requests)) { ?><strong>Список подавших заявку на выборы:</strong><ul><? foreach ($state->legislatureOrg->requests as $request) { ?>
 <? if ($request->party) {?><li><a href="#" onclick="load_page('party-info',{'id':<?=$request->party_id?>})"><?=htmlspecialchars($request->party->name)?></a></li><? } else {$request->delete();} ?>
 <? } ?></ul><? } else { ?><strong>Никто ещё не подал заявку на выборы</strong><? } ?>
 </p><br><? } ?><? } ?>
@@ -193,7 +193,7 @@
 <button class="btn btn-danger" onclick="drop_elect_request(<?=$state->legislature?>,1)">Отозвать заявку на выборы</button><br>
 <? } ?>
 
-<? if (sizeof($state->legislatureOrg->lrequests)) { ?><strong>Список подавших заявку на выборы:</strong><ul><? foreach ($state->legislatureOrg->lrequests as $request) { ?>
+<? if (count($state->legislatureOrg->lrequests)) { ?><strong>Список подавших заявку на выборы:</strong><ul><? foreach ($state->legislatureOrg->lrequests as $request) { ?>
 <li><a href="#" onclick="load_page('profile',{'uid':<?=$request->candidat?>})"><?=htmlspecialchars($request->user->name)?></a> <? if ($state->legislatureOrg->leader_dest === 'nation_party_vote') { ?>(<?=$request->user->party->short_name?>)<? } ?></li>
 <? } ?></ul><? } else { ?><strong>Никто ещё не подал заявку на выборы</strong><? } ?>
 </p><? } ?><? } ?>

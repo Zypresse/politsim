@@ -16,6 +16,7 @@ use app\components\MyModel;
  */
 class HoldingLicense extends MyModel
 {
+
     /**
      * @inheritdoc
      */
@@ -42,19 +43,20 @@ class HoldingLicense extends MyModel
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
+            'id'         => 'ID',
             'holding_id' => 'Holding ID',
             'license_id' => 'License ID',
         ];
     }
-    
-    
+
     public function getHolding()
     {
         return $this->hasOne('app\models\Holding', array('id' => 'holding_id'));
     }
+
     public function getType()
     {
         return $this->hasOne('app\models\HoldingLicenseType', array('id' => 'license_id'));
     }
+
 }

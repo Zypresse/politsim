@@ -1,5 +1,7 @@
 <?php
+
 // @todo Вроде не используется, удалить
+
 namespace app\models;
 
 use app\components\MyModel;
@@ -13,6 +15,7 @@ use app\components\MyModel;
  */
 class GovermentForm extends MyModel
 {
+
     /**
      * @inheritdoc
      */
@@ -39,9 +42,10 @@ class GovermentForm extends MyModel
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'name' => 'Name',
+            'id'                     => 'ID',
+            'name'                   => 'Name',
             'allow_register_parties' => 'Allow Register Parties',
         ];
     }
+
 }

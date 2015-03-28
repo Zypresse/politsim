@@ -18,6 +18,7 @@ use app\models\StateLicense;
  */
 class HoldingDecision extends MyModel
 {
+
     /**
      * @inheritdoc
      */
@@ -44,31 +45,32 @@ class HoldingDecision extends MyModel
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
+            'id'            => 'ID',
             'decision_type' => 'Decision Type',
-            'created' => 'Created',
-            'accepted' => 'Accepted',
-            'data' => 'Data',
-            'holding_id' => 'Holding ID',
+            'created'       => 'Created',
+            'accepted'      => 'Accepted',
+            'data'          => 'Data',
+            'holding_id'    => 'Holding ID',
         ];
     }
-    
+
     public function getVotes()
     {
-        return $this->hasMany('app\models\HoldingDecisionVote', array('decision_id' => 'id'));        
+        return $this->hasMany('app\models\HoldingDecisionVote', array('decision_id' => 'id'));
     }
+
     public function getHolding()
     {
         return $this->hasOne('app\models\Holding', array('id' => 'holding_id'));
     }
-    
+
     public function afterDelete()
     {
         foreach ($this->votes as $vote) {
             $vote->delete();
         }
     }
-    
+
     /**
      * Принять решение
      */
@@ -79,33 +81,33 @@ class HoldingDecision extends MyModel
             case 1: // смена названия холдинга
                 $this->holding->name = $data->new_name;
                 $this->holding->save();
-            break;
+                break;
             case 2: // выплата дивидентов
                 if ($this->holding->balance >= $data->sum) {
-                foreach ($this->holding->stocks as $stock) {
-                    $sum = $data->sum*$stock->getPercents()/100;
-                    switch (get_class($stock->master)) {
-                        case 'app\models\User':
-                            $stock->master->money+=$sum;
-                        break;
-                        case 'app\models\Post':
-                            $stock->master->balance+=$sum;
-                        break;
-                        case 'app\models\Holding':
-                            $stock->master->balance+=$sum;
-                        break;
+                    foreach ($this->holding->stocks as $stock) {
+                        $sum = $data->sum * $stock->getPercents() / 100;
+                        switch (get_class($stock->master)) {
+                            case 'app\models\User':
+                                $stock->master->money+=$sum;
+                                break;
+                            case 'app\models\Post':
+                                $stock->master->balance+=$sum;
+                                break;
+                            case 'app\models\Holding':
+                                $stock->master->balance+=$sum;
+                                break;
+                        }
+                        $stock->master->save();
                     }
-                    $stock->master->save();
+                    $this->holding->balance -= $data->sum;
+                    $this->holding->save();
                 }
-                $this->holding->balance -= $data->sum;
-                $this->holding->save();
-                }
-            break;
+                break;
             case 3: // Получение лицензии
-                $stateLicense = StateLicense::find()->where(['state_id'=>$this->holding->state_id,'license_id'=>$data->license_id])->one();
-                $allow = true;
+                $stateLicense = StateLicense::find()->where(['state_id' => $this->holding->state_id, 'license_id' => $data->license_id])->one();
+                $allow        = true;
                 if (!(is_null($stateLicense))) {
-                    
+
                     if ($stateLicense->is_only_goverment) {
                         $allow = false;
                         foreach ($this->holding->stocks as $stock) {
@@ -116,26 +118,27 @@ class HoldingDecision extends MyModel
                         }
                     }
                     if ($stateLicense->cost) {
-                        if ($this->holding->balance<$stateLicense->cost) {
+                        if ($this->holding->balance < $stateLicense->cost) {
                             $allow = false;
                         }
                     }
                 }
-                    if ($allow) {
-                        $hl = new HoldingLicense();
-                        $hl->holding_id = $this->holding_id;
-                        $hl->license_id = $data->license_id;
-                        $hl->save();
-                        
-                        if ($stateLicense && $stateLicense->cost) {
-                            $this->holding->balance -= $stateLicense->cost;
-                            $this->holding->save();
-                        }
+                if ($allow) {
+                    $hl             = new HoldingLicense();
+                    $hl->holding_id = $this->holding_id;
+                    $hl->license_id = $data->license_id;
+                    $hl->save();
+
+                    if ($stateLicense && $stateLicense->cost) {
+                        $this->holding->balance -= $stateLicense->cost;
+                        $this->holding->save();
                     }
-                
-            break;
+                }
+
+                break;
         }
-        
+
         $this->delete();
     }
+
 }

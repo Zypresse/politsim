@@ -55,7 +55,7 @@
             $emptyPosts[] = $post;
         }
     }
-    if (sizeof($emptyPosts)) echo "<p style='color:red'>Есть свободные посты в правительстве: ". MyHtmlHelper::formateNumberword (sizeof($emptyPosts), "зарезервированных должностей", "зарезервированная должность", "зарезервированные должности")  . "</p>";
+    if (count($emptyPosts)) echo "<p style='color:red'>Есть свободные посты в правительстве: ". MyHtmlHelper::formateNumberword (count($emptyPosts), "зарезервированных должностей", "зарезервированная должность", "зарезервированные должности")  . "</p>";
     ?>
 <div class="btn-group">
   <button class="btn btn-small dropdown-toggle btn-info" data-toggle="dropdown">
@@ -64,10 +64,10 @@
   <ul class="dropdown-menu">
     <li><a href="#" onclick="rename_party(<?=$party->id?>)" >Переименовать партию</a></li>
     <li><a href="#" onclick="change_party_logo(<?=$party->id?>)" >Сменить эмблему партии</a></li>
-    <? if (sizeof($emptyPosts)) { ?><li><a href="#" onclick="$('#party-reserve-post-set').modal()">Назначить на зарезервированный пост</a></li><? } ?>
+    <? if (count($emptyPosts)) { ?><li><a href="#" onclick="$('#party-reserve-post-set').modal()">Назначить на зарезервированный пост</a></li><? } ?>
   </ul>
 </div>
-    <? if (sizeof($emptyPosts)) { ?>
+    <? if (count($emptyPosts)) { ?>
 <div style="display:none" class="modal" id="party-reserve-post-set" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>

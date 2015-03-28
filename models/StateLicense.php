@@ -19,6 +19,7 @@ use app\components\MyModel;
  */
 class StateLicense extends MyModel
 {
+
     /**
      * @inheritdoc
      */
@@ -45,20 +46,23 @@ class StateLicense extends MyModel
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'state_id' => 'State ID',
-            'license_id' => 'License ID',
+            'id'                => 'ID',
+            'state_id'          => 'State ID',
+            'license_id'        => 'License ID',
             'is_only_goverment' => 'Is Only Goverment',
-            'is_need_confirm' => 'Is Need Confirm',
-            'cost' => 'Cost',
+            'is_need_confirm'   => 'Is Need Confirm',
+            'cost'              => 'Cost',
         ];
     }
+
     public function getType()
     {
         return $this->hasOne('app\models\HoldingLicenseType', array('id' => 'license_id'));
     }
+
     public function getState()
     {
         return $this->hasOne('app\models\State', array('id' => 'state_id'));
     }
+
 }

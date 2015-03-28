@@ -13,6 +13,7 @@ use app\components\MyModel;
  */
 class CoreRegion extends MyModel
 {
+
     /**
      * @inheritdoc
      */
@@ -39,9 +40,10 @@ class CoreRegion extends MyModel
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'core_id' => 'Core ID',
+            'id'        => 'ID',
+            'core_id'   => 'Core ID',
             'region_id' => 'Region ID',
         ];
     }
+
 }
