@@ -100,6 +100,13 @@ class UpdateMinutlyController extends Controller {
         // update holdings
         $holdings = Holding::find()->all();
         foreach ($holdings as $holding) {
+
+            foreach ($holding->stocks as $stock) {
+                if ($stock->count < 1) {
+                    $stock->delete();
+                }
+            }
+            
             $capital = 0.0;
             
             // пока цена на акции 1 монета
@@ -116,15 +123,17 @@ class UpdateMinutlyController extends Controller {
         foreach ($decisions as $decision) {
             $za = 0; $protiv = 0;
             foreach ($decision->votes as $vote) {
-                if (intval($vote->variant) === 1) {
-                    $za+=$vote->stock->getPercents();
-                } elseif (intval($vote->variant) === 2) {
-                    $protiv+=$vote->stock->getPercents();
+                if ($vote->stock) {
+                    if (intval($vote->variant) === 1) {
+                        $za+=$vote->stock->getPercents();
+                    } elseif (intval($vote->variant) === 2) {
+                        $protiv+=$vote->stock->getPercents();
+                    }
                 }
             }
-            if ($za >= 50.0) {
+            if ($za > 50.0) {
                 $decision->accept();
-            } elseif ($protiv >= 50.0 || $decision->created < time()-7*24*60*60) {
+            } elseif ($protiv > 50.0 || $decision->created < time()-7*24*60*60) {
                 $decision->delete();
             }
         }
