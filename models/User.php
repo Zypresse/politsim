@@ -127,7 +127,10 @@ class User extends MyModel
 
     public function getMedales()
     {
-        return $this->hasMany('app\models\Medale', array('uid' => 'id'));
+        $query = Medale::find()->where(['uid'=>  $this->id])->orWhere(['uid_vk'=>$this->uid_vk]);
+        $query->multiple = true;
+        return $query;
+//        return $this->hasMany('app\models\Medale', array('uid' => 'id'));
     }
 
     public function getVotes()
