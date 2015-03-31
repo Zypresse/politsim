@@ -80,18 +80,24 @@ class Holding extends MyModel
         return $this->hasMany('app\models\HoldingLicense', array('holding_id' => 'id'));
     }
 
+    private $_sumStocks = null;
+    
     /**
      * Общее число акций
      * @return integer
      */
     public function getSumStocks()
     {
-        $sum = 0;
-        foreach ($this->stocks as $stock) {
-            $sum += $stock->count;
+        if (is_null($this->_sumStocks)) {
+            $this->_sumStocks = 0;
+            foreach ($this->stocks as $stock) {
+                $this->_sumStocks += $stock->count;
+            }
         }
-        return $sum;
+        return $this->_sumStocks;
     }
+
+    private $_isGosHolding = null;
 
     /**
      * Является ли гос. предприятием
@@ -99,11 +105,16 @@ class Holding extends MyModel
      */
     public function isGosHolding()
     {
-        foreach ($this->stocks as $stock) {
-            if ($stock->isGos() && $stock->getPercents() > 50)
-                return true;
+        if (is_null($this->_isGosHolding)) {
+            $this->_isGosHolding = false;
+            foreach ($this->stocks as $stock) {
+                if ($stock->isGos() && $stock->getPercents() > 50) {
+                    $this->_isGosHolding = true;
+                    break;
+                }
+            }
         }
-        return false;
+        return $this->_isGosHolding;
     }
 
     /**

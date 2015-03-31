@@ -2,14 +2,13 @@
 
 namespace app\commands;
 
-use yii\console\Controller;
-use app\models\Region;
-use app\models\State;
-use app\models\Party;
-use app\models\Bill;
-use app\models\Holding;
-use app\models\Notification;
-use app\models\HoldingDecision;
+use yii\console\Controller,
+    app\models\Region,
+    app\models\State,
+    app\models\Party,
+    app\models\Bill,
+    app\models\Holding,
+    app\models\HoldingDecision;
 
 /**
  * Update all, crontab minutly
@@ -19,6 +18,10 @@ use app\models\HoldingDecision;
 class UpdateMinutlyController extends Controller {
     
     public function actionIndex() {
+        
+        /*
+         * TODO: Обновление регионов, государств и особенно партий вынести в UpdateHourly или типа того, потому что выполняется в сумме уже секунды три
+         */
         
         // Update regions
         $regions = Region::find()->all();
@@ -30,9 +33,9 @@ class UpdateMinutlyController extends Controller {
             $region->save();
         }
         unset($regions);
-        
+                
         // Update states
-        $states = State::find()->all();
+        $states = State::find()->with('regions')->all();
         foreach ($states as $state) {
             $state->population = 0;
             foreach ($state->regions as $region) {
@@ -49,24 +52,26 @@ class UpdateMinutlyController extends Controller {
             }
         }
         unset($states);
-        
+                
         // Update parties
         $parties = Party::find()->all();
+
         foreach ($parties as $party) {
             $party->star = 0;
             $party->heart = 0;
             $party->chart_pie = 0;
-            $k = 0.9;
+            $k = 1;
             foreach ($party->members as $user) {
                 $party->star += $user->star*$k;
                 $party->heart += $user->heart*$k;
                 $party->chart_pie += $user->chart_pie*$k;
+                $k *= 0.9;
             }
             $party->star = round($party->star);
             $party->heart = round($party->heart);
             $party->chart_pie = round($party->chart_pie);
             
-            if ($party->getMembersCount() === 0) {
+            if (count($party->members) === 0) {
                 $party->delete();
             } else {
                 $party->save();
@@ -96,6 +101,7 @@ class UpdateMinutlyController extends Controller {
                 }
             }
         }
+        unset($bills);
         
         // update holdings
         $holdings = Holding::find()->all();
@@ -117,9 +123,10 @@ class UpdateMinutlyController extends Controller {
             $holding->capital = $capital;
             $holding->save();
         }
+        unset($holdings);
         
         // update holding decisions
-        $decisions = HoldingDecision::find()->all();
+        $decisions = HoldingDecision::find()->where('accepted = 0')->all();
         foreach ($decisions as $decision) {
             $za = 0; $protiv = 0;
             foreach ($decision->votes as $vote) {
@@ -137,6 +144,7 @@ class UpdateMinutlyController extends Controller {
                 $decision->delete();
             }
         }
+        unset($decisions);
         
     }
 }
