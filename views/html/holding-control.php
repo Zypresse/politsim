@@ -42,7 +42,7 @@ $userStock = $user->getShareholderStock($holding);
                     echo Html::a($stock->master->name,'#',['onclick'=>"load_page('holding-info',{'id':{$stock->master->id}})"]);
                 break;
         }?>
-        <?=$stock->getPercents()?>%
+        <?=round($stock->getPercents(),2)?>%
     </li>
     <? } ?>
 </ul>
@@ -56,13 +56,13 @@ foreach ($holding->decisions as $decision) {
     <tr>
         <td><?=date('d-m-Y',$decision->created)?></td>
         <td><? switch ($decision->decision_type) {
-            case 1:
+            case app\models\HoldingDecision::DECISION_CHANGENAME:
                 echo 'Переименование холдинга в «'.$data->new_name.'»';
             break;
-            case 2:
+            case app\models\HoldingDecision::DECISION_PAYDIVIDENTS:
                 echo 'Выплата дивидентов в размере '.$data->sum.' '.MyHtmlHelper::icon('money');
             break;
-            case 3:
+            case app\models\HoldingDecision::DECISION_GIVELICENSE:
                 $license = app\models\HoldingLicenseType::findByPk($data->license_id);
                 echo 'Получение лицензии на «'.$license->name.'»';
             break;
@@ -72,13 +72,13 @@ foreach ($holding->decisions as $decision) {
             $za = 0; $protiv = 0;
             foreach ($decision->votes as $vote) {
                 if (intval($vote->variant) === 1) {
-                    $za += $vote->stock->getPercents();
+                    $za += ($vote->stock) ? $vote->stock->getPercents() : 0;
                 } elseif (intval($vote->variant) === 2) {
-                    $protiv += $vote->stock->getPercents();
+                    $protiv += ($vote->stock) ? $vote->stock->getPercents() : 0;
                 }
             }
             ?>
-            <span style="color:green"><?=$za?>% акций ЗА</span>, <span style="color:red"><?=$protiv?>% акций ПРОТИВ</span>
+            <span style="color:green"><?=round($za,2)?>% акций ЗА</span>, <span style="color:red"><?=round($protiv,2)?>% акций ПРОТИВ</span>
         </td>
         <td>
             <?  
@@ -242,7 +242,7 @@ foreach ($holding->decisions as $decision) {
     <div class="control-group">
       <label class="control-label" for="#holding_new_name">Название</label>
       <div class="controls">
-        <input type="text" id="holding_new_name" value="<?=$holding->name?>">
+          <input type="text" id="holding_new_name" value="<?=  htmlspecialchars($holding->name)?>">
       </div>
     </div>
   </div>
@@ -254,7 +254,9 @@ foreach ($holding->decisions as $decision) {
 
 <script>
 function rename_holding(id) {
-    json_request('new-holding-decision',{'holding_id':id,'type':1,'new_name':$('#holding_new_name').val()});
+    if ($('#holding_new_name').val()) {
+        json_request('new-holding-decision',{'holding_id':id,'type':1,'new_name':$('#holding_new_name').val()});
+    }
 }
 
 function vote_for_decision(id,variant) {
@@ -262,12 +264,16 @@ function vote_for_decision(id,variant) {
 }
 
 function pay_dividents(id) {
-    json_request('new-holding-decision',{'holding_id':id,'type':2,'sum':$('#dividents_sum').val()});
+    if ($('#dividents_sum').val()) {
+        json_request('new-holding-decision',{'holding_id':id,'type':2,'sum':$('#dividents_sum').val()});
+    }
 }
 
 function insert_money(id) {
-    if (confirm("Вы действительно безвозмездно внести деньги на счёт фирмы?")) {
-        json_request('insert-money-to-holding',{'holding_id':id,'sum':$('#insert_sum').val()});
+    if ($('#insert_sum').val()) {
+        if (confirm("Вы действительно безвозмездно внести деньги на счёт фирмы?")) {
+            json_request('insert-money-to-holding',{'holding_id':id,'sum':$('#insert_sum').val()});
+        }
     }
 }
 
@@ -286,9 +292,10 @@ $(function(){
     $('#dividents_sum').change(function(){
         if ($(this).val()<=<?=count($holding->stocks)?>) {
             $(this).val(<?=count($holding->stocks)?>);
-        } else if ($(this).val()><?=$holding->balance?>) {
+        } 
+        if ($(this).val()><?=$holding->balance?>) {
             $(this).val(<?=$holding->balance?>);
-        }
+        } 
     });
 });
 </script>

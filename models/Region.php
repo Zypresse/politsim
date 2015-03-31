@@ -35,6 +35,7 @@ use app\components\MyModel;
  * @property \app\models\State $state Государство
  * @property \app\models\Population[] $populationGroups Группы населения
  * @property \app\models\CoreCountry[] $cores "Щитки"
+ * @property Holding[] $holdings Компании
  */
 class Region extends MyModel
 {
@@ -153,6 +154,10 @@ class Region extends MyModel
     {
         return $this->hasMany('app\models\Population', array('region_id' => 'id'));
     }
+    public function getHoldings()
+    {
+        return $this->hasMany('app\models\Holding', array('region_id' => 'id'));
+    }
 
     /**
      * Является ли столицей государства
@@ -168,5 +173,41 @@ class Region extends MyModel
         return $this->hasMany('app\models\CoreCountry', ['id' => 'core_id'])
                 ->viaTable('cores_regions', ['region_id' => 'id']);
     }
-
+    
+    public function afterSave($insert,$changedAttributes)
+    {
+        // Если изменилось государство
+        if (!$insert && isset($changedAttributes["state_id"])) {
+            /*
+             * У каждого предприятия есть регион и страна (регион при этом может принадлежать другой стране).
+             *  При смене владельца региона проходимся по всем его предприятиям и для каждого:
+             *  1. Если предприятие государственное:
+             *  Оно лишается привязки к региону (или привязывается к столице своего государства) (ликвидировать имхо, жёстко, если оно с утратой региона стало не нужно, его могут ликвидировать владельцы)
+             *  2. Если предприятие частное:
+             *  Оно сохраняет привязку к региону и проходит провернку на соответствие законам нового владельца
+             *  2.1 Если в новом государстве запрещены частные компании то оно национализируется и становится гос. компанией через, допустим, сутки. За это время владельцы могут ликвидировать компанию, чтобы "не отдать его врагу" или переехать.
+             *  2.2 Если в новом государстве есть гос. монополия на какие-либо виды деятельности, зарегистрированные в фирме, то она лишается их
+             *  2.3 Если в новом государстве разрешены частные компании, но запрещены акционеры-иностранцы, а они есть, то через, допустим, сутки, компания ликвидируется. За это время акционеры могут получить гражданство нового государства или переехать.
+             */ 
+            
+            foreach ($this->holdings as $holding) {
+                if ($holding->isGosHolding()) {
+                    $holding->region_id = 0;//$holding->state->region_id;
+                    $holding->save();
+                } else {
+                    if (!$this->state->allow_register_holdings) {
+                        // Становится гос. предприятием
+                    }
+                    foreach ($this->state->licenses as $license) {
+                        if ($license->is_only_goverment && $holding->isHaveLicense($license->type->id)) {
+                            $holding->deleteLicense($license->type->id);
+                        }
+                    }
+                    
+                }
+            }
+        }
+        
+        return parent::afterSave($insert,$changedAttributes);
+    }
 }

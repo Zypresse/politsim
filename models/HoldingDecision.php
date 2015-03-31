@@ -70,6 +70,21 @@ class HoldingDecision extends MyModel
             $vote->delete();
         }
     }
+    
+    /**
+     * смена названия холдинга
+     */
+    const DECISION_CHANGENAME = 1;
+    
+    /**
+     * выплата дивидентов
+     */
+    const DECISION_PAYDIVIDENTS = 2;
+    
+    /**
+     * Получение лицензии
+     */
+    const DECISION_GIVELICENSE = 3;
 
     /**
      * Принять решение
@@ -78,11 +93,11 @@ class HoldingDecision extends MyModel
     {
         $data = json_decode($this->data);
         switch ($this->decision_type) {
-            case 1: // смена названия холдинга
+            case self::DECISION_CHANGENAME: // смена названия холдинга
                 $this->holding->name = $data->new_name;
                 $this->holding->save();
                 break;
-            case 2: // выплата дивидентов
+            case self::DECISION_PAYDIVIDENTS: // выплата дивидентов
                 if ($this->holding->balance >= $data->sum) {
                     foreach ($this->holding->stocks as $stock) {
                         $sum = $data->sum * $stock->getPercents() / 100;
@@ -103,7 +118,7 @@ class HoldingDecision extends MyModel
                     $this->holding->save();
                 }
                 break;
-            case 3: // Получение лицензии
+            case self::DECISION_GIVELICENSE: // Получение лицензии
                 $stateLicense = StateLicense::find()->where(['state_id' => $this->holding->state_id, 'license_id' => $data->license_id])->one();
                 $allow        = true;
                 if (!(is_null($stateLicense))) {
