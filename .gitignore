@@ -62,6 +62,7 @@ vendor
 
 requirements.php
 yii
+composer.lock
 
 nbproject
 sftp-config.json
