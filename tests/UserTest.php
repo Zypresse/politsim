@@ -39,6 +39,7 @@ class UserTest extends PHPUnit_Framework_TestCase
         $this->assertGreaterThan(1, $user->id);
         
         $user2 = \app\models\User::findByPk($user->id);
+        $this->assertNotNull($user2);
         $this->assertEquals($user2->id, $user->id);
         $this->assertEquals($user2->money, $user->money);
         
@@ -47,5 +48,51 @@ class UserTest extends PHPUnit_Framework_TestCase
         $user3 = \app\models\User::findByPk($user->id);
         $this->assertNull($user3);
         
+    }
+    
+    public function testPartyRelations()
+    {
+        $user = $this->createUser();
+        
+        $user->save();
+        
+        $party = new \app\models\Party();
+        $party->name = "Asd";
+        $party->short_name = "ASD";
+        $party->ideology = 1;
+        $party->state_id = 137;
+        $party->leader = $user->id;
+        
+        $this->assertTrue($party->save());
+        
+        $user->party_id = $party->id;
+        
+        $this->assertTrue($user->save());
+        $this->assertNotNull($user->party);
+        $this->assertEquals($party->id, $user->party->id);
+        
+        $party->update();
+        
+        $this->assertEquals(1, count($party->members));
+        $this->assertTrue($user->equals($party->leaderInfo));
+        $this->assertTrue($user->equals($party->members[0]));
+        
+        $user->leaveParty();
+        $user = \app\models\User::findByPk($user->id);
+        $this->assertEquals(0, $user->party_id);
+        $this->assertNull($user->party);
+        
+        $party = \app\models\Party::findByPk($party->id);
+        $this->assertNull($party);
+    }
+    
+    private function createUser()
+    {
+        $user = new app\models\User;
+        $user->name = "Tester Tester";
+        $user->money = 123;
+        $user->uid_vk = 1;
+        
+        return $user;
     }
 }
