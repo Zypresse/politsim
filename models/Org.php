@@ -273,5 +273,12 @@ class Org extends MyModel
         $org->save();
         return $org;
     }
+    
+    public function afterDelete()
+    {
+        foreach ($this->posts as $post) {
+            $post->delete();
+        }
+    }
 
 }

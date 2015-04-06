@@ -347,7 +347,7 @@ class ModalController extends MyController
                 $tweets = Twitter::find()->where("uid = {$uid} AND date < {$time}")->offset($offset)->limit(5)->orderBy('date DESC')->all();
             }
             else {
-                $tweets = Twitter::find()->where("retweets > 0 AND original = 0 AND date < " . $time)->offset($offset)->limit(5)->orderBy('date DESC')->all();
+                $tweets = Twitter::find()->where("retweets > 0 AND date < " . $time)->offset($offset)->limit(5)->orderBy('date DESC')->all();
             }
 
             return $this->render("twitter_feed", ['tweets' => $tweets, 'viewer_id' => $this->viewer_id]);

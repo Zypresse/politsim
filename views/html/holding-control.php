@@ -14,7 +14,7 @@ $userStock = $user->getShareholderStock($holding);
 <h1>Управление «<?=$holding->name?>»</h1>
 <p>Капитализация: <?=number_format($holding->capital,0,'',' ')?> <?=MyHtmlHelper::icon('money')?></p>
 <p>Баланс: <?=number_format($holding->balance,0,'',' ')?> <?=MyHtmlHelper::icon('money')?></p>
-<p>Компания зарегистрирована в государстве: <?=Html::a($holding->state->name,'#',['onclick'=>"load_page('state-info',{'id':{$holding->state_id}})"])?></p>
+<? if ($holding->state) { ?><p>Компания зарегистрирована в государстве: <?=Html::a($holding->state->name,'#',['onclick'=>"load_page('state-info',{'id':{$holding->state_id}})"])?></p><? } ?>
 <h3>Лицензии:</h3>
 <? if (count($holding->licenses)) { ?>
 <ul>
@@ -127,6 +127,7 @@ foreach ($holding->decisions as $decision) {
     <li><a href="#" onclick="$('#insert_money_modal').modal();" >Внести деньги на счёт</a></li>
   </ul>
 </div>
+    <? if ($holding->state) { ?>
 <div class="btn-group">
   <button class="btn btn-small dropdown-toggle btn-success" data-toggle="dropdown">
     Управление лицензиями <span class="caret"></span>
@@ -196,6 +197,9 @@ foreach ($holding->decisions as $decision) {
     <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
   </div>
 </div>
+    <? } else { ?>
+<p style="color:red;">Компания зарегистрирована в несущесвующем ныне государстве!</p>
+    <? } ?>
 <div style="display:none;" class="modal" id="insert_money_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel123" aria-hidden="true">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>

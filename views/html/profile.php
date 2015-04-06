@@ -24,7 +24,7 @@ use app\components\MyHtmlHelper;
 	<? if ($user->sex === 1) { ?>Гражданка<? } else { ?>Гражданин<? } ?> мира
 <? } ?></p>
 <? if ($user->region) { ?><p>Живет в регионе «<?=htmlspecialchars($user->region->name)?>»</p><? } ?>
-<? if ($user->post) { ?><p><i class="icon-briefcase"></i> Занимает пост &laquo;<?=htmlspecialchars($user->post->name)?>&raquo; в организации &laquo;<a href="#" onclick="load_page('org-info',{'id':<?=$user->post->org_id?>});"><?=htmlspecialchars($user->post->org->name)?></a>&raquo;</p><? } ?>
+<? if ($user->post) { ?><p><i class="icon-briefcase"></i> Занимает пост &laquo;<?=htmlspecialchars($user->post->name)?>&raquo;<? if ($user->post->org) { ?> в организации &laquo;<a href="#" onclick="load_page('org-info',{'id':<?=$user->post->org_id?>});"><?=htmlspecialchars($user->post->org->name)?></a>&raquo;</p><? } ?><? } ?>
 <? if (count($user->medales)) { ?><p>
 <h4>Значки:</h4>
 <? foreach ($user->medales as $medale) { ?>

@@ -1,5 +1,7 @@
 <?php
   use app\components\MyHtmlHelper;
+  use yii\helpers\Html;
+  
   $KN = [
     'nation_individual_vote'=>'голосование населения за кандидатов',
     'nation_party_vote'=>'голосование населения за партии',
@@ -25,6 +27,9 @@
 <strong>Форма гос. устройства:</strong> <?=htmlspecialchars($state->structure->name)?><br>
 <strong>Столица:</strong> <a href="#" onclick="show_region('<?=$state->capital?>')"><?=htmlspecialchars($state->capitalRegion->city)?></a><br>
 <strong>Население:</strong> <?=MyHtmlHelper::formateNumberword($state->population,'h')?>
+<? if ($state->core) { ?>
+<br><strong>Наследник государства:</strong> <?=Html::img('/img/cores/'.$state->core->id.'.png');?> <?=$state->core->name?>
+<? } ?>
 </p></div></div>
 <div class="span12">
 <h3>Правительство</h3>
@@ -52,7 +57,7 @@
 <h3>Конституция</h3>
 <ul>
 <? foreach ($state->govermentFields as $field) { ?>
-<? if ($field->value) { ?>
+
 <li><strong><?=$field->type->name?></strong> — 
 <? if ($field->type->type === 'checkbox') { ?>
   <?=($field->value)?'ДА':'НЕТ'?>
@@ -61,7 +66,7 @@
 <? } else { ?>
   <?=$field->value?>
 <? } ?></li>
-<? } ?>
+
 <? } ?>
 </ul>
 

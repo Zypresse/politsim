@@ -25,12 +25,14 @@ use app\models\GovermentFieldValue;
  * @property integer $leader_can_drop_legislature Может ли лидер распустить парламент
  * @property integer $allow_register_holdings Разрешено ли регистировать АО
  * @property integer $register_parties_cost Стоимость регистрации партии
+ * @property integer $core_id ID коренного государства наследником которого является
  * 
  * @property \app\models\Org $executiveOrg Исполнительная власть
  * @property \app\models\Org $legislatureOrg Законодательная власть
  * @property \app\models\Structure $structure Структура
  * @property \app\models\GovermentForm $govermentForm Форма правления
  * @property \app\models\Region $capitalRegion Столичный регион
+ * @property \app\models\CoreCountry $core Государство-предок
  * @property \app\models\Region[] $regions Список регионов
  * @property \app\models\Region[] $cities Список городов
  * @property \app\models\StateLicense[] $licenses Список экономических правил
@@ -102,6 +104,11 @@ class State extends MyModel
         return $this->hasOne('app\models\GovermentForm', array('id' => 'goverment_form'));
     }
 
+    public function getCore()
+    {
+        return $this->hasOne('app\models\CoreCountry', array('id' => 'core_id'));
+    }
+
     public function getCapitalRegion()
     {
         return $this->hasOne('app\models\Region', array('code' => 'capital'));
@@ -149,12 +156,20 @@ class State extends MyModel
 
         foreach ($this->regions as $region) {
             $region->state_id = 0;
+            $region->save();
         }
         foreach ($this->govermentFields as $gf) {
             $gf->delete();
         }
         foreach ($this->parties as $party) {
             $party->delete();
+        }
+        
+        foreach ($this->users as $user) {
+            $user->state_id = 0;
+            $user->party_id = 0;
+            $user->post_id = 0;
+            $user->save();
         }
     }
 

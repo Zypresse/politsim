@@ -195,7 +195,7 @@ class HtmlController extends MyController
         if ($id > 0) {
             $state = State::findByPk($id);
             if (is_null($state))
-                return $this->_r("State not found");
+                return $this->render("notfound/state", ['state_id' => $id, 'user' => $user]);
 
             $ideologies = Ideology::find()->all();
 
@@ -223,7 +223,7 @@ class HtmlController extends MyController
         if ($id > 0) {
             $party = Party::findByPk($id);
             if (is_null($party))
-                return $this->_r("Party not found");
+                return $this->render("notfound/party", ['party_id' => $id, 'user' => $user]);
 
             return $this->render("party_info", ['party' => $party, 'user' => $user]);
         }

@@ -132,6 +132,9 @@ class BillType extends MyModel
      */
     public function accept($bill)
     {
+        if (is_null($bill->state)) {
+            return $bill->delete();
+        }
         $data = json_decode($bill->data);
         switch ($this->id) {
             case static::TYPE_RENAME_STATE: // Переименование государства
