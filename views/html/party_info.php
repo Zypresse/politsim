@@ -1,5 +1,11 @@
 <?php
-  use app\components\MyHtmlHelper;
+
+  /**
+   * @global \app\models\User $user;
+   */
+
+    use app\components\MyHtmlHelper;
+  
 ?>
 <div class="span2"><img src="<?=$party->image?>" alt="<?=$party->name?>" class="img-polaroid" style="max-width:100%"></div>
 <div class="span10">
@@ -55,7 +61,11 @@
             $emptyPosts[] = $post;
         }
     }
+    
+    $isNeedRequestForSpeaker = ($user->state->legislatureOrg->leader_dest === \app\models\Org::DEST_ORG_VOTE && is_null($user->state->legislatureOrg->leader->user) && $user->party->isParlamentarian() );
+    
     if (count($emptyPosts)) echo "<p style='color:red'>Есть свободные посты в правительстве: ". MyHtmlHelper::formateNumberword (count($emptyPosts), "зарезервированных должностей", "зарезервированная должность", "зарезервированные должности")  . "</p>";
+    if ($isNeedRequestForSpeaker) echo "<p style='color:red'>Необходимо подать заявку на пост {$user->state->legislatureOrg->name}</p>";
     ?>
 <div class="btn-group">
   <button class="btn btn-small dropdown-toggle btn-info" data-toggle="dropdown">
@@ -65,21 +75,22 @@
     <li><a href="#" onclick="rename_party(<?=$party->id?>)" >Переименовать партию</a></li>
     <li><a href="#" onclick="change_party_logo(<?=$party->id?>)" >Сменить эмблему партии</a></li>
     <? if (count($emptyPosts)) { ?><li><a href="#" onclick="$('#party-reserve-post-set').modal()">Назначить на зарезервированный пост</a></li><? } ?>
+    <? if ($isNeedRequestForSpeaker) { ?><li><a href="#" onclick="$('#party-request-to-speaker-elections').modal()">Подать заявку от партии на пост <?=$user->state->legislatureOrg->leader->name?></a></li><? } ?>
   </ul>
 </div>
     <? if (count($emptyPosts)) { ?>
 <div style="display:none" class="modal" id="party-reserve-post-set" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h3 id="myModalLabel">Создание партии</h3>
+    <h3 id="myModalLabel">Назначение на пост</h3>
   </div>
   
   <div id="party-reserve-post-set_body" class="modal-body">
      <form class="well form-horizontal">
       <div class="control-group">
-	    <label class="control-label" for="#post_id">Пост</label>
+	    <label class="control-label" for="#prps_post_id">Пост</label>
 	    <div class="controls">
-                <select id="post_id">
+                <select id="prps_post_id">
                 <? foreach ($emptyPosts as $post) { ?>
                     <option value="<?=$post->id?>"><?=$post->name?></option>
                 <? } ?>
@@ -87,11 +98,11 @@
 	    </div>
 	  </div>
       <div class="control-group">
-	    <label class="control-label" for="#user_id">Человек</label>
+	    <label class="control-label" for="#prps_user_id">Человек</label>
 	    <div class="controls">
-                <select id="user_id">
-                <? foreach ($party->members as $user) { if (!$user->post_id) {?>
-                    <option value="<?=$user->id?>"><?=$user->name?></option>
+                <select id="prps_user_id">
+                <? foreach ($party->members as $member) { if (!$member->post_id) {?>
+                    <option value="<?=$member->id?>"><?=$member->name?></option>
                 <? }} ?>
                 </select>
 	    </div>
@@ -100,6 +111,33 @@
   </div>
   <div class="modal-footer">
     <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true" onclick="party_reserve_post_set()">Назначить</button>
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+  </div>
+</div>
+<? } ?>
+    <? if ($isNeedRequestForSpeaker) { ?>
+<div style="display:none" class="modal" id="party-request-to-speaker-elections" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel">Заявка на выборы на пост <?=$user->state->legislatureOrg->leader->name?></h3>
+  </div>
+  
+  <div id="party-reserve-post-set_body" class="modal-body">
+     <form class="well form-horizontal">
+      <div class="control-group">
+	    <label class="control-label" for="#user_id">Человек</label>
+	    <div class="controls">
+                <select id="pesr_user_id">
+                <? foreach ($party->members as $member) { if (is_null($member->post) || $member->post->org_id === $user->state->legislature) {?>
+                    <option value="<?=$member->id?>"><?=$member->name?></option>
+                <? }} ?>
+                </select>
+	    </div>
+	  </div>   
+     </form>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true" onclick="party_elect_speaker_request()">Подать заявку</button>
     <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
   </div>
 </div>
@@ -120,7 +158,10 @@
     }
   }
   function party_reserve_post_set() {
-      json_request('party-reserve-set-post',{'post_id':$('#post_id').val(),'uid':$('#user_id').val()});
+      json_request('party-reserve-set-post',{'post_id':$('#prsp_post_id').val(),'uid':$('#prsp_user_id').val()});
+  }
+  function party_elect_speaker_request() {
+      json_request('party-elect-speaker-request',{'uid':$('#pesr_user_id').val()});
   }
 
 </script>

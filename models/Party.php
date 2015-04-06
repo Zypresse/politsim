@@ -110,6 +110,23 @@ class Party extends MyModel
     {
         return intval(User::find()->where(['party_id' => $this->id])->count());
     }
+    
+    
+    private $_isParlamentarian = null;
+    public function isParlamentarian()
+    {
+        if (is_null($this->_isParlamentarian)) {
+            $this->_isParlamentarian = false;
+            foreach ($this->state->legislatureOrg->posts as $post) {
+                if ($post->party_reserve === $this->id) {
+                    $this->_isParlamentarian = true;
+                    break;
+                }
+            }
+        }
+        
+        return $this->_isParlamentarian;
+    }
 
     /**
      * Подчистка после удаления
