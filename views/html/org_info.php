@@ -2,6 +2,7 @@
 use app\components\MyHtmlHelper;
 use app\components\widgets\BillListWidget;
 use app\models\Bill;
+use yii\helpers\Html;
 ?>
 <h1><?=htmlspecialchars($org->name)?></h1>
 <p><? if ($org->isLegislature()) { ?>Законодательная власть<? } elseif ($org->isExecutive()) { ?>Исполнительная власть<? } else { ?>Организация<? } ?> государства &laquo;<a href="#" onclick="load_page('state-info',{'id':<?=$org->state_id?>});"><?=htmlspecialchars($org->state->name)?></a>&raquo;</p>
@@ -60,7 +61,24 @@ use app\models\Bill;
 		<span class="heart"><?=$org->leader->user->heart?> <?=MyHtmlHelper::icon('heart')?></span>
 		<span class="chart_pie"><?=$org->leader->user->chart_pie?> <?=MyHtmlHelper::icon('chart_pie')?></span>
 		 </p>
-<? } else { ?><p>Лидер организации не назначен</p><? } ?>
+<? } else { ?><p>Лидер организации не назначен</p>
+<? if ($org->leader_dest === $org::DEST_ORG_VOTE) { ?>
+<? $requests = \app\models\ElectOrgLeaderRequest::find()->where(['org_id'=>$org->id])->all();
+?><h5>Заявки на пост:</h5><? 
+if (count($requests)) {
+    ?><dl><?
+ foreach ($requests as $request) {
+     ?>
+        <dt><?=$request->candidat->name?> (<?=Html::a($request->party->name,'#',['onclick'=>'load_page("party_info",{"id":'.$request->party_id.'})'])?>)</dt>     
+        <dd>Поддержало <strong>0 голосов</strong></dd>
+    <?
+}
+?></dl><?
+ } else {
+    echo "<p>Ни одна партия ещё не подала заявок</p>";
+}
+?>
+<? } ?><? } ?>
 
 <? if ($org->can_vote_for_bills || $org->can_create_bills || $org->leader_can_vote_for_bills || $org->leader_can_create_bills) { ?>
 <h3>Законопроекты на голосовании</h3>

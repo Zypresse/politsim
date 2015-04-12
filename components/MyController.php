@@ -74,7 +74,7 @@ class MyController extends Controller
     
     /**
      * Текущий юзер
-     * @return \app\model\User
+     * @return \app\models\User
      */
     protected function getUser()
     {

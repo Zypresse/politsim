@@ -63,9 +63,13 @@
     }
     
     $isNeedRequestForSpeaker = ($user->state->legislatureOrg->leader_dest === \app\models\Org::DEST_ORG_VOTE && is_null($user->state->legislatureOrg->leader->user) && $user->party->isParlamentarian() );
+    if ($isNeedRequestForSpeaker) {
+        $req = \app\models\ElectOrgLeaderRequest::find()->where(['party_id'=>$user->party_id, 'org_id'=>$user->state->legislature])->one();
+        if ($req) $isNeedRequestForSpeaker = FALSE;
+    }
     
     if (count($emptyPosts)) echo "<p style='color:red'>Есть свободные посты в правительстве: ". MyHtmlHelper::formateNumberword (count($emptyPosts), "зарезервированных должностей", "зарезервированная должность", "зарезервированные должности")  . "</p>";
-    if ($isNeedRequestForSpeaker) echo "<p style='color:red'>Необходимо подать заявку на пост {$user->state->legislatureOrg->name}</p>";
+    if ($isNeedRequestForSpeaker) echo "<p style='color:red'>Необходимо подать заявку на пост {$user->state->legislatureOrg->leader->name}</p>";
     ?>
 <div class="btn-group">
   <button class="btn btn-small dropdown-toggle btn-info" data-toggle="dropdown">
@@ -161,7 +165,7 @@
       json_request('party-reserve-set-post',{'post_id':$('#prsp_post_id').val(),'uid':$('#prsp_user_id').val()});
   }
   function party_elect_speaker_request() {
-      json_request('party-elect-speaker-request',{'uid':$('#pesr_user_id').val()});
+      json_request('party-elect-speaker-request',{'org_id':<?=$user->state->legislature?>,'uid':$('#pesr_user_id').val()});
   }
 
 </script>

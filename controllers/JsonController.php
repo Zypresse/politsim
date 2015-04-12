@@ -1325,4 +1325,49 @@ class JsonController extends MyController
         }
     }
 
+    public function actionPartyElectSpeakerRequest($uid, $org_id)
+    {
+        $uid = intval($uid);
+        $org_id = intval($org_id);
+        
+        if ($uid > 0 && $org_id > 0) {
+            
+            $me = $this->getUser();
+            if (!$me->isPartyLeader()) {
+                return $this->_r("Not allowed. Error #1");
+            }
+            
+            $user = User::findByPk($uid);
+            if (is_null($user)) {
+                return $this->_r("User not found");
+            }
+            
+            if ($user->party_id !== $me->party_id) {
+                return $this->_r("Not allowed. Error #2");
+            }
+            
+            $org = Org::findByPk($org_id);
+            if (is_null($org)) {
+                return $this->_r("Org not found");
+            }
+            
+            if ($org->leader_dest !== Org::DEST_ORG_VOTE) {
+                return $this->_r("Not allowed. Error #3");
+            }
+            
+            $request = new \app\models\ElectOrgLeaderRequest();
+            $request->org_id = $org_id;
+            $request->party_id = $me->party_id;
+            $request->uid = $uid;
+            if ($request->save()) {
+                return $this->_rOk();
+            } else {
+                return $this->_r($request->getErrors());
+            }
+            
+        } else {
+            return $this->_r("Invalid fields");
+        }
+    }
+    
 }
