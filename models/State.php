@@ -26,6 +26,8 @@ use app\models\GovermentFieldValue;
  * @property integer $allow_register_holdings Разрешено ли регистировать АО
  * @property integer $register_parties_cost Стоимость регистрации партии
  * @property integer $core_id ID коренного государства наследником которого является
+ * @property integer $mpfnig Максимальный процент акций, который могут иметь иностранцы в гос. компаниях
+ * @property integer $mpfnih Максимальный процент акций, который могут иметь иностранцы в частных компаниях
  * 
  * @property \app\models\Org $executiveOrg Исполнительная власть
  * @property \app\models\Org $legislatureOrg Законодательная власть
@@ -58,7 +60,7 @@ class State extends MyModel
     {
         return [
             [['name', 'short_name', 'capital'], 'required'],
-            [['legislature', 'executive', 'state_structure', 'goverment_form', 'group_id', 'allow_register_parties', 'population', 'sum_star', 'leader_can_drop_legislature', 'allow_register_holdings', 'register_parties_cost'], 'integer'],
+            [['legislature', 'executive', 'state_structure', 'goverment_form', 'group_id', 'allow_register_parties', 'population', 'sum_star', 'leader_can_drop_legislature', 'allow_register_holdings', 'register_parties_cost', 'core_id', 'mpfnig', 'mpfnih'], 'integer'],
             [['name'], 'string', 'max' => 100],
             [['short_name'], 'string', 'max' => 10],
             [['capital', 'color'], 'string', 'max' => 7]
