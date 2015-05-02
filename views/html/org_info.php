@@ -63,14 +63,13 @@ use yii\helpers\Html;
 		 </p>
 <? } else { ?><p>Лидер организации не назначен</p>
 <? if ($org->leader_dest === $org::DEST_ORG_VOTE) { ?>
-<? $requests = \app\models\ElectOrgLeaderRequest::find()->where(['org_id'=>$org->id])->all();
-?><h5>Заявки на пост:</h5><? 
-if (count($requests)) {
+<h5>Заявки на пост:</h5><? 
+if (count($org->speakerRequests)) {
     ?><dl><?
- foreach ($requests as $request) {
+ foreach ($org->speakerRequests as $request) {
      ?>
         <dt><?=$request->candidat->name?> (<?=Html::a($request->party->name,'#',['onclick'=>'load_page("party_info",{"id":'.$request->party_id.'})'])?>)</dt>     
-        <dd>Поддержало <strong>0 голосов</strong></dd>
+        <dd>Поддержало <strong><?=$request->getVotesCount()?> голосов</strong></dd>
     <?
 }
 ?></dl><?

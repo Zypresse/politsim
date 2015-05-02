@@ -78,6 +78,33 @@ $gft = null;
     	$('#posts_list').slideUp();
     })
  </script>
+<? } else {
+    // Вы НЕ лидер организации
+    ?>
+ 
+<? if ($user->post->org->leader_dest === Org::DEST_ORG_VOTE) { ?>
+<h4>Заявки на пост <?=$user->post->org->leader->name?>:</h4><? 
+if (count($user->post->org->speakerRequests)) {
+    ?><dl><?
+ foreach ($user->post->org->speakerRequests as $request) {
+     ?>
+        <dt><?=$request->candidat->name?> (<?=Html::a($request->party->name,'#',['onclick'=>'load_page("party_info",{"id":'.$request->party_id.'})'])?>)</dt>     
+        <dd>Поддержало <strong><?=MyHtmlHelper::formateNumberword($request->getVotesCount(),'голосов','голос','голоса')?></strong> 
+        <? if ($user->post->org->isAllreadySpeakerVoted($user->post_id)) { ?>
+            
+        <? } else { ?>
+            <button class="btn btn-small" onclick="json_request('vote-about-org-leader',{'request_id':<?=$request->id?>})">Проголосовать</button>
+        <? } ?>
+        </dd>
+    <?
+}
+?></dl><?
+ } else {
+    echo "<p>Ни одна партия ещё не подала заявок</p>";
+}
+?>
+<? } ?>
+ 
 <? } ?>
 <? if ($user->isStateLeader() && $user->state->executiveOrg->leader_can_make_dicktator_bills) { ?>
 <p>Вы можете принимать законы единолично</p>

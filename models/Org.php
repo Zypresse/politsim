@@ -34,6 +34,7 @@ use app\models\Post;
  * @property \app\models\Post[] $posts Посты
  * @property \app\models\ElectRequest[] $requests Заявки на выборы членов
  * @property \app\models\ElectRequest[] $lrequests Заявки на выборы лидера
+ * @property \app\models\ElectOrgLeaderRequest[] $speakerRequests Заявки на выборы лидера по голосованию организации
  */
 class Org extends MyModel
 {
@@ -170,6 +171,26 @@ class Org extends MyModel
     public function getLrequests()
     {
         return $this->hasMany('app\models\ElectRequest', array('org_id' => 'id'))->where(['leader' => 1]);
+    }
+
+    public function getSpeakerRequests()
+    {
+        return $this->hasMany('app\models\ElectOrgLeaderRequest', array('org_id' => 'id'));
+    }
+
+    public function isAllreadySpeakerVoted($post_id)
+    {
+        $ret = false;
+        foreach ($this->speakerRequests as $request) {
+            foreach ($request->votes as $vote) {
+                if ($vote->post_id === $post_id) {
+                    $ret = true;
+                    break;
+                }
+            }
+        }
+        
+        return $ret;
     }
 
     /*

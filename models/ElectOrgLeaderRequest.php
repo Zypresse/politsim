@@ -15,6 +15,7 @@ use app\components\MyModel;
  * @property Org $org Организация, лидер которой избирается
  * @property User $candidat
  * @property Party $party
+ * @property ElectOrgLeaderVote[] $votes
  */
 class ElectOrgLeaderRequest extends MyModel
 {
@@ -64,5 +65,22 @@ class ElectOrgLeaderRequest extends MyModel
     public function getParty()
     {
         return $this->hasOne('app\models\Party', array('id' => 'party_id'));
+    }
+    
+    public function getVotes()
+    {
+        return $this->hasMany('app\models\ElectOrgLeaderVote', array('request_id' => 'id'));
+    }
+
+    public function getVotesCount()
+    {
+        return intval($this->hasMany('app\models\ElectOrgLeaderVote', array('request_id' => 'id'))->count());
+    }
+
+    public function afterDelete()
+    {
+        foreach ($this->votes as $vote) {
+            $vote->delete();
+        }
     }
 }

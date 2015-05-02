@@ -1370,4 +1370,36 @@ class JsonController extends MyController
         }
     }
     
+    public function actionVoteAboutOrgLeader($request_id)
+    {
+        $request_id = intval($request_id);
+        
+        if ($request_id) {
+            $req = \app\models\ElectOrgLeaderRequest::findByPk($request_id);
+            if (is_null($req)) {
+                return $this->_r("Request not found");
+            }
+            
+            $user = $this->getUser();
+            
+            if (is_null($user->post) || is_null($user->post->org) || $user->post->org->leader_dest !== Org::DEST_ORG_VOTE || $user->isOrgLeader()) {
+                return $this->_r("Not allowed");
+            }
+            
+            if ($user->post->org->isAllreadySpeakerVoted($user->post_id)) {
+                return $this->_r("Allready voted");
+            }
+            
+            $vote = new \app\models\ElectOrgLeaderVote();
+            $vote->post_id = $user->post_id;
+            $vote->request_id = $request_id;
+            $vote->save();
+            
+            return $this->_rOk();
+            
+        } else {
+            return $this->_r("Invalid request ID");
+        }
+    }
+    
 }

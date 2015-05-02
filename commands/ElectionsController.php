@@ -15,6 +15,31 @@ use app\models\Notification;
 class ElectionsController extends Controller {
 
     public function actionIndex() {
+
+        $orgs = Org::find()->where('next_elect - elect_period * 24*60*60 <= ' . (time()-24*60*60) . ' AND leader_dest = \'' . Org::DEST_ORG_VOTE .'\'')->all();
+
+        foreach ($orgs as $org) {
+            if (count($org->speakerRequests)) {
+                $max = $maxI = 0;
+                foreach ($org->speakerRequests as $i => $request) {
+                    if ($request->votesCount > $max) {
+                        $max = $request->votesCount;
+                        $maxI = $i;
+                    }
+                }
+
+                $request = $org->speakerRequests[$maxI];
+                $request->candidat->post_id = $org->leader_post;
+                $request->candidat->save();
+
+                Notification::send($request->candidat->id, "Вы победили на выборах и заняли должность «".$org->leader->name."»");                
+
+                foreach ($org->speakerRequests as $request) {
+                    $request->delete();
+                }
+            }
+        }
+
         $used_uids = [];
         $orgs = Org::find()->where('next_elect <= ' . time())->all();
 
