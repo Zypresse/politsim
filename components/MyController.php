@@ -64,6 +64,27 @@ class MyController extends Controller
             }
         } 
         if (isset($action->actionMethod)) $action->actionMethod = 'actionInvalidAuthkey';
+        
+        if (isset($_SESSION['add_medales']) && is_array($_SESSION['add_medales'])) {
+            $user = $this->getUser();
+            foreach ($_SESSION['add_medales'] as $medaleType) {
+                $isHaveMedale = false;
+                foreach ($user->medales as $medale) {
+                    if ($medale->type == $medaleType) {
+                        $isHaveMedale = true;
+                        break;
+                    }
+                }
+
+                if (!$isHaveMedale) {
+                    $medale = new app\models\Medale();
+                    $medale->type = $medaleType;
+                    $medale->uid = $user->id;
+                    $medale->save();
+                }
+            }
+        }
+
         return true;
     }
 
@@ -71,6 +92,8 @@ class MyController extends Controller
     {
         return $this->_r("Invalid auth key");
     }
+
+    private $_user = null;
     
     /**
      * Текущий юзер
@@ -78,6 +101,9 @@ class MyController extends Controller
      */
     protected function getUser()
     {
-        return User::findByPk($this->viewer_id);
+        if (is_null($this->_user)) {
+            $this->_user = User::findByPk($this->viewer_id);
+        }
+        return $this->_user;
     }
 }
