@@ -77,6 +77,7 @@ if (count($org->speakerRequests)) {
     echo "<p>Ни одна партия ещё не подала заявок</p>";
 }
 ?>
+<p>Выборы спикера продлятся до <span class="formatDate" data-unixtime="<?=$org->next_elect-$org->elect_period*24*60*60 + 24*60*60?>"><?=date('d-M-Y H:i',$org->next_elect-$org->elect_period*24*60*60 + 24*60*60)?></span></p>
 <? } ?><? } ?>
 
 <? if ($org->can_vote_for_bills || $org->can_create_bills || $org->leader_can_vote_for_bills || $org->leader_can_create_bills) { ?>
