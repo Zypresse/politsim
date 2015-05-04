@@ -234,6 +234,15 @@ if (count($user->post->org->speakerRequests)) {
 </script>
 <? } ?>
 
+<?
+    if ($user->isStateLeader() && $user->state->leader_can_drop_legislature) {        
+?>
+<div class="btn-group">
+  <button class="btn btn-small btn-warning" onclick="if(confirm('Вы действительно хотите распустить организацию «<?=$user->state->legislatureOrg->name?>»?')) { json_request('drop-legislature'); }" >
+    Распустить парламент
+  </button>
+</div>
+    <? } ?>
 <? if ($user->post->canCreateBills()) { 
     $isDicktator = !!($user->isOrgLeader() && $user->post->org->leader_can_make_dicktator_bills);
     ?>

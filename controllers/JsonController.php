@@ -1424,4 +1424,27 @@ class JsonController extends MyController
         }
     }
     
+    public function actionDropLegislature()
+    {
+        if ($this->getUser()->isStateLeader() && $this->getUser()->state->leader_can_drop_legislature) {
+            foreach ($this->getUser()->state->legislatureOrg->posts as $post) {
+                if ($post->user) {
+                    $post->unlink('user', $post->user);
+                }
+                if ($post->party_reserve) {
+                    $post->party_reserve = 0;
+                    $post->save();
+                }
+            }
+            
+            if ($this->getUser()->state->legislatureOrg->next_elect > time()+24*60*60) {
+                $this->getUser()->state->legislatureOrg->next_elect = time()+24*60*60;
+                $this->getUser()->state->legislatureOrg->save();
+            }
+            return $this->_rOk();
+        } else {                
+            return $this->_r("Not allowed");
+        }
+    }
+    
 }
