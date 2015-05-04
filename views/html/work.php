@@ -142,7 +142,7 @@ if (count($user->post->org->speakerRequests)) {
 <h3>Последние принятые законопроекты</h3>
 
 <p>Список последних законопроектов <input type="button" class="btn" id="bills_show" value="Показать"></p>
-<?= BillListWidget::widget(['id'=>'bills_list', 'style'=>'display:none', 'showVoteButtons'=>false, 'bills'=>Bill::find()->where(['and', 'state_id = '.$user->state_id, "accepted > 0"])->limit(10)->orderBy('vote_ended DESC')->all()]) ?>
+<?= BillListWidget::widget(['id'=>'bills_list', 'style'=>'display:none', 'showVoteButtons'=>false, 'bills'=>Bill::find()->where(['and', 'state_id = '.$user->state_id, "accepted > 0"])->limit(10)->orderBy('id DESC')->all()]) ?>
 <script type="text/javascript">
  $('#bills_show').toggle(function() {
     	$(this).val('Скрыть');

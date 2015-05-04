@@ -1437,8 +1437,8 @@ class JsonController extends MyController
                 }
             }
             
-            if ($this->getUser()->state->legislatureOrg->next_elect > time()+24*60*60) {
-                $this->getUser()->state->legislatureOrg->next_elect = time()+24*60*60;
+            if ($this->getUser()->state->legislatureOrg->next_elect > time()+2*24*60*60) {
+                $this->getUser()->state->legislatureOrg->next_elect = time()+2*24*60*60;
                 $this->getUser()->state->legislatureOrg->save();
             }
             return $this->_rOk();
