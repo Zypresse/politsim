@@ -118,6 +118,9 @@ if (count($user->post->org->speakerRequests)) {
 <? if ($user->post->org->can_create_bills) { ?>
 <p>Вы можете создавать новые законопроекты</p>
 <? } ?>
+<? if ($user->post->org->can_drop_stateleader) { ?>
+<p>Вы можете выдвинуть вотум недоверия лидеру государства</p>
+<? } ?>
 <? if ($user->post->org->leader_can_vote_for_bills && $user->isOrgLeader()) { ?>
 <p>Вы можете голосовать за законопроекты</p>
 <? } ?>
@@ -127,7 +130,7 @@ if (count($user->post->org->speakerRequests)) {
 <? if ($user->post->org->leader_can_veto_bills && $user->isOrgLeader()) { ?>
 <p>Вы можете накладывать вето на законопроекты</p>
 <? } ?>
-<? if ($user->post->canVoteForBills()) { ?>
+<? if ($user->post->canVoteForBills() || $user->post->canVetoBills()) { ?>
 <h3>Законопроекты на голосовании</h3>
 <?= BillListWidget::widget(['id'=>'bills_on_vote_list', 'showVoteButtons'=>true,'user'=>$user, 'bills'=>Bill::find()->where(['accepted'=>0,'state_id'=>$user->state_id])->all()]) ?>
 <? } ?>

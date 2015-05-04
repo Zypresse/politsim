@@ -24,6 +24,7 @@ use app\models\Post;
  * @property integer $group_id
  * @property integer $can_vote_for_bills
  * @property integer $can_create_bills
+ * @property integer $can_drop_stateleader
  * @property integer $leader_can_make_dicktator_bills
  * @property integer $leader_can_vote_for_bills
  * @property integer $leader_can_create_bills

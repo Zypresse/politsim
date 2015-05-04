@@ -134,7 +134,11 @@ use app\components\MyHtmlHelper;
             <button onclick="voteForBill(<?=$bill->id?>,1)" style="color:green">За</button> <button onclick="voteForBill(<?=$bill->id?>,2)" style="color:red">Против</button> <button onclick="voteForBill(<?=$bill->id?>,0)" style="color:#080808">Воздержаться</button>
         <? } else { ?>
             <?=$allreadyVoted->variant===1?'<span style="color:green">Вы проголосовали ЗА законопроект</span>':($allreadyVoted->variant===2?'<span style="color:red">Вы проголосовали ПРОТИВ законопроекта</span>':'Вы воздержались от голосования по данному законопроекту');?>
-        <? }}} ?>
+        <? }}
+        if ($user && $user->post->canVetoBills()) { ?>
+            <button class="btn btn-danger btn-small" onclick="json_request('veto-bill',{'id':<?=$bill->id?>})" >Наложить вето</button>
+        <? }
+        } ?>
 	</dd>
 <? } ?>
 </dl>

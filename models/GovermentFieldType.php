@@ -171,6 +171,10 @@ class GovermentFieldType extends MyModel
                 $value->state->save();
             break;
             
+            case 19: // Право парламента на отправку в отставку лидера государства
+                $value->state->legislature->can_drop_stateleader = intval($value->value) ? 1 : 0;
+                $value->state->save();
+            break;
         }
     }
 }

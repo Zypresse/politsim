@@ -264,6 +264,10 @@ class BillType extends MyModel
         if ($bill->creatorUser) {
             Notification::send($bill->creatorUser->id, "Предложенный вами законопроект, предлагающий «" . $this->name . "» одобрен и вступил в силу");
         }
+        
+        foreach ($bill->votes as $vote) {
+            $vote->delete();
+        }
 
         return true;
     }

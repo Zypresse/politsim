@@ -1402,4 +1402,26 @@ class JsonController extends MyController
         }
     }
     
+    public function actionVetoBill($id)
+    {
+        $id = intval($id);
+        if ($id > 0) {
+            $bill = Bill::findByPk($id);
+            
+            if (is_null($bill)) {
+                return $this->_r("Bill not found");
+            }
+            
+            if ($this->getUser()->post && $this->getUser()->post->canVetoBills()) {
+                $bill->end();
+                return $this->_rOk();
+            } else {                
+                return $this->_r("Not allowed");
+            }
+            
+        } else {
+            return $this->_r("Invalid bill ID");
+        }
+    }
+    
 }
