@@ -13,6 +13,11 @@ use app\components\MyModel;
  * @property string $system_name
  * @property integer $category_id
  * @property integer $can_build_npc
+ * 
+ * @property FactoryCategory $category Категория фабрик
+ * @property FactoryKit[] $export Производимый набор ресурсов
+ * @property FactoryKit[] $import Потребляемый набор ресурсов
+ * @property FactoryTypeWorker[] $workers Используемые наборы рабочих
  */
 class FactoryType extends MyModel
 {
@@ -65,6 +70,11 @@ class FactoryType extends MyModel
     public function getImport()
     {
         return $this->hasMany('app\models\FactoryKit', array('type_id' => 'id'))->where(['direction' => 1]);
+    }
+
+    public function getWorkers()
+    {
+        return $this->hasMany('app\models\FactoryTypeWorker', array('type_id' => 'id'));
     }
 
 }

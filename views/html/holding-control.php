@@ -14,7 +14,14 @@ $userStock = $user->getShareholderStock($holding);
 <h1>Управление «<?=$holding->name?>»</h1>
 <p>Капитализация: <?=number_format($holding->capital,0,'',' ')?> <?=MyHtmlHelper::icon('money')?></p>
 <p>Баланс: <?=number_format($holding->balance,0,'',' ')?> <?=MyHtmlHelper::icon('money')?></p>
-<? if ($holding->state) { ?><p>Компания зарегистрирована в государстве: <?=Html::a($holding->state->name,'#',['onclick'=>"load_page('state-info',{'id':{$holding->state_id}})"])?></p><? } ?>
+<? if ($holding->state) { ?>
+    <p>Компания зарегистрирована в государстве: <?=Html::a($holding->state->name,'#',['onclick'=>"load_page('state-info',{'id':{$holding->state_id}})"])?></p>
+<? } ?>
+<? if ($holding->region) { ?>
+    <p>Компания имеет штаб-квартиру в регионе: <?=$holding->region->name?></p>
+<? } else { ?>
+    <p>Компания не имеет штаб-квартиры</p>
+<? } ?>
 <h3>Лицензии:</h3>
 <? if (count($holding->licenses)) { ?>
 <ul>
@@ -36,7 +43,7 @@ $userStock = $user->getShareholderStock($holding);
                     echo Html::a(Html::img($stock->master->photo,['style'=>'width:20px']).' '.$stock->master->name,"#",['onclick'=>"load_page('profile',{'uid':{$stock->user_id}})"]);
                 break;
                 case 'app\models\Post':
-                    echo $stock->master->name.' ('.Html::a($stock->master->org->name,'#',['onclick'=>"load_page('org-info',{'id':{$stock->master->org_id}})"]).')';
+                    echo ($stock->master->ministry_name ? $stock->master->ministry_name : $stock->master->name).' ('.Html::a($stock->master->org->name,'#',['onclick'=>"load_page('org-info',{'id':{$stock->master->org_id}})"]).')';
                 break;
                 case 'app\models\Holding':
                     echo Html::a($stock->master->name,'#',['onclick'=>"load_page('holding-info',{'id':{$stock->master->id}})"]);

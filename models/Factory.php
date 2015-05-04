@@ -14,7 +14,11 @@ use app\components\MyModel;
  * @property integer $region_id
  * @property integer $status Статус работы: 0 - undefined, 1 - active, 2 - stopped, 3 - not enought resurses, 4 - autostopped
  * @property string $name
- * @property integer $level
+ * 
+ * @property FactoryType $type Тип фабрики
+ * @property Holding $holding Компания-владелец
+ * @property Region $region Регион, в котором она находится
+ * @property FactoryWorker[] $workers Рабочие
  */
 class Factory extends MyModel
 {
@@ -34,7 +38,7 @@ class Factory extends MyModel
     {
         return [
             [['type_id', 'builded', 'name'], 'required'],
-            [['type_id', 'builded', 'holding_id', 'region_id', 'status', 'level'], 'integer'],
+            [['type_id', 'builded', 'holding_id', 'region_id', 'status'], 'integer'],
             [['name'], 'string', 'max' => 255]
         ];
     }
@@ -52,7 +56,6 @@ class Factory extends MyModel
             'region_id'  => 'Region ID',
             'status'     => '0 - undefined, 1 - active, 2 - stopped, 3 - not enought resurses, 4 - autostopped',
             'name'       => 'Name',
-            'level'      => 'Level',
         ];
     }
 
@@ -69,6 +72,11 @@ class Factory extends MyModel
     public function getRegion()
     {
         return $this->hasOne('app\models\Region', array('id' => 'region_id'));
+    }
+    
+    public function getWorkers()
+    {
+        return $this->hasMany('app\models\FactoryWorker', array('factory_id' => 'id'));
     }
 
 }
