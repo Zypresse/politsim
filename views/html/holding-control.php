@@ -5,10 +5,12 @@
  * I dont care how you use it
  */
 
-use app\components\MyHtmlHelper;
-use yii\helpers\Html;
+use app\components\MyHtmlHelper,
+    yii\helpers\Html,
+    app\models\FactoryCategory;
 
 $userStock = $user->getShareholderStock($holding);
+$factoryCategories = FactoryCategory::find()->all();
 
 ?>
 <h1>Управление «<?=$holding->name?>»</h1>
@@ -24,7 +26,8 @@ $userStock = $user->getShareholderStock($holding);
 <? } ?>
 <h3>Лицензии:</h3>
 <? if (count($holding->licenses)) { ?>
-<ul>
+<button class="btn btn-default" id="list_licenses_button" >Развернуть/свернуть список</button>
+<ul id="list_licenses" style="display: none" >
      <? foreach ($holding->licenses as $license) { ?>
     <li>
             <?=$license->type->name?>
@@ -33,6 +36,18 @@ $userStock = $user->getShareholderStock($holding);
 </ul>
 <? } else { ?>
 <p>Компания не обладает лицензией ни на один вид деятельности</p>
+<? } ?>
+<h3>Недвижимость</h3>
+<? if (count($holding->factories)) { ?>
+<ul>
+    <? foreach ($holding->factories as $factory) { ?>
+    <li>
+        <?=$factory->name?>
+    </li>
+    <? } ?>
+</ul>
+<? } else { ?>
+<p>Компания не владеет недвижимостью</p>
 <? } ?>
 <h3>Список акционеров:</h3>
 <ul>
@@ -72,6 +87,9 @@ foreach ($holding->decisions as $decision) {
             case app\models\HoldingDecision::DECISION_GIVELICENSE:
                 $license = app\models\HoldingLicenseType::findByPk($data->license_id);
                 echo 'Получение лицензии на «'.$license->name.'»';
+            break;
+            case \app\models\HoldingDecision::DECISION_BUILDFABRIC:
+                echo 'Строительство новой фабрики';
             break;
         }
         ?></td><td>
@@ -122,7 +140,6 @@ foreach ($holding->decisions as $decision) {
   <ul class="dropdown-menu">
     <!--<li class="divider"></li>-->
     <li><a href="#" onclick="$('#rename_holding_modal').modal();" >Переименовать холдинг</a></li>
-    <li><a href="#" onclick="$('#stock_dividents_modal').modal();" >Выплатить дивиденты</a></li>
   </ul>
 </div>
 <div class="btn-group">
@@ -130,8 +147,16 @@ foreach ($holding->decisions as $decision) {
     Управление счётом <span class="caret"></span>
   </button>
   <ul class="dropdown-menu">
-    <!--<li class="divider"></li>-->
+    <li><a href="#" onclick="$('#stock_dividents_modal').modal();" >Выплатить дивиденты</a></li>
     <li><a href="#" onclick="$('#insert_money_modal').modal();" >Внести деньги на счёт</a></li>
+  </ul>
+</div>
+<div class="btn-group">
+  <button class="btn btn-small dropdown-toggle btn-success" data-toggle="dropdown">
+    Управление недвижимостью <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu">
+    <li><a href="#" onclick="$('#new_factory_modal').modal();" >Построить новый обьект</a></li>
   </ul>
 </div>
     <? if ($holding->state) { ?>
@@ -262,6 +287,74 @@ foreach ($holding->decisions as $decision) {
     <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
   </div>
 </div>
+<div style="display:none;" class="modal" id="new_factory_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabelnew_factory_modal" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3>Строительство</h3>
+  </div>
+  <div id="new_factory_modal_body" class="modal-body">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">Тип обьекта</h3>
+            <span class="pull-right">
+                <!-- Tabs -->
+                <ul class="nav panel-tabs">
+                    <? foreach ($factoryCategories as $i => $factoryCat) { ?>
+                    <li class="<?=($i != 5)?'hide':'active'?>"><a href="#tab<?=$i?>" data-toggle="tab"><?=Html::img("/img/factory-types/{$factoryCat->id}.png",['alt'=>$i,'title'=>$factoryCat->name])?></a></li>
+                    <? } ?>
+                </ul>
+            </span>
+        </div>
+        <div class="panel-body">
+            <div class="tab-content">
+                <? foreach ($factoryCategories as $i => $factoryCat) { ?>
+                    <div class="tab-pane <?=($i != 5)?'':'active'?>" id="tab<?=$i?>">
+                        <h3><?=$factoryCat->name?></h3>
+                        <? foreach($factoryCat->types as $facType) { ?>
+                            <p>
+                                <input data-workersSize="<?=$facType->sumNeedWorkers?>" data-buildCost="<?=$facType->build_cost?>" class="elect_vote_radio" type="radio" name="new_factory_type" value="<?=$facType->id?>" id="new_factory_type<?=$facType->id?>">
+                                <label style="display: inline-block;" for="new_factory_type<?=$facType->id?>"><?=$facType->name?></label>
+                            </p>
+                        <? } ?>
+                    </div>
+                <? } ?>
+            </div>
+        </div>
+    </div>
+    <div class="control-group" id="new_factory_add_info" style="display:none;">
+      <label class="control-label" for="#factory_new_name">Название</label>
+      <div class="controls">
+          <input type="text" id="factory_new_name" value="">
+      </div>
+      <label class="control-label" for="#factory_new_region">Место строительства</label>
+      <div class="controls">
+          <select id="factory_new_region">
+              <?
+              $regions = app\models\Region::find()->with('state')->orderBy('state_id')->all();
+               foreach ($regions as $i => $region) { ?>
+              <? if ($i == 0 || $regions[$i-1]->state_id != $region->state_id) { ?>
+                <?=($i)?'</optgroup>':''?><optgroup label="<?=($region->state) ? $region->state->name : 'Ничейные регионы'?>">
+              <? } ?>
+              <option value="<?=$region->id?>"><?=$region->name?></option>
+              <? } ?>
+          </select>
+      </div>
+      <label class="control-label" for="#factory_new_size">Размер</label>
+      <div class="controls">
+          <button class="btn btn-mini" onclick="if ($('#factory_new_size').val()>1) $('#factory_new_size').val(parseInt($('#factory_new_size').val()) - 1); updateCost();">-</button><input class="btn btn-mini" type="range" id="factory_new_size" min="1" max="127" step="1" value="1"><button class="btn btn-mini" onclick="if ($('#factory_new_size').val() < 127) $('#factory_new_size').val(parseInt($('#factory_new_size').val()) + 1); updateCost()">+</button>
+      </div>
+      
+      <p>Число работников: <span id="workers_size">0</span> <i class="icon-user"></i></p>
+      <p>Стоимость строительства: <span id="build_cost">0</span> <?=MyHtmlHelper::icon('coins')?></p>
+    </div>
+      
+      
+  </div>
+  <div class="modal-footer">
+    <button style="display:none;" class="btn btn-primary" data-dismiss="modal" id="start_build" onclick="start_build()">Начать строительство</button>
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+  </div>
+</div>
 
 <script>
 function rename_holding(id) {
@@ -296,6 +389,34 @@ function updateLicenseInfo() {
    $('#license_info').html($("#license_option"+$('#new_license_id').val()).data('text'));
 }
 
+var new_factory_type = 0;
+
+function updateCost(){
+    var size = parseInt($('#factory_new_size').val());
+    var workers = $('#new_factory_type'+new_factory_type).attr("data-workersSize");
+    var cost = $('#new_factory_type'+new_factory_type).attr("data-buildCost");
+
+    $('#workers_size').text(size*workers);
+    $('#build_cost').text(size*cost);
+    return true;
+}
+
+function start_build() {
+    var cost = parseInt($('#factory_new_size').val()) * parseInt($('#new_factory_type'+new_factory_type).attr("data-buildCost"));
+    if (cost > <?=$holding->balance?>) {
+        alert("На счету фирмы недостаточно денег для строительства");            
+    } else {
+        json_request('new-holding-decision',{
+            'holding_id':<?=$holding->id?>,
+            'type':5,
+            'name':$('#factory_new_name').val(),
+            'region_id':$('#factory_new_region').val(),
+            'factory_type':new_factory_type,
+            'size': $('#factory_new_size').val()
+        });
+    }
+}
+
 $(function(){
     updateLicenseInfo();
     $('#new_license_id').change(updateLicenseInfo);
@@ -308,5 +429,27 @@ $(function(){
             $(this).val(<?=$holding->balance?>);
         } 
     });
+    
+    $('#list_licenses_button').toggle(function() {
+        $('#list_licenses').slideDown();
+    }, function() {
+        $('#list_licenses').slideUp();
+    })
+    
+    $('.elect_vote_radio').iCheck({
+        checkboxClass: 'icheckbox_square',
+        radioClass: 'iradio_square',
+        increaseArea: '20%' // optional
+    }).on('ifChecked', function(event){
+      
+      new_factory_type = $(this).val();
+      $('#new_factory_add_info').show();
+      $('#start_build').show();
+      updateCost();
+    });;
+    
+    $('#factory_new_size').change(updateCost);
+    $('#factory_new_size').click(updateCost);
+    
 });
 </script>

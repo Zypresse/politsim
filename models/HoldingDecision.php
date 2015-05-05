@@ -85,6 +85,11 @@ class HoldingDecision extends MyModel
      * Получение лицензии
      */
     const DECISION_GIVELICENSE = 3;
+    
+    /**
+     * Строительство фабрики
+     */
+    const DECISION_BUILDFABRIC = 5;
 
     /**
      * Принять решение

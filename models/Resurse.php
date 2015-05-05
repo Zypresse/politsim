@@ -48,5 +48,25 @@ class Resurse extends MyModel
             'level' => 'Level',
         ];
     }
+    
+    /**
+     * Добываемые (нефть, руда, зерно)
+     */
+    const LEVEL_ZERO = 0;
+    
+    /**
+     * Переработанные (бензин, сталь, мука, хлеб)
+     */
+    const LEVEL_ONE = 1;
+    
+    /**
+     * Отходы (шлак, отвалы)
+     */
+    const LEVEL_DUMP = 2;
+    
+    /**
+     * Нехранимые (электричество)
+     */
+    const LEVEL_NOTSTORED = 4;
 
 }

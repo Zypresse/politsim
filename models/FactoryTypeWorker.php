@@ -2,6 +2,8 @@
 
 namespace app\models;
 
+use app\components\MyModel;
+
 /**
  * Необходимый класс и число рабочих для типа фабрики. Таблица "factory_type_workers".
  *
@@ -13,7 +15,7 @@ namespace app\models;
  * @property FactoryType $type Тип фабрики
  * @property PopClass $popClass Класс населения
  */
-class FactoryTypeWorker extends app\components\MyModel
+class FactoryTypeWorker extends MyModel
 {
     /**
      * @inheritdoc

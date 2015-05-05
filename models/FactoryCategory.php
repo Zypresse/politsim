@@ -9,6 +9,8 @@ use app\components\MyModel;
  *
  * @property integer $id
  * @property string $name
+ * 
+ * @property FactoryType[] $types
  */
 class FactoryCategory extends MyModel
 {
@@ -41,6 +43,11 @@ class FactoryCategory extends MyModel
             'id'   => 'ID',
             'name' => 'Name',
         ];
+    }
+    
+    public function getTypes()
+    {
+        return $this->hasMany('app\models\FactoryType', array('category_id' => 'id'));
     }
 
 }

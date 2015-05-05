@@ -12,8 +12,9 @@ use app\components\MyModel;
  * @property integer $builded
  * @property integer $holding_id
  * @property integer $region_id
- * @property integer $status Статус работы: 0 - undefined, 1 - active, 2 - stopped, 3 - not enought resurses, 4 - autostopped
+ * @property integer $status Статус работы: -1 - unbuilded, -2 - build stopped, 0 - undefined, 1 - active, 2 - stopped, 3 - not enought resurses, 4 - autostopped, 5 - not enought workers
  * @property string $name
+ * @property integer $size
  * 
  * @property FactoryType $type Тип фабрики
  * @property Holding $holding Компания-владелец
@@ -38,7 +39,7 @@ class Factory extends MyModel
     {
         return [
             [['type_id', 'builded', 'name'], 'required'],
-            [['type_id', 'builded', 'holding_id', 'region_id', 'status'], 'integer'],
+            [['type_id', 'builded', 'holding_id', 'region_id', 'status', 'size'], 'integer'],
             [['name'], 'string', 'max' => 255]
         ];
     }
@@ -54,8 +55,9 @@ class Factory extends MyModel
             'builded'    => 'Builded',
             'holding_id' => 'Holding ID',
             'region_id'  => 'Region ID',
-            'status'     => '0 - undefined, 1 - active, 2 - stopped, 3 - not enought resurses, 4 - autostopped',
+            'status'     => 'Статус работы: -1 - unbuilded, -2 - build stopped, 0 - undefined, 1 - active, 2 - stopped, 3 - not enought resurses, 4 - autostopped, 5 - not enought workers',
             'name'       => 'Name',
+            'size'       => 'Size',
         ];
     }
 

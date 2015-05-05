@@ -1208,7 +1208,7 @@ class JsonController extends MyController
                 $decision->holding_id    = $holding_id;
                 $decision->decision_type = $type;
                 switch ($type) {
-                    case 1: // Переименование
+                    case HoldingDecision::DECISION_CHANGENAME: // Переименование
                         if (empty(strip_tags($_REQUEST['new_name']))) {
                             return $this->_r("Invalid name");
                         }
@@ -1216,7 +1216,7 @@ class JsonController extends MyController
                             $decision->data = ['new_name' => strip_tags($_REQUEST['new_name'])];
                         }
                         break;
-                    case 2: // Выплата дивидентов
+                    case HoldingDecision::DECISION_PAYDIVIDENTS: // Выплата дивидентов
                         if (intval($_REQUEST['sum']) > 0) {
                             $decision->data = ['sum' => intval($_REQUEST['sum'])];
                         }
@@ -1224,12 +1224,43 @@ class JsonController extends MyController
                             return $this->_r("Invalid sum");
                         }
                         break;
-                    case 3: // Получение новой лицензии
+                    case HoldingDecision::DECISION_GIVELICENSE: // Получение новой лицензии
                         if (intval($_REQUEST['license_id']) > 0) {
                             $decision->data = ['license_id' => intval($_REQUEST['license_id'])];
                         }
                         else {
                             return $this->_r("Invalid license ID");
+                        }
+                        break;
+                        
+                    case HoldingDecision::DECISION_BUILDFABRIC:
+                        if (isset($_REQUEST['name']) && isset($_REQUEST['region_id']) && isset($_REQUEST['factory_type']) && isset($_REQUEST['size'])) {
+                            $name = trim(strip_tags($_REQUEST['name']));
+                            $region_id = intval($_REQUEST['region_id']);
+                            $factory_type = intval($_REQUEST['factory_type']);
+                            $size = intval($_REQUEST['size']);
+                            
+                            $fType = \app\models\FactoryType::findByPk($factory_type);
+                            
+                            if (is_null($fType)) {
+                                return $this->_r("Factory type not found");
+                            }                            
+                            if ($size < 1 || $size > 127) {
+                                return $this->_r("Invalid size");
+                            }
+                            if (empty($name)) {
+                                $name = $fType->name.' #'.mt_rand(1, 1000);
+                            }
+                            
+                            $decision->data = [
+                                'name' => $name,
+                                'region_id' => $region_id,
+                                'factory_type' => $factory_type,
+                                'size' => $size
+                            ];
+                            
+                        } else {
+                            return $this->_r("Invalid fields");
                         }
                         break;
                 }

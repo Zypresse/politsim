@@ -15,6 +15,7 @@ use app\components\MyModel;
  * 
  * @property Stock[] $stocks Акции
  * @property HoldingLicense[] $licenses Лицензии
+ * @property Factory[] $factiories Фабрики
  */
 class Holding extends MyModel
 {
@@ -78,6 +79,11 @@ class Holding extends MyModel
     public function getLicenses()
     {
         return $this->hasMany('app\models\HoldingLicense', array('holding_id' => 'id'));
+    }
+
+    public function getFactories()
+    {
+        return $this->hasMany('app\models\Factory', array('holding_id' => 'id'));
     }
 
     private $_sumStocks = null;
