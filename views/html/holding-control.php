@@ -30,7 +30,7 @@ $factoryCategories = FactoryCategory::find()->all();
 <ul id="list_licenses" style="display: none" >
      <? foreach ($holding->licenses as $license) { ?>
     <li>
-            <?=$license->type->name?>
+            <?=$license->type->name?> (<?=$license->state->name?>)
     </li>
      <? } ?>
 </ul>
@@ -42,7 +42,7 @@ $factoryCategories = FactoryCategory::find()->all();
 <ul>
     <? foreach ($holding->factories as $factory) { ?>
     <li>
-        <?=$factory->name?>
+        <?=$factory->name?> <? if ($factory->status < 0) { ?><span style="color:red;">(не достроено, запланированная дата окончания строительства: <span class="formatDate" data-unixtime="<?=$factory->builded?>"><?=date('d-M-Y H:i',$factory->builded)?></span>)</span><? } ?>
     </li>
     <? } ?>
 </ul>
@@ -89,7 +89,9 @@ foreach ($holding->decisions as $decision) {
                 echo 'Получение лицензии на «'.$license->name.'»';
             break;
             case \app\models\HoldingDecision::DECISION_BUILDFABRIC:
-                echo 'Строительство новой фабрики';
+                $fType = app\models\FactoryType::findByPk($data->factory_type);
+                $region = app\models\Region::findByPk($data->region_id);
+                echo "Строительство нового обьекта: {$fType->name} под названием «{$data->name}» в регионе {$region->name}";
             break;
         }
         ?></td><td>

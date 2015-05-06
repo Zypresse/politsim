@@ -78,6 +78,12 @@ class FactoryType extends MyModel
     public function getWorkers()
     {
         return $this->hasMany('app\models\FactoryTypeWorker', array('type_id' => 'id'));
+    }    
+    
+    public function getLicenses()
+    {
+        return $this->hasMany('app\models\HoldingLicenseType', ['id' => 'license_type_id'])
+                ->viaTable('factory_type_licenses', ['factory_type_id' => 'id']);
     }
     
     /**

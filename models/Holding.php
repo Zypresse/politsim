@@ -12,6 +12,7 @@ use app\components\MyModel;
  * @property integer $state_id
  * @property integer $region_id
  * @property double $capital
+ * @property double $balance
  * 
  * @property Stock[] $stocks Акции
  * @property HoldingLicense[] $licenses Лицензии
@@ -36,7 +37,7 @@ class Holding extends MyModel
         return [
             [['name', 'state_id'], 'required'],
             [['state_id', 'region_id'], 'integer'],
-            [['capital'], 'number'],
+            [['capital', 'balance'], 'number'],
             [['name'], 'string', 'max' => 255],
             [['name'], 'unique']
         ];

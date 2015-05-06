@@ -15,6 +15,9 @@ use app\models\StateLicense;
  * @property integer $accepted
  * @property string $data
  * @property integer $holding_id
+ * 
+ * @property HoldingDecisionVote[] $votes
+ * @property Holding $holding
  */
 class HoldingDecision extends MyModel
 {
@@ -124,37 +127,75 @@ class HoldingDecision extends MyModel
                 }
                 break;
             case self::DECISION_GIVELICENSE: // Получение лицензии
-                $stateLicense = StateLicense::find()->where(['state_id' => $this->holding->state_id, 'license_id' => $data->license_id])->one();
-                $allow        = true;
-                if (!(is_null($stateLicense))) {
+                if ($this->holding->state) {
+                    $stateLicense = StateLicense::find()->where(['state_id' => $this->holding->state_id, 'license_id' => $data->license_id])->one();
+                    $allow        = true;
+                    if (!(is_null($stateLicense))) {
 
-                    if ($stateLicense->is_only_goverment) {
-                        $allow = false;
-                        foreach ($this->holding->stocks as $stock) {
-                            if ($stock->post_id) {
-                                $allow = true;
-                                break;
+                        if ($stateLicense->is_only_goverment) {
+                            $allow = false;
+                            foreach ($this->holding->stocks as $stock) {
+                                if ($stock->post_id) {
+                                    $allow = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if ($stateLicense->cost) {
+                            if ($this->holding->balance < $stateLicense->cost) {
+                                $allow = false;
                             }
                         }
                     }
-                    if ($stateLicense->cost) {
-                        if ($this->holding->balance < $stateLicense->cost) {
-                            $allow = false;
+                    if ($allow) {
+                        $hl             = new HoldingLicense();
+                        $hl->holding_id = $this->holding_id;
+                        $hl->state_id   = $this->holding->state_id;
+                        $hl->license_id = $data->license_id;
+                        $hl->save();
+
+                        if ($stateLicense && $stateLicense->cost) {
+                            $this->holding->balance -= $stateLicense->cost;
+                            $this->holding->save();
                         }
                     }
                 }
-                if ($allow) {
-                    $hl             = new HoldingLicense();
-                    $hl->holding_id = $this->holding_id;
-                    $hl->license_id = $data->license_id;
-                    $hl->save();
 
-                    if ($stateLicense && $stateLicense->cost) {
-                        $this->holding->balance -= $stateLicense->cost;
-                        $this->holding->save();
+                break;
+            case self::DECISION_BUILDFABRIC:
+                $factoryType = FactoryType::findByPk($data->factory_type);
+                if ($factoryType) {
+                    $region = Region::findByPk($data->region_id);
+                    // TODO: Здесь проверка на возможность строить в регионе
+                    if ($region) {
+                        $buildCost = $factoryType->build_cost * $data->size;
+                        if ($this->holding->balance >= $buildCost) {
+                            
+                            $data->size = intval($data->size);
+                            if ($data->size < 1) {
+                                $data->size = 1;
+                            } elseif ($data->size > 127) {
+                                $data->size = 127;
+                            }
+                            
+                            $this->holding->balance -= $buildCost;
+                            $this->holding->save();
+                            
+                            $factory = new Factory();
+                            $factory->holding_id = $this->holding_id;
+                            $factory->builded = time() + 24*60*60;
+                            $factory->name = strip_tags(trim($data->name));
+                            $factory->region_id = $region->id;
+                            $factory->type_id = $factoryType->id;
+                            $factory->status = -1;
+                            $factory->size = $data->size;
+                            
+                            if (!$factory->save()) {
+                                var_dump($factory->getErrors());
+                            }
+                        }
                     }
                 }
-
                 break;
         }
 

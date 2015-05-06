@@ -10,7 +10,7 @@ use app\components\MyModel;
  * @property integer $id
  * @property string $code Код ресурса (напр. "oil")
  * @property string $name Имя ресурса (напр. "Нефть")
- * @property integer $level Уровень ресурса (0 - добываемые, 1 - переработанные, 2 - конечный продукт, 3 - люди, 4 - временные ресурсы)
+ * @property integer $level Уровень ресурса (0 - добываемые, 1 - переработанные, 2 - отходы, 3 - люди, 4 - временные ресурсы)
  */
 class Resurse extends MyModel
 {
