@@ -7,7 +7,8 @@
 
 use app\components\MyHtmlHelper,
     yii\helpers\Html,
-    app\models\FactoryCategory;
+    app\models\FactoryCategory,
+    app\models\HoldingDecision;
 
 $userStock = $user->getShareholderStock($holding);
 $factoryCategories = FactoryCategory::find()->all();
@@ -42,7 +43,9 @@ $factoryCategories = FactoryCategory::find()->all();
 <ul>
     <? foreach ($holding->factories as $factory) { ?>
     <li>
-        <?=$factory->name?> <? if ($factory->status < 0) { ?><span style="color:red;">(не достроено, запланированная дата окончания строительства: <span class="formatDate" data-unixtime="<?=$factory->builded?>"><?=date('d-M-Y H:i',$factory->builded)?></span>)</span><? } ?>
+        <?=Html::a($factory->name,'#',['onclick'=>"load_page('factory-info',{'id':{$factory->id}})"])?> 
+            <? if ($factory->status < 0) { ?><span style="color:red;">(не достроено, запланированная дата окончания строительства: <span class="formatDate" data-unixtime="<?=$factory->builded?>"><?=date('d-M-Y H:i',$factory->builded)?></span>)</span><? } ?>
+            <? if ($factory->status > 1) { ?><span style="color:red;">(не работает)</span><? } ?>
     </li>
     <? } ?>
 </ul>
@@ -78,21 +81,27 @@ foreach ($holding->decisions as $decision) {
     <tr>
         <td><?=date('d-m-Y',$decision->created)?></td>
         <td><? switch ($decision->decision_type) {
-            case app\models\HoldingDecision::DECISION_CHANGENAME:
+            case HoldingDecision::DECISION_CHANGENAME:
                 echo 'Переименование холдинга в «'.$data->new_name.'»';
-            break;
-            case app\models\HoldingDecision::DECISION_PAYDIVIDENTS:
+                break;
+            case HoldingDecision::DECISION_PAYDIVIDENTS:
                 echo 'Выплата дивидентов в размере '.$data->sum.' '.MyHtmlHelper::icon('money');
-            break;
-            case app\models\HoldingDecision::DECISION_GIVELICENSE:
+                break;
+            case HoldingDecision::DECISION_GIVELICENSE:
                 $license = app\models\HoldingLicenseType::findByPk($data->license_id);
                 echo 'Получение лицензии на «'.$license->name.'»';
-            break;
-            case \app\models\HoldingDecision::DECISION_BUILDFABRIC:
+                break;
+            case HoldingDecision::DECISION_BUILDFABRIC:
                 $fType = app\models\FactoryType::findByPk($data->factory_type);
                 $region = app\models\Region::findByPk($data->region_id);
                 echo "Строительство нового обьекта: {$fType->name} под названием «{$data->name}» в регионе {$region->name}";
-            break;
+                break;
+            case HoldingDecision::DECISION_SETMANAGER:
+                $user = app\models\User::findByPk($data->uid);
+                $factory = app\models\Factory::findByPk($data->factory_id);
+                $region_name = $factory->region->name. ($factory->region->state ? ', '.$factory->region->state->short_name : '');
+                echo "Назначение человека по имени {$user->name} на должность управляющего обьектом {$factory->name} ({$region_name})";
+                break;
         }
         ?></td><td>
             <?
@@ -159,6 +168,7 @@ foreach ($holding->decisions as $decision) {
   </button>
   <ul class="dropdown-menu">
     <li><a href="#" onclick="$('#new_factory_modal').modal();" >Построить новый обьект</a></li>
+    <li><a href="#" onclick="$('#set_manager_modal').modal();" >Назначить управляющего</a></li>
   </ul>
 </div>
     <? if ($holding->state) { ?>
@@ -253,21 +263,62 @@ foreach ($holding->decisions as $decision) {
     <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
   </div>
 </div>
-<div style="display:none;" class="modal" id="stock_dividents_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel123" aria-hidden="true">
+<div style="display:none;" class="modal" id="insert_money_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel123" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel1232">Выплата дивидентов акционерам</h3>
+  </div>
+  <div id="insert_money_modal_body" class="modal-body">
+    <div class="control-group">
+      <label class="control-label" for="#dividents_sum">Сумма для внесения на счёт</label>
+      <div class="controls">
+        <input type="number" id="insert_sum" value="0"> <?=MyHtmlHelper::icon('money')?>
+      </div>
+    </div>
+      <p>Деньги будут сняты с вашего счёта и внесены на баланс компании. Снять их будет проблематично, если вы не владеете 100% акций.</p>
+  </div>
+  <div class="modal-footer">
+  	<button class="btn btn-primary" data-dismiss="modal"  onclick="insert_money(<?=$holding->id?>)">Внести</button>
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+  </div>
+</div>
+<div style="display:none;" class="modal" id="set_manager_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel1432" aria-hidden="true">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
     <h3 id="myModalLabel1233">Выплата дивидентов акционерам</h3>
   </div>
-  <div id="stock_dividents_modal_body" class="modal-body">
+  <div id="set_manager_modal_body" class="modal-body">
     <div class="control-group">
-      <label class="control-label" for="#dividents_sum">Сумма для списания со счёта</label>
+      <label class="control-label" for="#new_manager_factory">Объект недвижимсти:</label>
       <div class="controls">
-        <input type="number" id="dividents_sum" value="<?=$holding->balance?>"> <?=MyHtmlHelper::icon('money')?>
+          <select id="new_manager_factory">
+              <? foreach ($holding->factories as $factory) { ?>
+              <option value="<?=$factory->id?>"><?=$factory->name?> (<?=$factory->region->name?>)</option>
+              <? } ?>
+          </select>
+      </div>
+      <label class="control-label" for="#new_manager_uid">Новый управляющий:</label>
+      <div class="controls">
+          <select id="new_manager_uid">
+              <? foreach ($holding->stocks as $stock) { ?>
+                    <? switch (get_class($stock->master)) {
+                            case 'app\models\User':
+                                echo "<option value='{$stock->master->id}'>".Html::a(Html::img($stock->master->photo,['style'=>'width:20px']).' '.$stock->master->name,"#",['onclick'=>"load_page('profile',{'uid':{$stock->user_id}})"])."</option>";
+                            break;
+                            case 'app\models\Post':
+                                echo "<option value='{$stock->master->user->id}'>".Html::a(Html::img($stock->master->user->photo,['style'=>'width:20px']).' '.$stock->master->user->name,"#",['onclick'=>"load_page('profile',{'uid':{$stock->master->user->id}})"])."</option>";
+                            break;
+                            case 'app\models\Holding':
+                                
+                            break;
+                    }?>
+              <? } ?>
+          </select>
       </div>
     </div>
   </div>
   <div class="modal-footer">
-  	<button class="btn btn-primary" data-dismiss="modal"  onclick="pay_dividents(<?=$holding->id?>)">Выплатить</button>
+    <button class="btn btn-primary" data-dismiss="modal"  onclick="json_request('new-holding-decision',{'holding_id':<?=$holding->id?>,'factory_id':$('#new_manager_factory').val(),'uid':$('#new_manager_uid').val(),'type':6})">Назначить</button>
     <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
   </div>
 </div>

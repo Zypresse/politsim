@@ -16,7 +16,7 @@ use app\components\MyModel;
  * 
  * @property Stock[] $stocks Акции
  * @property HoldingLicense[] $licenses Лицензии
- * @property Factory[] $factiories Фабрики
+ * @property Factory[] $factories Фабрики
  */
 class Holding extends MyModel
 {

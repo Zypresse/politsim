@@ -13,6 +13,7 @@ use app\models\State;
 use app\models\Ideology;
 use app\models\Twitter;
 use app\models\Holding;
+use app\models\Factory;
 
 class HtmlController extends MyController
 {
@@ -272,7 +273,7 @@ class HtmlController extends MyController
             if (is_null($holding))
                 return $this->_r("Holding not found");
 
-            return $this->render("holding-info", ['holding' => $holding, 'user' => $this->getUser()]);
+            return $this->render("holding-info", ['holding' => $holding]);
         }
         else
             return $this->_r("Invalid holding ID");
@@ -315,6 +316,22 @@ class HtmlController extends MyController
     public function actionNotifications()
     {
         return $this->render("notifications", ['user' => $this->getUser()]);
+    }
+    
+    public function actionFactoryInfo($id)
+    {
+        $id = intval($id);
+        if ($id > 0) {
+            $factory = Factory::findByPk($id);
+            if (is_null($factory)) {
+                return $this->_r("Factory not found");
+            }
+            
+            return $this->render("factory-info", ['factory' => $factory]);
+            
+        } else {
+            return $this->_r("Invalid factory ID");
+        }
     }
 
 }

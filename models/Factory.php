@@ -15,10 +15,12 @@ use app\components\MyModel;
  * @property integer $status Статус работы: -1 - unbuilded, -2 - build stopped, 0 - undefined, 1 - active, 2 - stopped, 3 - not enought resurses, 4 - autostopped, 5 - not enought workers
  * @property string $name
  * @property integer $size
+ * @property integer $manager_uid
  * 
  * @property FactoryType $type Тип фабрики
  * @property Holding $holding Компания-владелец
  * @property Region $region Регион, в котором она находится
+ * @property User $manager Управляющий
  * @property FactoryWorker[] $workers Рабочие
  */
 class Factory extends MyModel
@@ -39,7 +41,7 @@ class Factory extends MyModel
     {
         return [
             [['type_id', 'builded', 'name'], 'required'],
-            [['type_id', 'builded', 'holding_id', 'region_id', 'status', 'size'], 'integer'],
+            [['type_id', 'builded', 'holding_id', 'region_id', 'status', 'size', 'manager_uid'], 'integer'],
             [['name'], 'string', 'max' => 255]
         ];
     }
@@ -58,6 +60,7 @@ class Factory extends MyModel
             'status'     => 'Статус работы: -1 - unbuilded, -2 - build stopped, 0 - undefined, 1 - active, 2 - stopped, 3 - not enought resurses, 4 - autostopped, 5 - not enought workers',
             'name'       => 'Name',
             'size'       => 'Size',
+            'manager_uid'=> 'Manager Uid',
         ];
     }
 
@@ -75,10 +78,31 @@ class Factory extends MyModel
     {
         return $this->hasOne('app\models\Region', array('id' => 'region_id'));
     }
+
+    public function getManager()
+    {
+        return $this->hasOne('app\models\User', array('id' => 'manager_uid'));
+    }
     
     public function getWorkers()
     {
         return $this->hasMany('app\models\FactoryWorker', array('factory_id' => 'id'));
+    }
+    
+    public function getStatusName()
+    {
+        $names = [
+            -2 => 'Строительство прекращено',
+            -1 => 'Идёт строительство',
+            0 => 'Неизвестен',
+            1 => 'Работает',
+            2 => 'Работа остановлена',
+            3 => 'Работа остановлена по причине нехватки ресурсов',
+            4 => 'Работа остановлена автоматически',
+            5 => 'Работа остановлена по причине нехватки работников'
+        ];
+        
+        return $names[$this->status];
     }
 
 }

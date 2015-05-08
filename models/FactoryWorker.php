@@ -1,6 +1,8 @@
- <?php
+<?php
 
 namespace app\models;
+
+use app\components\MyModel;
 
 /**
  * This is the model class for table "factory_workers".
@@ -12,7 +14,7 @@ namespace app\models;
  * @property Factory $factory Фабрика
  * @property Population $population Группа населения
  */
-class FactoryWorker extends app\components\MyModel
+class FactoryWorker extends MyModel
 {
     /**
      * @inheritdoc

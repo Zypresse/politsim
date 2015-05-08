@@ -93,6 +93,11 @@ class HoldingDecision extends MyModel
      * Строительство фабрики
      */
     const DECISION_BUILDFABRIC = 5;
+    
+    /**
+     * Назначение менеджера
+     */
+    const DECISION_SETMANAGER = 6;
 
     /**
      * Принять решение
@@ -195,6 +200,13 @@ class HoldingDecision extends MyModel
                             }
                         }
                     }
+                }
+                break;
+            case self::DECISION_SETMANAGER:
+                $factory = Factory::findByPk($data->factory_id);
+                if ($factory->holding_id == $this->holding_id) {
+                    $factory->manager_uid = $data->uid;
+                    $factory->save();
                 }
                 break;
         }

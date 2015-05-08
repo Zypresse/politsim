@@ -8,7 +8,8 @@ use yii\console\Controller,
     app\models\Party,
     app\models\Bill,
     app\models\Holding,
-    app\models\HoldingDecision;
+    app\models\HoldingDecision,
+    app\models\Factory;
 
 /**
  * Update all, crontab minutly
@@ -118,6 +119,11 @@ class UpdateMinutlyController extends Controller {
             // пока цена на акции 1 монета
             $capital += 1* $holding->getSumStocks();
             
+            // стоимость зданий как стоимость их постройки
+            foreach ($holding->factories as $factory) {
+                $capital += $factory->size * $factory->type->build_cost;
+            }
+            
             $capital += $holding->balance;
             
             $holding->capital = $capital;
@@ -145,6 +151,32 @@ class UpdateMinutlyController extends Controller {
             }
         }
         unset($decisions);
+        
+        // Update building status
+        // Окончание строительства
+        $buildings = Factory::find()->where('builded <= '.time().' AND status = -1')->all();
+        foreach ($buildings as $building) {
+            $building->status = 1;
+            $building->save();
+        }
+        // Проверка количества рабочих
+        $buildings = Factory::find()->where('status = 1')->all();
+        foreach ($buildings as $building) {
+            foreach ($building->type->workers as $tWorker) {
+                $count = 0;
+                foreach ($building->workers as $link) {
+                    $pop = $link->population;
+                    if ($pop->class == $tWorker->pop_class_id) {
+                        $count += $pop->count;
+                    }
+                }
+                if ($count < $tWorker->count) {
+                    $building->status = 5;
+                    $building->save();
+                }
+            }
+        }
+        unset($buildings);
         
     }
 }
