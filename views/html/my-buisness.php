@@ -11,8 +11,8 @@ use yii\helpers\Html;
 
 ?>
 <h1>Управление бизнесом</h1>
-<h3>Ваши акции:</h3>
-<table class="table">
+<h3>Ваши акции: <button class="btn btn-mini" id="stock_list_button">скрыть/показать</button></h3>
+<table class="table" id="stocks_list" style="display: none">
     <thead>
         <tr>
             <th>Фирма</th>
@@ -30,7 +30,33 @@ use yii\helpers\Html;
         <td><?=Html::a("Управление","#",['class'=>'btn btn-primary', 'onclick'=>'load_page("holding-control",{"id":'.$stock->holding_id.'})'])?></td>
     </tr>
 <? }} else { ?>
-    <tr><td colspan="2">Не владеет акциями</td></tr>
+    <tr><td colspan="4">Не владеет акциями</td></tr>
+<? } ?>
+    </tbody>
+</table>
+
+<h3>Управление: <button class="btn btn-mini" id="managefactories_list_button">скрыть/показать</button></h3>
+<table id="managefactories_list" class="table" style="display: none">
+    <thead>
+        <tr>
+            <th>Обьект</th>
+            <th>Фирма</th>
+            <th>Регион</th>
+            <th>Статус</th>
+            <th>Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+<? if (count($user->factories)) { foreach ($user->factories as $factory) { ?>
+    <tr>
+        <td><?=$factory->name?></td>
+        <td><a href="#" onclick="load_page('holding-info',{'id':<?=$factory->holding_id?>})"><?=$factory->holding->name?></a></td>
+        <td><?=$factory->region->name?></td>
+        <td><?=$factory->statusName?></td>
+        <td><?=Html::a("Управление","#",['class'=>'btn btn-primary', 'onclick'=>'load_page("factory-control",{"id":'.$factory->id.'})'])?></td>
+    </tr>
+<? }} else { ?>
+    <tr><td colspan="5">Не управляет ни одним обьектом</td></tr>
 <? } ?>
     </tbody>
 </table>
@@ -60,3 +86,18 @@ use yii\helpers\Html;
   </div></form>
 </div>
 <? } ?>
+
+<script>
+    $(function(){
+        $('#stock_list_button').toggle(function(){
+            $('#stocks_list').slideDown();
+        },function(){
+            $('#stocks_list').slideUp();
+        })
+        $('#managefactories_list_button').toggle(function(){
+            $('#managefactories_list').slideDown();
+        },function(){
+            $('#managefactories_list').slideUp();
+        })
+    })
+</script>

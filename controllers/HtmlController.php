@@ -333,5 +333,25 @@ class HtmlController extends MyController
             return $this->_r("Invalid factory ID");
         }
     }
+    
+    public function actionFactoryControl($id)
+    {
+        $id = intval($id);
+        if ($id > 0) {
+            $factory = Factory::findByPk($id);
+            if (is_null($factory)) {
+                return $this->_r("Factory not found");
+            }
+            
+            if ($factory->manager_uid == $this->viewer_id) {
+                return $this->render("factory-control", ['factory' => $factory]);
+            } else {
+                return $this->_r("Not allowed");
+            }
+            
+        } else {
+            return $this->_r("Invalid factory ID");
+        }
+    }
 
 }
