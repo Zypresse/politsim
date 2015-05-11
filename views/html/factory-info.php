@@ -26,6 +26,19 @@ use app\components\MyHtmlHelper;
     <? } ?>
 </ul>
 </p>
+<p><strong>Зарплаты:</strong>
+<? if (count($factory->salaries)) { ?>
+<ul>
+    <? foreach ($factory->salaries as $salary) { ?>
+    <li>
+        <?=$salary->popClass->name?> — <?=$salary->salary?> <?=MyHtmlHelper::icon('money')?>
+    </li>
+    <? } ?>
+</ul>
+<? } else { ?>
+<br>Не нанято ни одного работника
+<? } ?>
+</p>
 <p><strong>Нанятые работники:</strong>
 <? if (count($factory->workers)) { ?>
 <ul>

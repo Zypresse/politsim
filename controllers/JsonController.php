@@ -24,7 +24,9 @@ use yii\helpers\ArrayHelper,
     app\models\Stock,
     app\models\HoldingDecision,
     app\models\HoldingDecisionVote,
-    app\models\Notification;
+    app\models\Notification,
+    app\models\Factory,
+    app\models\FactoryWorkersSalary;
 
 class JsonController extends MyController
 {
@@ -1428,4 +1430,51 @@ class JsonController extends MyController
         }
     }
 
+    function actionFactoryManagerSalariesSave($factory_id)
+    {
+        if (intval($factory_id) > 0) {
+            $factory = Factory::findByPk($factory_id);
+            if (is_null($factory)) {
+                return $this->_r("Factory not found");
+            }
+            
+            if ($factory->manager_uid && $this->viewer_id == $factory->manager_uid) {
+                
+                foreach ($factory->type->workers as $tWorker) {
+                    if (!(isset($_REQUEST['salary_'.$tWorker->pop_class_id]))) {
+                        return $this->_r("Invalid fields 1");
+                    }
+                    $new_salary_value = floatval($_REQUEST['salary_'.$tWorker->pop_class_id]);
+                    
+                    $saved = false;
+                    foreach ($factory->salaries as $salary) {
+                        if ($salary->pop_class_id == $tWorker->pop_class_id) {
+                            $salary->salary = $new_salary_value;
+                            $saved = $salary->save();
+                            break;
+                        }
+                    }
+                    if (!$saved) {
+                        $salary = new FactoryWorkersSalary();
+                        $salary->factory_id = $factory_id;
+                        $salary->pop_class_id = $tWorker->pop_class_id;
+                        $salary->salary = $new_salary_value;
+                        $saved = $salary->save();
+                    }
+                    
+                    if (!$saved) {
+                        return isset($salary) ? $this->_r($salary->getErrors()) : 'Undefined error';
+                    }
+                }
+                
+                return $this->_rOk();
+                
+            } else {
+                return $this->_r("Not allowed");
+            }            
+        } else {
+            return $this->_r("Invalid factory ID");
+        }
+    }
+    
 }

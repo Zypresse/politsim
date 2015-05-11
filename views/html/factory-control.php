@@ -26,6 +26,19 @@ use app\components\MyHtmlHelper;
     <? } ?>
 </ul>
 </p>
+<p><strong>Зарплаты:</strong>
+<? if (count($factory->salaries)) { ?>
+<ul>
+    <? foreach ($factory->salaries as $salary) { ?>
+    <li>
+        <?=$salary->popClass->name?> — <?=$salary->salary?> <?=MyHtmlHelper::icon('money')?>
+    </li>
+    <? } ?>
+</ul>
+<? } else { ?>
+<br>Не нанято ни одного работника
+<? } ?>
+</p>
 <p><strong>Нанятые работники:</strong>
 <? if (count($factory->workers)) { ?>
 <ul>
@@ -60,15 +73,22 @@ use app\components\MyHtmlHelper;
                         $actived += $worker->population->count;
                     }
                 }
+                $salary_value = 1;
+                foreach ($factory->salaries as $salary) {
+                    if ($salary->pop_class_id == $tWorker->pop_class_id) {
+                        $salary_value = $salary->salary;
+                        break;
+                    }
+                }
                 ?>
             <dt><?=$tWorker->popClass->name?> <?=$actived?>/<?=$tWorker->count*$factory->size?></dt>
-            <dd>Зарплата: <input type="number" value="1" style="width:50px" > <?=MyHtmlHelper::icon('money')?> в месяц</dd>
+            <dd>Зарплата: <input id="salary_<?=$tWorker->pop_class_id?>" type="number" value="<?=$salary_value?>" style="width:50px" > <?=MyHtmlHelper::icon('money')?> в месяц</dd>
             <? } ?>
         </dl>
   </div>
   <div class="modal-footer">
+      <button class="btn btn-primary" onclick="save_salaries()">Сохранить</button>
     <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
-    <!--<button class="btn btn-primary">Save changes</button>-->
   </div>
 </div>
 
@@ -86,6 +106,16 @@ use app\components\MyHtmlHelper;
   </div>
 </div>
 <script>
+
+function save_salaries() {
+    var data = {
+        'factory_id': <?=$factory->id?>
+    }
+    <? foreach ($factory->type->workers as $tWorker) { ?>
+            data.salary_<?=$tWorker->pop_class_id?> = $('#salary_<?=$tWorker->pop_class_id?>').val();
+    <? } ?>
+        json_request('factory-manager-salaries-save',data);
+}
 
 function show_region(region) {
     $.ajax(

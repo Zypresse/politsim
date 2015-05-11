@@ -27,7 +27,7 @@ use yii\helpers\Html;
         <td><a href="#" onclick="load_page('holding-info',{'id':<?=$stock->holding_id?>})"><?=$stock->holding->name?></a></td>
         <td><?=MyHtmlHelper::formateNumberword($stock->count, "акций","акция","акции")?> (<?=round($stock->getPercents(),2)?>%)</td>
         <td>≈ <?=number_format($stock->getCost(),0,'',' ')?> <?=MyHtmlHelper::icon('money')?></td>
-        <td><?=Html::a("Управление","#",['class'=>'btn btn-primary', 'onclick'=>'load_page("holding-control",{"id":'.$stock->holding_id.'})'])?></td>
+        <td><?=Html::a("Управление","#",['class'=>'btn btn-primary', 'onclick'=>'load_page("holding-info",{"id":'.$stock->holding_id.'})'])?></td>
     </tr>
 <? }} else { ?>
     <tr><td colspan="4">Не владеет акциями</td></tr>
@@ -49,11 +49,11 @@ use yii\helpers\Html;
     <tbody>
 <? if (count($user->factories)) { foreach ($user->factories as $factory) { ?>
     <tr>
-        <td><?=$factory->name?></td>
-        <td><a href="#" onclick="load_page('holding-info',{'id':<?=$factory->holding_id?>})"><?=$factory->holding->name?></a></td>
+        <td><?=MyHtmlHelper::a($factory->name,"load_page('factory-info',{'id':{$factory->id}})")?></td>
+        <td><?=MyHtmlHelper::a($factory->holding->name,"load_page('holding-info',{'id':{$factory->holding_id}})")?></td>
         <td><?=$factory->region->name?></td>
         <td><?=$factory->statusName?></td>
-        <td><?=Html::a("Управление","#",['class'=>'btn btn-primary', 'onclick'=>'load_page("factory-control",{"id":'.$factory->id.'})'])?></td>
+        <td><?=Html::a("Управление","#",['class'=>'btn btn-primary', 'onclick'=>'load_page("factory-info",{"id":'.$factory->id.'})'])?></td>
     </tr>
 <? }} else { ?>
     <tr><td colspan="5">Не управляет ни одним обьектом</td></tr>
