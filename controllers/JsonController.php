@@ -1444,7 +1444,7 @@ class JsonController extends MyController
                     if (!(isset($_REQUEST['salary_'.$tWorker->pop_class_id]))) {
                         return $this->_r("Invalid fields 1");
                     }
-                    $new_salary_value = floatval($_REQUEST['salary_'.$tWorker->pop_class_id]);
+                    $new_salary_value = abs(floatval($_REQUEST['salary_'.$tWorker->pop_class_id]));
                     
                     $saved = false;
                     foreach ($factory->salaries as $salary) {

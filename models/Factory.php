@@ -95,6 +95,11 @@ class Factory extends MyModel
         return $this->hasMany('app\models\FactoryWorkersSalary', array('factory_id' => 'id'));
     }
     
+    public function getVacansies()
+    {
+        return $this->hasMany('app\models\Vacansy', array('factory_id' => 'id'));
+    }
+    
     public function getStatusName()
     {
         $names = [

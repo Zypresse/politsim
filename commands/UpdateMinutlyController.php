@@ -3,13 +3,10 @@
 namespace app\commands;
 
 use yii\console\Controller,
-    app\models\Region,
-    app\models\State,
-    app\models\Party,
     app\models\Bill,
-    app\models\Holding,
     app\models\HoldingDecision,
-    app\models\Factory;
+    app\models\Factory,
+    app\models\Vacansy;
 
 /**
  * Update all, crontab minutly
@@ -20,67 +17,21 @@ class UpdateMinutlyController extends Controller {
     
     public function actionIndex() {
         
-        /*
-         * TODO: Обновление регионов, государств и особенно партий вынести в UpdateHourly или типа того, потому что выполняется в сумме уже секунды три
-         */
+        $this->updateBills();
         
-        // Update regions
-        $regions = Region::find()->all();
-        foreach ($regions as $region) {
-            $region->population = 0;
-            foreach ($region->populationGroups as $pop) {
-                $region->population += $pop->count;
-            }
-            $region->save();
-        }
-        unset($regions);
-                
-        // Update states
-        $states = State::find()->with('regions')->all();
-        foreach ($states as $state) {
-            $state->population = 0;
-            foreach ($state->regions as $region) {
-                $state->population += $region->population;
-            }
-            $state->sum_star = 0;
-            foreach ($state->users as $user) {
-                $state->sum_star += $user->star;
-            }
-            if ($state->population === 0) {
-                $state->delete();
-            } else {
-                $state->save();
-            }
-        }
-        unset($states);
-                
-        // Update parties
-        $parties = Party::find()->all();
+        $this->updateHoldingDecisions();
+        
+        $this->updateBuildinds();   
+        
+        $this->updateFactories();     
+        
+    }
 
-        foreach ($parties as $party) {
-            $party->star = 0;
-            $party->heart = 0;
-            $party->chart_pie = 0;
-            $k = 1;
-            foreach ($party->members as $user) {
-                $party->star += $user->star*$k;
-                $party->heart += $user->heart*$k;
-                $party->chart_pie += $user->chart_pie*$k;
-                $k *= 0.9;
-            }
-            $party->star = round($party->star);
-            $party->heart = round($party->heart);
-            $party->chart_pie = round($party->chart_pie);
-            
-            if (count($party->members) === 0) {
-                $party->delete();
-            } else {
-                $party->save();
-            }            
-        }
-        unset($parties);
-        
-        // Update bills
+    /**
+     * Update bills
+     */
+    public function updateBills()
+    {
         $bills = Bill::find()->where('accepted = 0 AND vote_ended <= '.time())->all();
         foreach ($bills as $bill) {
             if ($bill->dicktator) {
@@ -103,35 +54,13 @@ class UpdateMinutlyController extends Controller {
             }
         }
         unset($bills);
-        
-        // update holdings
-        $holdings = Holding::find()->all();
-        foreach ($holdings as $holding) {
+    }
 
-            foreach ($holding->stocks as $stock) {
-                if ($stock->count < 1) {
-                    $stock->delete();
-                }
-            }
-            
-            $capital = 0.0;
-            
-            // пока цена на акции 1 монета
-            $capital += 1* $holding->getSumStocks();
-            
-            // стоимость зданий как стоимость их постройки
-            foreach ($holding->factories as $factory) {
-                $capital += $factory->size * $factory->type->build_cost;
-            }
-            
-            $capital += $holding->balance;
-            
-            $holding->capital = $capital;
-            $holding->save();
-        }
-        unset($holdings);
-        
-        // update holding decisions
+    /**
+     * update holding decisions
+     */
+    public function updateHoldingDecisions()
+    {
         $decisions = HoldingDecision::find()->where('accepted = 0')->all();
         foreach ($decisions as $decision) {
             $za = 0; $protiv = 0;
@@ -151,8 +80,13 @@ class UpdateMinutlyController extends Controller {
             }
         }
         unset($decisions);
-        
-        // Update building status
+    }
+
+    /**
+     * Update building status
+     */
+    public function updateBuildinds()
+    {
         // Окончание строительства
         $buildings = Factory::find()->where('builded <= '.time().' AND status = -1')->all();
         foreach ($buildings as $building) {
@@ -160,7 +94,7 @@ class UpdateMinutlyController extends Controller {
             $building->save();
         }
         // Проверка количества рабочих
-        $buildings = Factory::find()->where('status = 1')->all();
+        $buildings = Factory::find()->where('status > 2 OR status = 1')->all();
         foreach ($buildings as $building) {
             foreach ($building->type->workers as $tWorker) {
                 $count = 0;
@@ -170,13 +104,45 @@ class UpdateMinutlyController extends Controller {
                         $count += $pop->count;
                     }
                 }
-                if ($count < $tWorker->count) {
-                    $building->status = 5;
-                    $building->save();
+                if ($count < $tWorker->count*$building->size) {
+                    if ($building->status == 1) {
+                        $building->status = 5;
+                        $building->save();
+                    } else {
+                        $vacansy = Vacansy::find()->where(['factory_id'=>$building->id,'pop_class_id'=>$tWorker->pop_class_id])->one();
+                        if (is_null($vacansy)) {
+                            $vacansy = new Vacansy();
+                            $vacansy->factory_id = $building->id;
+                            $vacansy->region_id = $building->region_id;
+                            $vacansy->pop_class_id = $tWorker->pop_class_id;
+                        }
+                        
+                        $vacansy->count_need = ($tWorker->count*$building->size - $count);
+                        $vacansy->count_all = $tWorker->count*$building->size;
+                        
+                        $salary_value = 0;
+                        foreach ($building->salaries as $salary) {
+                            if ($salary->pop_class_id = $tWorker->pop_class_id) {
+                                $salary_value = $salary->salary;
+                                break;
+                            }
+                        }
+                        
+                        $vacansy->salary = $salary_value;
+                        
+                        $vacansy->save();
+                    }
                 }
             }
         }
         unset($buildings);
+    }
+
+    /**
+     * Update factories
+     */
+    public function updateFactories()
+    {
         
     }
 }

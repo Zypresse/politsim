@@ -52,6 +52,19 @@ use app\components\MyHtmlHelper;
 <br>Не нанято ни одного работника
 <? } ?>
 </p>
+<p><strong>Открытые вакансии:</strong>
+<? if (count($factory->vacansies)) { ?>
+<ul>
+    <? foreach ($factory->vacansies as $vacansy) { ?>
+    <li>
+        <?=$vacansy->popClass->name?> — <?=$vacansy->count_need?>, зарплата <?=$vacansy->salary?> <?=MyHtmlHelper::icon('money')?>
+    </li>
+    <? } ?>
+</ul>
+<? } else { ?>
+<br>Не нанято ни одного работника
+<? } ?>
+</p>
 
 <h3>Действия</h3>
 <p>
