@@ -36,6 +36,8 @@ use app\components\MyModel;
  * @property \app\models\Population[] $populationGroups Группы населения
  * @property \app\models\CoreCountry[] $cores "Щитки"
  * @property Holding[] $holdings Компании
+ * @property Factory[] $factories Фабрики
+ * @property Vacansy[] $vacansies Вакансии
  */
 class Region extends MyModel
 {
@@ -154,9 +156,20 @@ class Region extends MyModel
     {
         return $this->hasMany('app\models\Population', array('region_id' => 'id'));
     }
+
     public function getHoldings()
     {
         return $this->hasMany('app\models\Holding', array('region_id' => 'id'));
+    }
+
+    public function getFactories()
+    {
+        return $this->hasMany('app\models\Factory', array('region_id' => 'id'));
+    }
+
+    public function getVacansies()
+    {
+        return $this->hasMany('app\models\Vacansy', array('region_id' => 'id'))->orderBy("salary DESC");
     }
 
     /**
@@ -189,7 +202,7 @@ class Region extends MyModel
              *  2.2 Если в новом государстве есть гос. монополия на какие-либо виды деятельности, зарегистрированные в фирме, то она лишается их
              *  2.3 Если в новом государстве разрешены частные компании, но запрещены акционеры-иностранцы, а они есть, то через, допустим, сутки, компания ликвидируется. За это время акционеры могут получить гражданство нового государства или переехать.
              */ 
-            
+            /*
             foreach ($this->holdings as $holding) {
                 if ($holding->isGosHolding()) {
                     $holding->region_id = 0;//$holding->state->region_id;
@@ -205,7 +218,7 @@ class Region extends MyModel
                     }
                     
                 }
-            }
+            }*/
         }
         
         return parent::afterSave($insert,$changedAttributes);

@@ -1,6 +1,11 @@
 <?php
 use app\components\MyHtmlHelper;
 ?>
+<ul class="nav nav-tabs">
+  <li><a href="#" onclick="show_region_info()">Инфо</a></li>
+  <li class="active"><a href="#">Население</a></li>
+  <li><a href="#" onclick="show_region_resurses()">Ресурсы</a></li>
+</ul>
 <h1><?=htmlspecialchars($region->name)?></h1>
 <h2>Состав населения</h2>
 <h4>По классам:</h4>
@@ -83,4 +88,38 @@ $('#show_all_groups_population').toggle(function() {
     $('.diagramm').popover({'placement':'top','trigger':'focus'});
 
 })
+
+
+function show_region_info() {
+    $.ajax(
+        {
+          url: '/api/modal/region-info?code=<?=$region->code?>',
+          beforeSend:function() {
+              $('#region_info_body').empty();
+          },
+          success:function(d) {
+              $('#region_info_body').html(d);
+              $('#region_info').modal();
+          },
+          error:show_error
+        });
+    return false;
+}
+
+function show_region_resurses() {
+    $.ajax(
+        {
+          url: '/api/modal/region-resurses?code=<?=$region->code?>',
+          beforeSend:function() {
+              $('#region_info_body').empty();
+          },
+          success:function(d) {
+              $('#region_info_body').html(d);
+              $('#region_info').modal();
+          },
+          error:show_error
+        });
+    return false;
+}
+
 </script>

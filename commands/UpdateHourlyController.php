@@ -17,14 +17,29 @@ class UpdateHourlyController extends Controller
 
     public function actionIndex()
     {
-        
+        $time = microtime(true);
         $this->updateRegions();
-                
+        printf("Updated regions: %f s.".PHP_EOL, microtime(true)-$time);
+        
+        $time = microtime(true);
         $this->updateStates();
+        printf("Updated states: %f s.".PHP_EOL, microtime(true)-$time);
         
-        $this->updateParties();  
+        $time = microtime(true);
+        $this->updateParties();
+        printf("Updated parties: %f s.".PHP_EOL, microtime(true)-$time);
         
+        $time = microtime(true);
         $this->updateHoldings();
+        printf("Updated holdings: %f s.".PHP_EOL, microtime(true)-$time);
+        
+        $time = microtime(true);
+        $this->updatePopStudy();
+        printf("Updated populations study: %f s.".PHP_EOL, microtime(true)-$time);
+        
+        $time = microtime(true);
+        $this->updatePopWorkers();
+        printf("Updated populations works: %f s.".PHP_EOL, microtime(true)-$time);
         
     }
 
@@ -129,6 +144,76 @@ class UpdateHourlyController extends Controller
             $holding->save();
         }
         unset($holdings);
+    }
+    
+    public function updatePopStudy()
+    {
+        $regions = Region::find()->all();
+        foreach ($regions as $region) {
+            $vacansiesSumByPopClass = [];
+            $baseSpeeds = [];
+            foreach ($region->vacansies as $vacansy) {
+                if (isset($vacansiesSumByPopClass[$vacansy->pop_class_id])) {
+                    $vacansiesSumByPopClass[$vacansy->pop_class_id] += $vacansy->count_all;
+                } else {
+                    $vacansiesSumByPopClass[$vacansy->pop_class_id] = $vacansy->count_all;
+                    $baseSpeeds[$vacansy->pop_class_id] = $vacansy->popClass->base_speed;
+                }
+            }
+            
+            $unworkers = \app\models\Population::find()->where(['class'=>2,'region_id'=>$region->id])->all();
+            shuffle($unworkers);
+            
+            foreach ($vacansiesSumByPopClass as $popClassID => $countAll) {
+                $speed = 1*$countAll*$baseSpeeds[$popClassID];
+                $studied = 0;
+                
+                foreach ($unworkers as $unworker) {
+                    if ($unworker->count <= $speed-$studied) {
+                        $unworker->class = $popClassID;
+                        $unworker->save();
+                        $studied+=$unworker->count;
+                    } else {
+                        $new_unworker = $unworker->slice($speed-$studied);
+                        
+                        $new_unworker->class = $popClassID;
+                        $new_unworker->save();
+                        
+                        $studied += $new_unworker->count;
+                    }
+                    
+                    if (!($studied < $speed)) break;
+                }
+            }
+        }
+    }
+    
+    public function updatePopWorkers()
+    {
+        $regions = Region::find()->all();
+        foreach ($regions as $region) {
+            foreach ($region->vacansies as $vacansy) {
+                $setted = 0;
+                foreach ($region->populationGroups as $popGroup) {
+                    if ($popGroup->class == $vacansy->pop_class_id && is_null($popGroup->factory)) {
+                        
+                        $fw = new \app\models\FactoryWorker();
+                        $fw->factory_id = $vacansy->factory->id;
+                        
+                        if ($popGroup->count <= $vacansy->count_need) {
+                            $fw->pop_id = $popGroup->id;                        
+                        } else {
+                            $newPG = $popGroup->slice($vacansy->count_need);
+                            $fw->pop_id = $newPG->id;
+                        }                
+                        
+                        $fw->save();
+                        $setted += $fw->population->count;
+                    }
+                    if ($setted >= $vacansy->count_need) break;
+                }
+            }
+        }
     }
     
 }

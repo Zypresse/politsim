@@ -1,6 +1,13 @@
 <?php
 use app\components\MyHtmlHelper;
 ?>
+<ul class="nav nav-tabs">
+  <li class="active">
+    <a href="#">Инфо</a>
+  </li>
+  <li><a href="#" onclick="show_region_population()">Население</a></li>
+  <li><a href="#" onclick="show_region_resurses()">Ресурсы</a></li>
+</ul>
 <h1><?=htmlspecialchars($region->name)?></h1>
 <? if ($region->city) { ?><p>Столица: <?=htmlspecialchars($region->city)?></p><? } ?>
 <? if ($region->state) { ?>
@@ -66,5 +73,40 @@ use app\components\MyHtmlHelper;
   </button>
 </div><? } ?>
 <p>Население: <?=MyHtmlHelper::formateNumberword($region->population,'человек','человек','человека')?></p>
-<!--<p>Уровень сепаратизма: <?=$region->separate_risk?></p>-->
-<!--<p>Уровень запасов нефти: <?=$region->oil?></p>-->
+
+
+<script>
+
+function show_region_population() {
+    $.ajax(
+        {
+          url: '/api/modal/region-population?code=<?=$region->code?>',
+          beforeSend:function() {
+              $('#region_info_body').empty();
+          },
+          success:function(d) {
+              $('#region_info_body').html(d);
+              $('#region_info').modal();
+          },
+          error:show_error
+        });
+    return false;
+}
+
+function show_region_resurses() {
+    $.ajax(
+        {
+          url: '/api/modal/region-resurses?code=<?=$region->code?>',
+          beforeSend:function() {
+              $('#region_info_body').empty();
+          },
+          success:function(d) {
+              $('#region_info_body').html(d);
+              $('#region_info').modal();
+          },
+          error:show_error
+        });
+    return false;
+}
+
+</script>

@@ -44,7 +44,7 @@ use app\components\MyHtmlHelper;
 <ul>
     <? foreach ($factory->workers as $worker) { ?>
     <li>
-        <?=$worker->population->classinfo->name?> — <?=$worker->population->count*$factory->size?>
+        <?=$worker->population->classinfo->name?> — <?=$worker->population->count?>
     </li>
     <? } ?>
 </ul>
@@ -62,7 +62,7 @@ use app\components\MyHtmlHelper;
     <? } ?>
 </ul>
 <? } else { ?>
-<br>Не нанято ни одного работника
+<br>Не открыто ни одной вакансии
 <? } ?>
 </p>
 

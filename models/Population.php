@@ -13,6 +13,7 @@ use app\components\MyHtmlHelper;
  * @property integer $nation ID национальности
  * @property integer $ideology ID идеологии
  * @property integer $sex Пол (0 - неопр., 1 - женский, 2 - мужской)
+ * @property integer $age Возраст
  * @property integer $count Число людей
  * @property integer $region_id ID региона
  * 
@@ -20,6 +21,7 @@ use app\components\MyHtmlHelper;
  * @property \app\models\PopNation $nationinfo Национальность
  * @property \app\models\Region $region Регион
  * @property \app\models\Ideology $ideologyinfo Идеология
+ * @property Factory $factory Фабрика, на которой они работают
  */
 class Population extends MyModel
 {
@@ -77,6 +79,21 @@ class Population extends MyModel
     public function getIdeologyinfo()
     {
         return $this->hasOne('app\models\Ideology', array('id' => 'ideology'));
+    }
+
+    private $_factory = null;
+    private $_factorySetted = false;
+    public function getFactory()
+    {
+        if ($this->_factorySetted) {
+            return $this->_factory;
+        }
+        
+        $fw = FactoryWorker::find()->where(['pop_id' => $this->id])->one();
+        if ($fw) {
+            $this->_factory = $fw->factory;
+        }
+        $this->_factorySetted = true;
     }
 
     /**
@@ -215,4 +232,21 @@ class Population extends MyModel
         return $modelsByClass;
     }
 
+    public function slice($size)
+    {
+        $this->count -= $size;
+        $this->save();
+        
+        $new = new self;
+        $new->class = $this->class;
+        $new->nation = $this->nation;
+        $new->ideology = $this->ideology;
+        $new->sex = $this->sex;
+        $new->age = $this->age;
+        $new->region_id = $this->region_id;
+        $new->count = $size;
+        $new->save();
+        
+        return $new;
+    }
 }
