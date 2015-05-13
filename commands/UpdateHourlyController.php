@@ -17,6 +17,8 @@ class UpdateHourlyController extends Controller
 
     public function actionIndex()
     {
+//        ob_start();
+        
         $time = microtime(true);
         $this->updateRegions();
         printf("Updated regions: %f s.".PHP_EOL, microtime(true)-$time);
@@ -41,6 +43,11 @@ class UpdateHourlyController extends Controller
         $this->updatePopWorkers();
         printf("Updated populations works: %f s.".PHP_EOL, microtime(true)-$time);
         
+        $time = microtime(true);
+        $this->updatePopAnalogies();
+        printf("Updated populations analogies: %f s.".PHP_EOL, microtime(true)-$time);
+        
+//        ob_end_clean();
     }
 
     /**
@@ -165,7 +172,12 @@ class UpdateHourlyController extends Controller
             shuffle($unworkers);
             
             foreach ($vacansiesSumByPopClass as $popClassID => $countAll) {
-                $speed = 1*$countAll*$baseSpeeds[$popClassID];
+                $speed = 1*$countAll*$baseSpeeds[$popClassID]/24;
+                if ($speed < 1) {
+                    $speed = 1;
+                } else {
+                    $speed = round($speed);
+                }
                 $studied = 0;
                 
                 foreach ($unworkers as $unworker) {
@@ -193,26 +205,72 @@ class UpdateHourlyController extends Controller
         $regions = Region::find()->all();
         foreach ($regions as $region) {
             foreach ($region->vacansies as $vacansy) {
+//                var_dump($vacansy->factory_id . ': ' . $vacansy->salary);
+                if ($vacansy->salary == 0) continue;
                 $setted = 0;
                 foreach ($region->populationGroups as $popGroup) {
-                    if ($popGroup->class == $vacansy->pop_class_id && is_null($popGroup->factory)) {
-                        
-                        $fw = new \app\models\FactoryWorker();
-                        $fw->factory_id = $vacansy->factory->id;
+                    if ($popGroup->class == $vacansy->pop_class_id && !($popGroup->factory_id)) {
                         
                         if ($popGroup->count <= $vacansy->count_need) {
-                            $fw->pop_id = $popGroup->id;                        
+                            $popGroup->factory_id = $vacansy->factory_id;                        
+                            $popGroup->save();
+                            $setted += $popGroup->count;
                         } else {
                             $newPG = $popGroup->slice($vacansy->count_need);
-                            $fw->pop_id = $newPG->id;
+                            $newPG->factory_id = $vacansy->factory_id;
+                            $newPG->save();
+                            $setted += $newPG->count;
                         }                
-                        
-                        $fw->save();
-                        $setted += $fw->population->count;
                     }
-                    if ($setted >= $vacansy->count_need) break;
+                    if ($setted >= $vacansy->count_need) {
+                        break;
+                    }
                 }
+                $vacansy->count_need -= $setted;
+                $vacansy->save();
             }
+        }
+    }
+    
+    public function updatePopAnalogies()
+    {
+        $popGroups = \app\models\Population::find()->all();
+        $obrabotannue = [];
+        
+        foreach ($popGroups as $pop) {
+        if (!(in_array($pop->getUniqueKey(), $obrabotannue))) {
+            $query = new \yii\db\Query;
+            $countAnalog = intval(@$query->addSelect(["SUM(count)"])
+                  ->from([\app\models\Population::tableName()])
+                  ->where([
+                    'class' => $pop->class,
+                    'nation' => $pop->nation,
+                    'ideology' => $pop->ideology,
+                    'sex' => $pop->sex,
+                    'age' => $pop->age,
+                    'factory_id' => $pop->factory_id,
+                    'region_id' => $pop->region_id
+                  ])->column()[0]);
+            
+            if ($countAnalog > $pop->count) {
+                
+                $obrabotannue[] = $pop->getUniqueKey();
+                
+                \app\models\Population::deleteAll([
+                    'class' => $pop->class,
+                    'nation' => $pop->nation,
+                    'ideology' => $pop->ideology,
+                    'sex' => $pop->sex,
+                    'age' => $pop->age,
+                    'factory_id' => $pop->factory_id,
+                    'region_id' => $pop->region_id
+                  ]);
+                
+                $pop->count = $countAnalog;
+                $pop->isNewRecord = true;
+                $pop->save();
+            }
+        }
         }
     }
     

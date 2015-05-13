@@ -102,6 +102,16 @@ foreach ($holding->decisions as $decision) {
                 $region_name = $factory->region->name. ($factory->region->state ? ', '.$factory->region->state->short_name : '');
                 echo "Назначение человека по имени {$user->name} на должность управляющего обьектом {$factory->name} ({$region_name})";
                 break;
+            case HoldingDecision::DECISION_SETMAINOFFICE:
+                $factory = app\models\Factory::findByPk($data->factory_id);
+                $region_name = $factory->region->name. ($factory->region->state ? ', '.$factory->region->state->short_name : '');
+                echo "Назначение офиса {$factory->name} ({$region_name}) главным офисом компании";
+                break;
+            case HoldingDecision::DECISION_RENAMEFABRIC:
+                $factory = app\models\Factory::findByPk($data->factory_id);
+                $region_name = $factory->region->name. ($factory->region->state ? ', '.$factory->region->state->short_name : '');
+                echo "Переименование объекта {$factory->name} ({$region_name}) в {$data->new_name}";
+                break;
         }
         ?></td><td>
             <?
@@ -151,6 +161,7 @@ foreach ($holding->decisions as $decision) {
   <ul class="dropdown-menu">
     <!--<li class="divider"></li>-->
     <li><a href="#" onclick="$('#rename_holding_modal').modal();" >Переименовать холдинг</a></li>
+    <li><a href="#" onclick="$('#set_main_office_modal').modal();" >Установить главный офис</a></li>
   </ul>
 </div>
 <div class="btn-group">
@@ -169,6 +180,7 @@ foreach ($holding->decisions as $decision) {
   <ul class="dropdown-menu">
     <li><a href="#" onclick="$('#new_factory_modal').modal();" >Построить новый обьект</a></li>
     <li><a href="#" onclick="$('#set_manager_modal').modal();" >Назначить управляющего</a></li>
+    <li><a href="#" onclick="$('#rename_factory_modal').modal();" >Переименовать обьект</a></li>
   </ul>
 </div>
     <? if ($holding->state) { ?>
@@ -340,6 +352,59 @@ foreach ($holding->decisions as $decision) {
     <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
   </div>
 </div>
+
+<div style="display:none;" class="modal" id="rename_factory_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel123" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel1234">Переименование обьекта</h3>
+  </div>
+  <div id="rename_factory_modal_body" class="modal-body">
+    <div class="control-group">
+      <label class="control-label" for="#factory_id_for_rename">Обьект</label>
+      <div class="controls">
+          <select id="factory_id_for_rename">
+              <? foreach ($holding->factories as $factory) {?>
+              <option value="<?=$factory->id?>"><?=$factory->name?> (<?=$factory->region->name?>)</option>
+              <? } ?>
+          </select>
+      </div>
+      <label class="control-label" for="#factory_new_name">Название</label>
+      <div class="controls">
+          <input type="text" id="factory_new_name" value="">
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+  	<button class="btn btn-primary" data-dismiss="modal"  onclick="rename_factory()">Переименовать</button>
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+  </div>
+</div>
+
+<div style="display:none;" class="modal" id="set_main_office_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel123" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel1234">Установка главного офиса</h3>
+  </div>
+  <div id="set_main_office_modal_body" class="modal-body">
+    <div class="control-group">
+      <label class="control-label" for="#new_main_office_id">Обьект</label>
+      <div class="controls">
+          <select id="new_main_office_id">
+              <? foreach ($holding->factories as $factory) {
+                  if ($factory->type_id == 4) { ?>
+              <option value="<?=$factory->id?>"><?=$factory->name?> (<?=$factory->region->name?>)</option>
+                  <? }
+              } ?>
+          </select>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+  	<button class="btn btn-primary" data-dismiss="modal"  onclick="set_main_office()">Установить</button>
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+  </div>
+</div>
+
 <div style="display:none;" class="modal" id="new_factory_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabelnew_factory_modal" aria-hidden="true">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -440,6 +505,14 @@ function get_new_license(id) {
 
 function updateLicenseInfo() {
    $('#license_info').html($("#license_option"+$('#new_license_id').val()).data('text'));
+}
+
+function rename_factory() {
+    json_request('new-holding-decision',{'holding_id':<?=$holding->id?>,'type':8,'factory_id':$('#factory_id_for_rename').val(),'new_name':$('#factory_new_name').val()});
+}
+
+function set_main_office() {
+    json_request('new-holding-decision',{'holding_id':<?=$holding->id?>,'type':7,'factory_id':$('#new_main_office_id').val()});
 }
 
 var new_factory_type = 0;

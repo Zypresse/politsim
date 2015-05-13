@@ -98,6 +98,16 @@ class HoldingDecision extends MyModel
      * Назначение менеджера
      */
     const DECISION_SETMANAGER = 6;
+    
+    /**
+     * Назначение главного офиса
+     */
+    const DECISION_SETMAINOFFICE = 7;
+    
+    /**
+     * Переименование фабрики
+     */
+    const DECISION_RENAMEFABRIC = 8;
 
     /**
      * Принять решение
@@ -206,6 +216,22 @@ class HoldingDecision extends MyModel
                 $factory = Factory::findByPk($data->factory_id);
                 if ($factory->holding_id == $this->holding_id) {
                     $factory->manager_uid = $data->uid;
+                    $factory->save();
+                }
+                break;
+            case self::DECISION_SETMAINOFFICE:
+                $factory = Factory::findByPk($data->factory_id);
+                if ($factory->holding_id == $this->holding_id) {
+                    $this->holding->main_office_id = $data->factory_id;
+                    $this->holding->region_id = $factory->region_id;
+                    $this->holding->state_id = $factory->region->state_id;
+                    $this->holding->save();
+                }
+                break;
+            case self::DECISION_RENAMEFABRIC:
+                $factory = Factory::findByPk($data->factory_id);
+                if ($factory->holding_id == $this->holding_id) {
+                    $factory->name = trim(strip_tags($data->new_name));
                     $factory->save();
                 }
                 break;

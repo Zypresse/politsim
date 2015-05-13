@@ -21,7 +21,7 @@ use app\components\MyModel;
  * @property Holding $holding Компания-владелец
  * @property Region $region Регион, в котором она находится
  * @property User $manager Управляющий
- * @property FactoryWorker[] $workers Рабочие
+ * @property Population[] $workers Рабочие
  * @property FactoryWorkerSalary[] $salaries Установленные зарплаты рабочих
  */
 class Factory extends MyModel
@@ -87,7 +87,7 @@ class Factory extends MyModel
     
     public function getWorkers()
     {
-        return $this->hasMany('app\models\FactoryWorker', array('factory_id' => 'id'));
+        return $this->hasMany('app\models\Population', array('factory_id' => 'id'));
     }
     
     public function getSalaries()

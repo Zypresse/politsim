@@ -93,30 +93,36 @@ class UpdateMinutlyController extends Controller {
             $building->status = 1;
             $building->save();
         }
-        // Проверка количества рабочих
+        
+        // Проверка количества рабочих (размещение вакансий)
         $buildings = Factory::find()->where('status > 2 OR status = 1')->all();
         foreach ($buildings as $building) {
             
-            Vacansy::deleteAll("factory_id = {$building->id}");
+            //Vacansy::deleteAll("factory_id = {$building->id}");
             
             foreach ($building->type->workers as $tWorker) {
                 $count = 0;
-                foreach ($building->workers as $link) {
-                    $pop = $link->population;
+                foreach ($building->workers as $pop) {
                     if ($pop->class == $tWorker->pop_class_id) {
                         $count += $pop->count;
                     }
                 }
-                if ($count < $tWorker->count*$building->size) {
-                    if ($building->status == 1) {
+//                if ($count < $tWorker->count*$building->size) {
+                    if ($building->status == 1 && $count < $tWorker->count*$building->size/2) {
                         $building->status = 5;
                         $building->save();
                     } else {
                         
-                        $vacansy = new Vacansy();
-                        $vacansy->factory_id = $building->id;
-                        $vacansy->region_id = $building->region_id;
-                        $vacansy->pop_class_id = $tWorker->pop_class_id;
+                        $vacansy = Vacansy::find()->where([
+                            'factory_id'=>$building->id,
+                            'pop_class_id'=>$tWorker->pop_class_id
+                        ])->one();
+                        if (is_null($vacansy)) {
+                            $vacansy = new Vacansy();
+                            $vacansy->factory_id = $building->id;
+                            $vacansy->region_id = $building->region_id;
+                            $vacansy->pop_class_id = $tWorker->pop_class_id;
+                        }
                         
                         $vacansy->count_need = ($tWorker->count*$building->size - $count);
                         $vacansy->count_all = $tWorker->count*$building->size;
@@ -133,9 +139,27 @@ class UpdateMinutlyController extends Controller {
                         
                         $vacansy->save();
                     }
+//                }
+            }
+        }
+        
+        // Проверка не набрали ли фабрики нужного числа рабочих
+        $buildings = Factory::find()->where(['status'=>5])->all();
+        foreach ($buildings as $building) {
+            foreach ($building->type->workers as $tWorker) {
+                $count = 0;
+                foreach ($building->workers as $pop) {
+                    if ($pop->class == $tWorker->pop_class_id) {
+                        $count += $pop->count;
+                    }
+                }
+                if ($count >= $tWorker->count*$building->size/2) {
+                    $building->status = 1;
+                    $building->save();
                 }
             }
         }
+        
         unset($buildings);
     }
 

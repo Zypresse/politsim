@@ -44,7 +44,7 @@ use app\components\MyHtmlHelper;
 <ul>
     <? foreach ($factory->workers as $worker) { ?>
     <li>
-        <?=$worker->population->classinfo->name?> — <?=$worker->population->count?>
+        <?=$worker->classinfo->name?> — <?=$worker->count?>
     </li>
     <? } ?>
 </ul>
@@ -69,6 +69,7 @@ use app\components\MyHtmlHelper;
 <h3>Действия</h3>
 <p>
     <button class="btn btn-small btn-info" onclick="$('#salaries_manager').modal()">Зарплаты</button>
+<!--    <button class="btn btn-small btn-danger" onclick="if (confirm('Вы действительно хотите уволить всех рабочих и остановить работу?')) { json_request('manager-stop-work') }">Остановить работу</button>-->
 </p>
 
 <div style="display:none" class="modal" id="salaries_manager" tabindex="-1" role="dialog" aria-labelledby="myModalLabel123213" aria-hidden="true">
@@ -82,8 +83,8 @@ use app\components\MyHtmlHelper;
             <? foreach ($factory->type->workers as $tWorker) { 
                 $actived = 0;
                 foreach ($factory->workers as $worker) {
-                    if ($worker->population->class == $tWorker->pop_class_id) {
-                        $actived += $worker->population->count;
+                    if ($worker->class == $tWorker->pop_class_id) {
+                        $actived += $worker->count;
                     }
                 }
                 $salary_value = 1;

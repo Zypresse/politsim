@@ -44,7 +44,7 @@ use app\components\MyHtmlHelper;
 <ul>
     <? foreach ($factory->workers as $worker) { ?>
     <li>
-        <?=$worker->population->classinfo->name?> — <?=$worker->population->count?>
+        <?=$worker->classinfo->name?> — <?=$worker->count?>
     </li>
     <? } ?>
 </ul>

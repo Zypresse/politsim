@@ -1224,6 +1224,52 @@ class JsonController extends MyController
                             return $this->_r("Invalid fields");
                         }
                         break;
+                    case HoldingDecision::DECISION_SETMAINOFFICE:
+                        if (isset($_REQUEST['factory_id'])) {
+                            $factory_id = intval($_REQUEST['factory_id']);
+                            if ($factory_id > 0 ) {
+                                
+                                $factory = \app\models\Factory::findByPk($factory_id);
+                                if ($factory->holding_id == $holding_id && $factory->type_id == 4) {
+                                    
+                                    $decision->data = [
+                                        'factory_id' => $factory_id
+                                    ];
+                                    
+                                } else {
+                                    return $this->_r("Not allowed");
+                                }                                
+                            } else {
+                                return $this->_r("Invalid fields");
+                            }
+                        } else {
+                            return $this->_r("Invalid fields");
+                        }
+                        break;
+                    case HoldingDecision::DECISION_RENAMEFABRIC:
+                        if (isset($_REQUEST['factory_id']) && isset($_REQUEST['new_name'])) {
+                            $factory_id = intval($_REQUEST['factory_id']);
+                            $new_name = trim(strip_tags($_REQUEST['new_name']));
+                            if ($factory_id > 0 && !(empty($new_name))) {
+                                
+                                $factory = \app\models\Factory::findByPk($factory_id);
+                                if ($factory->holding_id == $holding_id) {
+                                    
+                                    $decision->data = [
+                                        'factory_id' => $factory_id,
+                                        'new_name' => $new_name
+                                    ];
+                                    
+                                } else {
+                                    return $this->_r("Not allowed");
+                                }                                
+                            } else {
+                                return $this->_r("Invalid fields");
+                            }
+                        } else {
+                            return $this->_r("Invalid fields");
+                        }
+                        break;
                 }
                 $decision->data = json_encode($decision->data, JSON_UNESCAPED_UNICODE);
 
@@ -1460,6 +1506,14 @@ class JsonController extends MyController
                         $salary->pop_class_id = $tWorker->pop_class_id;
                         $salary->salary = $new_salary_value;
                         $saved = $salary->save();
+                    }
+                    
+                    if ($saved) {
+                        $vacansy = \app\models\Vacansy::find()->where(['factory_id'=>$factory_id,'pop_class_id'=>$tWorker->pop_class_id])->one();
+                        if ($vacansy) {
+                            $vacansy->salary = $new_salary_value;
+                            $vacansy->save();
+                        }
                     }
                     
                     if (!$saved) {
