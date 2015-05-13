@@ -32,7 +32,7 @@ $(function(){
     <? } ?>
 
     $('#mapdiv').vectorMap({
-          map: 'map4',
+          map: 'map'+localStorage.getItem("MAP_VERSION"),
         backgroundColor: '#4B6099',
         zoomMax:50,
         focusOn: {

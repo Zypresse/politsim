@@ -36,7 +36,7 @@ use app\components\MyHtmlHelper;
     <? } ?>
 </ul>
 <? } else { ?>
-<br>Не нанято ни одного работника
+<br>Зарплаты не установлены
 <? } ?>
 </p>
 <p><strong>Нанятые работники:</strong>
