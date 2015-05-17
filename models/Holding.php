@@ -81,6 +81,11 @@ class Holding extends MyModel
     {
         return $this->hasMany('app\models\HoldingLicense', array('holding_id' => 'id'));
     }
+    
+    public function getLicensesByState($stateID)
+    {
+        return HoldingLicense::find()->where(['holding_id' => $this->id,'state_id'=>$stateID])->all();
+    }
 
     public function getFactories()
     {

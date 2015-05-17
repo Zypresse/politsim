@@ -12,7 +12,7 @@ use app\components\MyModel;
  * @property integer $builded
  * @property integer $holding_id
  * @property integer $region_id
- * @property integer $status Статус работы: -1 - unbuilded, -2 - build stopped, 0 - undefined, 1 - active, 2 - stopped, 3 - not enought resurses, 4 - autostopped, 5 - not enought workers
+ * @property integer $status Статус работы: -1 - unbuilded, -2 - build stopped, 0 - undefined, 1 - active, 2 - stopped, 3 - not enought resurses, 4 - autostopped, 5 - not enought workers, 6 - not have license
  * @property string $name
  * @property integer $size
  * @property integer $manager_uid
@@ -110,7 +110,8 @@ class Factory extends MyModel
             2 => 'Работа остановлена',
             3 => 'Работа остановлена по причине нехватки ресурсов',
             4 => 'Работа остановлена автоматически',
-            5 => 'Работа остановлена по причине нехватки работников'
+            5 => 'Работа остановлена по причине нехватки работников',
+            6 => 'Работа остановлена по причине отстутствия необходимой лицензии'
         ];
         
         return $names[$this->status];

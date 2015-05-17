@@ -418,7 +418,7 @@ foreach ($holding->decisions as $decision) {
                 <!-- Tabs -->
                 <ul class="nav panel-tabs">
                     <? foreach ($factoryCategories as $i => $factoryCat) { ?>
-                    <li class="<?=($i != 5)?'hide':'active'?>"><a href="#tab<?=$i?>" data-toggle="tab"><?=Html::img("/img/factory-types/{$factoryCat->id}.png",['alt'=>$i,'title'=>$factoryCat->name])?></a></li>
+                    <li class="<?=($i != 5)?'':'active'?>"><a href="#tab<?=$i?>" data-toggle="tab"><?=Html::img("/img/factory-types/{$factoryCat->id}.png",['alt'=>$i,'title'=>$factoryCat->name])?></a></li>
                     <? } ?>
                 </ul>
             </span>

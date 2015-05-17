@@ -33,10 +33,16 @@ use app\components\MyHtmlHelper;
                                                 break;
 						case 'new_capital':
 							$region = Region::findByCode($value);
+                                                        if (is_null($region)) {
+                                                            break;
+                                                        }
 							$value = $region->city;
 						break;
 						case 'region_code':
 							$region = Region::findByCode($value);
+                                                        if (is_null($region)) {
+                                                            break;
+                                                        }
 							$value = (in_array($field->type,['cities_all','cities'])) ? $region->city : $region->name;
 						break;
 						case 'new_flag':
@@ -46,20 +52,32 @@ use app\components\MyHtmlHelper;
 							$value = "<span style=\"background-color:{$value}\"> &nbsp; </span>";
 						break;
 						case 'goverment_field_type':
-							$gft = GovermentFieldType::findByPk($value);							
+							$gft = GovermentFieldType::findByPk($value);
+                                                        if (is_null($gft)) {
+                                                            break;
+                                                        }							
 							$value = $gft->name;
 						break;
 						case 'license_id':
-							$hlt = HoldingLicenseType::findByPk($value);							
+							$hlt = HoldingLicenseType::findByPk($value);
+                                                        if (is_null($hlt)) {
+                                                            break;
+                                                        }							
 							$value = $hlt->name;
 						break;
 						case 'org_id':
-							$org = Org::findByPk($value);							
+							$org = Org::findByPk($value);	
+                                                        if (is_null($org)) {
+                                                            break;
+                                                        }
 							$value = $org->name;
 						break;
 						case 'elected_variant':
 							$value = explode('_', $value);
-							$org = Org::findByPk($value[0]);
+							$org = Org::findByPk($value[0]);	
+                                                        if (is_null($org)) {
+                                                            break;
+                                                        }
 							$value = ($value[1]) ? "Выборы на пост «{$org->leader->name}» в организации «{$org->name}»" : "Выборы членов организации «{$org->name}»";
 						break;
 						case 'legislature_type':

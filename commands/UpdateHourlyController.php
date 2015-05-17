@@ -36,6 +36,10 @@ class UpdateHourlyController extends Controller
         printf("Updated holdings: %f s.".PHP_EOL, microtime(true)-$time);
         
         $time = microtime(true);
+        $this->updateFactoryLicenseStatus();
+        printf("Updated factory licenses status: %f s.".PHP_EOL, microtime(true)-$time);
+        
+        $time = microtime(true);
         $this->updatePopStudy();
         printf("Updated populations study: %f s.".PHP_EOL, microtime(true)-$time);
         
@@ -63,7 +67,6 @@ class UpdateHourlyController extends Controller
             }
             $region->save();
         }
-        unset($regions);
     }
 
     /**
@@ -87,7 +90,6 @@ class UpdateHourlyController extends Controller
                 $state->save();
             }
         }
-        unset($states);
     }
 
     /**
@@ -118,7 +120,6 @@ class UpdateHourlyController extends Controller
                 $party->save();
             }            
         }
-        unset($parties);
     }
     
     /**
@@ -150,7 +151,6 @@ class UpdateHourlyController extends Controller
             $holding->capital = $capital;
             $holding->save();
         }
-        unset($holdings);
     }
     
     public function updatePopStudy()
@@ -272,6 +272,28 @@ class UpdateHourlyController extends Controller
             }
         }
         }
+    }
+    
+    public function updateFactoryLicenseStatus()
+    {
+        $factories = \app\models\Factory::find()->where(['status'=>1])->all();
+        foreach ($factories as $factory) {
+            foreach ($factory->type->licenses as $tLicense) {
+                $licenseHave = false;
+                foreach ($factory->holding->getLicensesByState($factory->region->state_id) as $license) {
+                    if ($license->license_id == $tLicense->id) {
+                        $licenseHave = true;
+                        break;
+                    }
+                }
+                if (!$licenseHave) {
+                    $factory->status = 6;
+                    $factory->save();
+                }
+            }
+        }
+        
+        unset($factories);
     }
     
 }
