@@ -442,7 +442,7 @@ foreach ($holding->decisions as $decision) {
     <div class="control-group" id="new_factory_add_info" style="display:none;">
       <label class="control-label" for="#factory_new_name">Название</label>
       <div class="controls">
-          <input type="text" id="factory_new_name" value="">
+          <input type="text" id="new_factory_name" value="">
       </div>
       <label class="control-label" for="#factory_new_region">Место строительства</label>
       <div class="controls">
@@ -535,7 +535,7 @@ function start_build() {
         json_request('new-holding-decision',{
             'holding_id':<?=$holding->id?>,
             'type':5,
-            'name':$('#factory_new_name').val(),
+            'name':$('#new_factory_name').val(),
             'region_id':$('#factory_new_region').val(),
             'factory_type':new_factory_type,
             'size': $('#factory_new_size').val()
