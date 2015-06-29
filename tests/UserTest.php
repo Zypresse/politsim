@@ -94,17 +94,17 @@ class UserTest extends PHPUnit_Framework_TestCase
         $party->name = "Asd";
         $party->short_name = "ASD";
         $party->ideology = 1;
-        $party->state_id = 137;
+        $party->state_id = 195;
         $party->leader = $user->id;
         
         $this->assertTrue($party->save());
         
         $user->party_id = $party->id;
-        $user->state_id = 137;
+        $user->state_id = 195;
         
         $this->assertTrue($user->save());
         $this->assertNotNull($user->state);
-        $this->assertEquals(137, $user->state->id);
+        $this->assertEquals(195, $user->state->id);
                 
         $user->leaveState();
         $user = \app\models\User::findByPk($user->id);

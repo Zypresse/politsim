@@ -13,6 +13,7 @@ use app\models\State;
 use app\models\Ideology;
 use app\models\Twitter;
 use app\models\Holding;
+use app\models\Factory;
 
 class HtmlController extends MyController
 {
@@ -272,7 +273,11 @@ class HtmlController extends MyController
             if (is_null($holding))
                 return $this->_r("Holding not found");
 
-            return $this->render("holding-info", ['holding' => $holding, 'user' => $this->getUser()]);
+            if ($this->getUser()->isShareholder($holding)) {
+                return $this->render("holding-control", ['holding' => $holding, 'user' => $this->getUser()]);
+            } else {
+                return $this->render("holding-info", ['holding' => $holding]);
+            }
         }
         else
             return $this->_r("Invalid holding ID");
@@ -293,28 +298,29 @@ class HtmlController extends MyController
         return $this->render("dealings", ['user' => $user]);
     }
 
-    public function actionHoldingControl($id)
-    {
-        $id = intval($id);
-        if ($id) {
-            $holding = Holding::findByPk($id);
-            if (is_null($holding))
-                return $this->_r("Holding not found");
-
-            $user = $this->getUser();
-
-            if ($user->isShareholder($holding))
-                return $this->render("holding-control", ['holding' => $holding, 'user' => $user]);
-            else
-                return $this->_r("Not allowed");
-        }
-        else
-            return $this->_r("Invalid holding ID");
-    }
-
     public function actionNotifications()
     {
         return $this->render("notifications", ['user' => $this->getUser()]);
     }
+    
+    public function actionFactoryInfo($id)
+    {
+        $id = intval($id);
+        if ($id > 0) {
+            $factory = Factory::findByPk($id);
+            if (is_null($factory)) {
+                return $this->_r("Factory not found");
+            }
+            
+            if ($factory->manager_uid == $this->viewer_id) {
+                return $this->render("factory-control", ['factory' => $factory]);
+            } else {
+                return $this->render("factory-info", ['factory' => $factory]);
+            }
+            
+        } else {
+            return $this->_r("Invalid factory ID");
+        }
+    }    
 
 }

@@ -162,7 +162,7 @@
     }
   }
   function party_reserve_post_set() {
-      json_request('party-reserve-set-post',{'post_id':$('#prsp_post_id').val(),'uid':$('#prsp_user_id').val()});
+      json_request('party-reserve-set-post',{'post_id':$('#prps_post_id').val(),'uid':$('#prps_user_id').val()});
   }
   function party_elect_speaker_request() {
       json_request('party-elect-speaker-request',{'org_id':<?=$user->state->legislature?>,'uid':$('#pesr_user_id').val()});

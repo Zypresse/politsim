@@ -12,9 +12,11 @@ use app\components\MyModel;
  * @property integer $state_id
  * @property integer $region_id
  * @property double $capital
+ * @property double $balance
  * 
  * @property Stock[] $stocks Акции
  * @property HoldingLicense[] $licenses Лицензии
+ * @property Factory[] $factories Фабрики
  */
 class Holding extends MyModel
 {
@@ -35,7 +37,7 @@ class Holding extends MyModel
         return [
             [['name', 'state_id'], 'required'],
             [['state_id', 'region_id'], 'integer'],
-            [['capital'], 'number'],
+            [['capital', 'balance'], 'number'],
             [['name'], 'string', 'max' => 255],
             [['name'], 'unique']
         ];
@@ -78,6 +80,16 @@ class Holding extends MyModel
     public function getLicenses()
     {
         return $this->hasMany('app\models\HoldingLicense', array('holding_id' => 'id'));
+    }
+    
+    public function getLicensesByState($stateID)
+    {
+        return HoldingLicense::find()->where(['holding_id' => $this->id,'state_id'=>$stateID])->all();
+    }
+
+    public function getFactories()
+    {
+        return $this->hasMany('app\models\Factory', array('holding_id' => 'id'));
     }
 
     private $_sumStocks = null;

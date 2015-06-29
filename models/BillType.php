@@ -124,6 +124,11 @@ class BillType extends MyModel
      * Создание сателлита
      */
     const TYPE_CREATE_SATELLITE = 13;
+    
+    /**
+     * Отправить главу страны в отставку
+     */
+    const TYPE_DROP_STATELEADER = 14;
 
     /**
      * Принятие законопроекта
@@ -257,12 +262,21 @@ class BillType extends MyModel
                     }
                 }
                 break;
+            case static::TYPE_DROP_STATELEADER: // Отставка лидера государства
+                if ($bill->state->executiveOrg->leader->user) {
+                    $bill->state->executiveOrg->leader->unlink('user', $bill->state->executiveOrg->leader->user);
+                }
+                break;
         }
         $bill->accepted = time();
         $bill->save();
 
         if ($bill->creatorUser) {
             Notification::send($bill->creatorUser->id, "Предложенный вами законопроект, предлагающий «" . $this->name . "» одобрен и вступил в силу");
+        }
+        
+        foreach ($bill->votes as $vote) {
+            $vote->delete();
         }
 
         return true;

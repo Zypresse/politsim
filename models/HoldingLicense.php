@@ -10,9 +10,11 @@ use app\components\MyModel;
  * @property integer $id
  * @property integer $holding_id
  * @property integer $license_id
+ * @property integer $state_id
  * 
  * @property \app\models\Holding $holding Акционерное общество
  * @property \app\models\HoldingLicenseType $type Тип лицензии
+ * @property State $state Государство, выдавшее лицензию
  */
 class HoldingLicense extends MyModel
 {
@@ -31,9 +33,9 @@ class HoldingLicense extends MyModel
     public function rules()
     {
         return [
-            [['holding_id', 'license_id'], 'required'],
-            [['holding_id', 'license_id'], 'integer'],
-            [['holding_id', 'license_id'], 'unique', 'targetAttribute' => ['holding_id', 'license_id'], 'message' => 'The combination of Holding ID and License ID has already been taken.']
+            [['holding_id', 'license_id', 'state_id'], 'required'],
+            [['holding_id', 'license_id', 'state_id'], 'integer'],
+            [['holding_id', 'license_id', 'state_id'], 'unique', 'targetAttribute' => ['holding_id', 'license_id', 'state_id'], 'message' => 'The combination of Holding ID, License ID and State ID has already been taken.']
         ];
     }
 
@@ -46,6 +48,7 @@ class HoldingLicense extends MyModel
             'id'         => 'ID',
             'holding_id' => 'Holding ID',
             'license_id' => 'License ID',
+            'state_id' => 'State ID',
         ];
     }
 
@@ -57,6 +60,11 @@ class HoldingLicense extends MyModel
     public function getType()
     {
         return $this->hasOne('app\models\HoldingLicenseType', array('id' => 'license_id'));
+    }
+
+    public function getState()
+    {
+        return $this->hasOne('app\models\State', array('id' => 'state_id'));
     }
 
 }

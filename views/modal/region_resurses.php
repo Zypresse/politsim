@@ -1,8 +1,13 @@
 <?php
 use app\components\MyHtmlHelper;
 ?>
+<ul class="nav nav-tabs">
+  <li><a href="#" onclick="show_region_info()">Инфо</a></li>
+  <li><a href="#" onclick="show_region_population()">Население</a></li>
+  <li class="active"><a href="#">Ресурсы</a></li>
+</ul>
 <h1><?=htmlspecialchars($region->name)?></h1>
-<? if ($region->state_id) { ?><p><? if ($region->isCapital()) { ?>Столица государства<? } else { ?>Принадлежит государству<? } ?> &laquo;<a href='#' onclick="$('.modal-backdrop').hide(); load_page('state-info',{'id':<?=$region->state_id?>});" ><?=htmlspecialchars($region->state->name)?></a>&raquo;</p><? } ?>
+<? /* if ($region->state_id) { ?><p><? if ($region->isCapital()) { ?>Столица государства<? } else { ?>Принадлежит государству<? } ?> &laquo;<a href='#' onclick="$('.modal-backdrop').hide(); load_page('state-info',{'id':<?=$region->state_id?>});" ><?=htmlspecialchars($region->state->name)?></a>&raquo;</p><? } */ ?>
 <h3>Эффективность добычи ресурсов в этом регионе</h3>
 <ul>
 	<? if ($region->oil) { ?><li><?=MyHtmlHelper::icon('oil')?> Нефть — <?=MyHtmlHelper::zeroOne2Human($region->oil)?></li><? } ?>
@@ -20,3 +25,40 @@ use app\components\MyHtmlHelper;
 	<? if ($region->wool) { ?><li><?=MyHtmlHelper::icon('wool')?> Шерсть и кожа — <?=MyHtmlHelper::zeroOne2Human($region->wool)?></li><? } ?>
 	<? if ($region->b_materials) { ?><li><?=MyHtmlHelper::icon('b_materials')?> Стройматериалы (добываемые) — <?=MyHtmlHelper::zeroOne2Human($region->b_materials)?></li><? } ?>
 </ul>
+
+<script>
+    
+
+function show_region_info() {
+    $.ajax(
+        {
+          url: '/api/modal/region-info?code=<?=$region->code?>',
+          beforeSend:function() {
+              $('#region_info_body').empty();
+          },
+          success:function(d) {
+              $('#region_info_body').html(d);
+              $('#region_info').modal();
+          },
+          error:show_error
+        });
+    return false;
+}
+
+function show_region_population() {
+    $.ajax(
+        {
+          url: '/api/modal/region-population?code=<?=$region->code?>',
+          beforeSend:function() {
+              $('#region_info_body').empty();
+          },
+          success:function(d) {
+              $('#region_info_body').html(d);
+              $('#region_info').modal();
+          },
+          error:show_error
+        });
+    return false;
+}
+
+</script>

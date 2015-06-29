@@ -118,6 +118,9 @@ if (count($user->post->org->speakerRequests)) {
 <? if ($user->post->org->can_create_bills) { ?>
 <p>Вы можете создавать новые законопроекты</p>
 <? } ?>
+<? if ($user->post->org->can_drop_stateleader) { ?>
+<p>Вы можете выдвинуть вотум недоверия лидеру государства</p>
+<? } ?>
 <? if ($user->post->org->leader_can_vote_for_bills && $user->isOrgLeader()) { ?>
 <p>Вы можете голосовать за законопроекты</p>
 <? } ?>
@@ -127,7 +130,7 @@ if (count($user->post->org->speakerRequests)) {
 <? if ($user->post->org->leader_can_veto_bills && $user->isOrgLeader()) { ?>
 <p>Вы можете накладывать вето на законопроекты</p>
 <? } ?>
-<? if ($user->post->canVoteForBills()) { ?>
+<? if ($user->post->canVoteForBills() || $user->post->canVetoBills()) { ?>
 <h3>Законопроекты на голосовании</h3>
 <?= BillListWidget::widget(['id'=>'bills_on_vote_list', 'showVoteButtons'=>true,'user'=>$user, 'bills'=>Bill::find()->where(['accepted'=>0,'state_id'=>$user->state_id])->all()]) ?>
 <? } ?>
@@ -139,7 +142,7 @@ if (count($user->post->org->speakerRequests)) {
 <h3>Последние принятые законопроекты</h3>
 
 <p>Список последних законопроектов <input type="button" class="btn" id="bills_show" value="Показать"></p>
-<?= BillListWidget::widget(['id'=>'bills_list', 'style'=>'display:none', 'showVoteButtons'=>false, 'bills'=>Bill::find()->where(['and', 'state_id = '.$user->state_id, "accepted > 0"])->limit(10)->orderBy('vote_ended DESC')->all()]) ?>
+<?= BillListWidget::widget(['id'=>'bills_list', 'style'=>'display:none', 'showVoteButtons'=>false, 'bills'=>Bill::find()->where(['and', 'state_id = '.$user->state_id, "accepted > 0"])->limit(10)->orderBy('id DESC')->all()]) ?>
 <script type="text/javascript">
  $('#bills_show').toggle(function() {
     	$(this).val('Скрыть');
@@ -231,6 +234,15 @@ if (count($user->post->org->speakerRequests)) {
 </script>
 <? } ?>
 
+<?
+    if ($user->isStateLeader() && $user->state->leader_can_drop_legislature) {        
+?>
+<div class="btn-group">
+  <button class="btn btn-small btn-warning" onclick="if(confirm('Вы действительно хотите распустить организацию «<?=$user->state->legislatureOrg->name?>»?')) { json_request('drop-legislature'); }" >
+    Распустить парламент
+  </button>
+</div>
+    <? } ?>
 <? if ($user->post->canCreateBills()) { 
     $isDicktator = !!($user->isOrgLeader() && $user->post->org->leader_can_make_dicktator_bills);
     ?>

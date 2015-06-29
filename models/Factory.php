@@ -12,9 +12,17 @@ use app\components\MyModel;
  * @property integer $builded
  * @property integer $holding_id
  * @property integer $region_id
- * @property integer $status Статус работы: 0 - undefined, 1 - active, 2 - stopped, 3 - not enought resurses, 4 - autostopped
+ * @property integer $status Статус работы: -1 - unbuilded, -2 - build stopped, 0 - undefined, 1 - active, 2 - stopped, 3 - not enought resurses, 4 - autostopped, 5 - not enought workers, 6 - not have license
  * @property string $name
- * @property integer $level
+ * @property integer $size
+ * @property integer $manager_uid
+ * 
+ * @property FactoryType $type Тип фабрики
+ * @property Holding $holding Компания-владелец
+ * @property Region $region Регион, в котором она находится
+ * @property User $manager Управляющий
+ * @property Population[] $workers Рабочие
+ * @property FactoryWorkerSalary[] $salaries Установленные зарплаты рабочих
  */
 class Factory extends MyModel
 {
@@ -34,7 +42,7 @@ class Factory extends MyModel
     {
         return [
             [['type_id', 'builded', 'name'], 'required'],
-            [['type_id', 'builded', 'holding_id', 'region_id', 'status', 'level'], 'integer'],
+            [['type_id', 'builded', 'holding_id', 'region_id', 'status', 'size', 'manager_uid'], 'integer'],
             [['name'], 'string', 'max' => 255]
         ];
     }
@@ -50,9 +58,10 @@ class Factory extends MyModel
             'builded'    => 'Builded',
             'holding_id' => 'Holding ID',
             'region_id'  => 'Region ID',
-            'status'     => '0 - undefined, 1 - active, 2 - stopped, 3 - not enought resurses, 4 - autostopped',
+            'status'     => 'Статус работы: -1 - unbuilded, -2 - build stopped, 0 - undefined, 1 - active, 2 - stopped, 3 - not enought resurses, 4 - autostopped, 5 - not enought workers',
             'name'       => 'Name',
-            'level'      => 'Level',
+            'size'       => 'Size',
+            'manager_uid'=> 'Manager Uid',
         ];
     }
 
@@ -69,6 +78,43 @@ class Factory extends MyModel
     public function getRegion()
     {
         return $this->hasOne('app\models\Region', array('id' => 'region_id'));
+    }
+
+    public function getManager()
+    {
+        return $this->hasOne('app\models\User', array('id' => 'manager_uid'));
+    }
+    
+    public function getWorkers()
+    {
+        return $this->hasMany('app\models\Population', array('factory_id' => 'id'));
+    }
+    
+    public function getSalaries()
+    {
+        return $this->hasMany('app\models\FactoryWorkersSalary', array('factory_id' => 'id'));
+    }
+    
+    public function getVacansies()
+    {
+        return $this->hasMany('app\models\Vacansy', array('factory_id' => 'id'));
+    }
+    
+    public function getStatusName()
+    {
+        $names = [
+            -2 => 'Строительство прекращено',
+            -1 => 'Идёт строительство',
+            0 => 'Неизвестен',
+            1 => 'Работает',
+            2 => 'Работа остановлена',
+            3 => 'Работа остановлена по причине нехватки ресурсов',
+            4 => 'Работа остановлена автоматически',
+            5 => 'Работа остановлена по причине нехватки работников',
+            6 => 'Работа остановлена по причине отстутствия необходимой лицензии'
+        ];
+        
+        return $names[$this->status];
     }
 
 }

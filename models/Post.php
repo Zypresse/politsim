@@ -98,6 +98,15 @@ class Post extends MyModel
     {
         return (($this->user->isOrgLeader() && $this->org->leader_can_vote_for_bills) || $this->org->can_vote_for_bills);
     }
+    
+    /**
+     * Может ли накладывать вето на законопроекты
+     * @return boolean
+     */
+    public function canVetoBills()
+    {
+        return ($this->user->isOrgLeader() && $this->org->leader_can_veto_bills);
+    }
 
     /*
      * Типы постов

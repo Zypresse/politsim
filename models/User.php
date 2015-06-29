@@ -36,6 +36,7 @@ use app\models\Dealing;
  * @property \app\models\getStocks[] $stocks Акции
  * @property \app\models\ElectRequest[] $requests Заявки на выборы
  * @property \app\models\Notification[] $notifications Уведомления
+ * @property \app\models\Factory[] $factories Уведомления
  */
 class User extends MyModel
 {
@@ -151,6 +152,11 @@ class User extends MyModel
     public function getNotifications()
     {
         return $this->hasMany('app\models\Notification', array('uid' => 'id'));
+    }
+
+    public function getFactories()
+    {
+        return $this->hasMany('app\models\Factory', array('manager_uid' => 'id'));
     }
 
     /**

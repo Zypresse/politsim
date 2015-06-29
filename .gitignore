@@ -65,5 +65,12 @@ yii
 composer.lock
 
 nbproject
-sftp-config.json
+sftp-config.json	
+
+LICENSE.md
+tests/README.md
+tests/codeception.yml
+tests/codeception/
+yii.bat
+
 
