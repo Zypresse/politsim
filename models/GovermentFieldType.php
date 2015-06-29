@@ -155,11 +155,19 @@ class GovermentFieldType extends MyModel
                 $value->state->save();
             break;
             case 17: // Максимальный процент акций, который могут иметь иностранцы в гос. компаниях
-                $value->state->mpfnig = $value->value < 0 ? 0 : ($value->value > 100) ? 100 : intval($value->value);
+                $value->value = intval($value->value);
+                if ($value->value < 0) $value->value = 0;
+                if ($value->value > 100) $value->value = 100;
+
+                $value->state->mpfnig = $value->value;
                 $value->state->save();
             break;
             case 18: // Максимальный процент акций, который могут иметь иностранцы в частных компаниях
-                $value->state->mpfnih = $value->value < 0 ? 0 : ($value->value > 100) ? 100 : intval($value->value);
+                $value->value = intval($value->value);
+                if ($value->value < 0) $value->value = 0;
+                if ($value->value > 100) $value->value = 100;
+
+                $value->state->mpfnih = $value->value;
                 $value->state->save();
             break;
             
