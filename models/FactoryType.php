@@ -19,6 +19,7 @@ use app\components\MyModel;
  * @property FactoryKit[] $export Производимый набор ресурсов
  * @property FactoryKit[] $import Потребляемый набор ресурсов
  * @property FactoryTypeWorker[] $workers Используемые наборы рабочих
+ * @property HoldingLicenseType[] $licenses Необходимые лицензии
  */
 class FactoryType extends MyModel
 {

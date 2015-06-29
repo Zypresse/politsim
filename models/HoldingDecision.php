@@ -183,30 +183,49 @@ class HoldingDecision extends MyModel
                     $region = Region::findByPk($data->region_id);
                     // TODO: Здесь проверка на возможность строить в регионе
                     if ($region) {
-                        $buildCost = $factoryType->build_cost * $data->size;
-                        if ($this->holding->balance >= $buildCost) {
-                            
-                            $data->size = intval($data->size);
-                            if ($data->size < 1) {
-                                $data->size = 1;
-                            } elseif ($data->size > 127) {
-                                $data->size = 127;
+                        
+                        $allLicensesExitst = true;
+                        foreach ($factoryType->licenses as $licenseType) {
+                            $isCurrentLicenseExists = false;
+                            foreach ($this->holding->licenses as $license) {
+                                if ($licenseType->id == $license->type_id && $license->state_id == $region->state_id) {
+                                    $isCurrentLicenseExists = true;
+                                    break;
+                                }
                             }
-                            
-                            $this->holding->balance -= $buildCost;
-                            $this->holding->save();
-                            
-                            $factory = new Factory();
-                            $factory->holding_id = $this->holding_id;
-                            $factory->builded = time() + 24*60*60;
-                            $factory->name = strip_tags(trim($data->name));
-                            $factory->region_id = $region->id;
-                            $factory->type_id = $factoryType->id;
-                            $factory->status = -1;
-                            $factory->size = $data->size;
-                            
-                            if (!$factory->save()) {
-                                var_dump($factory->getErrors());
+                            if (!$isCurrentLicenseExists) {
+                                $allLicensesExitst = false;
+                                break;
+                            }
+                        }
+                        
+                        if ($allLicensesExitst) {
+
+                            $buildCost = $factoryType->build_cost * $data->size;
+                            if ($this->holding->balance >= $buildCost) {
+
+                                $data->size = intval($data->size);
+                                if ($data->size < 1) {
+                                    $data->size = 1;
+                                } elseif ($data->size > 127) {
+                                    $data->size = 127;
+                                }
+
+                                $this->holding->balance -= $buildCost;
+                                $this->holding->save();
+
+                                $factory = new Factory();
+                                $factory->holding_id = $this->holding_id;
+                                $factory->builded = time() + 24*60*60;
+                                $factory->name = strip_tags(trim($data->name));
+                                $factory->region_id = $region->id;
+                                $factory->type_id = $factoryType->id;
+                                $factory->status = -1;
+                                $factory->size = $data->size;
+
+                                if (!$factory->save()) {
+                                    var_dump($factory->getErrors());
+                                }
                             }
                         }
                     }

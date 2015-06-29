@@ -411,39 +411,9 @@ foreach ($holding->decisions as $decision) {
     <h3>Строительство</h3>
   </div>
   <div id="new_factory_modal_body" class="modal-body">
-    <div class="panel panel-primary">
-        <div class="panel-heading">
-            <h3 class="panel-title">Тип обьекта</h3>
-            <span class="pull-right">
-                <!-- Tabs -->
-                <ul class="nav panel-tabs">
-                    <? foreach ($factoryCategories as $i => $factoryCat) { ?>
-                    <li class="<?=($i != 5)?'':'active'?>"><a href="#tab<?=$i?>" data-toggle="tab"><?=Html::img("/img/factory-types/{$factoryCat->id}.png",['alt'=>$i,'title'=>$factoryCat->name])?></a></li>
-                    <? } ?>
-                </ul>
-            </span>
-        </div>
-        <div class="panel-body">
-            <div class="tab-content">
-                <? foreach ($factoryCategories as $i => $factoryCat) { ?>
-                    <div class="tab-pane <?=($i != 5)?'':'active'?>" id="tab<?=$i?>">
-                        <h3><?=$factoryCat->name?></h3>
-                        <? foreach($factoryCat->types as $facType) { ?>
-                            <p>
-                                <input data-workersSize="<?=$facType->sumNeedWorkers?>" data-buildCost="<?=$facType->build_cost?>" class="elect_vote_radio" type="radio" name="new_factory_type" value="<?=$facType->id?>" id="new_factory_type<?=$facType->id?>">
-                                <label style="display: inline-block;" for="new_factory_type<?=$facType->id?>"><?=$facType->name?></label>
-                            </p>
-                        <? } ?>
-                    </div>
-                <? } ?>
-            </div>
-        </div>
-    </div>
-    <div class="control-group" id="new_factory_add_info" style="display:none;">
-      <label class="control-label" for="#factory_new_name">Название</label>
-      <div class="controls">
-          <input type="text" id="new_factory_name" value="">
-      </div>
+    
+    <div class="control-group" >
+      
       <label class="control-label" for="#factory_new_region">Место строительства</label>
       <div class="controls">
           <select id="factory_new_region">
@@ -453,22 +423,16 @@ foreach ($holding->decisions as $decision) {
               <? if ($i == 0 || $regions[$i-1]->state_id != $region->state_id) { ?>
                 <?=($i)?'</optgroup>':''?><optgroup label="<?=($region->state) ? $region->state->name : 'Ничейные регионы'?>">
               <? } ?>
-              <option value="<?=$region->id?>"><?=$region->name?></option>
+              <option value="<?=$region->id?>" <?=($region->id == $holding->region_id)?"selected='selected'":''?>><?=$region->name?></option>
               <? } ?>
           </select>
       </div>
-      <label class="control-label" for="#factory_new_size">Размер</label>
-      <div class="controls">
-          <button class="btn btn-mini" onclick="if ($('#factory_new_size').val()>1) $('#factory_new_size').val(parseInt($('#factory_new_size').val()) - 1); updateCost();">-</button><input class="btn btn-mini" type="range" id="factory_new_size" min="1" max="127" step="1" value="1"><button class="btn btn-mini" onclick="if ($('#factory_new_size').val() < 127) $('#factory_new_size').val(parseInt($('#factory_new_size').val()) + 1); updateCost()">+</button>
-      </div>
-      
-      <p>Число работников: <span id="workers_size">0</span> <i class="icon-user"></i></p>
-      <p>Стоимость строительства: <span id="build_cost">0</span> <?=MyHtmlHelper::icon('coins')?></p>
     </div>
       
       
   </div>
   <div class="modal-footer">
+      <button class="btn btn-primary" id="build_fabric_page2" >Далее</button>
     <button style="display:none;" class="btn btn-primary" data-dismiss="modal" id="start_build" onclick="start_build()">Начать строительство</button>
     <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
   </div>
@@ -517,15 +481,6 @@ function set_main_office() {
 
 var new_factory_type = 0;
 
-function updateCost(){
-    var size = parseInt($('#factory_new_size').val());
-    var workers = $('#new_factory_type'+new_factory_type).attr("data-workersSize");
-    var cost = $('#new_factory_type'+new_factory_type).attr("data-buildCost");
-
-    $('#workers_size').text(size*workers);
-    $('#build_cost').text(size*cost);
-    return true;
-}
 
 function start_build() {
     var cost = parseInt($('#factory_new_size').val()) * parseInt($('#new_factory_type'+new_factory_type).attr("data-buildCost"));
@@ -560,22 +515,27 @@ $(function(){
         $('#list_licenses').slideDown();
     }, function() {
         $('#list_licenses').slideUp();
-    })
+    });
     
-    $('.elect_vote_radio').iCheck({
-        checkboxClass: 'icheckbox_square',
-        radioClass: 'iradio_square',
-        increaseArea: '20%' // optional
-    }).on('ifChecked', function(event){
-      
-      new_factory_type = $(this).val();
-      $('#new_factory_add_info').show();
-      $('#start_build').show();
-      updateCost();
-    });;
-    
-    $('#factory_new_size').change(updateCost);
-    $('#factory_new_size').click(updateCost);
-    
+    $('#build_fabric_page2').click(function(){
+        $(this).remove();
+        
+        $.ajax(
+            {
+              url: '/api/modal/build-fabric?region_id='+$('#factory_new_region').val()+'&holding_id=<?=$holding->id?>',
+              beforeSend:function() {
+                  $('#new_factory_modal_body').html('<br><br><br>Загрузка...<br><br><br><br><br>');
+              },
+              success:function(d) {
+                if (typeof(d) == 'object' && d.result == 'error') {
+                    show_custom_error(d.error);
+                } else {
+                    $('#new_factory_modal_body').html(d);
+                }
+              },
+                error:show_error
+            }
+        );
+    });
 });
 </script>

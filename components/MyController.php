@@ -31,21 +31,19 @@ class MyController extends Controller
 
     protected function _r($e = false, $addFields = []) 
     {
-
         if ($e) $this->error = $e;
         if ($this->error) $this->result = 'error';
 
         if (is_array($this->error)) $this->error = print_r($this->error,true);
         
-        $ar = ['result'=>$this->result,'error'=>$this->error,'addFields'=>[]];
-        foreach ($addFields as $key => $value) {
-            $ar['addFields'][$key] = $value;
-        }
+        $ar = ['result'=>$this->result,'error'=>$this->error,'addFields'=>$addFields];
+
         return $this->render('/json',$ar);
     }
 
     protected function _rOk()
     {
+        $this->error = false;
         $this->result = "ok";
         return $this->_r();
     }

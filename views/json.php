@@ -1,7 +1,7 @@
 <?php
 /* @var $this yii\web\View */
 	
-	header('Content-Type: application/json; charset='.Yii::$app->charset);
+	header('Content-Type: application/json; charset='.Yii::$app->charset,true);
 	$ar = ['result'=>$result];
 	if (isset($error) && $error) {
 		$ar['error'] = $error;
@@ -13,5 +13,3 @@
 	}
 	echo json_encode($ar,JSON_UNESCAPED_UNICODE);
 	Yii::$app->end();
-
-?>
