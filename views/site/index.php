@@ -17,9 +17,11 @@ $this->title = 'Political Simulator';
                         <p>Так же рекомендуется к прочтению: <a href="http://blog.politsim.net">официальный блог разработки</a>, <a href="http://wiki.politsim.net">вики по игре</a>.</p>
                     </div>
                     <div class="signup">
-                        <?= yii\authclient\widgets\AuthChoice::widget([
+                        <?=
+                        yii\authclient\widgets\AuthChoice::widget([
                             'baseAuthUrl' => ['site/auth']
-                        ]); ?>
+                        ]);
+                        ?>
                     </div>
                 </div>
             </div>
@@ -38,7 +40,7 @@ $this->title = 'Political Simulator';
                     <img style="vertical-align: top;" src="<?= Yii::$app->user->identity->photo ?>" alt=''>
                 </a>
                 <a class="brand brand2" href="#" onclick="load_page('profile', {'uid':<?= Yii::$app->user->identity->uid ?>});">
-                    <?= Yii::$app->user->identity->name ?>
+    <?= Yii::$app->user->identity->name ?>
                 </a>
                 <div class="sub_brand">
                     <span class="star"><span id="head_star"><?= Yii::$app->user->identity->star ?></span> <?= MyHtmlHelper::icon('star') ?></span> 
@@ -52,8 +54,13 @@ $this->title = 'Political Simulator';
                             <br>
                             <span id="current_date" style="display:none"></span>
                             <!--<br>-->
-                            <a href="#" onclick="if (fullScreenApi.isFullScreen()) {fullScreenApi.cancelFullScreen();} else {fullScreenApi.requestFullScreen(document.documentElement);}"><i class="icon-fullscreen icon-white" title="На весь экран"></i></a>
+                            <a href="#" onclick="if (fullScreenApi.isFullScreen()) {
+                                            fullScreenApi.cancelFullScreen();
+                                        } else {
+                                            fullScreenApi.requestFullScreen(document.documentElement);
+                                        }"><i class="icon-fullscreen icon-white" title="На весь экран"></i></a>
                             <a href="#" onclick="reload_page()"><i class="icon-refresh icon-white" title="Обновить"></i></a>
+                            <a href="#" style="display: none" id="account_settings_button" onclick="load_modal('account-settings',{},'settings_modal','settings_modal_body')"><i class="icon-cog icon-white" title="Аккаунты"></i></a>                            
                         </li>
                     </ul>
                 </div>
@@ -62,7 +69,7 @@ $this->title = 'Political Simulator';
         <div class="navbar-inner" style="text-align:center;height: 85px;">
             <ul class="nav" id="topmenu" style="float: none;display:inline-block">
                 <li class="dropdown profile_page capital_page dealings_page ">
-                    <a href="#" class="aaadropdown-toggle" data-toggle="dropdown"><?= MyHtmlHelper::icon('lg-icons/profile')//(intval(Yii::$app->user->identity->sex)===1) ? MyHtmlHelper::icon('lg-icons/profile-female') : MyHtmlHelper::icon('lg-icons/profile-male') ?><br>Профиль<span id="profile_badge" style="display:none"> <span class="badge badge-success" id="profile_badge_value">2</span></span></a>
+                    <a href="#" class="aaadropdown-toggle" data-toggle="dropdown"><?= MyHtmlHelper::icon('lg-icons/profile')//(intval(Yii::$app->user->identity->sex)===1) ? MyHtmlHelper::icon('lg-icons/profile-female') : MyHtmlHelper::icon('lg-icons/profile-male')  ?><br>Профиль<span id="profile_badge" style="display:none"> <span class="badge badge-success" id="profile_badge_value">2</span></span></a>
                     <ul class="dropdown-menu">
                         <li><a onclick="load_page('profile', {'uid':<?= Yii::$app->user->identity->uid ?>})" href="#">Мой профиль</a></li>
                         <!--<li><a onclick="load_page('capital',{'uid':<?= Yii::$app->user->identity->uid ?>})" href="#">Мой капитал</a></li>-->
@@ -146,8 +153,20 @@ $this->title = 'Political Simulator';
             <p><small>Если вы не знаете причину этой ошибки и она повторяется, пожалуйста, сообщите о ней <a href="//vk.com/topic-56461826_28488767" target="_blank">здесь</a>.</small></p>
         </div>
         <div id="row1"  class="row">
-            
+
         </div>
         <hr class='show_on_load'>
     </div>
-        <?php endif ?>
+    <div style="display:none" class="modal" id="settings_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="myModalLabel">Настройки авторизации</h3>
+        </div>
+        <div id="settings_modal_body" class="modal-body">
+            
+        </div>
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+        </div>
+    </div>
+            <?php endif ?>

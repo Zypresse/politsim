@@ -20,6 +20,9 @@ $(function () {
             VK.callMethod("resizeWindow", 1000, newheight);
         }, 500);
     }
+    if (self.parent.frames.length === 0) {
+        $('#account_settings_button').show();
+    }
 })
 
 

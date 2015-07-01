@@ -421,5 +421,10 @@ class ModalController extends MyController
             return $this->_r("Invalid params");
         }
     }
+    
+    public function actionAccountSettings()
+    {
+        return $this->render("account-settings", ['user' => $this->getUser()]);
+    }
 
 }
