@@ -46,7 +46,7 @@ $RECYCLE.BIN/
 *.lnk
 
 
-config
+config/db.php
 web/assets
 mail
 runtime
