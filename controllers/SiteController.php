@@ -46,7 +46,7 @@ class SiteController extends Controller
         
         /** @var Auth $auth */
         $auth = Auth::find()->where([
-            'source' => 'vkapp',
+            'source' => 'vkontakte',
             'source_id' => $viewer_id,
         ])->one();
         
@@ -55,13 +55,13 @@ class SiteController extends Controller
                 $user = $auth->user;
                 Yii::$app->user->login($user);
             } else { // signup
-                $auth = Auth::signUp('vkapp', $vkinfo);
+                $auth = Auth::signUp('vkontakte', $vkinfo);
             }
         } else { // user already logged in
             if (!$auth) { // add auth provider
                 $auth = new Auth([
                     'user_id' => Yii::$app->user->id,
-                    'source' => 'vkapp',
+                    'source' => 'vkontakte',
                     'source_id' => $viewer_id,
                 ]);
                 $auth->save();
