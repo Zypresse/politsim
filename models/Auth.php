@@ -112,7 +112,7 @@ class Auth extends MyModel
                     'name' => $attributes['first_name'] . ' ' . $attributes['last_name'],
                     'sex' => $attributes['sex'],
                     'photo' => $attributes['photo_50'],
-                    'photo_big' => $attributes['photo_400_orig'],
+                    'photo_big' => (isset($attributes['photo_400_orig'])) ? $attributes['photo_400_orig'] : $attributes['photo_big'],
                     'money' => 100000                    
                 ]);
                 break;

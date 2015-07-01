@@ -39,7 +39,8 @@ class SiteController extends Controller
         $isMember = $VK->api('groups.isMember', ['group_id'=>'politsim','user_id'=>$viewer_id]);
         if (!$isMember['response']) exit('Игра доступна только для альфа-тестеров.');
         
-        $vkinfo = $VK->api('getProfiles', array('https'=>1,'uids'=>$viewer_id,'fields'=>'sex,photo_50,photo_400_orig,photo_big'));
+        $vkinfo = $VK->api('users.get', array('https'=>1,'user_ids'=>$viewer_id,'fields'=>'sex,photo_50,photo_400_orig,photo_big','v'=>'5.34'));
+        
         if (!(isset($vkinfo['response'][0]['first_name']))) exit('VK API error');
         $vkinfo = $vkinfo['response'][0];
         

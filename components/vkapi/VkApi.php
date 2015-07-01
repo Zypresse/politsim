@@ -27,7 +27,7 @@ class VkApi {
             
 		if (!$params) $params = array(); 
 		$params['api_id'] = $this->app_id;
-		$params['v'] = '3.0';
+		if (!(isset($params))) $params['v'] = '3.0';
 		$params['method'] = $method;
 		$params['format'] = 'json';
 		$params['random'] = rand(0,10000);
