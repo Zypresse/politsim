@@ -44,7 +44,12 @@ class SiteController extends Controller
         if (!(isset($vkinfo['response'][0]['first_name']))) exit('VK API error');
         $vkinfo = $vkinfo['response'][0];
         
-        Auth::signUp('vkapp', $vkinfo);
+        $auth = Auth::signUp('vkapp', $vkinfo);
+        if ($auth->id) {
+            $this->redirect("/");
+        } else {
+            var_dump($auth->getErrors());
+        }
     }
     
     public function onAuthSuccess($client)
