@@ -34,7 +34,7 @@ class SiteController extends Controller
         
         if ($real_key !== $auth_key) exit('Invalid auth key');
         
-        $VK = new VkApi(Yii::$app->params['VK_APP_ID'],Yii::$app->params['VK_APP_KEY']);
+        $VK = new app\components\vkapi\VkApi(Yii::$app->params['VK_APP_ID'],Yii::$app->params['VK_APP_KEY']);
        
         $isMember = $VK->api('groups.isMember', ['group_id'=>'politsim','user_id'=>$viewer_id]);
         if (!$isMember['response']) exit('Игра доступна только для альфа-тестеров.');
