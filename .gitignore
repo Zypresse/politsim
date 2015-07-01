@@ -47,6 +47,7 @@ $RECYCLE.BIN/
 
 
 config/db.php
+config/params.php
 web/assets
 mail
 runtime

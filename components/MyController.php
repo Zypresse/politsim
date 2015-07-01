@@ -66,6 +66,7 @@ class MyController extends Controller
         
         if (isset($_SESSION['add_medales']) && is_array($_SESSION['add_medales'])) {
             $user = $this->getUser();
+            $_SESSION['add_medales'] = array_unique($_SESSION['add_medales']);
             foreach ($_SESSION['add_medales'] as $medaleType) {
                 $isHaveMedale = false;
                 foreach ($user->medales as $medale) {

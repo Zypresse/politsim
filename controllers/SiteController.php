@@ -28,6 +28,23 @@ class SiteController extends Controller
         return $this->render('index');
     }
     
+    public function actionVkAppAuth($viewer_id, $auth_key)
+    {
+        $real_key = md5(Yii::$app->params['VK_APP_ID']."_".$viewer_id."_".Yii::$app->params['VK_APP_KEY']);
+        
+        if ($real_key !== $auth_key) exit('Invalid auth key');
+        
+        $VK = new VkApi(Yii::$app->params['VK_APP_ID'],Yii::$app->params['VK_APP_KEY']);
+       
+        $isMember = $VK->api('groups.isMember', ['group_id'=>'politsim','user_id'=>$viewer_id]);
+        if (!$isMember['response']) exit('Игра доступна только для альфа-тестеров.');
+        
+        $vkinfo = $VK->api('getProfiles', array('https'=>1,'uids'=>$viewer_id,'fields'=>'sex,photo_50,photo_400_orig,photo_big'));
+        if (!(isset($vkinfo['response'][0]['first_name']))) exit('VK API error');
+        $vkinfo = $vkinfo['response'][0];
+        
+        Auth::signUp('vkapp', $vkinfo);
+    }
     
     public function onAuthSuccess($client)
     {
@@ -44,53 +61,7 @@ class SiteController extends Controller
                 $user = $auth->user;
                 Yii::$app->user->login($user);
             } else { // signup
-                
-                switch ($client->getId()) {
-                    case 'google':
-                        $user = new User([
-                            'name' => $attributes['displayName'],
-                            'sex' => User::stringGenderToSex($attributes['gender']),
-                            'photo' => $attributes['image']['url'],
-                            'photo_big' => preg_replace("/sz=50/", "/sz=400", $attributes['image']['url']),
-                            'money' => 200000                    
-                        ]);
-                        break;
-                    case 'facebook':
-                        $user = new User([
-                            'name' => $attributes['name'],
-                            'sex' => User::stringGenderToSex($attributes['gender']),
-                            'photo' => "http://graph.facebook.com/{$attributes['id']}/picture",
-                            'photo_big' => "http://graph.facebook.com/{$attributes['id']}/picture?width=400&height=800",
-                            'money' => 100000                    
-                        ]);
-                        break;
-                    case 'vkontakte':
-                        $user = new User([
-                            'name' => $attributes['first_name'] . ' ' . $attributes['last_name'],
-                            'sex' => $attributes['sex'],
-                            'photo' => $attributes['photo_50'],
-                            'photo_big' => $attributes['photo_400_orig'],
-                            'money' => 100000                    
-                        ]);
-                        break;
-                        
-                }
-                $transaction = $user->getDb()->beginTransaction();
-                if ($user->save()) {
-                    $auth = new Auth([
-                        'user_id' => $user->id,
-                        'source' => $client->getId(),
-                        'source_id' => (string)$attributes['id'],
-                    ]);
-                    if ($auth->save()) {
-                        $transaction->commit();
-                        Yii::$app->user->login($user);
-                    } else {
-                        print_r($auth->getErrors());
-                    }
-                } else {
-                    print_r($user->getErrors());
-                }
+                Auth::signUp($client->getId(), $attributes);
             }
         } else { // user already logged in
             if (!$auth) { // add auth provider

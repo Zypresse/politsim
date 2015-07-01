@@ -25,7 +25,7 @@ VkNotification::send($user->uid_vk, "Тест");
 class VkNotification {
     //put your code here
     public static function send($uids, $message) {
-        $VK = new VkApi(4671275,'VdZhp8XPsCeyWiHSSm7i');
+        $VK = new VkApi(Yii::$app->params['VK_APP_ID'],Yii::$app->params['VK_APP_KEY']);
        
         return $VK->api('secure.sendNotification', [
                 'user_ids' => $uids,
