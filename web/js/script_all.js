@@ -1,6 +1,6 @@
       
-if (typeof VK != 'undefined') {
-//                VK.init({apiId: 4540646});
+if (typeof VK !== 'undefined') {
+    VK.init({apiId: 4540646});
 }
             
 var current_page, current_page_params;
@@ -12,16 +12,14 @@ $(function () {
     }).ajaxStop(function () {
         $(this).fadeOut("fast");
     });
-    /*if (typeof VK != 'undefined') {
+    if (typeof VK !== 'undefined') {
         setInterval(function () {
             var newheight = $('#bigcontainer').height() + 200;
-            if (newheight < 600)
-                newheight = 600;
-            //if (newheight < 600) newheight = 600;
+            if (newheight < 600) newheight = 600;
 
             VK.callMethod("resizeWindow", 1000, newheight);
         }, 500);
-    }*/
+    }
 })
 
 

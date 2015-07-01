@@ -35,7 +35,7 @@ class AppAsset extends AssetBundle
         'js/snackbar.min.js',
         'js/jquery.peity.min.js',
         'js/jquery-dateFormat.min.js',
-        //'//vk.com/js/api/xd_connection.js',
+        '//vk.com/js/api/xd_connection.js',
         'js/script_all.js',
         
     ];
