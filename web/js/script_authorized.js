@@ -4,13 +4,14 @@ $.ajaxSetup({
     cache: true
 });
 
+$("#spinner").fadeIn('fast');
 
 function init_app() {
     $('.show_on_load').show();
-/*
+
     $.ajaxSetup({
         cache: false
-    });*/
+    });
     update_header();
 
     if (document.location.hash) {
