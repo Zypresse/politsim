@@ -121,7 +121,7 @@ function prettyDates() {
 }
 
 function show_error(e) {
-console.log(e);
+    console.log(e);
     var text;
     try {
         var r = $.parseJSON(e.responseText);
@@ -173,7 +173,6 @@ function request(pageUrl,postParams,requestType,callback)
 
                 }
             }
-            console.log(d,typeof d === 'object',d.result === 'ok');
             if (typeof d === 'object') {
                 if (!d.error) {
                     callback(d)
