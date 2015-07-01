@@ -17,7 +17,7 @@ function init_app() {
     if (document.location.hash) {
         var ar = document.location.hash.split('/');
         page = ar.shift().substr(2);
-        params = [];
+        params = {};
         for (var i = 0, l = ar.length; i < l; i++) {
             if (i % 2) {
                 params[ar[i - 1]] = ar[i];
