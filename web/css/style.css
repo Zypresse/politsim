@@ -537,3 +537,7 @@ dd {
     margin: 40px 0 0 0;
     max-width: 800px;
 }
+
+.img-polaroid {
+    margin-top: 10px;
+}

@@ -44,7 +44,30 @@ class SiteController extends Controller
         if (!(isset($vkinfo['response'][0]['first_name']))) exit('VK API error');
         $vkinfo = $vkinfo['response'][0];
         
-        $auth = Auth::signUp('vkapp', $vkinfo);
+        /** @var Auth $auth */
+        $auth = Auth::find()->where([
+            'source' => 'vkapp',
+            'source_id' => $viewer_id,
+        ])->one();
+        
+        if (Yii::$app->user->isGuest) {
+            if ($auth) { // login
+                $user = $auth->user;
+                Yii::$app->user->login($user);
+            } else { // signup
+                $auth = Auth::signUp('vkapp', $vkinfo);
+            }
+        } else { // user already logged in
+            if (!$auth) { // add auth provider
+                $auth = new Auth([
+                    'user_id' => Yii::$app->user->id,
+                    'source' => 'vkapp',
+                    'source_id' => $viewer_id,
+                ]);
+                $auth->save();
+            }
+        }
+        
         if ($auth->id) {
             $this->redirect("/");
         } else {
