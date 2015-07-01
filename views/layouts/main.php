@@ -1,8 +1,6 @@
 <?php
+
 use yii\helpers\Html;
-use yii\bootstrap\Nav;
-use yii\bootstrap\NavBar;
-use yii\widgets\Breadcrumbs;
 use app\assets\AppAsset;
 
 /* @var $this \yii\web\View */
@@ -13,50 +11,44 @@ AppAsset::register($this);
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
 <html lang="<?= Yii::$app->language ?>">
-<head>
-    <meta charset="<?= Yii::$app->charset ?>"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <?= Html::csrfMetaTags() ?>
-    <title><?= Html::encode($this->title) ?></title>
-    <?php $this->head() ?>
-</head>
-<body>
+    <head>
+        <meta charset="<?= Yii::$app->charset ?>"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <?= Html::csrfMetaTags() ?>
+        <title><?= Html::encode($this->title) ?></title>
+<?php $this->head() ?>
+    </head>
+    <body>
 
-<?php $this->beginBody() ?>
-    <div class="wrap">
+        <?php $this->beginBody() ?>
+        <img src="/img/ajax-loader.gif" id="spinner" style="display:none" />
+        
+        <?= $content ?>
+        
+        <footer class='footer '>
+            <div class="container">
+                <div class="row">
+                    <div class="span6">
+                        <p>Разработка — <a href="http://lazzyteam.com" target="_blank">Lazzy Team</a> 2011-<?= date('Y') ?></p>
+
+                    </div>
+                    <div class="span6" style="text-align:right">
+                        <p>Используются иконки <a href="http://www.fatcow.com/free-icons" target="_blank" >FatCow</a> и <a href="http://icons8.com/web-app/" target="_blank" >Icons8</a></p>
+                    </div>
+                </div>
+            </div>
+        </footer>
         <?php
-            NavBar::begin([
-                'brandLabel' => 'PolitSim',
-                'brandUrl' => Yii::$app->homeUrl,
-                'options' => [
-                    'class' => 'navbar-inverse navbar-fixed-top',
-                ],
-            ]);
-            echo Nav::widget([
-                'options' => ['class' => 'navbar-nav navbar-right'],
-                'items' => [
-                    ['label' => 'Home', 'url' => ['/site/index']],                    
-                ],
-            ]);
-            NavBar::end();
+            if (!Yii::$app->user->isGuest && Yii::$app->user->identity):
         ?>
-
-        <div class="container">
-            <?= Breadcrumbs::widget([
-                'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-            ]) ?>
-            <?= $content ?>
-        </div>
-    </div>
-
-    <footer class="footer">
-        <div class="container">
-            <p class="pull-left">&copy; Lazzy Team 2011-<?= date('Y') ?></p>
-            <p class="pull-right"><?= Yii::powered() ?></p>
-        </div>
-    </footer>
-
+        <script type="text/javascript"> 
+            var viewer_id = <?= Yii::$app->user->identity->id ?>;
+            var auth_key = "<?= Yii::$app->user->identity->authKey ?>";
+        </script>
+        <?php
+            endif;
+        ?>
 <?php $this->endBody() ?>
-</body>
+    </body>
 </html>
 <?php $this->endPage() ?>

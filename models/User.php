@@ -2,18 +2,20 @@
 
 namespace app\models;
 
-use app\components\MyModel;
-use app\models\Twitter;
-use app\models\Dealing;
+use Yii,
+    app\components\MyModel,
+    app\models\Twitter,
+    app\models\Dealing;
 
 /**
  * Пользователь игры. Таблица "users".
  *
  * @property integer $id 
+ * @property integer $uid 
  * @property integer $uid_vk ID в вк для авторизации @todo Переделать в таблицу accounts
  * @property string $name Имя
- * @property string $photo Маленькая фотография
- * @property string $photo_big Большая фотография
+ * @property string $photo Маленькая фотография 50x50
+ * @property string $photo_big Большая фотография 400xn
  * @property integer $last_vote Дата последнего "высказывания" о другом игроке
  * @property integer $last_tweet Дата последнего твита
  * @property integer $last_salary Дата последнего получения зарплаты
@@ -22,10 +24,12 @@ use app\models\Dealing;
  * @property integer $post_id ID поста
  * @property integer $region_id ID региона
  * @property double $money Деньги на личном счету
- * @property integer $sex Пол: 0 - неопр., 1 - женский, 2 - мужской
+ * @property string $sex Пол: 0 - неопр., 1 - женский, 2 - мужской
  * @property integer $star Известность
  * @property integer $heart Доверие
  * @property integer $chart_pie Успешность
+ * 
+ * @property string $authKey Авторизационный ключ
  * 
  * @property \app\models\State $state Государство
  * @property \app\models\Party $party Партия
@@ -36,10 +40,47 @@ use app\models\Dealing;
  * @property \app\models\getStocks[] $stocks Акции
  * @property \app\models\ElectRequest[] $requests Заявки на выборы
  * @property \app\models\Notification[] $notifications Уведомления
- * @property \app\models\Factory[] $factories Уведомления
+ * @property \app\models\Factory[] $factories 
+ * @property \app\models\Auth[] $accounts
  */
-class User extends MyModel
+class User extends MyModel implements \yii\web\IdentityInterface
 {
+    
+    public static function findIdentity($id) {
+        return static::findByPk($id);
+    }
+    
+    public static function findIdentityByAccessToken($token, $type = null) {
+        return null;
+    }
+    
+    public function getId() {
+        return $this->id;
+    }
+        
+    public function getUid() {
+        return $this->id;
+    }
+    
+    public function validateAuthKey($authKey) {
+        return $authKey == $this->authKey;
+    }
+
+    const SEX_UNDEFINED = '0';
+    const SEX_FEMALE = '1';
+    const SEX_MALE = '2';
+    
+    public static function stringGenderToSex($gender)
+    {
+        switch ($gender) {
+            case 'male':
+                return static::SEX_MALE;
+            case 'female':
+                return static::SEX_FEMALE;
+            default:
+                return static::SEX_UNDEFINED;
+        }
+    }
 
     /**
      * @inheritdoc
@@ -55,9 +96,10 @@ class User extends MyModel
     public function rules()
     {
         return [
-            [['uid_vk', 'last_vote', 'last_tweet', 'last_salary', 'party_id', 'state_id', 'post_id', 'region_id', 'sex', 'star', 'heart', 'chart_pie'], 'integer'],
+            [['uid_vk', 'last_vote', 'last_tweet', 'last_salary', 'party_id', 'state_id', 'post_id', 'region_id', 'star', 'heart', 'chart_pie'], 'integer'],
             [['money'], 'number'],
-            [['name', 'photo', 'photo_big'], 'string', 'max' => 255]
+            [['name', 'photo', 'photo_big'], 'string', 'max' => 255],
+            [['sex'], 'string', 'max' => 1]
         ];
     }
 
@@ -159,6 +201,11 @@ class User extends MyModel
         return $this->hasMany('app\models\Factory', array('manager_uid' => 'id'));
     }
 
+    public function getAccounts()
+    {
+        return $this->hasMany('app\models\Auth', array('user_id' => 'id'));
+    }
+
     /**
      * Список сделок юзера
      * @return \app\models\Dealing[]
@@ -220,8 +267,9 @@ class User extends MyModel
     public function isShareholder(Holding $holding)
     {
         foreach ($holding->stocks as $stock) {
-            if ($stock->user_id === $this->id || $stock->post_id === $this->post_id)
+            if ($stock->user_id === $this->id || $stock->post_id === $this->post_id) {
                 return true;
+            }
         }
         return false;
     }
@@ -234,8 +282,9 @@ class User extends MyModel
     public function getShareholderStock(Holding $holding)
     {
         foreach ($holding->stocks as $stock) {
-            if ($stock->user_id === $this->id || $stock->post_id === $this->post_id)
+            if ($stock->user_id === $this->id || $stock->post_id === $this->post_id) {
                 return $stock;
+            }
         }
         return null;
     }
@@ -248,8 +297,9 @@ class User extends MyModel
     public function isHaveControllingStake(Holding $holding)
     {
         foreach ($holding->stocks as $stock) {
-            if ($stock->user_id === $this->id && $stock->getPercents() > 50.0)
+            if ($stock->user_id === $this->id && $stock->getPercents() > 50.0) {
                 return true;
+            }
         }
         return false;
     }
@@ -306,6 +356,16 @@ class User extends MyModel
         $this->post_id  = 0;
 
         return $this->leaveParty();
+    }
+    
+    public function getAuthKey()
+    {
+        return static::getRealKey($this->id);
+    }
+
+    public static function getRealKey($viewer_id)
+    {
+        return md5($viewer_id . Yii::$app->params['AUTH_KEY_SECRET']);
     }
 
 }

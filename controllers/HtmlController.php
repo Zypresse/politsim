@@ -17,7 +17,9 @@ use app\models\Factory;
 
 class HtmlController extends MyController
 {
-
+    
+    public $layout = "api";
+    
     public function actionCapital($uid = false)
     {
         $region           = Region::findByPk(10);

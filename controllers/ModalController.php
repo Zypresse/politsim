@@ -22,6 +22,8 @@ use app\models\HoldingLicenseType;
 class ModalController extends MyController
 {
     
+    public $layout = "api";
+    
     public function actionCreateStateDialog($code)
     {
         if ($code) {
@@ -328,7 +330,8 @@ class ModalController extends MyController
 
     public function actionRegionInfo($code = false, $id = false)
     {
-        if ($code || intval($id) > 0) {
+        if ($code || $id) {
+            if (intval($id) === 0) $code = $id;
             $region = ($code) ? Region::findByCode($code) : Region::findByPk($id);
             if (is_null($region)) {
                 return $this->_r("Region not found");

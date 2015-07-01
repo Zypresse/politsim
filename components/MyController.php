@@ -27,10 +27,11 @@ class MyController extends Controller
     protected $result = 'undefined';
     protected $error = false;
     protected $viewer_id = 0;
-    public $layout = 'api';
 
     protected function _r($e = false, $addFields = []) 
     {
+        Yii::$app->response->format = 'json';
+        
         if ($e) $this->error = $e;
         if ($this->error) $this->result = 'error';
 
@@ -38,7 +39,7 @@ class MyController extends Controller
         
         $ar = ['result'=>$this->result,'error'=>$this->error,'addFields'=>$addFields];
 
-        return $this->render('/json',$ar);
+        return $ar;
     }
 
     protected function _rOk()
@@ -54,7 +55,7 @@ class MyController extends Controller
             $viewer_id = intval($_REQUEST['viewer_id']);
             $auth_key = $_REQUEST['auth_key'];
             if ($viewer_id > 0 && $auth_key) {
-                $real_key = md5($viewer_id.yii::$app->params['AUTH_KEY_SECRET']);
+                $real_key = User::getRealKey($viewer_id);
                 if ($auth_key === $real_key) {
                 	$this->viewer_id = $viewer_id;
                     return true;

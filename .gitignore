@@ -1,10 +1,3 @@
-assets/*
-!assets/.gitignore
-protected/runtime/*
-!protected/runtime/.gitignore
-protected/data/*.db
-themes/classic/views/
-
 # =========================
 # Operating System Files
 # =========================
@@ -54,8 +47,7 @@ $RECYCLE.BIN/
 
 
 config
-web
-assets
+web/assets
 mail
 runtime
 vendor

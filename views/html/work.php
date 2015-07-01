@@ -209,7 +209,7 @@ if (count($user->post->org->speakerRequests)) {
 	function naznach(id) {
 		 $.ajax(
 			{
-				url: '/api/modal/naznach?id='+id,
+				url: '/modal/naznach?id='+id,
 				beforeSend:function() {
 			  		$('#naznach_body').empty();
 				},
@@ -292,27 +292,12 @@ if (count($user->post->org->speakerRequests)) {
 function new_zakon_modal() {
 	$('#new_zakon_select_modal').modal();
 }
+var bill_id;
 
 function new_zakon_form_modal() {
 	bill_id = $('#new_zakon_select').val();
-	$.ajax(
-	{
-		url: '/api/modal/new-bill?id='+bill_id,
-		beforeSend:function() {
-	  		$('#new_zakon_form_modal_body').empty();
-		},
-		success:function(d) {
-			if (typeof(d) == 'object' && d.result == 'error')
-				show_custom_error(d.error);
-			else {
-	  			$('#new_zakon_form_modal_body').html(d);
-	  			$('#new_zakon_form_modal').modal();
-	  		}
-		},
-		error:show_error
-	});
+        load_modal('new-bill',{'id':bill_id},'new_zakon_form_modal','new_zakon_form_modal_body');
 }
-var bill_id;
 $(function(){
 	$('#send_new_zakon').click(function(){
 		var fields = $('.bill_field');

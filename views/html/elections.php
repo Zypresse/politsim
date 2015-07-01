@@ -82,7 +82,7 @@
 </div>
 <button class="btn btn-primary" onclick="$.ajax(
             {
-              url: '/api/modal/old-elections?state_id=<?=$state->id?>',
+              url: '/modal/old-elections?state_id=<?=$state->id?>',
               beforeSend:function() {
                   $('#old-elections_body').empty();
               },
@@ -259,61 +259,14 @@ function drop_elect_request(org_id,leader) {
 function elect_request(Torg_id,Tleader) {
 	org_id = Torg_id;
 	leader = Tleader;
-	$.ajax(
-	{
-		url: '/api/modal/elect-request?org_id='+org_id+'&leader='+leader,
-		beforeSend:function() {
-	  		$('#elect_request_body').empty();
-		},
-		success:function(d) {
-			if (typeof(d)=='object')
-				show_custom_error(d.error);
-			else {
-	  			$('#elect_request_body').html(d);
-	  			$('#elect_request').modal();
-	  		}
-		},
-		error:show_error
-	});
-	
-	
+        load_modal('elect-request',{'org_id':org_id,'leader':leader},'elect_request','elect_request_body');
 }
 
 function elect_vote(org_id,leader) {
-	$.ajax(
-	{
-		url: '/api/modal/elect-vote?org_id='+org_id+'&leader='+leader,
-		beforeSend:function() {
-	  		$('#elect_vote_body').empty();
-		},
-		success:function(d) {
-			if (typeof(d)=='object')
-				show_custom_error(d.error);
-			else {
-		  		$('#elect_vote_body').html(d);
-		  		$('#elect_vote').modal();
-		  	}
-		},
-		error:show_error
-	});
+        load_modal('elect-vote',{'org_id':org_id,'leader':leader},'elect_vote','elect_vote_body');
 }
 
 function elect_exitpolls(org_id,leader) {
-	$.ajax(
-	{
-		url: '/api/modal/elect-exitpolls?org_id='+org_id+'&leader='+leader,
-		beforeSend:function() {
-	  		$('#elect_exitpolls_body').empty();
-		},
-		success:function(d) {
-			if (typeof(d)=='object')
-				show_custom_error(d.error);
-			else {
-		  		$('#elect_exitpolls_body').html(d);
-		  		$('#elect_exitpolls').modal();
-		  	}
-		},
-		error:show_error
-	});
+        load_modal('elect-exitpolls',{'org_id':org_id,'leader':leader},'elect_exitpolls','elect_exitpolls_body');
 }
 </script>

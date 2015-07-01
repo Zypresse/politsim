@@ -519,23 +519,10 @@ $(function(){
     
     $('#build_fabric_page2').click(function(){
         $(this).remove();
-        
-        $.ajax(
-            {
-              url: '/api/modal/build-fabric?region_id='+$('#factory_new_region').val()+'&holding_id=<?=$holding->id?>',
-              beforeSend:function() {
-                  $('#new_factory_modal_body').html('<br><br><br>Загрузка...<br><br><br><br><br>');
-              },
-              success:function(d) {
-                if (typeof(d) == 'object' && d.result == 'error') {
-                    show_custom_error(d.error);
-                } else {
-                    $('#new_factory_modal_body').html(d);
-                }
-              },
-                error:show_error
-            }
-        );
+        load_modal('build-fabric',{
+            'region_id':$('#factory_new_region').val(),
+            'holding_id':<?=$holding->id?>
+        },'new_factory_modal','new_factory_modal_body');
     });
 });
 </script>

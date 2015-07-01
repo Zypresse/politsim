@@ -16,7 +16,7 @@
 var check_nickname = function(callback){
       if ($('#human_nickname').val()) {
         
-          $.getJSON('/api/json/userinfo?nick='+$('#human_nickname').val(),function(userinfo){
+          $.getJSON('/json/userinfo?nick='+$('#human_nickname').val(),function(userinfo){
           $('#human_uid').val(0);
           if (userinfo.result != 'error') {
             userinfo = userinfo.result;

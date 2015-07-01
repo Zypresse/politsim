@@ -45,24 +45,9 @@ use app\components\MyHtmlHelper;
   </div>
 </div>
   <script type="text/javascript">
-		$('#create_state_btn').click(function(){
-    $.ajax(
-      {
-        url: '/api/modal/create-state-dialog?code=<?=$region->code?>',
-        beforeSend:function() {
-            $('#create_state_dialog_body').empty();
-        },
-        success:function(d) {
-            if (typeof(d) == 'object' && d.error) {
-                show_custom_error(d.error);
-            } else {
-                $('#create_state_dialog_body').html(d);
-                $('#create_state_dialog').modal();
-            }
-        },
-        error:show_error
-      });
-		});
+    $('#create_state_btn').click(function(){
+        load_modal('create-state-dialog',{'code':'<?=$region->code?>'},'create_state_dialog','create_state_dialog_body');
+    });
   </script>
 </div>
 <? } ?>
@@ -78,34 +63,12 @@ use app\components\MyHtmlHelper;
 <script>
 
 function show_region_population() {
-    $.ajax(
-        {
-          url: '/api/modal/region-population?code=<?=$region->code?>',
-          beforeSend:function() {
-              $('#region_info_body').empty();
-          },
-          success:function(d) {
-              $('#region_info_body').html(d);
-              $('#region_info').modal();
-          },
-          error:show_error
-        });
+    load_modal('region-population',{'code':'<?=$region->code?>'},'region_info','region_info_body');
     return false;
 }
 
 function show_region_resurses() {
-    $.ajax(
-        {
-          url: '/api/modal/region-resurses?code=<?=$region->code?>',
-          beforeSend:function() {
-              $('#region_info_body').empty();
-          },
-          success:function(d) {
-              $('#region_info_body').html(d);
-              $('#region_info').modal();
-          },
-          error:show_error
-        });
+    load_modal('region-resurses',{'code':'<?=$region->code?>'},'region_info','region_info_body');
     return false;
 }
 

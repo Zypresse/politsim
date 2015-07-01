@@ -2,7 +2,7 @@
 use app\components\MyHtmlHelper;
 ?>
 <ul class="nav nav-tabs">
-  <li><a href="#" onclick="show_region_info()">Инфо</a></li>
+  <li><a href="#" onclick="show_region()">Инфо</a></li>
   <li class="active"><a href="#">Население</a></li>
   <li><a href="#" onclick="show_region_resurses()">Ресурсы</a></li>
 </ul>
@@ -90,35 +90,8 @@ $('#show_all_groups_population').toggle(function() {
 })
 
 
-function show_region_info() {
-    $.ajax(
-        {
-          url: '/api/modal/region-info?code=<?=$region->code?>',
-          beforeSend:function() {
-              $('#region_info_body').empty();
-          },
-          success:function(d) {
-              $('#region_info_body').html(d);
-              $('#region_info').modal();
-          },
-          error:show_error
-        });
-    return false;
-}
-
 function show_region_resurses() {
-    $.ajax(
-        {
-          url: '/api/modal/region-resurses?code=<?=$region->code?>',
-          beforeSend:function() {
-              $('#region_info_body').empty();
-          },
-          success:function(d) {
-              $('#region_info_body').html(d);
-              $('#region_info').modal();
-          },
-          error:show_error
-        });
+    load_modal('region-resurses',{'code':'<?=$region->code?>'},'region_info','region_info_body');
     return false;
 }
 

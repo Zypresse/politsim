@@ -219,20 +219,5 @@ $(function(){
     })
 })
   
-    function show_region(region) {
-  $.ajax(
-      {
-        url: '/api/modal/region-info?code='+region,
-        beforeSend:function() {
-            $('#region_info_body').empty();
-        },
-        success:function(d) {
-            $('#region_info_body').html(d);
-            $('#region_info').modal();
-        },
-        error:show_error
-      });
-  return false;
-    }
 </script>
 </div>

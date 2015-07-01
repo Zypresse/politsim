@@ -88,22 +88,7 @@ function set_regions_names() {
         }
         ,onRegionClick: function(event, region){
          // console.log('region-click', region);
-          $.ajax(
-            {
-              url: '/api/modal/region-resurses?code='+region,
-              beforeSend:function() {
-                  $('#region_info_body').empty();
-              },
-              success:function(d) {
-                  if (typeof(d) == 'object' && d != null) {
-                      show_custom_error(d.error);
-                  } else {
-                    $('#region_info_body').html(d);
-                    $('#region_info').modal();
-                    }
-              },
-                error:show_error
-        });          
+            load_modal('region-resurses',{'code':region},'region_info','region_info_body');        
         }
       });
 
