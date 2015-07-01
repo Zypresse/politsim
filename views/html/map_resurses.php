@@ -42,9 +42,9 @@ function set_regions_names() {
 
     if (map) map.remove();
 
-    regions = {};
-    for (var i=0,l=rows.length;i<l;i++) {
-      regions[rows[i].code] = rows[i][resurse];
+    var regions = {};
+    for (var i=0,l=rows.result.length;i<l;i++) {
+      regions[rows.result[i].code] = rows.result[i][resurse];
     }
 
     $('#mapdiv').vectorMap({
