@@ -50,22 +50,11 @@ class SiteController extends Controller
             'source_id' => $viewer_id,
         ])->one();
         
-        if (Yii::$app->user->isGuest) {
-            if ($auth) { // login
-                $user = $auth->user;
-                Yii::$app->user->login($user);
-            } else { // signup
-                $auth = Auth::signUp('vkontakte', $vkinfo);
-            }
-        } else { // user already logged in
-            if (!$auth) { // add auth provider
-                $auth = new Auth([
-                    'user_id' => Yii::$app->user->id,
-                    'source' => 'vkontakte',
-                    'source_id' => $viewer_id,
-                ]);
-                $auth->save();
-            }
+        if ($auth) { // login
+            $user = $auth->user;
+            Yii::$app->user->login($user);
+        } else { // signup
+            $auth = Auth::signUp('vkontakte', $vkinfo);
         }
         
         if ($auth->id) {
