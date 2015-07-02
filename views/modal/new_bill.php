@@ -104,17 +104,18 @@ use app\components\MyHtmlHelper;
 		 			case "checkbox": ?>
 				  <input type="checkbox" class="bill_field" id="bill<?=$bill_type->id?>_<?=$field->system_name?>" name="<?=$field->system_name?>">
 				<? break;
-					case "integer"; ?>
+					case "integer":
+                                        case "number": ?>
 					<input type="number" class="bill_field" id="bill<?=$bill_type->id?>_<?=$field->system_name?>" name="<?=$field->system_name?>">
 				<? break;
-					case "org_dest_members"; ?>
+					case "org_dest_members": ?>
 					<select class="bill_field" id="bill<?=$bill_type->id?>_<?=$field->system_name?>" name="<?=$field->system_name?>">
 						<option value="dest_by_leader">Назначаются напрямую лидером</option>
 						<option value="nation_party_vote">Голосование населения за партии</option>
 						<option value="nation_one_party_vote">Голосование населения за членов единственной партии</option>
 					</select>
 				<? break;
-					case "org_dest_leader"; ?>
+					case "org_dest_leader": ?>
 					<select class="bill_field" id="bill<?=$bill_type->id?>_<?=$field->system_name?>" name="<?=$field->system_name?>">
 						<option value="unlimited">Пожизненно</option>
 						<option value="nation_individual_vote">Голосование населения за кандидатов</option>

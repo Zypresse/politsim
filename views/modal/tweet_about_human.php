@@ -15,10 +15,9 @@
 <script>
 var check_nickname = function(callback){
       if ($('#human_nickname').val()) {
-        
-          $.getJSON('/json/userinfo?nick='+$('#human_nickname').val(),function(userinfo){
+        get_json('userinfo',{'nick':$('#human_nickname').val()},function(userinfo){
           $('#human_uid').val(0);
-          if (userinfo.result != 'error') {
+          if (userinfo.result !== 'error') {
             userinfo = userinfo.result;
             $('#human_uid').val(userinfo.id)
             $('#human_info').html("<img src=\""+userinfo.photo+"\" alt=\"\"> "+userinfo.name);
@@ -28,7 +27,7 @@ var check_nickname = function(callback){
             $('#human_info').html("<span style='color:red'>Пользователь не найден!</span>");
             if (typeof(callback)=='function') callback(false);
           }
-        })
+        },true);
       } else {
         if (typeof(callback)=='function') callback(false);
       }

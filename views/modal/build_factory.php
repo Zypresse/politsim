@@ -1,3 +1,7 @@
+<?php
+    use yii\helpers\Html,
+        app\components\MyHtmlHelper;
+?>
 <div class="panel panel-primary">
         <div class="panel-heading">
             <h3 class="panel-title">Тип обьекта</h3>
@@ -39,6 +43,7 @@
       <p>Число работников: <span id="workers_size">0</span> <i class="icon-user"></i></p>
       <p>Стоимость строительства: <span id="build_cost">0</span> <?=MyHtmlHelper::icon('coins')?></p>
 </div>
+
 <script>
 
 
@@ -62,7 +67,7 @@ function start_build() {
             'holding_id':<?=$holding->id?>,
             'type':5,
             'name':$('#new_factory_name').val(),
-            'region_id':$('#factory_new_region').val(),
+            'region_id':<?=$region->id?>,
             'factory_type':new_factory_type,
             'size': $('#factory_new_size').val()
         });

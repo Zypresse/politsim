@@ -35,7 +35,7 @@ $own = ($viewer_id === $user->id);
               <div class="span3">
               <p>
                <a  href="#" onclick="load_page('profile',{'uid':<?=$user->id?>});">
-                <img style="vertical-align: top;" src="<?=$user->photo_big?>" alt=''>
+                <img class="img-polaroid" style="vertical-align: top;" src="<?=$user->photo_big?>" alt=''>
               </a></p>
               <h4><a href="#" onclick="load_page('profile',{'uid':<?=$user->id?>});"><?=htmlspecialchars($user->name)?></a></h4>
               <? if ($user->twitter_nickname) { ?><h5 style="color:#333">@<?=$user->twitter_nickname?></h5><? } ?>
@@ -45,7 +45,7 @@ $own = ($viewer_id === $user->id);
               <div class="span4" id="twitter_user_feed"><? if ($own) { ?>
               <h5>Выберите, о чём написать:</h5>
               <p>
-                <button class="btn" onclick="$('#tweet_about_human_body').empty();$.get('/api/modal/tweet-about-human',function(data){$('#tweet_about_human_body').html(data);$('#tweet_about_human').modal();})">О человеке</button>
+                <button class="btn" onclick="load_modal('tweet-about-human',{},'tweet_about_human','tweet_about_human_body');">О человеке</button>
                 <button class="btn" disabled="disabled">О событии</button>
                 <button class="btn" disabled="disabled">О погоде</button>
               </p>
@@ -73,7 +73,7 @@ $own = ($viewer_id === $user->id);
                 <h4>Популярные посты</h4>
                <? foreach ($feed as $i => $tweet) { ?>
                  <div class="tweet <? if ($i === count($feed)-1) { ?>last<? } ?>">
-                 <strong><a href="#" onclick="load_page('twitter',{'uid':<?=$tweet->uid?>})"><?=htmlspecialchars($tweet->user->name)?></a></strong> <span class="date prettyDate" data-unixtime="<?=$tweet->date?>"><?=date('d-M-Y H:i',$tweet->date)?></span>
+                 <a href="#" onclick="load_page('twitter',{'uid':<?=$tweet->uid?>})"><strong><?=htmlspecialchars($tweet->user->name)?></strong><? if ($tweet->user->twitter_nickname): ?> @<?=$tweet->user->twitter_nickname?><? endif ?></a> <span class="date prettyDate" data-unixtime="<?=$tweet->date?>"><?=date('d-M-Y H:i',$tweet->date)?></span>
                  <? if ($tweet->originalUser) { ?><p class="date">Репост от <a href="#" onclick="load_page('twitter',{'uid':<?=$tweet->original?>})"><?=htmlspecialchars($tweet->originalUser->name)?></a></p><? } ?>
                  <p><?=MyHtmlHelper::parseTwitterLinks($tweet->text)?></p>
                  <p class="tweet-footer"><? if ($tweet->uid !== $viewer_id && $tweet->original !== $viewer_id) { ?><a href="#" class="btn btn-small repost" title="Репост" data-id="<?=$tweet->id?>"><i class="icon-repeat"></i></a><? } else { ?><i class="icon-repeat"></i><? } ?> <?=MyHtmlHelper::formateNumberword($tweet->retweets,'репостов','репост','репоста')?></p>

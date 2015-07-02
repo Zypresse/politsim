@@ -12,6 +12,7 @@ use app\models\GovermentFieldValue;
  * @property integer $id
  * @property string $name Название
  * @property string $short_name Короткое название (2-3 буквы)
+ * @property string $flag Ссылка на флаг
  * @property string $capital Код региона-столицы
  * @property string $color Цвет страны на карте (с #)
  * @property integer $legislature ID организации законодательной власти
@@ -24,6 +25,13 @@ use app\models\GovermentFieldValue;
  * @property integer $allow_register_parties Разрешено ли регистрировать партии
  * @property integer $leader_can_drop_legislature Может ли лидер распустить парламент
  * @property integer $allow_register_holdings Разрешено ли регистировать АО
+ * @property integer $allow_register_holdings_noncitizens Разрешено ли регистировать АО нерезидентам
+ * @property double $register_holdings_cost Пошлина за регистрацию АО
+ * @property double $register_holdings_noncitizens_cost Пошлина за регистрацию АО для нерезидентов
+ * @property integer $register_holdings_mincap Минимальная стартовая капитализация АО
+ * @property integer $register_holdings_noncitizens_mincap Минимальная стартовая капитализация АО для нерезидентов
+ * @property integer $register_holdings_maxcap Максимальная стартовая капитализация АО
+ * @property integer $register_holdings_noncitizens_maxcap Максимальная стартовая капитализация АО для нерезидентов
  * @property integer $register_parties_cost Стоимость регистрации партии
  * @property integer $core_id ID коренного государства наследником которого является
  * @property integer $mpfnig Максимальный процент акций, который могут иметь иностранцы в гос. компаниях
@@ -59,10 +67,12 @@ class State extends MyModel
     public function rules()
     {
         return [
-            [['name', 'short_name', 'capital'], 'required'],
-            [['legislature', 'executive', 'state_structure', 'goverment_form', 'group_id', 'allow_register_parties', 'population', 'sum_star', 'leader_can_drop_legislature', 'allow_register_holdings', 'register_parties_cost', 'core_id', 'mpfnig', 'mpfnih'], 'integer'],
+            [['name', 'short_name', 'flag', 'capital'], 'required'],
+            [['legislature', 'executive', 'state_structure', 'goverment_form', 'group_id', 'population', 'sum_star', 'allow_register_parties', 'leader_can_drop_legislature', 'allow_register_holdings', 'allow_register_holdings_noncitizens', 'register_holdings_mincap', 'register_holdings_noncitizens_mincap', 'register_holdings_maxcap', 'register_holdings_noncitizens_maxcap', 'register_parties_cost', 'core_id', 'mpfnig', 'mpfnih'], 'integer'],
+            [['register_holdings_cost', 'register_holdings_noncitizens_cost'], 'number'],
             [['name'], 'string', 'max' => 100],
-            [['short_name'], 'string', 'max' => 10],
+            [['short_name'], 'string', 'max' => 4],
+            [['flag'], 'string', 'max' => 1000],
             [['capital', 'color'], 'string', 'max' => 7]
         ];
     }
@@ -73,16 +83,33 @@ class State extends MyModel
     public function attributeLabels()
     {
         return [
-            'id'              => 'ID',
-            'name'            => 'Name',
-            'short_name'      => 'Short Name',
-            'capital'         => 'Capital',
-            'color'           => 'Color',
-            'legislature'     => 'Legislature',
-            'executive'       => 'Executive',
+            'id' => 'ID',
+            'name' => 'Name',
+            'short_name' => 'Short Name',
+            'flag' => 'Flag',
+            'capital' => 'Capital',
+            'color' => 'Color',
+            'legislature' => 'Legislature',
+            'executive' => 'Executive',
             'state_structure' => 'State Structure',
-            'goverment_form'  => 'Goverment Form',
-            'group_id'        => 'Group ID',
+            'goverment_form' => 'Goverment Form',
+            'group_id' => 'Group ID',
+            'population' => 'Population',
+            'sum_star' => 'Sum Star',
+            'allow_register_parties' => 'Allow Register Parties',
+            'leader_can_drop_legislature' => 'Leader Can Drop Legislature',
+            'allow_register_holdings' => 'Allow Register Holdings',
+            'allow_register_holdings_noncitizens' => 'Allow Register Holdings Noncitizens',
+            'register_holdings_cost' => 'Register Holdings Cost',
+            'register_holdings_noncitizens_cost' => 'Register Holdings Noncitizens Cost',
+            'register_holdings_mincap' => 'Register Holdings Mincap',
+            'register_holdings_noncitizens_mincap' => 'Register Holdings Noncitizens Mincap',
+            'register_holdings_maxcap' => 'Register Holdings Maxcap',
+            'register_holdings_noncitizens_maxcap' => 'Register Holdings Noncitizens Maxcap',
+            'register_parties_cost' => 'Register Parties Cost',
+            'core_id' => 'Core ID',
+            'mpfnig' => 'Mpfnig',
+            'mpfnih' => 'Mpfnih',
         ];
     }
 
@@ -162,6 +189,9 @@ class State extends MyModel
         }
         foreach ($this->govermentFields as $gf) {
             $gf->delete();
+        }
+        foreach ($this->licenses as $l) {
+            $l->delete();
         }
         foreach ($this->parties as $party) {
             $party->delete();

@@ -11,6 +11,9 @@ use app\components\MyModel;
  * @property integer $type_id
  * @property integer $state_id
  * @property string $value
+ * 
+ * @property GovermentFieldType $type
+ * @property State $state
  */
 class GovermentFieldValue extends MyModel
 {

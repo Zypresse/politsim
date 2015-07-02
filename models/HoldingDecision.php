@@ -143,34 +143,43 @@ class HoldingDecision extends MyModel
                 break;
             case self::DECISION_GIVELICENSE: // Получение лицензии
                 if ($this->holding->state) {
-                    $stateLicense = StateLicense::find()->where(['state_id' => $this->holding->state_id, 'license_id' => $data->license_id])->one();
+                    $stateLicense = StateLicense::find()->where(['state_id' => $data->state_id, 'license_id' => $data->license_id])->one();
                     $allow        = true;
+                    $cost         = 0;
                     if (!(is_null($stateLicense))) {
-
-                        if ($stateLicense->is_only_goverment) {
-                            $allow = false;
-                            foreach ($this->holding->stocks as $stock) {
-                                if ($stock->post_id) {
-                                    $allow = true;
-                                    break;
+                        if ($data->state_id == $this->holding->state_id) {
+                            if ($stateLicense->is_only_goverment) {
+                                $allow = $this->holding->isGosHolding();
+                            }
+                            if ($stateLicense->cost) {
+                                if ($this->holding->balance < $stateLicense->cost) {
+                                    $allow = false;
+                                } else {
+                                    $cost = $stateLicense->cost;
                                 }
                             }
-                        }
-                        if ($stateLicense->cost) {
-                            if ($this->holding->balance < $stateLicense->cost) {
+                        } else {
+                            if ($stateLicense->is_only_goverment) {
                                 $allow = false;
+                            }
+                            if ($stateLicense->cost_noncitizens) {
+                                if ($this->holding->balance < $stateLicense->cost_noncitizens) {
+                                    $allow = false;
+                                } else {
+                                    $cost = $stateLicense->cost_noncitizens;
+                                }
                             }
                         }
                     }
                     if ($allow) {
                         $hl             = new HoldingLicense();
                         $hl->holding_id = $this->holding_id;
-                        $hl->state_id   = $this->holding->state_id;
+                        $hl->state_id   = $data->state_id;
                         $hl->license_id = $data->license_id;
                         $hl->save();
 
-                        if ($stateLicense && $stateLicense->cost) {
-                            $this->holding->balance -= $stateLicense->cost;
+                        if ($cost) {
+                            $this->holding->balance -= $cost;
                             $this->holding->save();
                         }
                     }
@@ -188,7 +197,7 @@ class HoldingDecision extends MyModel
                         foreach ($factoryType->licenses as $licenseType) {
                             $isCurrentLicenseExists = false;
                             foreach ($this->holding->licenses as $license) {
-                                if ($licenseType->id == $license->type_id && $license->state_id == $region->state_id) {
+                                if ($licenseType->id == $license->license_id && $license->state_id == $region->state_id) {
                                     $isCurrentLicenseExists = true;
                                     break;
                                 }
@@ -243,7 +252,7 @@ class HoldingDecision extends MyModel
                 if ($factory->holding_id == $this->holding_id) {
                     $this->holding->main_office_id = $data->factory_id;
                     $this->holding->region_id = $factory->region_id;
-                    $this->holding->state_id = $factory->region->state_id;
+//                    $this->holding->state_id = $factory->region->state_id;
                     $this->holding->save();
                 }
                 break;

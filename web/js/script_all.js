@@ -151,8 +151,9 @@ function show_custom_error(text) {
     $("#spinner").fadeOut("fast");
 }
 
-function request(pageUrl,postParams,requestType,callback)
+function request(pageUrl,postParams,requestType,callback,noError)
 {
+    noError = noError || false;
     postParams = postParams || {};
     postParams.viewer_id = viewer_id;
     postParams.auth_key = auth_key;
@@ -174,20 +175,25 @@ function request(pageUrl,postParams,requestType,callback)
                 }
             }
             if (typeof d === 'object') {
-                if (!d.error) {
-                    callback(d)
-                } else {
-                    if (d.error === 'timeout') {
-                        show_custom_error('Вы сможете совершить это действие через ' + name_time(d.time));
+                
+                if (!noError) {
+                    if (!d.error) {
+                        callback(d)
                     } else {
-                        show_custom_error(d.error);
+                        if (d.error === 'timeout') {
+                            show_custom_error('Вы сможете совершить это действие через ' + name_time(d.time));
+                        } else {
+                            show_custom_error(d.error);
+                        }
                     }
+                } else {
+                    callback(d);
                 }
             } else {
                 callback(d);
             }
         },
-        error: show_error
+        error: (noError) ? function(e) {console.log(e)} : show_error
     });
 }
 
@@ -264,31 +270,34 @@ function reload_page(time) {
 }
 
 
-function json_request(page, params, noreload) {
+function json_request(page, params, noReload, noError) {
     params = params || {};
-    noreload = noreload || false;
+    noReload = noReload || false;
+    noError = noError || false;
 
     request('/json/'+page,params,'json',function(result){
-        if (result.result === 'ok' && !noreload)
+        if (result.result === 'ok' && !noReload)
             reload_page(100);
     })
 }
 
-function get_json(page, params, callback) {
+function get_json(page, params, callback, noError) {
     params = params || {};
+    noError = noError || false;
     callback = (typeof callback === 'function') ? callback : function (e) {
         console.log(e);
     };
     
-    request('/json/'+page,params,'json',callback);
+    request('/json/'+page,params,'json',callback,noError);
 }
-function get_html(page, params, callback) {
+function get_html(page, params, callback, noError) {
     params = params || {};
+    noError = noError || false;
     callback = (typeof callback === 'function') ? callback : function (e) {
         console.log(e);
     };
     
-    request('/modal/'+page,params,'html',callback);
+    request('/modal/'+page,params,'html',callback,noError);
 }
 
 function load_modal(page,params,modalId,bodyId) {

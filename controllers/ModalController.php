@@ -2,22 +2,24 @@
 
 namespace app\controllers;
 
-use app\components\MyController;
-use yii\helpers\ArrayHelper;
-use app\models\Region;
-use app\models\Post;
-use app\models\User;
-use app\models\Org;
-use app\models\State;
-use app\models\ElectRequest;
-use app\models\ElectVote;
-use app\models\BillType;
-use app\models\BillTypeField;
-use app\models\GovermentFieldType;
-use app\models\Population;
-use app\models\Twitter;
-use app\models\ElectResult;
-use app\models\HoldingLicenseType;
+use app\components\MyController,
+    yii\helpers\ArrayHelper,
+    app\models\Region,
+    app\models\Post,
+    app\models\User,
+    app\models\Org,
+    app\models\State,
+    app\models\ElectRequest,
+    app\models\ElectVote,
+    app\models\BillType,
+    app\models\BillTypeField,
+    app\models\GovermentFieldType,
+    app\models\Population,
+    app\models\Twitter,
+    app\models\ElectResult,
+    app\models\HoldingLicenseType,
+    app\models\Holding,
+    app\models\FactoryCategory;
 
 class ModalController extends MyController
 {
@@ -425,6 +427,73 @@ class ModalController extends MyController
     public function actionAccountSettings()
     {
         return $this->render("account-settings", ['user' => $this->getUser()]);
+    }
+    
+    public function actionBuildFabric($region_id,$holding_id)
+    {
+        $region = Region::findByPk($region_id);
+        $holding = Holding::findByPk($holding_id);
+        $factoryCategories = FactoryCategory::find()->all();
+        
+        return $this->render("build_factory",[
+            'region' => $region,
+            'holding' => $holding,
+            'user' => $this->getUser(),
+            'factoryCategories' => $factoryCategories
+        ]);
+    }
+    
+    public function actionLicensesOptions($holding_id,$state_id)
+    {
+        $holding = Holding::findByPk($holding_id);
+        $state = State::findByPk($state_id);
+        $licenses = HoldingLicenseType::find()->all();
+
+        foreach ($licenses as $license) {
+            $allowed = true;
+            foreach ($holding->licenses as $hl) {
+                if ($license->id === $hl->license_id && $hl->state_id === $state->id) {
+                    $allowed = false;
+                    $break;
+                }
+            }
+            if (!$allowed)
+                continue;
+
+            $stateLicense = null;
+            foreach ($state->licenses as $sl) {
+                if ($sl->license_id === $license->id) {
+                    $stateLicense = $sl;
+                    break;
+                }
+            }
+            $text = "Получение лицензии бесплатно";
+            if (!(is_null($stateLicense))) {
+                if ($stateLicense->is_only_goverment) {
+                    if (!$holding->isGosHolding() || $holding->state_id !== $state->id) {
+                        continue;
+                    }
+                }
+                if ($holding->state_id === $state->id) {
+                    if ($stateLicense->cost) {
+                        $text = number_format($stateLicense->cost, 0, '', ' ') . ' ' . \app\components\MyHtmlHelper::icon('money');
+                    }
+                    if ($stateLicense->is_need_confirm) {
+                        $text .= "<br>Необходимо подтверждение министра";
+                    }
+                } else {
+                    if ($stateLicense->cost_noncitizens) {
+                        $text = number_format($stateLicense->cost_noncitizens, 0, '', ' ') . ' ' . \app\components\MyHtmlHelper::icon('money');
+                    }
+                    if ($stateLicense->is_need_confirm_noncitizens) {
+                        $text .= "<br>Необходимо подтверждение министра";
+                    }
+                }
+            }
+                ?>
+                <option id="license_option<?= $license->id ?>" value="<?= $license->id ?>" data-text="<?= $text ?>" ><?= $license->name ?></option>      
+                <? 
+            }
     }
 
 }

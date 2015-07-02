@@ -60,7 +60,7 @@ class JsonController extends MyController
             $user = User::find()->where(["twitter_nickname" => $nick])->one();
         }
         if (is_null($user)) {
-            $this->_r('User not found');
+            return $this->_r('User not found');
         }
 
         $this->result = ($uid == $this->viewer_id) ? $user->attributes : $user->getPublicAttributes();
@@ -788,54 +788,58 @@ class JsonController extends MyController
 
         if ($text) {
             $self = User::findByPk($this->viewer_id);
-            if ($self->last_tweet > time() - 1 * 60 * 60)
+            if ($self->last_tweet > time() - 1 * 60 * 60) {
                 return $this->_r("timeout", ['time' => ($self->last_tweet + 1 * 60 * 60 - time())]);
+            }
 
             if ($uid) {
                 $user = User::findByPk($uid);
-                if (is_null($user))
+                if (is_null($user)) {
                     return $this->_r("User not found");
+                }
             }
 
             $subs = $self->getTwitterSubscribersCount();
 
             $retweets = round($subs / 5) + mt_rand(round(-1 * $subs / 40), round($subs / 20));
 
-            switch ($type) {
-                case 1:
-                    # Положительно
-                    if ($uid) {
-                        $user->heart += ($self->heart > 0) ? round($self->heart / mt_rand(100, 500)) : round(abs($self->heart) / mt_rand(200, 1000));
-                        $user->chart_pie += ($self->chart_pie > 0) ? round(mt_rand(0, 5) / 9) : 0;
-                        $user->star += round($self->star / 100);
-                    }
-                    $self->heart += round(mt_rand(0, 5) / 9);
-                    $self->star += round($retweets / 1000);
-                    break;
-                case 2:
-                    # Отрицательно
-                    if ($uid) {
-                        $user->heart += -1 * ($self->heart > 0 ? round($self->heart / 10) : round(abs($self->heart) / 100));
-                        $user->chart_pie += ($self->chart_pie > 0) ? -1 : 0;
-                        $user->star += round($self->star / 10);
-                    }
-                    $self->heart += -1 * round(mt_rand(0, 5) / 9);
-                    $self->star += round($retweets / 1000);
-                    break;
-                case 3:
-                    # Оскорбительно
-                    if ($uid) {
-                        $user->heart += -2 * ($self->heart > 0 ? round($self->heart / 10) : round(abs($self->heart) / 100));
-                        $user->chart_pie += -1 * round(mt_rand(0, 5) / 9);
-                        $user->star += round($self->star / 10);
-                    }
-                    $self->heart += -1 * abs(ceil($self->heart / 100));
-                    $self->chart_pie += -1;
-                    $self->star += round($retweets / 1000);
-                    break;
-                default:
-                    $self->star += round($retweets / 1000);
-                    break;
+            if ($uid !== $this->viewer_id) {
+                switch ($type) {
+                    case 1:
+                        # Положительно
+                        if ($uid) {
+                            $user->heart += ($self->heart > 0) ? round($self->heart / mt_rand(100, 500)) : round(abs($self->heart) / mt_rand(200, 1000));
+                            $user->chart_pie += ($self->chart_pie > 0) ? round(mt_rand(0, 5) / 9) : 0;
+                            $user->star += round($self->star / 100);
+                        }
+                        $self->heart += round(mt_rand(0, 5) / 9);
+                        $self->star += round($retweets / 1000);
+                        break;
+                    case 2:
+                        # Отрицательно
+                        if ($uid) {
+                            $user->heart += -1 * ($self->heart > 0 ? round($self->heart / 10) : round(abs($self->heart) / 100));
+                            $user->chart_pie += ($self->chart_pie > 0) ? -1 : 0;
+                            $user->star += round($self->star / 10);
+                        }
+                        $self->heart += -1 * round(mt_rand(0, 5) / 9);
+                        $self->star += round($retweets / 1000);
+                        break;
+                    case 3:
+                        # Оскорбительно
+                        if ($uid) {
+                            $user->heart += -2 * ($self->heart > 0 ? round($self->heart / 10) : round(abs($self->heart) / 100));
+                            $user->chart_pie += -1 * round(mt_rand(0, 5) / 9);
+                            $user->star += round($self->star / 10);
+                        }
+                        $self->heart += -1 * abs(ceil($self->heart / 100));
+                        $self->chart_pie += -1;
+                        $self->star += round($retweets / 1000);
+                        break;
+                    default:
+                        $self->star += round($retweets / 1000);
+                        break;
+                }
             }
 
             if ($uid) {
@@ -1164,10 +1168,13 @@ class JsonController extends MyController
                         }
                         break;
                     case HoldingDecision::DECISION_GIVELICENSE: // Получение новой лицензии
-                        if (intval($_REQUEST['license_id']) > 0) {
-                            $decision->data = ['license_id' => intval($_REQUEST['license_id'])];
+                        if (intval($_REQUEST['license_id']) > 0 && intval($_REQUEST['state_id']) > 0) {
+                            $decision->data = [
+                                'license_id' => intval($_REQUEST['license_id']),
+                                'state_id' => intval($_REQUEST['state_id'])
+                            ];
                         } else {
-                            return $this->_r("Invalid license ID");
+                            return $this->_r("Invalid fields");
                         }
                         break;
 

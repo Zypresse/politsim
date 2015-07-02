@@ -37,7 +37,10 @@ class MyController extends Controller
 
         if (is_array($this->error)) $this->error = print_r($this->error,true);
         
-        $ar = ['result'=>$this->result,'error'=>$this->error,'addFields'=>$addFields];
+        $ar = ['result'=>$this->result,'error'=>$this->error];
+        foreach ($addFields as $key => $val) {
+            $ar[$key] = $val;
+        }
 
         return $ar;
     }

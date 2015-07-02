@@ -6,7 +6,8 @@
  */
 
 namespace app\components\vkapi;
-use app\components\vkapi\VkApi;
+use Yii,
+    app\components\vkapi\VkApi;
 
 /**
  * Description of VkNotification

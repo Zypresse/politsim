@@ -13,6 +13,8 @@ use app\components\MyModel;
  * @property integer $is_only_goverment Гос. монополия на л.
  * @property integer $is_need_confirm Для л. требуется подтверждение министра
  * @property double $cost Цена л.
+ * @property integer $is_need_confirm_noncitizens Для иностранных компаний л. требуется подтверждение министра
+ * @property double $cost_noncitizens Цена л. для иностранных компаний
  * 
  * @property \app\models\HoldingLicenseType $type Тип лицензии
  * @property \app\models\State $state Государство
@@ -35,8 +37,8 @@ class StateLicense extends MyModel
     {
         return [
             [['state_id', 'license_id'], 'required'],
-            [['state_id', 'license_id', 'is_only_goverment', 'is_need_confirm'], 'integer'],
-            [['cost'], 'number']
+            [['state_id', 'license_id', 'is_only_goverment', 'is_need_confirm', 'is_need_confirm_noncitizens'], 'integer'],
+            [['cost', 'cost_noncitizens'], 'number']
         ];
     }
 
