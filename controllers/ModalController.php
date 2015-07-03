@@ -405,7 +405,7 @@ class ModalController extends MyController
             if (is_null($state))
                 return $this->_r("State not found");
 
-            $results = ElectResult::find()->where("org_id = {$state->legislature} OR org_id = {$state->executive}")->orderBy('date')->all();
+            $results = ElectResult::find()->where("org_id = {$state->legislature} OR org_id = {$state->executive}")->orderBy('date DESC')->all();
             return $this->render("old-elections", ['results' => $results]);
         } else {
             return $this->_r("Invalid params");

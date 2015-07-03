@@ -80,22 +80,7 @@
     <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
   </div>
 </div>
-<button class="btn btn-primary" onclick="$.ajax(
-            {
-              url: '/modal/old-elections?state_id=<?=$state->id?>',
-              beforeSend:function() {
-                  $('#old-elections_body').empty();
-              },
-              success:function(d) {
-                  if (typeof(d) == 'object' && d.result == 'error') {
-                    show_custom_error(d.error);
-                } else {
-                    $('#old-elections_body').html(d);
-                    $('#old-elections').modal();
-                }
-              },
-                error:show_error
-            }); ">Результаты прошлых выборов</button><br><br>
+<button class="btn btn-primary" onclick="load_modal('old-elections',{'state_id':<?=$state->id?>},'old-elections','old-elections_body')">Результаты прошлых выборов</button><br><br>
 
 <? if ($state->executiveOrg && $state->executiveOrg->isElected()) { ?>
 <? if ($state->executiveOrg->isGoingElects()) { ?>
@@ -242,14 +227,14 @@
   </div>
 </div>
 <script>
-var org_id,leader,candidat,request,request_child;
+var org_id,leader,candidat,request;
 
 var send_elect_request = function() {
 	json_request('elect-request',{'org_id':org_id,'leader':leader,'candidat':candidat});
 }
 var send_elect_vote = function() {
-	if (request) json_request('elect-vote',{'request':request},!!request_child);
-	//if (request_child) json_request('elect-vote',{'request':request_child});
+    console.log(request);
+	if (request) json_request('elect-vote',{'request':request});
 }
 
 function drop_elect_request(org_id,leader) {
