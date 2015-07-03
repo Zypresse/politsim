@@ -24,11 +24,13 @@ use app\components\MyHtmlHelper;
 				<? 
 					switch ($key) {
                                                 case 'cost':
+                                                case 'cost_noncitizens':
                                                 case 'money':
                                                     $value = $value.' '.MyHtmlHelper::icon('coins');
                                                 break;
                                                 case 'is_only_goverment':
                                                 case 'is_need_confirm':
+                                                case 'is_need_confirm_noncitizens':
                                                     $value = ($value ? 'ДА' : 'НЕТ');
                                                 break;
 						case 'new_capital':
