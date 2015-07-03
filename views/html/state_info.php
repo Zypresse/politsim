@@ -77,8 +77,8 @@
         <? if ($license->is_only_goverment) { ?>
         Гос. монополия
         <? } else { ?>
-        Стоимость лицензии: <?=number_format($license->cost,0,'',' ')?> <?=MyHtmlHelper::icon('money')?><br>
-        Стоимость лицензии для нерезидентов: <?=number_format($license->cost_noncitizens,0,'',' ')?> <?=MyHtmlHelper::icon('money')?>
+        Стоимость лицензии: <?=MyHtmlHelper::moneyFormat($license->cost)?><br>
+        Стоимость лицензии для нерезидентов: <?=MyHtmlHelper::moneyFormat($license->cost_noncitizens)?>
         <? if ($license->is_need_confirm) { ?>
         <br> Требуется подтверждение министра
         <? } ?>

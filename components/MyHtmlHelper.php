@@ -196,6 +196,6 @@ class MyHtmlHelper {
         }
         
         public static function moneyFormat($money,$decimals = 0) {
-            return number_format($money,$decimals,'.',' ').' '.static::icon('coins');
+            return number_format($money,$decimals,'.',' ').' '.static::icon('money');
         }
 }

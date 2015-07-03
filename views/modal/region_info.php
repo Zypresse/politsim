@@ -53,7 +53,7 @@ use app\components\MyHtmlHelper;
 <? } ?>
  <? if ($user->region_id !== $region->id) { ?>
 <div class="btn-group">
-  <button class="btn btn-small" onclick="json_request('move-to',{'id':'<?=$region->id?>'},true); load_page('profile')">
+  <button class="btn btn-small" onclick="json_request('move-to',{'id':'<?=$region->id?>'},true); setTimeout(function(){load_page('profile')},200)">
     Переехать сюда
   </button>
 </div><? } ?>

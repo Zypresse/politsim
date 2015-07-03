@@ -981,37 +981,51 @@ class JsonController extends MyController
             return $this->_r("Invalid fields");
     }
 
-    public function actionCreateHolding($name)
+    public function actionCreateHolding($name,$capital)
     {
+        $capital = intval($capital);
         $user = $this->getUser();
-        if ($user->state && $user->state->allow_register_holdings) {
-            if ($user->money >= 10000) {
-                if ($name) {
-                    $holding = new Holding();
-                    $holding->name = trim(strip_tags($name));
-                    $holding->state_id = $user->state_id;
-                    $holding->balance = 5000;
-                    if ($holding->save()) {
-                        $stock = new Stock();
-                        $stock->count = 10000;
-                        $stock->holding_id = $holding->id;
-                        $stock->user_id = $user->id;
-                        $stock->save();
+        if ($user->region && $user->state_id) {
+            $inHome = $user->region->state_id === $user->state_id;
+            if (($inHome && $user->state->allow_register_holdings) || (!$inHome && $user->region->state->allow_register_holdings_noncitizens)) {
+                $mincap = $inHome?$user->region->state->register_holdings_mincap:$user->region->state->register_holdings_noncitizens_mincap;
+                $maxcap = $inHome?$user->region->state->register_holdings_maxcap:$user->region->state->register_holdings_noncitizens_maxcap;
+                if ($capital < $mincap || ($maxcap>0 && $capital > $maxcap)) {
+                    return $this->_r("Invalid capitalisation");
+                }
+                $sum = $capital + $inHome?$user->region->state->register_holdings_cost:$user->region->state->register_holdings_noncitizens_cost;
+                if ($user->money >= $sum) {
+                    if (!(empty($name))) {
+                        $holding = new Holding();
+                        $holding->name = trim(strip_tags($name));
+                        $holding->state_id = $user->region->state_id;
+                        $holding->balance = $capital;
+                        if ($holding->save()) {
+                            $stock = new Stock();
+                            $stock->count = 10000;
+                            $stock->holding_id = $holding->id;
+                            $stock->user_id = $user->id;
+                            $stock->save();
 
-                        $user->money -= 10000;
-                        $user->save();
+                            $user->money -= $capital;
+                            $user->save();
 
-                        $this->result = 'ok';
-                        return $this->_r();
+                            return $this->_rOk();
+                        } else {
+                            return $this->_r($holding->getErrors());
+                        }
                     } else {
-                        return $this->_r($holding->getErrors());
+                        return $this->_r("Invalid fields");
                     }
-                } else
-                    return $this->_r("Invalid fields");
-            } else
-                return $this->_r("Недостаточно денег");
-        } else
+                } else {
+                    return $this->_r("Недостаточно денег");
+                }
+            } else {
+                return $this->_r("Нельзя создать компанию в этом государстве");
+            }
+        } else {
             return $this->_r("Not allowed");
+        }
     }
 
     public function actionStocksDealing($holding_id, $count, $cost, $uid)
