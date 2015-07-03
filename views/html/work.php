@@ -207,22 +207,7 @@ if (count($user->post->org->speakerRequests)) {
 	}
 
 	function naznach(id) {
-		 $.ajax(
-			{
-				url: '/modal/naznach?id='+id,
-				beforeSend:function() {
-			  		$('#naznach_body').empty();
-				},
-				success:function(d) {
-					if (typeof(d) == 'object' && d.result == 'error')
-						show_custom_error(d.error);
-					else {
-				  		$('#naznach_body').html(d);
-				  		$('#naznach').modal();
-				  	}
-				},
-				error:show_error
-			});
+                load_modal('naznach',{'id':id},'naznach','naznach_body');
 	}
 
 	function set_post(uid,id,name,post_name) {
