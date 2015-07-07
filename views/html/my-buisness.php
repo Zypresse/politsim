@@ -66,7 +66,7 @@ use yii\helpers\Html;
 <?php 
     $inHomeland = ($user->region->state_id === $user->state_id);
 ?>
-<? if ($user->region && $user->state_id) { ?>
+<? if ($user->region && $user->region->state && $user->state_id) { ?>
     <? if ($inHomeland) : ?>
         <? if ($user->state->allow_register_holdings): ?>
             <p><button class="btn btn-success btn-small" onclick="$('#create_holding_dialog').modal()">Создать акционерное общество</button></p>

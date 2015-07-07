@@ -53,7 +53,7 @@ use app\components\MyHtmlHelper;
 		 </script>
 		 <? break;
 		 case 'money': ?>
-                 <input type="number" class="bill_field" value="0" id="bill<?=$bill_type->id?>_<?=$field->system_name?>" name="<?=$field->system_name?>" onchange="$(this).val($(this).val() < 0 ? 0 : parseInt($(this).val()))" > <?=MyHtmlHelper::icon('coins')?>
+                 <input type="number" class="bill_field" value="0" id="bill<?=$bill_type->id?>_<?=$field->system_name?>" name="<?=$field->system_name?>" onchange="$(this).val($(this).val() < 0 ? 0 : parseInt($(this).val()))" > <?=MyHtmlHelper::icon('money')?>
 		 <? break;
 		 case 'regions':
 		 case 'regions_all': ?>
