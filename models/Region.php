@@ -210,9 +210,16 @@ class Region extends MyModel
                 } else {
                     if (!$this->state->allow_register_holdings) {
                         // Становится гос. предприятием
+                        foreach ($holding->stocks as $stock) {
+                            $stock->remove();
+                        }
+                        $stock = new Stock([
+                            'holding_id' => $holding->id,
+                            'post_id' => 0 // Тут надо найти пост министра, которому подойдёт это предприятие
+                        ]);
                     }
                     foreach ($this->state->licenses as $license) {
-                        if ($license->is_only_goverment && $holding->isHaveLicense($license->type->id)) {
+                        if ($license->is_only_goverment && $holding->isHaveLicense($this->state_id,$license->type->id)) {
                             $holding->deleteLicense($license->type->id);
                         }
                     }

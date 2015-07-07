@@ -279,17 +279,26 @@ class UpdateHourlyController extends Controller
         $factories = \app\models\Factory::find()->where(['status'=>1])->all();
         foreach ($factories as $factory) {
             foreach ($factory->type->licenses as $tLicense) {
-                $licenseHave = false;
-                foreach ($factory->holding->getLicensesByState($factory->region->state_id) as $license) {
-                    if ($license->license_id == $tLicense->id) {
-                        $licenseHave = true;
-                        break;
-                    }
-                }
-                if (!$licenseHave) {
+                if (!$factory->holding->isHaveLicense($factory->region->state_id,$tLicense->id)) {
                     $factory->status = 6;
                     $factory->save();
+                    break;
                 }
+            }
+        }
+        
+        $factories = \app\models\Factory::find()->where(['status'=>6])->all();
+        foreach ($factories as $factory) {
+            $allLicencesExist = true;
+            foreach ($factory->type->licenses as $tLicense) {
+                if (!$factory->holding->isHaveLicense($factory->region->state_id,$tLicense->id)) {
+                    $allLicencesExist = false;
+                    break;
+                }
+            }
+            if ($allLicencesExist) {
+                $factory->status = 1;
+                $factory->save();
             }
         }
         

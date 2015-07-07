@@ -131,13 +131,14 @@ class Holding extends MyModel
 
     /**
      * Проверка, есть ли лицензия этого типа у холдинга
+     * @param integer $stateId
      * @param integer $licenseTypeId
      * @return boolean
      */
-    public function isHaveLicense($licenseTypeId)
+    public function isHaveLicense($stateId,$licenseTypeId)
     {
         foreach ($this->licenses as $license) {
-            if ($license->license_id === $licenseTypeId) {
+            if ($license->license_id === $licenseTypeId && $license->state_id === $stateId) {
                 return true;
             }
         }

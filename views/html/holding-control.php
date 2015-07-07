@@ -274,11 +274,11 @@ $factoryCategories = FactoryCategory::find()->all();
 <div style="display:none;" class="modal" id="insert_money_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel123" aria-hidden="true">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3 id="myModalLabel1232">Выплата дивидентов акционерам</h3>
+        <h3 id="myModalLabel1232">Внесение денег на счёт</h3>
     </div>
     <div id="insert_money_modal_body" class="modal-body">
         <div class="control-group">
-            <label class="control-label" for="#dividents_sum">Сумма для внесения на счёт</label>
+            <label class="control-label" for="#insert_sum">Сумма для внесения на счёт</label>
             <div class="controls">
                 <input type="number" id="insert_sum" value="0"> <?= MyHtmlHelper::icon('money') ?>
             </div>
@@ -290,29 +290,29 @@ $factoryCategories = FactoryCategory::find()->all();
         <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
     </div>
 </div>
-<div style="display:none;" class="modal" id="insert_money_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel123" aria-hidden="true">
+<div style="display:none;" class="modal" id="stock_dividents_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel123" aria-hidden="true">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
         <h3 id="myModalLabel1232">Выплата дивидентов акционерам</h3>
     </div>
-    <div id="insert_money_modal_body" class="modal-body">
+    <div id="stock_dividents_modal_body" class="modal-body">
         <div class="control-group">
-            <label class="control-label" for="#dividents_sum">Сумма для внесения на счёт</label>
+            <label class="control-label" for="#dividents_sum">Сумма для выплаты</label>
             <div class="controls">
-                <input type="number" id="insert_sum" value="0"> <?= MyHtmlHelper::icon('money') ?>
+                <input type="number" id="dividents_sum" value="0"> <?= MyHtmlHelper::icon('money') ?>
             </div>
         </div>
-        <p>Деньги будут сняты с вашего счёта и внесены на баланс компании. Снять их будет проблематично, если вы не владеете 100% акций.</p>
+        <p>Деньги будут выплачены со счёта компании акционерам в долях, равных их долям в компании.</p>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-primary" data-dismiss="modal"  onclick="insert_money(<?= $holding->id ?>)">Внести</button>
+        <button class="btn btn-primary" data-dismiss="modal"  onclick="pay_dividents(<?= $holding->id ?>)">Внести</button>
         <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
     </div>
 </div>
 <div style="display:none;" class="modal" id="set_manager_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel1432" aria-hidden="true">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3 id="myModalLabel1233">Выплата дивидентов акционерам</h3>
+        <h3 id="myModalLabel1233">Назначение нового управляющего</h3>
     </div>
     <div id="set_manager_modal_body" class="modal-body">
         <div class="control-group">
