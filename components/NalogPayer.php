@@ -20,12 +20,12 @@ abstract class NalogPayer extends MyModel {
     public function getUnnp()
     {
         if (!$this->unnp) {
-            $this->unnp = Unnp::find()->where([$this->getField().'_id' => $this->id])->one()->id;
-            if (!$this->unnp) {
+            $u = Unnp::find()->where([$this->getField().'_id' => $this->id])->one();
+            if (is_null($u)) {
                 $u = new Unnp([$this->getField().'_id' => $this->id]);
                 $u->save();
-                $this->unnp = $u->id;
             }
+            $this->unnp = $u->id;
         } 
         return $this->unnp;
     }
