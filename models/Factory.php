@@ -2,7 +2,7 @@
 
 namespace app\models;
 
-use app\components\MyModel;
+use app\components\NalogPayer;
 
 /**
  * Фабрика/завод/сх-предприятие. Таблица "factories".
@@ -24,9 +24,13 @@ use app\components\MyModel;
  * @property Population[] $workers Рабочие
  * @property FactoryWorkerSalary[] $salaries Установленные зарплаты рабочих
  */
-class Factory extends MyModel
+class Factory extends NalogPayer
 {
 
+    protected function getField()
+    {
+        return 'factory';
+    }
     /**
      * @inheritdoc
      */

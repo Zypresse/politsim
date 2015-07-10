@@ -2,7 +2,7 @@
 
 namespace app\models;
 
-use app\components\MyModel;
+use app\components\NalogPayer;
 
 /**
  * Акционерное общество. Таблица "holdings".
@@ -18,9 +18,13 @@ use app\components\MyModel;
  * @property HoldingLicense[] $licenses Лицензии
  * @property Factory[] $factories Фабрики
  */
-class Holding extends MyModel
+class Holding extends NalogPayer
 {
 
+    protected function getField()
+    {
+        return 'holding';
+    }
     /**
      * @inheritdoc
      */

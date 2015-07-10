@@ -2,7 +2,7 @@
 
 namespace app\models;
 
-use app\components\MyModel;
+use app\components\NalogPayer;
 use app\models\GovermentFieldType;
 use app\models\GovermentFieldValue;
 
@@ -50,9 +50,13 @@ use app\models\GovermentFieldValue;
  * @property \app\models\Party[] $parties Список партий
  * @property \app\models\User[] $users Список игроков
  */
-class State extends MyModel
+class State extends NalogPayer
 {
 
+    protected function getField()
+    {
+        return 'state';
+    }
     /**
      * @inheritdoc
      */

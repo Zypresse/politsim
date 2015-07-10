@@ -411,11 +411,13 @@ class JsonController extends MyController
 
         if ($count && $uid && $uid !== $this->viewer_id) {
             $sender = $this->getUser();
-            if ($sender->money < $count)
+            if ($sender->money < $count) {
                 return $this->_r("Недостаточно денег на счету");
+            }
             $recipient = User::findByPk($uid);
-            if (is_null($recipient))
+            if (is_null($recipient)) {
                 return $this->_r("User not found");
+            }
 
             $sender->money -= $count;
             $sender->save();
@@ -423,8 +425,8 @@ class JsonController extends MyController
             $recipient->save();
 
             $dealing = new Dealing();
-            $dealing->from_uid = $sender->id;
-            $dealing->to_uid = $recipient->id;
+            $dealing->from_unnp = $sender->unnp;
+            $dealing->to_unnp = $recipient->unnp;
             $dealing->sum = $count;
             $dealing->is_anonim = $is_anonim ? 1 : 0;
             $dealing->is_secret = $is_secret ? 1 : 0;
@@ -1046,8 +1048,8 @@ class JsonController extends MyController
                 return $this->_r("Not allowed");
 
             $dealing = new Dealing();
-            $dealing->from_uid = $this->viewer_id;
-            $dealing->to_uid = $uid;
+            $dealing->from_unnp = $this->getUser()->unnp;
+            $dealing->to_unnp = $accepter->unnp;
             $dealing->sum = -1 * $cost;
             $dealing->items = json_encode([['type' => 'stock', 'count' => $count, 'holding_id' => $holding_id]]);
             $dealing->time = -1;
@@ -1068,7 +1070,7 @@ class JsonController extends MyController
             if (is_null($dealing))
                 return $this->_r("Dealing not found");
 
-            if ($dealing->to_uid !== $this->viewer_id)
+            if ($dealing->to_unnp !== $this->getUser()->unnp)
                 return $this->_r("Not allowed");
 
             if ($dealing->sum < 0 && abs($dealing->sum) > $dealing->recipient->money)
@@ -1103,12 +1105,12 @@ class JsonController extends MyController
             foreach ($items as $item) {
                 switch ($item['type']) {
                     case "stock":
-                        $stock = Stock::find()->where(['holding_id' => $item['holding_id'], 'user_id' => $dealing->from_uid])->one();
+                        $stock = Stock::find()->where(['holding_id' => $item['holding_id'], 'user_id' => $dealing->sender->id])->one();
 
-                        $recStock = Stock::find()->where(['holding_id' => $item['holding_id'], 'user_id' => $dealing->to_uid])->one();
+                        $recStock = Stock::find()->where(['holding_id' => $item['holding_id'], 'user_id' => $dealing->recipient->id])->one();
                         if (is_null($recStock)) {
                             $recStock = new Stock();
-                            $recStock->user_id = $dealing->to_uid;
+                            $recStock->user_id = $dealing->recipient->id;
                             $recStock->holding_id = $item['holding_id'];
                             $recStock->count = 0;
                         }
@@ -1139,7 +1141,7 @@ class JsonController extends MyController
             if (is_null($dealing))
                 return $this->_r("Dealing not found");
 
-            if ($dealing->to_uid !== $this->viewer_id)
+            if ($dealing->to_unnp !== $this->getUser()->unnp)
                 return $this->_r("Not allowed");
 
             $dealing->delete();

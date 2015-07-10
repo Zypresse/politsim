@@ -2,7 +2,7 @@
 
 namespace app\models;
 
-use app\components\MyModel;
+use app\components\NalogPayer;
 use app\models\User;
 
 /**
@@ -27,9 +27,13 @@ use app\models\User;
  * @property \app\models\State $state Государство
  * @property \app\models\Ideology $ideologyInfo Идеология
  */
-class Party extends MyModel
+class Party extends NalogPayer
 {
 
+    protected function getField()
+    {
+        return 'party';
+    }
     /**
      * @inheritdoc
      */

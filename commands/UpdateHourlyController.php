@@ -159,7 +159,7 @@ class UpdateHourlyController extends Controller
         foreach ($regions as $region) {
             $vacansiesSumByPopClass = [];
             $baseSpeeds = [];
-            foreach ($region->vacansies as $vacansy) {
+            foreach ($region->vacansiesWithSalary as $vacansy) {
                 if (isset($vacansiesSumByPopClass[$vacansy->pop_class_id])) {
                     $vacansiesSumByPopClass[$vacansy->pop_class_id] += $vacansy->count_all;
                 } else {
@@ -204,11 +204,10 @@ class UpdateHourlyController extends Controller
     {
         $regions = Region::find()->all();
         foreach ($regions as $region) {
-            foreach ($region->vacansies as $vacansy) {
+            foreach ($region->vacansiesWithSalaryAndCount as $vacansy) {
 //                var_dump($vacansy->factory_id . ': ' . $vacansy->salary);
-                if ($vacansy->salary == 0) continue;
                 $setted = 0;
-                foreach ($region->populationGroups as $popGroup) {
+                foreach ($region->populationGroupsWithoutFactory as $popGroup) {
                     if ($popGroup->class == $vacansy->pop_class_id && !($popGroup->factory_id)) {
                         
                         if ($popGroup->count <= $vacansy->count_need) {
@@ -256,18 +255,20 @@ class UpdateHourlyController extends Controller
                 
                 $obrabotannue[] = $pop->getUniqueKey();
                 
-                \app\models\Population::deleteAll([
-                    'class' => $pop->class,
-                    'nation' => $pop->nation,
-                    'ideology' => $pop->ideology,
-                    'sex' => $pop->sex,
-                    'age' => $pop->age,
-                    'factory_id' => $pop->factory_id,
-                    'region_id' => $pop->region_id
-                  ]);
+                \app\models\Population::deleteAll(
+                    'class = :class AND nation = :nation AND ideology = :ideology AND sex = :sex AND age = :age AND factory_id = :factory_id AND region_id = :region_id AND id <> :id'
+                ,[
+                    ':class' => $pop->class,
+                    ':nation' => $pop->nation,
+                    ':ideology' => $pop->ideology,
+                    ':sex' => $pop->sex,
+                    ':age' => $pop->age,
+                    ':factory_id' => $pop->factory_id,
+                    ':region_id' => $pop->region_id,
+                    ':id' => $pop->id
+                ]);
                 
                 $pop->count = $countAnalog;
-                $pop->isNewRecord = true;
                 $pop->save();
             }
         }

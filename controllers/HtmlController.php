@@ -2,18 +2,18 @@
 
 namespace app\controllers;
 
-use app\components\MyController;
-use app\models\User;
-use app\models\Dealing;
-use app\models\Org;
-use app\models\Region;
-use app\models\Resurse;
-use app\models\Party;
-use app\models\State;
-use app\models\Ideology;
-use app\models\Twitter;
-use app\models\Holding;
-use app\models\Factory;
+use app\components\MyController,
+    app\models\User,
+    app\models\Dealing,
+    app\models\Org,
+    app\models\Region,
+    app\models\Resurse,
+    app\models\Party,
+    app\models\State,
+    app\models\Ideology,
+    app\models\Twitter,
+    app\models\Holding,
+    app\models\Factory;
 
 class HtmlController extends MyController
 {

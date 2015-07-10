@@ -2,7 +2,7 @@
 
 namespace app\models;
 
-use app\components\MyModel;
+use app\components\NalogPayer;
 use app\components\MyHtmlHelper;
 
 /**
@@ -25,9 +25,13 @@ use app\components\MyHtmlHelper;
  * @property \app\models\Ideology $ideologyinfo Идеология
  * @property Factory $factory Фабрика, на которой они работают
  */
-class Population extends MyModel
+class Population extends NalogPayer
 {
 
+    protected function getField()
+    {
+        return 'pop';
+    }
     /**
      * @inheritdoc
      */

@@ -2,7 +2,7 @@
 
 namespace app\models;
 
-use app\components\MyModel;
+use app\components\NalogPayer;
 
 /**
  * Должность в правительстве. Таблица "posts".
@@ -20,9 +20,13 @@ use app\components\MyModel;
  * @property \app\models\User $user Игрок, занимающий этот пост
  * @property \app\models\Stock[] $stocks Акции, принадлежащие этому посту
  */
-class Post extends MyModel
+class Post extends NalogPayer
 {
 
+    protected function getField()
+    {
+        return 'post';
+    }
     /**
      * @inheritdoc
      */

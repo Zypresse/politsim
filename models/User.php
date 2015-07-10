@@ -3,7 +3,7 @@
 namespace app\models;
 
 use Yii,
-    app\components\MyModel,
+    app\components\NalogPayer,
     app\models\Twitter,
     app\models\Dealing;
 
@@ -43,8 +43,13 @@ use Yii,
  * @property \app\models\Factory[] $factories 
  * @property \app\models\Auth[] $accounts
  */
-class User extends MyModel implements \yii\web\IdentityInterface
+class User extends NalogPayer implements \yii\web\IdentityInterface
 {
+    
+    protected function getField()
+    {
+        return 'user';
+    }
     
     public static function findIdentity($id) {
         return static::findByPk($id);
@@ -221,7 +226,7 @@ class User extends MyModel implements \yii\web\IdentityInterface
      */
     public function getNotAcceptedDealingsList()
     {
-        return Dealing::find()->where(['to_uid' => $this->id, 'time' => -1])->all();
+        return Dealing::find()->where(['to_unnp' => $this->unnp, 'time' => -1])->all();
     }
 
     /**
@@ -230,7 +235,7 @@ class User extends MyModel implements \yii\web\IdentityInterface
      */
     public function getNotAcceptedDealingsCount()
     {
-        return intval(Dealing::find()->where(['to_uid' => $this->id, 'time' => -1])->count());
+        return intval(Dealing::find()->where(['to_unnp' => $this->unnp, 'time' => -1])->count());
     }
 
     /**

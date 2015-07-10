@@ -2,7 +2,7 @@
 
 namespace app\models;
 
-use app\components\MyModel;
+use app\components\NalogPayer;
 
 /**
  * This is the model class for table "regions".
@@ -34,14 +34,21 @@ use app\components\MyModel;
  * 
  * @property \app\models\State $state Государство
  * @property \app\models\Population[] $populationGroups Группы населения
+ * @property \app\models\Population[] $populationGroupsWithoutFactory Группы населения не работающие на фабриках
  * @property \app\models\CoreCountry[] $cores "Щитки"
  * @property Holding[] $holdings Компании
  * @property Factory[] $factories Фабрики
  * @property Vacansy[] $vacansies Вакансии
+ * @property Vacansy[] $vacansiesWithSalaryAndCount Актуальнаые вакансии
+ * @property Vacansy[] $vacansiesWithSalary Потенцальные вакансии
  */
-class Region extends MyModel
+class Region extends NalogPayer
 {
 
+    protected function getField()
+    {
+        return 'region';
+    }
     /**
      * @inheritdoc
      */
@@ -157,6 +164,11 @@ class Region extends MyModel
         return $this->hasMany('app\models\Population', array('region_id' => 'id'));
     }
 
+    public function getPopulationGroupsWithoutFactory()
+    {
+        return $this->hasMany('app\models\Population', array('region_id' => 'id'))->where(['factory_id'=>'0']);
+    }
+
     public function getHoldings()
     {
         return $this->hasMany('app\models\Holding', array('region_id' => 'id'));
@@ -170,6 +182,16 @@ class Region extends MyModel
     public function getVacansies()
     {
         return $this->hasMany('app\models\Vacansy', array('region_id' => 'id'))->orderBy("salary DESC");
+    }
+
+    public function getVacansiesWithSalaryAndCount()
+    {
+        return $this->hasMany('app\models\Vacansy', array('region_id' => 'id'))->where('salary > 0 AND count_need > 0')->orderBy("salary DESC");
+    }
+
+    public function getVacansiesWithSalary()
+    {
+        return $this->hasMany('app\models\Vacansy', array('region_id' => 'id'))->where('salary > 0')->orderBy("salary DESC");
     }
 
     /**

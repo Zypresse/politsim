@@ -2,7 +2,7 @@
 
 namespace app\models;
 
-use app\components\MyModel;
+use app\components\NalogPayer;
 use app\models\Post;
 
 /**
@@ -37,9 +37,13 @@ use app\models\Post;
  * @property \app\models\ElectRequest[] $lrequests Заявки на выборы лидера
  * @property \app\models\ElectOrgLeaderRequest[] $speakerRequests Заявки на выборы лидера по голосованию организации
  */
-class Org extends MyModel
+class Org extends NalogPayer
 {
 
+    protected function getField()
+    {
+        return 'org';
+    }
     /**
      * @inheritdoc
      */
