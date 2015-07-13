@@ -24,6 +24,7 @@ use app\components\NalogPayer,
  * @property User $manager Управляющий
  * @property Population[] $workers Рабочие
  * @property FactoryWorkerSalary[] $salaries Установленные зарплаты рабочих
+ * @property FactoryStorage[] $storages Ресурсы на складе
  */
 class Factory extends NalogPayer
 {
@@ -149,6 +150,11 @@ class Factory extends NalogPayer
         return $this->hasMany('app\models\Vacansy', array('factory_id' => 'id'));
     }
     
+    public function getStorages()
+    {
+        return $this->hasMany('app\models\FactoryStorage', array('factory_id' => 'id'));
+    }
+    
     public function getStatusName()
     {
         $names = [
@@ -164,6 +170,16 @@ class Factory extends NalogPayer
         ];
         
         return $names[$this->status];
+    }
+
+    public function storageSize($resurse_id)
+    {
+        $kit = FactoryKit::find()->where(['resurse_id' => $resurse_id, 'type_id' => $this->type_id])->one();
+        if ($kit) {
+            return $this->size*24*$kit->count;
+        } else {
+            return 0;
+        }
     }
 
 }
