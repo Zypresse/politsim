@@ -2,7 +2,8 @@
 
 namespace app\models;
 
-use app\components\NalogPayer;
+use app\components\NalogPayer,
+    app\models\Unnp;
 
 /**
  * Акционерное общество. Таблица "holdings".
@@ -21,10 +22,11 @@ use app\components\NalogPayer;
 class Holding extends NalogPayer
 {
 
-    protected function getField()
+    protected function getUnnpType()
     {
-        return 'holding';
+        return Unnp::TYPE_HOLDING;
     }
+
     /**
      * @inheritdoc
      */

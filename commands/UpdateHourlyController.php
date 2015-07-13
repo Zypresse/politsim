@@ -6,7 +6,9 @@ use yii\console\Controller,
     app\models\Region,
     app\models\State,
     app\models\Party,        
-    app\models\Holding;
+    app\models\Holding,
+    app\models\Factory,
+    app\models\Population;
 
 /**
  * Update hourly
@@ -168,7 +170,7 @@ class UpdateHourlyController extends Controller
                 }
             }
             
-            $unworkers = \app\models\Population::find()->where(['class'=>2,'region_id'=>$region->id])->all();
+            $unworkers = Population::find()->where(['class'=>2,'region_id'=>$region->id])->all();
             shuffle($unworkers);
             
             foreach ($vacansiesSumByPopClass as $popClassID => $countAll) {
@@ -233,14 +235,14 @@ class UpdateHourlyController extends Controller
     
     public function updatePopAnalogies()
     {
-        $popGroups = \app\models\Population::find()->all();
+        $popGroups = Population::find()->all();
         $obrabotannue = [];
         
         foreach ($popGroups as $pop) {
         if (!(in_array($pop->getUniqueKey(), $obrabotannue))) {
             $query = new \yii\db\Query;
             $countAnalog = intval(@$query->addSelect(["SUM(count)"])
-                  ->from([\app\models\Population::tableName()])
+                  ->from([Population::tableName()])
                   ->where([
                     'class' => $pop->class,
                     'nation' => $pop->nation,
@@ -255,7 +257,7 @@ class UpdateHourlyController extends Controller
                 
                 $obrabotannue[] = $pop->getUniqueKey();
                 
-                \app\models\Population::deleteAll(
+                Population::deleteAll(
                     'class = :class AND nation = :nation AND ideology = :ideology AND sex = :sex AND age = :age AND factory_id = :factory_id AND region_id = :region_id AND id <> :id'
                 ,[
                     ':class' => $pop->class,
@@ -277,7 +279,7 @@ class UpdateHourlyController extends Controller
     
     public function updateFactoryLicenseStatus()
     {
-        $factories = \app\models\Factory::find()->where(['status'=>1])->all();
+        $factories = Factory::find()->where(['status'=>Factory::STATUS_ACTIVE])->all();
         foreach ($factories as $factory) {
             foreach ($factory->type->licenses as $tLicense) {
                 if (!$factory->holding->isHaveLicense($factory->region->state_id,$tLicense->id)) {
@@ -288,7 +290,7 @@ class UpdateHourlyController extends Controller
             }
         }
         
-        $factories = \app\models\Factory::find()->where(['status'=>6])->all();
+        $factories = Factory::find()->where(['status'=>Factory::STATUS_HAVE_NOT_LICENSE])->all();
         foreach ($factories as $factory) {
             $allLicencesExist = true;
             foreach ($factory->type->licenses as $tLicense) {

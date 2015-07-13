@@ -2,8 +2,9 @@
 
 namespace app\models;
 
-use app\components\NalogPayer;
-use app\components\MyHtmlHelper;
+use app\components\NalogPayer,
+    app\components\MyHtmlHelper,
+    app\models\Unnp;
 
 /**
  * Минимальная группа населения. Таблица "population".
@@ -28,10 +29,11 @@ use app\components\MyHtmlHelper;
 class Population extends NalogPayer
 {
 
-    protected function getField()
+    protected function getUnnpType()
     {
-        return 'pop';
+        return Unnp::TYPE_POP;
     }
+
     /**
      * @inheritdoc
      */

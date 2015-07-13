@@ -2,7 +2,8 @@
 
 namespace app\models;
 
-use app\components\NalogPayer;
+use app\components\NalogPayer,
+    app\models\Unnp;
 
 /**
  * Фабрика/завод/сх-предприятие. Таблица "factories".
@@ -26,10 +27,54 @@ use app\components\NalogPayer;
  */
 class Factory extends NalogPayer
 {
+    /**
+     * Строится
+     */
+    const STATUS_UNBUILDED = -1;
 
-    protected function getField()
+    /**
+     * Строительство остановлено
+     */
+    const STATUS_BUILD_STOPPED = -2;
+
+    /**
+     * Состояние не определено
+     */
+    const STATUS_UNDEFINED = 0;
+
+    /**
+     * Работает
+     */
+    const STATUS_ACTIVE = 1;
+
+    /**
+     * Работа остановлена штатно
+     */
+    const STATUS_STOPPED = 2;
+
+    /**
+     * Работа остановлена автоматически -- на складе нет ресурсов для работы
+     */
+    const STATUS_NOT_ENOUGHT_RESURSES = 3;
+
+    /**
+     * Работа остановленна автоматически
+     */
+    const STATUS_AUTOSTOPPED = 4;
+
+    /**
+     * Работа остановлена автоматически -- недостаточно рабочих
+     */
+    const STATUS_NOT_ENOUGHT_WORKERS = 5;
+
+    /**
+     * Работа остановлена автоматически -- нет необходимой лицензии
+     */
+    const STATUS_HAVE_NOT_LICENSE = 6;
+
+    protected function getUnnpType()
     {
-        return 'factory';
+        return Unnp::TYPE_FACTORY;
     }
     /**
      * @inheritdoc
@@ -62,7 +107,7 @@ class Factory extends NalogPayer
             'builded'    => 'Builded',
             'holding_id' => 'Holding ID',
             'region_id'  => 'Region ID',
-            'status'     => 'Статус работы: -1 - unbuilded, -2 - build stopped, 0 - undefined, 1 - active, 2 - stopped, 3 - not enought resurses, 4 - autostopped, 5 - not enought workers',
+            'status'     => 'Статус работы',
             'name'       => 'Name',
             'size'       => 'Size',
             'manager_uid'=> 'Manager Uid',

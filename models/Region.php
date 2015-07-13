@@ -2,7 +2,8 @@
 
 namespace app\models;
 
-use app\components\NalogPayer;
+use app\components\NalogPayer,
+    app\models\Unnp;
 
 /**
  * This is the model class for table "regions".
@@ -45,10 +46,11 @@ use app\components\NalogPayer;
 class Region extends NalogPayer
 {
 
-    protected function getField()
+    protected function getUnnpType()
     {
-        return 'region';
+        return Unnp::TYPE_REGION;
     }
+
     /**
      * @inheritdoc
      */

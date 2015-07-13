@@ -2,9 +2,10 @@
 
 namespace app\models;
 
-use app\components\NalogPayer;
-use app\models\GovermentFieldType;
-use app\models\GovermentFieldValue;
+use app\components\NalogPayer,
+    app\models\GovermentFieldType,
+    app\models\GovermentFieldValue,
+    app\models\Unnp;
 
 /**
  * Государство. Таблица "states".
@@ -53,10 +54,11 @@ use app\models\GovermentFieldValue;
 class State extends NalogPayer
 {
 
-    protected function getField()
+    protected function getUnnpType()
     {
-        return 'state';
+        return Unnp::TYPE_STATE;
     }
+
     /**
      * @inheritdoc
      */

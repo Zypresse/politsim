@@ -13,19 +13,15 @@ use app\models\Unnp;
  */
 abstract class NalogPayer extends MyModel {
     
-    private $unnp;
+    private $unnp = null;
     
-    abstract protected function getField();
+    abstract protected function getUnnpType();
 
     public function getUnnp()
     {
-        if (!$this->unnp) {
-            $u = Unnp::find()->where([$this->getField().'_id' => $this->id])->one();
-            if (is_null($u)) {
-                $u = new Unnp([$this->getField().'_id' => $this->id]);
-                $u->save();
-            }
-            $this->unnp = $u->id;
+        if (is_null($this->unnp)) {
+            $u = Unnp::findOneOrCreate(['p_id' => $this->id, 'type' => $this->getUnnpType()]);
+            $this->unnp = ($u) ? $u->id : 0;
         } 
         return $this->unnp;
     }

@@ -2,8 +2,9 @@
 
 namespace app\models;
 
-use app\components\NalogPayer;
-use app\models\User;
+use app\components\NalogPayer,
+    app\models\User,
+    app\models\Unnp;
 
 /**
  * Партия. Таблица "parties".
@@ -30,10 +31,11 @@ use app\models\User;
 class Party extends NalogPayer
 {
 
-    protected function getField()
+    protected function getUnnpType()
     {
-        return 'party';
+        return Unnp::TYPE_PARTY;
     }
+
     /**
      * @inheritdoc
      */

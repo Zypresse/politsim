@@ -5,6 +5,7 @@ namespace app\models;
 use Yii,
     app\components\NalogPayer,
     app\models\Twitter,
+    app\models\Unnp,
     app\models\Dealing;
 
 /**
@@ -12,7 +13,6 @@ use Yii,
  *
  * @property integer $id 
  * @property integer $uid 
- * @property integer $uid_vk ID в вк для авторизации @todo Переделать в таблицу accounts
  * @property string $name Имя
  * @property string $photo Маленькая фотография 50x50
  * @property string $photo_big Большая фотография 400xn
@@ -46,9 +46,9 @@ use Yii,
 class User extends NalogPayer implements \yii\web\IdentityInterface
 {
     
-    protected function getField()
+    protected function getUnnpType()
     {
-        return 'user';
+        return Unnp::TYPE_USER;
     }
     
     public static function findIdentity($id) {

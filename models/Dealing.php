@@ -10,7 +10,7 @@ use app\components\MyModel;
  * @property integer $id
  * @property integer $from_unnp ID отправителя
  * @property integer $to_unnp ID получателя
- * @property double $sum Стоимость (сколько заплатил получатель)
+ * @property double $sum Сумма (сколько отправил отправитель)
  * @property string $items Список вещей в JSON
  * @property integer $is_anonim Является ли сделка анонимной
  * @property integer $is_secret Является ли сделка тайной

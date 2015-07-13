@@ -2,7 +2,8 @@
 
 namespace app\models;
 
-use app\components\NalogPayer;
+use app\components\NalogPayer,
+    app\models\Unnp;
 
 /**
  * Должность в правительстве. Таблица "posts".
@@ -23,10 +24,11 @@ use app\components\NalogPayer;
 class Post extends NalogPayer
 {
 
-    protected function getField()
+    protected function getUnnpType()
     {
-        return 'post';
+        return Unnp::TYPE_POST;
     }
+
     /**
      * @inheritdoc
      */

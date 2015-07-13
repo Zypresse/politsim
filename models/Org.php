@@ -2,8 +2,9 @@
 
 namespace app\models;
 
-use app\components\NalogPayer;
-use app\models\Post;
+use app\components\NalogPayer,
+    app\models\Post,
+    app\models\Unnp;
 
 /**
  * Организация. Таблица "orgs".
@@ -40,10 +41,11 @@ use app\models\Post;
 class Org extends NalogPayer
 {
 
-    protected function getField()
+    protected function getUnnpType()
     {
-        return 'org';
+        return Unnp::TYPE_ORG;
     }
+
     /**
      * @inheritdoc
      */
