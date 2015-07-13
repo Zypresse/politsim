@@ -122,9 +122,7 @@ use yii\helpers\Html;
                 <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
             </div></form>
     </div>
-<? } ?>
-
-<script>
+<script type="text/javascript">
     
     var updateNewHoldingCost = function(){
         var capital = parseInt($('#new_holding_capitalisation').val());
@@ -141,20 +139,25 @@ use yii\helpers\Html;
         var sumCost = <?=$inHomeland?$user->region->state->register_holdings_cost:$user->region->state->register_holdings_noncitizens_cost?> + capital;
         $('#new_holding_sum_cost').text(number_format(sumCost,0,'.',' '));
     }
-    
+
+    $(function(){
+        $('#new_holding_capitalisation').keyup(updateNewHoldingCost);
+        updateNewHoldingCost();
+    });
+</script>
+<? } ?>
+
+<script type="text/javascript">        
     $(function () {
         $('#stock_list_button').toggle(function () {
             $('#stocks_list').slideDown();
         }, function () {
             $('#stocks_list').slideUp();
-        })
+        });
         $('#managefactories_list_button').toggle(function () {
             $('#managefactories_list').slideDown();
         }, function () {
             $('#managefactories_list').slideUp();
-        })
-        
-        $('#new_holding_capitalisation').keyup(updateNewHoldingCost);
-        updateNewHoldingCost();
-    })
+        });  
+    });
 </script>
