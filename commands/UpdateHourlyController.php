@@ -17,49 +17,57 @@ use yii\console\Controller,
 class UpdateHourlyController extends Controller
 {
 
-    public function actionIndex()
+    public function actionIndex($method = false)
     {
-//        ob_start();
         
-        $time = microtime(true);
-        $this->updateRegions();
-        printf("Updated regions: %f s.".PHP_EOL, microtime(true)-$time);
-        
-        $time = microtime(true);
-        $this->updateStates();
-        printf("Updated states: %f s.".PHP_EOL, microtime(true)-$time);
-        
-        $time = microtime(true);
-        $this->updateParties();
-        printf("Updated parties: %f s.".PHP_EOL, microtime(true)-$time);
-        
-        $time = microtime(true);
-        $this->updateHoldings();
-        printf("Updated holdings: %f s.".PHP_EOL, microtime(true)-$time);
-        
-        $time = microtime(true);
-        $this->updateFactoryLicenseStatus();
-        printf("Updated factory licenses status: %f s.".PHP_EOL, microtime(true)-$time);
-        
-        $time = microtime(true);
-        $this->updatePopStudy();
-        printf("Updated populations study: %f s.".PHP_EOL, microtime(true)-$time);
-        
-        $time = microtime(true);
-        $this->updatePopWorkers();
-        printf("Updated populations works: %f s.".PHP_EOL, microtime(true)-$time);
-        
-        $time = microtime(true);
-        $this->updatePopAnalogies();
-        printf("Updated populations analogies: %f s.".PHP_EOL, microtime(true)-$time);
-        
-//        ob_end_clean();
+        if ($method) {            
+            $time = microtime(true);
+            $this->$method();
+            printf("{$method}: %f s.".PHP_EOL, microtime(true)-$time);
+        } else {
+
+            $time = microtime(true);
+            $this->updateRegions();
+            printf("Updated regions: %f s.".PHP_EOL, microtime(true)-$time);
+
+            $time = microtime(true);
+            $this->updateStates();
+            printf("Updated states: %f s.".PHP_EOL, microtime(true)-$time);
+
+            $time = microtime(true);
+            $this->updateParties();
+            printf("Updated parties: %f s.".PHP_EOL, microtime(true)-$time);
+
+            $time = microtime(true);
+            $this->updateHoldings();
+            printf("Updated holdings: %f s.".PHP_EOL, microtime(true)-$time);
+
+            $time = microtime(true);
+            $this->updateFactoryLicenseStatus();
+            printf("Updated factory licenses status: %f s.".PHP_EOL, microtime(true)-$time);
+
+            $time = microtime(true);
+            $this->updateFactoryWorkersStatus();
+            printf("Updated factory workers status: %f s.".PHP_EOL, microtime(true)-$time);
+
+            $time = microtime(true);
+            $this->updatePopStudy();
+            printf("Updated populations study: %f s.".PHP_EOL, microtime(true)-$time);
+
+            $time = microtime(true);
+            $this->updatePopWorkers();
+            printf("Updated populations works: %f s.".PHP_EOL, microtime(true)-$time);
+
+            $time = microtime(true);
+            $this->updatePopAnalogies();
+            printf("Updated populations analogies: %f s.".PHP_EOL, microtime(true)-$time);
+        }
     }
 
     /**
      * Update regions
      */
-    public function updateRegions()
+    private function updateRegions()
     {
         $regions = Region::find()->all();
         foreach ($regions as $region) {
@@ -74,7 +82,7 @@ class UpdateHourlyController extends Controller
     /**
      * Update states
      */
-    public function updateStates()
+    private function updateStates()
     {
         $states = State::find()->with('regions')->all();
         foreach ($states as $state) {
@@ -97,7 +105,7 @@ class UpdateHourlyController extends Controller
     /**
      * Update parties
      */
-    public function updateParties()
+    private function updateParties()
     {
         $parties = Party::find()->all();
 
@@ -127,7 +135,7 @@ class UpdateHourlyController extends Controller
     /**
      * Update holdings
      */
-    public function updateHoldings()
+    private function updateHoldings()
     {
         $holdings = Holding::find()->all();
         foreach ($holdings as $holding) {
@@ -155,10 +163,11 @@ class UpdateHourlyController extends Controller
         }
     }
     
-    public function updatePopStudy()
+    private function updatePopStudy()
     {
         $regions = Region::find()->all();
         foreach ($regions as $region) {
+//            echo $region->name.": ".PHP_EOL;
             $vacansiesSumByPopClass = [];
             $baseSpeeds = [];
             foreach ($region->vacansiesWithSalary as $vacansy) {
@@ -174,6 +183,12 @@ class UpdateHourlyController extends Controller
             shuffle($unworkers);
             
             foreach ($vacansiesSumByPopClass as $popClassID => $countAll) {
+                $allreadyStudied = \Yii::$app->db->createCommand("SELECT sum(count) FROM ".Population::tableName()." WHERE class = {$popClassID} AND region_id = {$region->id}")->queryScalar();
+//                echo $popClassID.": ".$allreadyStudied."/".$countAll.PHP_EOL;
+                if ($allreadyStudied >= $countAll) {
+                    continue;
+                }
+                
                 $speed = 1*$countAll*$baseSpeeds[$popClassID]/24;
                 if ($speed < 1) {
                     $speed = 1;
@@ -202,7 +217,7 @@ class UpdateHourlyController extends Controller
         }
     }
     
-    public function updatePopWorkers()
+    private function updatePopWorkers()
     {
         $regions = Region::find()->all();
         foreach ($regions as $region) {
@@ -233,42 +248,24 @@ class UpdateHourlyController extends Controller
         }
     }
     
-    public function updatePopAnalogies()
+    private function updatePopAnalogies()
     {
         $popGroups = Population::find()->all();
         $obrabotannue = [];
         
         foreach ($popGroups as $pop) {
-        if (!(in_array($pop->getUniqueKey(), $obrabotannue))) {
+        if (!(in_array($pop->getUniqueKey(), $obrabotannue))) {            
             $query = new \yii\db\Query;
             $countAnalog = intval(@$query->addSelect(["SUM(count)"])
                   ->from([Population::tableName()])
-                  ->where([
-                    'class' => $pop->class,
-                    'nation' => $pop->nation,
-                    'ideology' => $pop->ideology,
-                    'sex' => $pop->sex,
-                    'age' => $pop->age,
-                    'factory_id' => $pop->factory_id,
-                    'region_id' => $pop->region_id
-                  ])->column()[0]);
+                  ->where(['class' => $pop->class, 'nation' => $pop->nation, 'ideology' => $pop->ideology, 'sex' => $pop->sex, 'age' => $pop->age, 'factory_id' => $pop->factory_id, 'region_id' => $pop->region_id])->column()[0]);
             
             if ($countAnalog > $pop->count) {
-                
                 $obrabotannue[] = $pop->getUniqueKey();
                 
                 Population::deleteAll(
-                    'class = :class AND nation = :nation AND ideology = :ideology AND sex = :sex AND age = :age AND factory_id = :factory_id AND region_id = :region_id AND id <> :id'
-                ,[
-                    ':class' => $pop->class,
-                    ':nation' => $pop->nation,
-                    ':ideology' => $pop->ideology,
-                    ':sex' => $pop->sex,
-                    ':age' => $pop->age,
-                    ':factory_id' => $pop->factory_id,
-                    ':region_id' => $pop->region_id,
-                    ':id' => $pop->id
-                ]);
+                    'class = :class AND nation = :nation AND ideology = :ideology AND sex = :sex AND age = :age AND factory_id '.($pop->factory_id?'=':'IS').' :factory_id AND region_id = :region_id AND id <> :id',
+                    [ ':class' => $pop->class, ':nation' => $pop->nation, ':ideology' => $pop->ideology, ':sex' => $pop->sex, ':age' => $pop->age, ':factory_id' => $pop->factory_id, ':region_id' => $pop->region_id, ':id' => $pop->id]);
                 
                 $pop->count = $countAnalog;
                 $pop->save();
@@ -277,13 +274,13 @@ class UpdateHourlyController extends Controller
         }
     }
     
-    public function updateFactoryLicenseStatus()
+    private function updateFactoryLicenseStatus()
     {
         $factories = Factory::find()->where(['status'=>Factory::STATUS_ACTIVE])->all();
         foreach ($factories as $factory) {
             foreach ($factory->type->licenses as $tLicense) {
                 if (!$factory->holding->isHaveLicense($factory->region->state_id,$tLicense->id)) {
-                    $factory->status = 6;
+                    $factory->status = Factory::STATUS_HAVE_NOT_LICENSE;
                     $factory->save();
                     break;
                 }
@@ -304,8 +301,45 @@ class UpdateHourlyController extends Controller
                 $factory->save();
             }
         }
+    }
+    
+    
+    private function updateFactoryWorkersStatus()
+    {
+        $factories = Factory::find()->where(['status'=>Factory::STATUS_ACTIVE])->all();
+        foreach ($factories as $building) {
+            foreach ($building->type->workers as $tWorker) {
+                $count = 0;
+                foreach ($building->workers as $pop) {
+                    if ($pop->class == $tWorker->pop_class_id) {
+                        $count += $pop->count;
+                    }
+                }
+                if ($count < $tWorker->count*$building->size/2) {
+                    $building->status = Factory::STATUS_NOT_ENOUGHT_WORKERS;
+                    $building->save();
+                    break;
+                }
+            }
+        }
         
-        unset($factories);
+        // Проверка не набрали ли фабрики нужного числа рабочих
+        $factories = Factory::find()->where(['status'=>Factory::STATUS_NOT_ENOUGHT_WORKERS])->all();
+        foreach ($factories as $building) {
+            foreach ($building->type->workers as $tWorker) {
+                $count = 0;
+                foreach ($building->workers as $pop) {
+                    if ($pop->class == $tWorker->pop_class_id) {
+                        $count += $pop->count;
+                    }
+                }
+                if ($count >= $tWorker->count*$building->size/2) {
+                    $building->status = Factory::STATUS_ACTIVE;
+                    $building->save();
+                    break;
+                }
+            }
+        }
     }
     
 }

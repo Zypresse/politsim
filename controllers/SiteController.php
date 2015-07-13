@@ -91,6 +91,9 @@ class SiteController extends Controller
                 $auth->save();
             }
         }
+
+        // Visitor::findOneOrCreate(['ip'=>Yii::$app->request->userIP,'useragent'=>Yii::$app->request->userAgent,'user_id'=>Yii::$app->user->id]);
+
     }
 
 }

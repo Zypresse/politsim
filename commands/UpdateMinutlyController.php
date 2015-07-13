@@ -23,14 +23,14 @@ class UpdateMinutlyController extends Controller {
         
         $this->updateBuildinds();   
         
-        $this->updateFactories();     
+        $this->updateFactoryVacansies();     
         
     }
 
     /**
      * Update bills
      */
-    public function updateBills()
+    private function updateBills()
     {
         $bills = Bill::find()->where('accepted = 0 AND vote_ended <= '.time())->all();
         foreach ($bills as $bill) {
@@ -59,7 +59,7 @@ class UpdateMinutlyController extends Controller {
     /**
      * update holding decisions
      */
-    public function updateHoldingDecisions()
+    private function updateHoldingDecisions()
     {
         $decisions = HoldingDecision::find()->where('accepted = 0')->all();
         foreach ($decisions as $decision) {
@@ -83,19 +83,27 @@ class UpdateMinutlyController extends Controller {
     }
 
     /**
-     * Update building status
+     * Окончание строительства
      */
-    public function updateBuildinds()
+    private function updateBuildinds()
     {
         // Окончание строительства
-        $buildings = Factory::find()->where('builded <= '.time().' AND status = -1')->all();
+        $buildings = Factory::find()->where('builded <= '.time().' AND status = '.Factory::STATUS_UNBUILDED)->all();
         foreach ($buildings as $building) {
             $building->status = 1;
             $building->save();
-        }
+        }        
+        unset($buildings);
+    }
+    
+    /**
+     * Размещение вакансий
+     */
+    private function updateFactoryVacansies()
+    {
         
         // Проверка количества рабочих (размещение вакансий)
-        $buildings = Factory::find()->where('status > 2 OR status = 1')->all();
+        $buildings = Factory::find()->where('status = '.Factory::STATUS_NOT_ENOUGHT_WORKERS.' OR status = '.Factory::STATUS_ACTIVE)->all();
         foreach ($buildings as $building) {
             
             //Vacansy::deleteAll("factory_id = {$building->id}");
@@ -142,32 +150,6 @@ class UpdateMinutlyController extends Controller {
 //                }
             }
         }
-        
-        // Проверка не набрали ли фабрики нужного числа рабочих
-        $buildings = Factory::find()->where(['status'=>5])->all();
-        foreach ($buildings as $building) {
-            foreach ($building->type->workers as $tWorker) {
-                $count = 0;
-                foreach ($building->workers as $pop) {
-                    if ($pop->class == $tWorker->pop_class_id) {
-                        $count += $pop->count;
-                    }
-                }
-                if ($count >= $tWorker->count*$building->size/2) {
-                    $building->status = 1;
-                    $building->save();
-                }
-            }
-        }
-        
-        unset($buildings);
     }
-
-    /**
-     * Update factories
-     */
-    public function updateFactories()
-    {
         
-    }
 }

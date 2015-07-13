@@ -2,7 +2,7 @@
 use app\components\MyHtmlHelper;
 ?>
 <ul class="nav nav-tabs">
-  <li><a href="#" onclick="show_region()">Инфо</a></li>
+  <li><a href="#" onclick="show_region(<?=$region->id?>)">Инфо</a></li>
   <li><a href="#" onclick="show_region_population()">Население</a></li>
   <li class="active"><a href="#">Ресурсы</a></li>
 </ul>

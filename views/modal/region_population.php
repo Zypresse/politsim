@@ -2,7 +2,7 @@
 use app\components\MyHtmlHelper;
 ?>
 <ul class="nav nav-tabs">
-  <li><a href="#" onclick="show_region()">Инфо</a></li>
+  <li><a href="#" onclick="show_region(<?=$region->id?>)">Инфо</a></li>
   <li class="active"><a href="#">Население</a></li>
   <li><a href="#" onclick="show_region_resurses()">Ресурсы</a></li>
 </ul>
@@ -41,14 +41,16 @@ use app\components\MyHtmlHelper;
 <table class="table" id="all_groups_population" style="display: none">
 <tr>
     <th>Класс</th>
+    <th></th>
     <th title="Пол">♀</th>
     <th title="Национальности">★</th>
     <th title="Идеологии">☭</th>
     <th title="Возраст">❤</th>
+    <th></th>
     <th>Число</th>
 </tr>
 <? foreach ($people as $group) { ?>
-<tr style="font-size: 70%"><td><?=$group->classinfo->name?></td><td><? if ($group->sex) { ?>м<? } else { ?>ж<? } ?></td><td><?=$group->nationinfo->name?></td><td><?=$group->ideologyinfo->name?></td><td><?=$group->age?></td><td><?=MyHtmlHelper::formateNumberword($group->count,'человек','человек','человека')?></td></tr>
+<tr style="font-size: 70%"><td><?=$group->id?></td><td><?=$group->classinfo->name?></td><td><? if ($group->sex) { ?>м<? } else { ?>ж<? } ?></td><td><?=$group->nationinfo->name?></td><td><?=$group->ideologyinfo->name?></td><td><?=$group->age?></td><td><?=$group->factory_id?></td><td><?=MyHtmlHelper::formateNumberword($group->count,'человек','человек','человека')?></td></tr>
 <? } ?>
 </table>
 
