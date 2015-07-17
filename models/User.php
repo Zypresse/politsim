@@ -18,7 +18,6 @@ use Yii,
  * @property string $photo_big Большая фотография 400xn
  * @property integer $last_vote Дата последнего "высказывания" о другом игроке
  * @property integer $last_tweet Дата последнего твита
- * @property integer $last_salary Дата последнего получения зарплаты
  * @property integer $party_id ID партии
  * @property integer $state_id ID государства
  * @property integer $post_id ID поста
@@ -28,6 +27,8 @@ use Yii,
  * @property integer $star Известность
  * @property integer $heart Доверие
  * @property integer $chart_pie Успешность
+ * @property string $twitter_nickname
+ * @property integer $died Флаг смерти
  * 
  * @property string $authKey Авторизационный ключ
  * 
@@ -101,7 +102,7 @@ class User extends NalogPayer implements \yii\web\IdentityInterface
     public function rules()
     {
         return [
-            [['uid_vk', 'last_vote', 'last_tweet', 'last_salary', 'party_id', 'state_id', 'post_id', 'region_id', 'star', 'heart', 'chart_pie'], 'integer'],
+            [['last_vote', 'last_tweet', 'last_salary', 'party_id', 'state_id', 'post_id', 'region_id', 'star', 'heart', 'chart_pie'], 'integer'],
             [['money'], 'number'],
             [['name', 'photo', 'photo_big'], 'string', 'max' => 255],
             [['sex'], 'string', 'max' => 1]
@@ -115,7 +116,6 @@ class User extends NalogPayer implements \yii\web\IdentityInterface
     {
         return [
             'id'          => 'ID',
-            'uid_vk'      => 'Uid Vk',
             'name'        => 'Name',
             'photo'       => 'Photo',
             'photo_big'   => 'Photo Big',
@@ -138,7 +138,6 @@ class User extends NalogPayer implements \yii\web\IdentityInterface
     {
         return [
             'id',
-            'uid_vk',
             'name',
             'photo',
             'photo_big',
@@ -175,10 +174,7 @@ class User extends NalogPayer implements \yii\web\IdentityInterface
 
     public function getMedales()
     {
-        $query = Medale::find()->where(['uid'=>  $this->id])->orWhere(['uid_vk'=>$this->uid_vk]);
-        $query->multiple = true;
-        return $query;
-//        return $this->hasMany('app\models\Medale', array('uid' => 'id'));
+       return $this->hasMany('app\models\Medale', array('uid' => 'id'));
     }
 
     public function getVotes()

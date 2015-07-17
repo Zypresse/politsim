@@ -53,9 +53,9 @@ use app\components\MyHtmlHelper;
 <? } ?>
 </p>
 <p><strong>Открытые вакансии:</strong>
-<? if (count($factory->vacansies)) { ?>
+<? if (count($factory->vacansiesWithSalaryAndCount)) { ?>
 <ul>
-    <? foreach ($factory->vacansies as $vacansy) { ?>
+    <? foreach ($factory->vacansiesWithSalaryAndCount as $vacansy) { ?>
     <li>
         <?=$vacansy->popClass->name?> — <?=$vacansy->count_need?>, зарплата <?=$vacansy->salary?> <?=MyHtmlHelper::icon('money')?>
     </li>

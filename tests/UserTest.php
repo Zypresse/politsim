@@ -30,10 +30,7 @@ class UserTest extends PHPUnit_Framework_TestCase
     
     public function testSavingAndDelete()
     {
-        $user = new app\models\User;
-        $user->name = "Tester Tester";
-        $user->money = 123;
-        $user->uid_vk = 1;
+        $user = $this->createUser()
         $this->assertTrue($user->save());
         $this->assertNotNull($user->id);
         $this->assertGreaterThan(1, $user->id);
@@ -122,7 +119,6 @@ class UserTest extends PHPUnit_Framework_TestCase
         $user = new app\models\User;
         $user->name = "Tester Tester";
         $user->money = 123;
-        $user->uid_vk = 1;
         
         return $user;
     }

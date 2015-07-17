@@ -52,7 +52,11 @@ class SiteController extends Controller
         
         if ($auth) { // login
             $user = $auth->user;
-            Yii::$app->user->login($user);
+            if (!$user->died) {
+                Yii::$app->user->login($user);
+            } else {
+                exit("banned");
+            }
         } else { // signup
             $auth = Auth::signUp('vkontakte', $vkinfo);
         }
@@ -77,7 +81,11 @@ class SiteController extends Controller
         if (Yii::$app->user->isGuest) {
             if ($auth) { // login
                 $user = $auth->user;
-                Yii::$app->user->login($user);
+                if (!$user->died) {
+                    Yii::$app->user->login($user);
+                } else {
+                    exit("banned");
+                }
             } else { // signup
                 Auth::signUp($client->getId(), $attributes);
             }

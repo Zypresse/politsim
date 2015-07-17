@@ -12,7 +12,6 @@ use app\components\MyHtmlHelper;
 </div>
 <div class="span9">
 <h1><?=htmlspecialchars($user->name)?> <? if ($is_own) { ?><small>(это вы)</small><? } ?></h1>
-<? if ($user->uid_vk) ?><p><a class="btn" href="//vk.com/id<?=$user->uid_vk?>" target="_blank"><i class="icon-user"></i> Профиль в ВК</a></p>
 <p><? if ($user->party) { ?>
 	Состоит в партии <a href="#" onclick="load_page('party-info',{'id':<?=$user->party_id?>})"><?=htmlspecialchars($user->party->name)?></a>
 <? } else { ?>

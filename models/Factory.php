@@ -25,6 +25,9 @@ use app\components\NalogPayer,
  * @property Population[] $workers Рабочие
  * @property FactoryWorkerSalary[] $salaries Установленные зарплаты рабочих
  * @property FactoryStorage[] $storages Ресурсы на складе
+ * @property Vacancy[] $vacancies 
+ * @property Vacansy[] $vacansiesWithSalaryAndCount Актуальнаые вакансии
+ * @property Vacansy[] $vacansiesWithSalary Потенцальные вакансии
  */
 class Factory extends NalogPayer
 {
@@ -148,6 +151,16 @@ class Factory extends NalogPayer
     public function getVacansies()
     {
         return $this->hasMany('app\models\Vacansy', array('factory_id' => 'id'));
+    }
+
+    public function getVacansiesWithSalaryAndCount()
+    {
+        return $this->hasMany('app\models\Vacansy', array('factory_id' => 'id'))->where('salary > 0 AND count_need > 0')->orderBy("salary DESC");
+    }
+
+    public function getVacansiesWithSalary()
+    {
+        return $this->hasMany('app\models\Vacansy', array('factory_id' => 'id'))->where('salary > 0')->orderBy("salary DESC");
     }
     
     public function getStorages()

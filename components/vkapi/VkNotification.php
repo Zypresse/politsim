@@ -19,7 +19,7 @@ use Yii,
 
 use app\components\vkapi\VkNotification;
 
-VkNotification::send($user->uid_vk, "Тест");
+VkNotification::send("1,123,456", "Тест");
 
  * 
  */
