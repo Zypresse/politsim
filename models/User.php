@@ -102,7 +102,7 @@ class User extends NalogPayer implements \yii\web\IdentityInterface
     public function rules()
     {
         return [
-            [['last_vote', 'last_tweet', 'last_salary', 'party_id', 'state_id', 'post_id', 'region_id', 'star', 'heart', 'chart_pie'], 'integer'],
+            [['last_vote', 'last_tweet', 'party_id', 'state_id', 'post_id', 'region_id', 'star', 'heart', 'chart_pie'], 'integer'],
             [['money'], 'number'],
             [['name', 'photo', 'photo_big'], 'string', 'max' => 255],
             [['sex'], 'string', 'max' => 1]
@@ -121,7 +121,6 @@ class User extends NalogPayer implements \yii\web\IdentityInterface
             'photo_big'   => 'Photo Big',
             'last_vote'   => 'Last Vote',
             'last_tweet'  => 'Last Tweet',
-            'last_salary' => 'Last Salary',
             'party_id'    => 'Party ID',
             'state_id'    => 'State ID',
             'post_id'     => 'Post ID',
