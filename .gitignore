@@ -52,6 +52,7 @@ web/assets
 mail
 runtime
 vendor
+database
 
 requirements.php
 yii

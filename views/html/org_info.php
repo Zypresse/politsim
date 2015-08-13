@@ -6,9 +6,6 @@ use yii\helpers\Html;
 ?>
 <h1><?=htmlspecialchars($org->name)?></h1>
 <p><? if ($org->isLegislature()) { ?>Законодательная власть<? } elseif ($org->isExecutive()) { ?>Исполнительная власть<? } else { ?>Организация<? } ?> государства &laquo;<a href="#" onclick="load_page('state-info',{'id':<?=$org->state_id?>});"><?=htmlspecialchars($org->state->name)?></a>&raquo;</p>
-<? if ($org->group_id) { ?><p><a class="btn" href="//vk.com/club<?=$org->group_id?>" target="_blank">
-<i class="icon-home"></i> Группа в вк</a>
-</p><? } ?>
 <p><? switch ($org->dest) { 
   case 'dest_by_leader':
 ?>

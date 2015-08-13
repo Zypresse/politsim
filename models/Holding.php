@@ -77,6 +77,11 @@ class Holding extends NalogPayer
     {
         return $this->hasMany('app\models\Stock', array('holding_id' => 'id'))->orderBy('count DESC');
     }
+    
+    public function getStocksHaved()
+    {
+        return $this->hasMany('app\models\Stock', array('unnp' => 'unnp'));
+    }
 
     public function getDecisions()
     {

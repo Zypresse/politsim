@@ -20,7 +20,6 @@ use app\components\NalogPayer,
  * @property integer $executive ID организации исполнительной власти
  * @property integer $state_structure ID «структуры» государства
  * @property integer $goverment_form ID формы правления государства
- * @property integer $group_id ID группы страны в вк
  * @property integer $population Население
  * @property integer $sum_star Сумма известности жителей
  * @property integer $allow_register_parties Разрешено ли регистрировать партии
@@ -58,6 +57,11 @@ class State extends NalogPayer
     {
         return Unnp::TYPE_STATE;
     }
+    
+    public function isGoverment()
+    {
+        return true;
+    }
 
     /**
      * @inheritdoc
@@ -74,7 +78,7 @@ class State extends NalogPayer
     {
         return [
             [['name', 'short_name', 'flag', 'capital'], 'required'],
-            [['legislature', 'executive', 'state_structure', 'goverment_form', 'group_id', 'population', 'sum_star', 'allow_register_parties', 'leader_can_drop_legislature', 'allow_register_holdings', 'allow_register_holdings_noncitizens', 'register_holdings_mincap', 'register_holdings_noncitizens_mincap', 'register_holdings_maxcap', 'register_holdings_noncitizens_maxcap', 'register_parties_cost', 'core_id', 'mpfnig', 'mpfnih'], 'integer'],
+            [['legislature', 'executive', 'state_structure', 'goverment_form', 'population', 'sum_star', 'allow_register_parties', 'leader_can_drop_legislature', 'allow_register_holdings', 'allow_register_holdings_noncitizens', 'register_holdings_mincap', 'register_holdings_noncitizens_mincap', 'register_holdings_maxcap', 'register_holdings_noncitizens_maxcap', 'register_parties_cost', 'core_id', 'mpfnig', 'mpfnih'], 'integer'],
             [['register_holdings_cost', 'register_holdings_noncitizens_cost'], 'number'],
             [['name'], 'string', 'max' => 100],
             [['short_name'], 'string', 'max' => 4],
@@ -99,7 +103,6 @@ class State extends NalogPayer
             'executive' => 'Executive',
             'state_structure' => 'State Structure',
             'goverment_form' => 'Goverment Form',
-            'group_id' => 'Group ID',
             'population' => 'Population',
             'sum_star' => 'Sum Star',
             'allow_register_parties' => 'Allow Register Parties',
@@ -177,6 +180,16 @@ class State extends NalogPayer
     public function getUsers()
     {
         return $this->hasMany('app\models\User', array('state_id' => 'id'));
+    }
+
+    public function getStateLicenseByType($type_id)
+    {        
+        foreach ($this->licenses as $l) {
+            if ($l->license_id === $type_id) {
+                return $l;
+            }
+        }
+        return null;
     }
 
     /**

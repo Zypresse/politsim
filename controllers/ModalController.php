@@ -134,13 +134,16 @@ class ModalController extends MyController
             }
             $fields    = BillTypeField::find()->where(['bill_id' => $id])->all();
 
-            $user = User::findByPk($this->viewer_id);
+            $user = $this->getUser();
             if (is_null($user->state)) {
                 return $this->_r("No citizenship");
             }
 
             $additional_data = [];
+            
+            return $this->render("newbill/{$id}", ['bill_type' => $bill_type, 'user' => $user]);
 
+            
             if (is_array($fields)) {
                 foreach ($fields as $field) {
                     switch ($field->type) {
@@ -494,6 +497,29 @@ class ModalController extends MyController
                 <option id="license_option<?= $license->id ?>" value="<?= $license->id ?>" data-text="<?= $text ?>" ><?= $license->name ?></option>      
                 <? 
             }
+    }
+
+    public function actionLicensesControlsChange($license_id)
+    {
+        $license_id = intval($license_id);
+        if ($license_id > 0) {
+            $licenseType = HoldingLicenseType::findByPk($license_id);
+            if (is_null($licenseType)) {
+                return $this->_r("License type not found");
+            }
+            
+            $user = $this->getUser();
+            if (is_null($user->state)) {
+                return $this->_r("Have not citizenship");
+            }
+
+            $stateLicense = $user->state->getStateLicenseByType($license_id);
+
+            return $this->render("licenses-controls-change",["licenseType"=>$licenseType,"stateLicense"=>$stateLicense]);
+
+        } else {
+            return $this->_r("Invalid license type ID");
+        }
     }
 
 }

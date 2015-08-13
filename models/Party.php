@@ -16,7 +16,6 @@ use app\components\NalogPayer,
  * @property integer $state_id ID государства
  * @property integer $leader ID лидера
  * @property integer $ideology ID идеологии
- * @property integer $group_id ID группы партии в вк
  * @property integer $star Известность
  * @property integer $heart Доверие
  * @property integer $chart_pie Успешность
@@ -51,7 +50,7 @@ class Party extends NalogPayer
     {
         return [
             [['name', 'short_name', 'state_id', 'leader', 'ideology'], 'required'],
-            [['state_id', 'leader', 'ideology', 'group_id', 'star', 'heart', 'chart_pie'], 'integer'],
+            [['state_id', 'leader', 'ideology', 'star', 'heart', 'chart_pie'], 'integer'],
             [['name'], 'string', 'max' => 500],
             [['short_name'], 'string', 'max' => 30],
             [['image'], 'string', 'max' => 1000]
@@ -71,7 +70,6 @@ class Party extends NalogPayer
             'state_id'   => 'State ID',
             'leader'     => 'Leader',
             'ideology'   => 'Ideology',
-            'group_id'   => 'Group ID',
             'star'       => 'Star',
             'heart'      => 'Heart',
             'chart_pie'  => 'Chart Pie',

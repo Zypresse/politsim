@@ -38,7 +38,7 @@ use Yii,
  * @property \app\models\Region $region Регион
  * @property \app\models\Medales[] $medales Значки
  * @property \app\models\ElectVote[] $votes Голоса этого юзера на выборах
- * @property \app\models\getStocks[] $stocks Акции
+ * @property \app\models\Stock[] $stocks Акции
  * @property \app\models\ElectRequest[] $requests Заявки на выборы
  * @property \app\models\Notification[] $notifications Уведомления
  * @property \app\models\Factory[] $factories 
@@ -181,11 +181,6 @@ class User extends NalogPayer implements \yii\web\IdentityInterface
         return $this->hasMany('app\models\ElectVote', array('uid' => 'id'));
     }
 
-    public function getStocks()
-    {
-        return $this->hasMany('app\models\Stock', array('user_id' => 'id'));
-    }
-
     public function getRequests()
     {
         return $this->hasMany('app\models\ElectRequest', array('candidat' => 'id'));
@@ -267,7 +262,7 @@ class User extends NalogPayer implements \yii\web\IdentityInterface
     public function isShareholder(Holding $holding)
     {
         foreach ($holding->stocks as $stock) {
-            if ($stock->user_id === $this->id || $stock->post_id === $this->post_id) {
+            if ($stock->unnp === $this->unnp || $stock->unnp === $this->post->unnp) {
                 return true;
             }
         }
@@ -282,7 +277,7 @@ class User extends NalogPayer implements \yii\web\IdentityInterface
     public function getShareholderStock(Holding $holding)
     {
         foreach ($holding->stocks as $stock) {
-            if ($stock->user_id === $this->id || $stock->post_id === $this->post_id) {
+            if ($stock->unnp === $this->unnp || $stock->unnp === $this->post->unnp) {
                 return $stock;
             }
         }
@@ -296,10 +291,9 @@ class User extends NalogPayer implements \yii\web\IdentityInterface
      */
     public function isHaveControllingStake(Holding $holding)
     {
-        foreach ($holding->stocks as $stock) {
-            if ($stock->user_id === $this->id && $stock->getPercents() > 50.0) {
-                return true;
-            }
+        $stock = $this->getShareholderStock($holding);
+        if ($stock && $stock->getPercents() > 50.0) {
+            return true;
         }
         return false;
     }

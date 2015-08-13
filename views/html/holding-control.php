@@ -9,6 +9,7 @@ use app\components\MyHtmlHelper,
     app\models\FactoryCategory,
     app\models\HoldingDecision;
 
+/* @var $user \app\models\User */
 $userStock = $user->getShareholderStock($holding);
 $factoryCategories = FactoryCategory::find()->all();
 ?>
@@ -57,7 +58,7 @@ $factoryCategories = FactoryCategory::find()->all();
         <?
         switch (get_class($stock->master)) {
             case 'app\models\User':
-                echo Html::a(Html::img($stock->master->photo, ['style' => 'width:20px']) . ' ' . $stock->master->name, "#", ['onclick' => "load_page('profile',{'uid':{$stock->user_id}})"]);
+                echo Html::a(Html::img($stock->master->photo, ['style' => 'width:20px']) . ' ' . $stock->master->name, "#", ['onclick' => "load_page('profile',{'uid':{$stock->master->id}})"]);
                 break;
             case 'app\models\Post':
                 echo ($stock->master->ministry_name ? $stock->master->ministry_name : $stock->master->name) . ' (' . Html::a($stock->master->org->name, '#', ['onclick' => "load_page('org-info',{'id':{$stock->master->org_id}})"]) . ')';
@@ -243,7 +244,7 @@ $factoryCategories = FactoryCategory::find()->all();
                             $text = "Получение лицензии бесплатно";
                             if (!(is_null($stateLicense))) {
                                 if ($stateLicense->is_only_goverment) {
-                                    if (!$userStock->post_id) {
+                                    if (!$userStock->master->isGoverment()) {
                                         continue;
                                     }
                                 }
@@ -331,7 +332,7 @@ $factoryCategories = FactoryCategory::find()->all();
                         <?
                         switch (get_class($stock->master)) {
                             case 'app\models\User':
-                                echo "<option value='{$stock->master->id}'>" . Html::a(Html::img($stock->master->photo, ['style' => 'width:20px']) . ' ' . $stock->master->name, "#", ['onclick' => "load_page('profile',{'uid':{$stock->user_id}})"]) . "</option>";
+                                echo "<option value='{$stock->master->id}'>" . Html::a(Html::img($stock->master->photo, ['style' => 'width:20px']) . ' ' . $stock->master->name, "#", ['onclick' => "load_page('profile',{'uid':{$stock->master->id}})"]) . "</option>";
                                 break;
                             case 'app\models\Post':
                                 echo "<option value='{$stock->master->user->id}'>" . Html::a(Html::img($stock->master->user->photo, ['style' => 'width:20px']) . ' ' . $stock->master->user->name, "#", ['onclick' => "load_page('profile',{'uid':{$stock->master->user->id}})"]) . "</option>";

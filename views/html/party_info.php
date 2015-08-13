@@ -11,9 +11,6 @@
 <div class="span10">
 <h1><?=htmlspecialchars($party->name)?> <small>(<?=htmlspecialchars($party->short_name)?>)</small></h1>
 <h3>Партия государства &laquo;<a href="#" onclick="load_page('state-info',{'id':<?=$party->state_id?>})"><?=htmlspecialchars($party->state->name)?></a>&raquo;</h3>
-<? if ($party->group_id) { ?><p><a class="btn" href="//vk.com/club<?=$party->group_id?>" target="_blank">
-<i class="icon-home"></i> Группа в вк</a>
-</p><? } ?>
 <p><strong>Идеология</strong>: <?=htmlspecialchars($party->ideologyInfo->name)?></p>
 <p><strong>Лидер партии</strong>:
 <? if ($party->leaderInfo) { ?>

@@ -26,4 +26,14 @@ abstract class NalogPayer extends MyModel {
         return $this->unnp;
     }
     
+    public function getStocks()
+    {
+        return $this->hasMany('app\models\Stock', array('unnp' => 'unnp'));
+    }
+    
+    public function isGoverment()
+    {
+        return false;
+    }
+    
 }

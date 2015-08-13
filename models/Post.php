@@ -29,6 +29,11 @@ class Post extends NalogPayer
         return Unnp::TYPE_POST;
     }
 
+    public function isGoverment()
+    {
+        return true;
+    }
+    
     /**
      * @inheritdoc
      */
@@ -80,11 +85,6 @@ class Post extends NalogPayer
     public function getPartyReserve()
     {
         return $this->hasOne('app\models\Party', array('id' => 'party_reserve'));
-    }
-
-    public function getStocks()
-    {
-        return $this->hasMany('app\models\Stock', array('post_id' => 'id'));
     }
 
     /**

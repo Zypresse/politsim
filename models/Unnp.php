@@ -11,7 +11,7 @@ use app\components\MyModel;
  * @property integer $type тип плательщика
  * @property integer $p_id ID плательщика
  * 
- * @property app\components\NalogPayer $master Владелец
+ * @property \app\components\NalogPayer $master Владелец
  */
 class Unnp extends MyModel
 {
@@ -34,6 +34,10 @@ class Unnp extends MyModel
         return 'unnp';
     }
     
+    /**
+     * 
+     * @return \app\components\NalogPayer
+     */
     public function getMaster()
     {
         switch ($this->type) {

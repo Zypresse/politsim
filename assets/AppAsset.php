@@ -23,7 +23,8 @@ class AppAsset extends AssetBundle
         'css/square.css',
         'css/snackbar.min.css',
         '//fonts.googleapis.com/css?family=Roboto+Condensed:400italic,400,700&subset=cyrillic,latin',
-        'css/style.css'
+        'css/style.css',
+        'css/spectrum.css'
     ];
     public $js = [
         'js/jquery.js',

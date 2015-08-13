@@ -20,9 +20,6 @@
 </div>
 <div class="span10">
 <h1><?=htmlspecialchars($state->name)?> <small>(<?=htmlspecialchars($state->short_name)?>)</small></h1>
-<? if ($state->group_id) { ?><p><a class="btn" href="//vk.com/club<?=$state->group_id?>" target="_blank">
-<i class="icon-home"></i> Группа в вк</a>
-</p><? } ?>
 <p>
 <strong>Форма гос. устройства:</strong> <?=htmlspecialchars($state->structure->name)?><br>
 <strong>Столица:</strong> <a href="#" onclick="show_region('<?=$state->capital?>')"><?=htmlspecialchars($state->capitalRegion->city)?></a><br>

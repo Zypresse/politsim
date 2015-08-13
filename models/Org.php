@@ -22,7 +22,6 @@ use app\components\NalogPayer,
  * @property integer $vote_party_id
  * @property integer $elect_with_org
  * @property integer $elect_leader_with_org
- * @property integer $group_id
  * @property integer $can_vote_for_bills
  * @property integer $can_create_bills
  * @property integer $can_drop_stateleader
@@ -45,6 +44,11 @@ class Org extends NalogPayer
     {
         return Unnp::TYPE_ORG;
     }
+    
+    public function isGoverment()
+    {
+        return true;
+    }
 
     /**
      * @inheritdoc
@@ -61,7 +65,7 @@ class Org extends NalogPayer
     {
         return [
             [['state_id', 'name', 'leader_dest', 'dest'], 'required'],
-            [['state_id', 'leader_post', 'leader_can_create_posts', 'next_elect', 'elect_period', 'other_org_id', 'vote_party_id', 'elect_with_org', 'elect_leader_with_org', 'group_id', 'can_vote_for_bills', 'can_create_bills', 'leader_can_make_dicktator_bills', 'leader_can_vote_for_bills', 'leader_can_create_bills', 'leader_can_veto_bills'], 'integer'],
+            [['state_id', 'leader_post', 'leader_can_create_posts', 'next_elect', 'elect_period', 'other_org_id', 'vote_party_id', 'elect_with_org', 'elect_leader_with_org', 'can_vote_for_bills', 'can_create_bills', 'leader_can_make_dicktator_bills', 'leader_can_vote_for_bills', 'leader_can_create_bills', 'leader_can_veto_bills'], 'integer'],
             [['name'], 'string', 'max' => 300],
             [['leader_dest', 'dest'], 'string', 'max' => 100]
         ];
@@ -86,7 +90,6 @@ class Org extends NalogPayer
             'vote_party_id'           => 'Vote Party ID',
             'elect_with_org'          => 'Выборы не прямые, а вместе с выборами в другой организации',
             'elect_leader_with_org'   => 'Выборы лидера не прямые а вместе с выборами в другой организации',
-            'group_id'                => 'Group ID',
             'can_vote_for_bills'      => 'Организация может голосовать за законопроекты',
             'can_create_bills'        => 'Организация может создавать законопроекты'
         ];

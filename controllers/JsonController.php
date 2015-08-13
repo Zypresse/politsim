@@ -1006,7 +1006,7 @@ class JsonController extends MyController
                             $stock = new Stock();
                             $stock->count = 10000;
                             $stock->holding_id = $holding->id;
-                            $stock->user_id = $user->id;
+                            $stock->unnp = $user->unnp;
                             $stock->save();
 
                             $user->money -= $capital;
@@ -1042,7 +1042,7 @@ class JsonController extends MyController
             if (is_null($accepter))
                 return $this->_r("User not found");
 
-            $stock = Stock::find()->where(['holding_id' => $holding_id, 'user_id' => $this->viewer_id])->one();
+            $stock = Stock::find()->where(['holding_id' => $holding_id, 'unnp' => $this->getUser()->unnp])->one();
 
             if (is_null($stock) || $stock->count < $count)
                 return $this->_r("Not allowed");
@@ -1084,7 +1084,7 @@ class JsonController extends MyController
             foreach ($items as $item) {
                 switch ($item['type']) {
                     case "stock":
-                        $stock = Stock::find()->where(['holding_id' => $item['holding_id'], 'user_id' => $dealing->from_uid])->one();
+                        $stock = Stock::find()->where(['holding_id' => $item['holding_id'], 'unnp' => $dealing->from_unnp])->one();
                         if (is_null($stock) || $stock->count < abs($item['count'])) {
                             return $this->_r("Отправитель не имеет акций, которые предлагает");
                         }
@@ -1105,12 +1105,12 @@ class JsonController extends MyController
             foreach ($items as $item) {
                 switch ($item['type']) {
                     case "stock":
-                        $stock = Stock::find()->where(['holding_id' => $item['holding_id'], 'user_id' => $dealing->sender->id])->one();
+                        $stock = Stock::find()->where(['holding_id' => $item['holding_id'], 'unnp' => $dealing->sender->unnp])->one();
 
-                        $recStock = Stock::find()->where(['holding_id' => $item['holding_id'], 'user_id' => $dealing->recipient->id])->one();
+                        $recStock = Stock::find()->where(['holding_id' => $item['holding_id'], 'unnp' => $dealing->recipient->unnp])->one();
                         if (is_null($recStock)) {
                             $recStock = new Stock();
-                            $recStock->user_id = $dealing->recipient->id;
+                            $recStock->unnp = $dealing->recipient->unnp;
                             $recStock->holding_id = $item['holding_id'];
                             $recStock->count = 0;
                         }
