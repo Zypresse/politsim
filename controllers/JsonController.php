@@ -328,7 +328,7 @@ class JsonController extends MyController
                 $legislature = Org::generate($state, Org::LEGISLATURE_PARLIAMENT10);
                 $state->legislature = $legislature->id;
 
-                $user->post_id = $state->executive->leader_post;
+                $user->post_id = $executive->leader_post;
                 $state->save();
                 $user->save();
             } else
