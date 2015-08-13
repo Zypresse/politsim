@@ -300,8 +300,10 @@ class GovermentFieldType extends MyModel {
                 break;
 
             case static::TYPE_LEGISLATURE_CAN_DROP_STATELEADER: // Право парламента на отправку в отставку лидера государства
-                $value->state->legislatureOrg->can_drop_stateleader = intval($value->value) ? 1 : 0;
-                $value->state->save();
+                if ($value->state->legislatureOrg) {
+                    $value->state->legislatureOrg->can_drop_stateleader = intval($value->value) ? 1 : 0;
+                    $value->state->save();
+                }
                 break;
 
             case static::TYPE_ALLOW_REGISTER_HOLDINGS_NONCITIZENS:
