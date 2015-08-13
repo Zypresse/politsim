@@ -220,7 +220,7 @@ if (count($user->post->org->speakerRequests)) {
 <? } ?>
 
 <?
-    if ($user->isStateLeader() && $user->state->leader_can_drop_legislature) {        
+    if ($user->isStateLeader() && $user->state->leader_can_drop_legislature && $user->state->legislatureOrg) {        
 ?>
 <div class="btn-group">
   <button class="btn btn-small btn-warning" onclick="if(confirm('Вы действительно хотите распустить организацию «<?=$user->state->legislatureOrg->name?>»?')) { json_request('drop-legislature'); }" >
