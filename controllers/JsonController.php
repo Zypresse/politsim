@@ -342,14 +342,22 @@ class JsonController extends MyController
                         break;
                 }
 
+                $state->save();
+
+                $region->state_id = $state->id;
+                $region->save();
+
                 $user->post_id = $executive->leader_post;
                 $user->state_id = $state->id;
-                $state->save();
                 $user->save();
-            } else
+
+                return $this->_rOk();
+            } else {
                 return $this->_r($state->getErrors());
-        } else
+            }
+        } else {
             return $this->_r("Invalid params");
+        }
     }
 
     public function actionGetCitizenship($state_id)
