@@ -174,7 +174,7 @@ function request(pageUrl,postParams,requestType,callback,noError)
 
                 }
             }
-            if (typeof d === 'object') {
+            if (typeof d === 'object' && d !== null) {
                 
                 if (!noError) {
                     if (!d.error) {
