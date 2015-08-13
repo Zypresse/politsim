@@ -329,6 +329,7 @@ class JsonController extends MyController
                 $state->legislature = $legislature->id;
 
                 $user->post_id = $executive->leader_post;
+                $user->state_id = $state->id;
                 $state->save();
                 $user->save();
             } else
