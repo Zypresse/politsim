@@ -34,7 +34,7 @@ class ModalController extends MyController
                 return $this->_r("Region not found");
             }
 
-            $forms = [['id' => 4, 'name' => 'Диктатура']];
+            $forms = [['id' => 4, 'name' => 'Диктатура'],['id' => 2, 'name' => 'Президентская республика'],['id' => 3, 'name' => 'Парламентская республика']];
 
             return $this->render("create_state_dialog", ['region' => $region, 'forms' => $forms]);
         } else {

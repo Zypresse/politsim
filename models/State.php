@@ -197,10 +197,13 @@ class State extends NalogPayer
      */
     public function afterDelete()
     {
-        if ($this->legislatureOrg)
+        if ($this->legislatureOrg) {
             $this->legislatureOrg->delete();
-        if ($this->executiveOrg)
+        }
+
+        if ($this->executiveOrg) {
             $this->executiveOrg->delete();
+        }
 
         foreach ($this->regions as $region) {
             $region->state_id = 0;

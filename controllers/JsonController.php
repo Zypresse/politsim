@@ -300,6 +300,7 @@ class JsonController extends MyController
 
         if ($name && $short_name && $goverment_form && $capital && $color) {
 
+            $goverment_form = intval($goverment_form);
             $flag = ($flag) ? $flag : "http://placehold.it/300x200/eeeeee/000000&text=" . urlencode(MyHtmlHelper::transliterate($short_name));
 
             $user = User::findByPk($this->viewer_id);
@@ -322,11 +323,24 @@ class JsonController extends MyController
 
             if ($state->save()) {
 
-                $executive = Org::generate($state, Org::EXECUTIVE_PRESIDENT);
-                $state->executive = $executive->id;
-
-                $legislature = Org::generate($state, Org::LEGISLATURE_PARLIAMENT10);
-                $state->legislature = $legislature->id;
+                switch ($goverment_form) {
+                    case 4:
+                        $executive = Org::generate($state, Org::EXECUTIVE_JUNTA);
+                        $state->executive = $executive->id;
+                        break;
+                    case 2:
+                        $executive = Org::generate($state, Org::EXECUTIVE_PRESIDENT);
+                        $state->executive = $executive->id;
+                        $legislature = Org::generate($state, Org::LEGISLATURE_PARLIAMENT10);
+                        $state->legislature = $legislature->id;
+                        break;
+                    case 3:
+                        $executive = Org::generate($state, Org::EXECUTIVE_PRIMEMINISTER);
+                        $state->executive = $executive->id;
+                        $legislature = Org::generate($state, Org::LEGISLATURE_PARLIAMENT10);
+                        $state->legislature = $legislature->id;
+                        break;
+                }
 
                 $user->post_id = $executive->leader_post;
                 $user->state_id = $state->id;
