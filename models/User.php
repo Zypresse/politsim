@@ -262,7 +262,7 @@ class User extends NalogPayer implements \yii\web\IdentityInterface
     public function isShareholder(Holding $holding)
     {
         foreach ($holding->stocks as $stock) {
-            if ($stock->unnp === $this->unnp || $stock->unnp === $this->post->unnp) {
+            if ($stock->unnp === $this->unnp || ($this->post && $stock->unnp === $this->post->unnp)) {
                 return true;
             }
         }
@@ -277,7 +277,7 @@ class User extends NalogPayer implements \yii\web\IdentityInterface
     public function getShareholderStock(Holding $holding)
     {
         foreach ($holding->stocks as $stock) {
-            if ($stock->unnp === $this->unnp || $stock->unnp === $this->post->unnp) {
+            if ($stock->unnp === $this->unnp || ($this->post && $stock->unnp === $this->post->unnp)) {
                 return $stock;
             }
         }

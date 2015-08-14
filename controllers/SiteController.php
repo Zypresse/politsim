@@ -79,9 +79,8 @@ class SiteController extends Controller
         ])->one();
         
         if (Yii::$app->user->isGuest) {
-            if ($auth) { // login
-                $user = $auth->user;
-                if (!$user->died) {
+            if ($auth && $auth->user) { // login
+                if (!$auth->user->died) {
                     Yii::$app->user->login($user);
                 } else {
                     exit("banned");
