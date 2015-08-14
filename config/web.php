@@ -59,7 +59,8 @@ $config = [
                     'class' => 'yii\authclient\clients\VKontakte',
                     'clientId' => '4540646',
                     'clientSecret' => 'xtJOMSSdAtk7qcIO9z2H',
-                    'title' => 'VK'
+                    'title' => 'VK',
+                    'attributeNames' => ['sex','photo_50','photo_400_orig','photo_big']
                 ],
             ],
         ]
