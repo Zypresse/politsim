@@ -67,5 +67,10 @@ class GovermentFieldValue extends MyModel
 
         return parent::afterSave($insert, $changedAttributes);
     }
+    
+    public function syncronize()
+    {
+        $this->type->syncronize($this);
+    }
 
 }

@@ -233,14 +233,7 @@ class State extends NalogPayer
     public function afterSave($insert, $changedAttributes)
     {
         if ($insert) {
-            $gftAr = GovermentFieldType::find()->all();
-            foreach ($gftAr as $gft) {
-                $gfv           = new GovermentFieldValue();
-                $gfv->state_id = $this->id;
-                $gfv->type_id  = $gft->id;
-                $gfv->value    = $gft->default_value;
-                $gfv->save();
-            }
+            
         }
 
         return parent::afterSave($insert, $changedAttributes);

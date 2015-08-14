@@ -13,6 +13,8 @@
 		 	<? endforeach ?>
 		 	</select>
 	 	</div>
+        </div>
+    	<div class="control-group">	
 	 	<div id="license_controls">
 	 		
 	 	</div>

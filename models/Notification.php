@@ -60,7 +60,7 @@ class Notification extends MyModel
     public function afterSave($insert, $changedAttributes)
     {
         if ($insert) {
-            foreach ($user->accounts as $acc) {
+            foreach ($this->user->accounts as $acc) {
                 if ($acc->source === "vkontakte") {
                     VkNotification::send($acc->source_id, $this->text);
                 }

@@ -50,4 +50,24 @@ abstract class MyModel extends ActiveRecord
         return $ar;
     }
     
+    /**
+     * 
+     * @param array $params
+     * @param boolean $save
+     * @param array $paramsToCreate
+     * @return \self
+     */
+    public static function findOrCreate($params, $save = false, $paramsToCreate = [])
+    {
+        $m = static::find()->where($params)->one();
+        if (is_null($m)) {
+            $m = new static(array_merge($params,$paramsToCreate));
+            if ($save) {
+                $m->save();
+            }
+        }
+        
+        return $m;
+    }
+    
 }

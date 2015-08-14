@@ -14,6 +14,7 @@ use app\components\MyController,
     app\models\BillType,
     app\models\BillTypeField,
     app\models\GovermentFieldType,
+    app\models\GovermentFieldValue,
     app\models\Population,
     app\models\Twitter,
     app\models\ElectResult,
@@ -519,6 +520,30 @@ class ModalController extends MyController
 
         } else {
             return $this->_r("Invalid license type ID");
+        }
+    }
+    
+    public function actionGovermentFieldValue($type)
+    {
+        $type = intval($type);
+        if ($type > 0) {
+            
+            $gft = GovermentFieldType::findByPk($type);
+            if (is_null($gft)) {
+                return $this->_r("Govement field type not found");
+            }
+
+            $user = $this->getUser();
+            if (is_null($user->state)) {
+                return $this->_r("Have not citizenship");
+            }
+            
+            $gfv = GovermentFieldValue::findOrCreate(['state_id'=>$user->state_id,'type_id'=>$type], true, ['value'=>$gft->default_value]);
+            
+            return $this->render("newbill/goverment-field-value",['gfv'=>$gfv,'gft'=>$gft]);
+        
+        } else {
+            return $this->_r("Invalid govement field type ID");
         }
     }
 

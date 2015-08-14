@@ -26,7 +26,8 @@ use yii\helpers\ArrayHelper,
     app\models\HoldingDecisionVote,
     app\models\Notification,
     app\models\Factory,
-    app\models\FactoryWorkersSalary;
+    app\models\FactoryWorkersSalary,
+    app\models\constitution\ConstitutionFactory;
 
 class JsonController extends MyController
 {
@@ -324,21 +325,27 @@ class JsonController extends MyController
             if ($state->save()) {
 
                 switch ($goverment_form) {
-                    case 4:
+                    case 4: // Хунта
                         $executive = Org::generate($state, Org::EXECUTIVE_JUNTA);
                         $state->executive = $executive->id;
+                        
+                        ConstitutionFactory::generate('Junta', $state->id);
                         break;
-                    case 2:
+                    case 2: // Президентская республика
                         $executive = Org::generate($state, Org::EXECUTIVE_PRESIDENT);
                         $state->executive = $executive->id;
                         $legislature = Org::generate($state, Org::LEGISLATURE_PARLIAMENT10);
                         $state->legislature = $legislature->id;
+
+                        ConstitutionFactory::generate('PresidentRepublic', $state->id);
                         break;
-                    case 3:
+                    case 3: // Парламентская республика
                         $executive = Org::generate($state, Org::EXECUTIVE_PRIMEMINISTER);
                         $state->executive = $executive->id;
                         $legislature = Org::generate($state, Org::LEGISLATURE_PARLIAMENT10);
                         $state->legislature = $legislature->id;
+
+                        ConstitutionFactory::generate('ParliamentRepublic', $state->id);
                         break;
                 }
 
@@ -1032,7 +1039,7 @@ class JsonController extends MyController
                             $stock->unnp = $user->unnp;
                             $stock->save();
 
-                            $user->money -= $capital;
+                            $user->money -= $sum;
                             $user->save();
 
                             return $this->_rOk();

@@ -2,14 +2,15 @@
 
 namespace app\models;
 
-use app\components\MyModel;
-use app\models\Org;
-use app\models\State;
-use app\models\GovermentFieldValue;
-use app\models\Notification;
-use app\models\StateLicense;
-use app\models\CoreCountry;
-use app\components\MyHtmlHelper;
+use app\components\MyModel,
+    app\models\Org,
+    app\models\State,
+    app\models\GovermentFieldValue,
+    app\models\Notification,
+    app\models\StateLicense,
+    app\models\CoreCountry,
+    app\components\MyHtmlHelper,
+    app\models\constitution\ConstitutionFactory;
 
 /**
  * Тип законопроекта. Таблица "bill_types".
@@ -253,6 +254,8 @@ class BillType extends MyModel
                     $state->legislature = $legislature->id;
 
                     $state->save();
+                    
+                    ConstitutionFactory::generate('PresidentRepublic', $state->id);
 
                     if ($data->core_id && $core) {
                         foreach ($core->regions as $region) {
@@ -279,6 +282,10 @@ class BillType extends MyModel
         
         foreach ($bill->votes as $vote) {
             $vote->delete();
+        }
+        
+        foreach ($bill->state->govermentFields as $article) {
+            $article->syncronize();
         }
 
         return true;

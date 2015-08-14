@@ -270,15 +270,21 @@ function reload_page(time) {
 }
 
 
-function json_request(page, params, noReload, noError) {
+function json_request(page, params, noReload, noError, callback) {
     params = params || {};
     noReload = noReload || false;
     noError = noError || false;
 
     request('/json/'+page,params,'json',function(result){
-        if (result.result === 'ok' && !noReload)
-            reload_page(100);
-    })
+        if (result.result === 'ok') {
+            if (!noReload) {
+                reload_page(100);
+            }
+            if (callback && typeof callback === "function") {
+                callback(result);
+            }
+        }
+    },noError);
 }
 
 function get_json(page, params, callback, noError) {
