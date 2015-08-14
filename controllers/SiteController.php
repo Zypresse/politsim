@@ -30,6 +30,7 @@ class SiteController extends Controller
     
     public function actionVkAppAuth($viewer_id, $auth_key)
     {
+//        $friends = json_decode(Yii::$app->request->get("api_result"))["response"];
         $real_key = md5(Yii::$app->params['VK_APP_ID']."_".$viewer_id."_".Yii::$app->params['VK_APP_KEY']);
         
         if ($real_key !== $auth_key) exit('Invalid auth key');
@@ -81,7 +82,7 @@ class SiteController extends Controller
         if (Yii::$app->user->isGuest) {
             if ($auth && $auth->user) { // login
                 if (!$auth->user->died) {
-                    Yii::$app->user->login($user);
+                    Yii::$app->user->login($auth->user);
                 } else {
                     exit("banned");
                 }
