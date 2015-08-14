@@ -219,20 +219,24 @@ class GovermentFieldType extends MyModel {
                 }
                 break;
             case static::TYPE_EXECUTIVE_ELECT_PERIOD: // 
-                if ($value->state->executiveOrg && $value->value > 1) {
-                    $value->state->executiveOrg->elect_period = intval($value->value);
-                } else {
-                    $value->state->executiveOrg->elect_period = -1;
-                }
-                $value->state->executiveOrg->save();                    
+                if ($value->state->executiveOrg) {
+                    if ($value->value > 1) {
+                        $value->state->executiveOrg->elect_period = intval($value->value);
+                    } else {
+                        $value->state->executiveOrg->elect_period = -1;
+                    }
+                    $value->state->executiveOrg->save();  
+                }                  
                 break;
             case static::TYPE_LEGISLATURE_ELECT_PERIOD: // 
-                if ($value->state->legislatureOrg && $value->value > 1) {
-                    $value->state->legislatureOrg->elect_period = intval($value->value);
-                } else {
-                    $value->state->legislatureOrg->elect_period = -1;
+                if ($value->state->legislatureOrg) {
+                    if ($value->value > 1) {
+                        $value->state->legislatureOrg->elect_period = intval($value->value);
+                    } else {
+                        $value->state->legislatureOrg->elect_period = -1;
+                    }
+                    $value->state->legislatureOrg->save();
                 }
-                $value->state->legislatureOrg->save();
                 break;
             case static::TYPE_LEADER_CAN_MAKE_DICTATOR_BILLS: // 
                 if ($value->state->executiveOrg) {
