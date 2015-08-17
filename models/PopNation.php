@@ -10,6 +10,8 @@ use app\components\MyModel;
  * @property integer $id
  * @property string $name Название
  * @property integer $group_id ID группы наций
+ * @property string $color 
+ * @property float $agression
  */
 class PopNation extends MyModel
 {
@@ -28,9 +30,11 @@ class PopNation extends MyModel
     public function rules()
     {
         return [
-            [['name', 'group_id'], 'required'],
+            [['name', 'group_id', 'color', 'agression'], 'required'],
             [['group_id'], 'integer'],
-            [['name'], 'string', 'max' => 255]
+            [['agression'], 'number'],
+            [['name'], 'string', 'max' => 255],
+            [['color'], 'string', 'max' => 6]
         ];
     }
 

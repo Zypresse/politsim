@@ -328,6 +328,7 @@ class JsonController extends MyController
                     case 4: // Хунта
                         $executive = Org::generate($state, Org::EXECUTIVE_JUNTA);
                         $state->executive = $executive->id;
+                        $state->save();
                         
                         ConstitutionFactory::generate('Junta', $state->id);
                         break;
@@ -336,6 +337,7 @@ class JsonController extends MyController
                         $state->executive = $executive->id;
                         $legislature = Org::generate($state, Org::LEGISLATURE_PARLIAMENT10);
                         $state->legislature = $legislature->id;
+                        $state->save();
 
                         ConstitutionFactory::generate('PresidentRepublic', $state->id);
                         break;
@@ -344,13 +346,12 @@ class JsonController extends MyController
                         $state->executive = $executive->id;
                         $legislature = Org::generate($state, Org::LEGISLATURE_PARLIAMENT10);
                         $state->legislature = $legislature->id;
+                        $state->save();
 
                         ConstitutionFactory::generate('ParliamentRepublic', $state->id);
                         break;
                 }
-
-                $state->save();
-
+                
                 $region->state_id = $state->id;
                 $region->save();
 
@@ -431,15 +432,17 @@ class JsonController extends MyController
 
     public function actionTransferMoney($count, $uid, $is_anonim = false, $is_secret = false, $type = 'open')
     {
-        $count = abs(intval($count));
+        $count = intval($count);
         $uid = intval($uid);
 
-        if ($type === 'anonym')
+        if ($type === 'anonym') {
             $is_anonim = true;
-        if ($type === 'hidden')
+        }
+        if ($type === 'hidden') {
             $is_secret = true;
+        }
 
-        if ($count && $uid && $uid !== $this->viewer_id) {
+        if ($count > 0 && $uid > 0 && $uid !== $this->viewer_id) {
             $sender = $this->getUser();
             if ($sender->money < $count) {
                 return $this->_r("Недостаточно денег на счету");
@@ -450,24 +453,30 @@ class JsonController extends MyController
             }
 
             $sender->money -= $count;
-            $sender->save();
+            if (!$sender->save()) {
+                return $this->_r($sender->getErrors());
+            }
             $recipient->money += $count;
-            $recipient->save();
+            if (!$recipient->save()) {
+                return $this->_r($recipient->getErrors());
+            }
 
-            $dealing = new Dealing();
-            $dealing->from_unnp = $sender->unnp;
-            $dealing->to_unnp = $recipient->unnp;
-            $dealing->sum = $count;
-            $dealing->is_anonim = $is_anonim ? 1 : 0;
-            $dealing->is_secret = $is_secret ? 1 : 0;
-            $dealing->time = time();
+            $dealing = new Dealing([
+                'from_unnp' => $sender->unnp,
+                'to_unnp' => $recipient->unnp,
+                'sum' => $count,
+                'is_anonim' => $is_anonim ? 1 : 0,
+                'is_secret' => $is_secret ? 1 : 0,
+                'time' => time()                
+            ]);
             if ($dealing->save()) {
-                $this->result = "ok";
-                return $this->_r();
-            } else
+                return $this->_rOk();
+            } else {
                 return $this->_r($dealing->getErrors());
-        } else
+            }
+        } else {
             return $this->_r("Invalid params");
+        }
     }
 
     public function actionCreateParty($name, $short_name, $ideology = 10, $image = false)
@@ -1063,51 +1072,60 @@ class JsonController extends MyController
     public function actionStocksDealing($holding_id, $count, $cost, $uid)
     {
         $holding_id = intval($holding_id);
-        $count = abs(intval($count));
-        $cost = intval($cost);
+        $count = intval($count);
+        $cost = abs(intval($cost));
         $uid = intval($uid);
 
-        if ($holding_id && $count && $uid) {
+        if ($holding_id > 0 && $count > 0 && $uid > 0) {
             $accepter = User::findByPk($uid);
-            if (is_null($accepter))
+            if (is_null($accepter)) {
                 return $this->_r("User not found");
+            }
 
             $stock = Stock::find()->where(['holding_id' => $holding_id, 'unnp' => $this->getUser()->unnp])->one();
 
-            if (is_null($stock) || $stock->count < $count)
+            if (is_null($stock) || $stock->count < $count) {
                 return $this->_r("Not allowed");
+            }
 
-            $dealing = new Dealing();
-            $dealing->from_unnp = $this->getUser()->unnp;
-            $dealing->to_unnp = $accepter->unnp;
-            $dealing->sum = -1 * $cost;
-            $dealing->items = json_encode([['type' => 'stock', 'count' => $count, 'holding_id' => $holding_id]]);
-            $dealing->time = -1;
+            $dealing = new Dealing([
+                'from_unnp' => $this->getUser()->unnp,
+                'to_unnp' => $accepter->unnp,
+                'sum' => -1 * $cost,
+                'items' => json_encode([['type' => 'stock', 'count' => $count, 'holding_id' => $holding_id]]),
+                'time' => -1,
+            ]);
 
-            if ($dealing->save())
+            if ($dealing->save()) {
                 return $this->_rOk();
-            else
+            } else {
                 return $this->_r($dealing->getErrors());
-        } else
+            }
+        } else {
             return $this->_r("Invalid fields");
+        }
     }
 
     public function actionAcceptDealing($id)
     {
         $id = intval($id);
-        if ($id) {
+        if ($id > 0) {
             $dealing = Dealing::findByPk($id);
-            if (is_null($dealing))
+            if (is_null($dealing)) {
                 return $this->_r("Dealing not found");
+            }
 
-            if ($dealing->to_unnp !== $this->getUser()->unnp)
+            if ($dealing->to_unnp !== $this->getUser()->unnp) {
                 return $this->_r("Not allowed");
+            }
 
-            if ($dealing->sum < 0 && abs($dealing->sum) > $dealing->recipient->money)
+            if ($dealing->sum < 0 && abs($dealing->sum) > $dealing->recipient->money) {
                 return $this->_r("У вас недостаточно денег");
+            }
 
-            if ($dealing->sum > 0 && $dealing->sum > $dealing->sender->money)
+            if ($dealing->sum > 0 && $dealing->sum > $dealing->sender->money) {
                 return $this->_r("У отправителя недостаточно денег");
+            }
 
             $items = json_decode($dealing->items, true);
 
@@ -1115,7 +1133,7 @@ class JsonController extends MyController
                 switch ($item['type']) {
                     case "stock":
                         $stock = Stock::find()->where(['holding_id' => $item['holding_id'], 'unnp' => $dealing->from_unnp])->one();
-                        if (is_null($stock) || $stock->count < abs($item['count'])) {
+                        if (is_null($stock) || $stock->count < $item['count']) {
                             return $this->_r("Отправитель не имеет акций, которые предлагает");
                         }
                         break;
@@ -1127,26 +1145,23 @@ class JsonController extends MyController
 
             if ($dealing->sum) {
                 $dealing->recipient->money += $dealing->sum;
-                $dealing->recipient->save();
+                if (!$dealing->recipient->save()) {
+                    return $this->_r($dealing->recipient->getErrors());
+                }
                 $dealing->sender->money -= $dealing->sum;
-                $dealing->sender->save();
+                if (!$dealing->sender->save()) {
+                    return $this->_r($dealing->sender->getErrors());
+                }
             }
 
             foreach ($items as $item) {
                 switch ($item['type']) {
                     case "stock":
                         $stock = Stock::find()->where(['holding_id' => $item['holding_id'], 'unnp' => $dealing->sender->unnp])->one();
+                        $recStock = Stock::findOrCreate(['holding_id' => $item['holding_id'], 'unnp' => $dealing->recipient->unnp], false, ['count' => 0]);
 
-                        $recStock = Stock::find()->where(['holding_id' => $item['holding_id'], 'unnp' => $dealing->recipient->unnp])->one();
-                        if (is_null($recStock)) {
-                            $recStock = new Stock();
-                            $recStock->unnp = $dealing->recipient->unnp;
-                            $recStock->holding_id = $item['holding_id'];
-                            $recStock->count = 0;
-                        }
-
-                        $stock->count -= abs($item['count']);
-                        $recStock->count += abs($item['count']);
+                        $stock->count -= $item['count'];
+                        $recStock->count += $item['count'];
 
                         if ($stock->count > 0) {
                             $stock->save();
@@ -1166,19 +1181,22 @@ class JsonController extends MyController
     public function actionDeclineDealing($id)
     {
         $id = intval($id);
-        if ($id) {
+        if ($id > 0) {
             $dealing = Dealing::findByPk($id);
-            if (is_null($dealing))
+            if (is_null($dealing)) {
                 return $this->_r("Dealing not found");
+            }
 
-            if ($dealing->to_unnp !== $this->getUser()->unnp)
+            if ($dealing->to_unnp !== $this->getUser()->unnp) {
                 return $this->_r("Not allowed");
+            }
 
             $dealing->delete();
 
             return $this->_rOk();
-        } else
+        } else {
             return $this->_r("Invalid ID");
+        }
     }
 
     public function actionNewHoldingDecision($holding_id, $type)

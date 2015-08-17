@@ -29,9 +29,9 @@ use app\components\MyModel;
  * @property double $energy_max @todo ???
  * @property double $base_speed Базовая (идеальная) скорость обучения этого типа из безработных
  * @property string $work_type Тип работы @todo ???
- * @property integer $awareness Сознательность @todo ???
- * @property integer $threshold @todo ???
- * @property integer $aggression Агрессивность (0-1)
+ * @property double $awareness Сознательность @todo ???
+ * @property double $threshold Порог неудовлетворённости @todo ???
+ * @property double $aggression Агрессивность (0-1)
  */
 class PopClass extends MyModel
 {

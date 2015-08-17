@@ -13,21 +13,22 @@ use app\components\NalogPayer,
  * @property integer $class ID класса населения
  * @property integer $nation ID национальности
  * @property integer $ideology ID идеологии
+ * @property integer $religion ID религии
  * @property integer $sex Пол (0 - неопр., 1 - женский, 2 - мужской)
  * @property integer $age Возраст
  * @property integer $count Число людей
  * @property integer $region_id ID региона
  * @property integer $factory_id ID региона
  * 
- * @property \app\models\PopClass $classinfo Класс населения
- * @property \app\models\PopNation $nationinfo Национальность
- * @property \app\models\Region $region Регион
- * @property \app\models\Factory $factory Фабрика
- * @property \app\models\Ideology $ideologyinfo Идеология
+ * @property PopClass $classinfo Класс населения
+ * @property PopNation $nationinfo Национальность
+ * @property Region $region Регион
+ * @property Factory $factory Фабрика
+ * @property Ideology $ideologyinfo Идеология
+ * @property Religion $religioninfo Религия
  * @property Factory $factory Фабрика, на которой они работают
  */
-class Population extends NalogPayer
-{
+class Population extends NalogPayer {
 
     protected function getUnnpType()
     {
@@ -49,7 +50,7 @@ class Population extends NalogPayer
     {
         return [
             [['region_id'], 'required'],
-            [['region_id', 'factory_id', 'class', 'nation', 'ideology', 'sex', 'age', 'count'], 'integer']            
+            [['region_id', 'factory_id', 'class', 'nation', 'ideology', 'religion', 'sex', 'age', 'count'], 'integer']
         ];
     }
 
@@ -59,14 +60,15 @@ class Population extends NalogPayer
     public function attributeLabels()
     {
         return [
-            'id'        => 'ID',
+            'id' => 'ID',
             'region_id' => 'Регион',
-            'class'     => 'ID класса (рабочие, клерки и т.д.)',
-            'nation'    => 'ID национальности',
-            'ideology'  => 'ID идеологии (0 - нейтрал)',
-            'sex'       => 'Пол 0 - женский, 1 - мужской',
-            'age'       => 'Возраст (в игровых годах)',
-            'count'     => 'Число человек',
+            'class' => 'ID класса (рабочие, клерки и т.д.)',
+            'nation' => 'ID национальности',
+            'ideology' => 'ID идеологии (0 - нейтрал)',
+            'religion' => 'ID религии (0 - нейтрал)',
+            'sex' => 'Пол 0 - женский, 1 - мужской',
+            'age' => 'Возраст (в игровых годах)',
+            'count' => 'Число человек',
         ];
     }
 
@@ -90,11 +92,15 @@ class Population extends NalogPayer
         return $this->hasOne('app\models\Ideology', array('id' => 'ideology'));
     }
 
+    public function getReligioninfo()
+    {
+        return $this->hasOne('app\models\Religion', array('id' => 'religion'));
+    }
+
     public function getFactory()
     {
         return $this->hasOne('app\models\Factory', array('id' => 'factory_id'));
     }
-
 
     /**
      * Получить все группы
@@ -135,10 +141,11 @@ class Population extends NalogPayer
      */
     public static function getGroupsByClass($query = false)
     {
-        if ($query === false)
+        if ($query === false) {
             $query = static::find();
+        }
 
-        $models        = $query->all();
+        $models = $query->all();
         $modelsByClass = [];
 
 
@@ -147,69 +154,78 @@ class Population extends NalogPayer
                 $modelsByClass[$model->class]['count'] += $model->count;
                 if (isset($modelsByClass[$model->class]['ideologies'][$model->ideology])) {
                     $modelsByClass[$model->class]['ideologies'][$model->ideology]['count'] += $model->count;
-                }
-                else {
+                } else {
                     $modelsByClass[$model->class]['ideologies'][$model->ideology] = [
-                        'name'  => $model->ideologyinfo->name,
+                        'name' => $model->ideologyinfo->name,
                         'count' => $model->count,
                         'color' => MyHtmlHelper::getPartyColor($model->ideologyinfo->d, true)
                     ];
                 }
+                if (isset($modelsByClass[$model->class]['religions'][$model->religion])) {
+                    $modelsByClass[$model->class]['religions'][$model->religion]['count'] += $model->count;
+                } else {
+                    $modelsByClass[$model->class]['religions'][$model->religion] = [
+                        'name' => $model->religioninfo->name,
+                        'count' => $model->count,
+                        'color' => '#' . $model->religioninfo->color
+                    ];
+                }
                 if (isset($modelsByClass[$model->class]['nations'][$model->nation])) {
                     $modelsByClass[$model->class]['nations'][$model->nation]['count'] += $model->count;
-                }
-                else {
+                } else {
                     $modelsByClass[$model->class]['nations'][$model->nation] = [
-                        'name'  => $model->nationinfo->name,
+                        'name' => $model->nationinfo->name,
                         'count' => $model->count,
-                        'color' => MyHtmlHelper::getSomeColor($i, true)
+                        'color' => '#' . $model->nationinfo->color
                     ];
                 }
                 if (isset($modelsByClass[$model->class]['sex'][$model->sex])) {
                     $modelsByClass[$model->class]['sex'][$model->sex]['count'] += $model->count;
-                }
-                else {
+                } else {
                     $modelsByClass[$model->class]['sex'][$model->sex] = [
-                        'name'  => $model->sex ? 'Мужчины' : 'Женщины',
+                        'name' => $model->sex ? 'Мужчины' : 'Женщины',
                         'count' => $model->count,
                         'color' => $model->sex ? '#0000ee' : '#ee0000'
                     ];
                 }
                 if (isset($modelsByClass[$model->class]['age'][static::ageGroup($model->age)['id']])) {
                     $modelsByClass[$model->class]['age'][static::ageGroup($model->age)['id']]['count'] += $model->count;
-                }
-                else {
+                } else {
                     $modelsByClass[$model->class]['age'][static::ageGroup($model->age)['id']] = [
-                        'name'  => static::ageGroup($model->age)['name'],
+                        'name' => static::ageGroup($model->age)['name'],
                         'count' => $model->count,
                         'color' => MyHtmlHelper::getSomeColor($i, static::ageGroup($model->age)['id'] + 20)
                     ];
                 }
-            }
-            else {
+            } else {
                 $modelsByClass[$model->class] = [
-                    'name'       => $model->classinfo->name,
+                    'name' => $model->classinfo->name,
                     'ideologies' => [$model->ideology => [
-                            'name'  => $model->ideologyinfo->name,
+                            'name' => $model->ideologyinfo->name,
                             'count' => $model->count,
                             'color' => MyHtmlHelper::getPartyColor($model->ideologyinfo->d, true)
                         ]],
-                    'nations'    => [$model->nation => [
-                            'name'  => $model->nationinfo->name,
+                    'religions' => [$model->religion => [
+                            'name' => $model->religioninfo->name,
                             'count' => $model->count,
-                            'color' => MyHtmlHelper::getSomeColor($i, true)
+                            'color' => '#' . $model->religioninfo->color
                         ]],
-                    'sex'        => [$model->sex => [
-                            'name'  => $model->sex ? 'Мужчины' : 'Женщины',
+                    'nations' => [$model->nation => [
+                            'name' => $model->nationinfo->name,
+                            'count' => $model->count,
+                            'color' => '#' . $model->nationinfo->color
+                        ]],
+                    'sex' => [$model->sex => [
+                            'name' => $model->sex ? 'Мужчины' : 'Женщины',
                             'count' => $model->count,
                             'color' => $model->sex ? '#0000ee' : '#ee0000'
                         ]],
-                    'age'        => [static::ageGroup($model->age)['id'] => [
-                            'name'  => static::ageGroup($model->age)['name'],
+                    'age' => [static::ageGroup($model->age)['id'] => [
+                            'name' => static::ageGroup($model->age)['name'],
                             'count' => $model->count,
                             'color' => MyHtmlHelper::getSomeColor($i, static::ageGroup($model->age)['id'] + 20)
                         ]],
-                    'count'      => $model->count
+                    'count' => $model->count
                 ];
             }
         }
@@ -217,6 +233,9 @@ class Population extends NalogPayer
         foreach ($modelsByClass as $i => $m) {
             foreach ($m['ideologies'] as $j => $id) {
                 $modelsByClass[$i]['ideologies'][$j]['percents'] = round(100 * $id['count'] / $m['count']);
+            }
+            foreach ($m['religions'] as $j => $id) {
+                $modelsByClass[$i]['religions'][$j]['percents'] = round(100 * $id['count'] / $m['count']);
             }
             foreach ($m['nations'] as $j => $id) {
                 $modelsByClass[$i]['nations'][$j]['percents'] = round(100 * $id['count'] / $m['count']);
@@ -228,7 +247,6 @@ class Population extends NalogPayer
                 $modelsByClass[$i]['age'][$j]['percents'] = round(100 * $id['count'] / $m['count']);
             }
         }
-
         return $modelsByClass;
     }
 
@@ -239,11 +257,12 @@ class Population extends NalogPayer
      */
     public function slice($size)
     {
-        
+
         $new = new self;
         $new->class = $this->class;
         $new->nation = $this->nation;
         $new->ideology = $this->ideology;
+        $new->religion = $this->religion;
         $new->sex = $this->sex;
         $new->age = $this->age;
         $new->region_id = $this->region_id;
@@ -255,11 +274,11 @@ class Population extends NalogPayer
         } else {
             return null;
         }
-        
     }
-    
+
     public function getUniqueKey()
     {
-        return $this->class . '_' . $this->nation . '_' . $this->ideology . '_' . $this->sex . '_' . $this->age . '_' . $this->region_id . '_' . $this->factory_id;
+        return $this->class . '_' . $this->nation . '_' . $this->ideology . '_' . $this->religion . '_' . $this->sex . '_' . $this->age . '_' . $this->region_id . '_' . $this->factory_id;
     }
+
 }
