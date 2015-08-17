@@ -51,6 +51,11 @@ class Region extends NalogPayer
         return Unnp::TYPE_REGION;
     }
 
+    public function isGoverment()
+    {
+        return true;
+    }
+    
     /**
      * @inheritdoc
      */

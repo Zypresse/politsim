@@ -13,8 +13,8 @@ use app\components\MyModel;
  * @property integer $count Число акций
  * 
  * @property \app\components\NalogPayer $master Владелец пакета
- * @holding Holding $holding АО, акции которого имеются ввиду
- * @holding Unnp $unnpModel UNNP владельца пакета
+ * @property Holding $holding АО, акции которого имеются ввиду
+ * @property Unnp $unnpModel UNNP владельца пакета
  */
 class Stock extends MyModel
 {
@@ -90,7 +90,7 @@ class Stock extends MyModel
      */
     public function isGos()
     {
-        return !!$this->post_id;
+        return $this->master->isGoverment();
     }
 
 }

@@ -7,8 +7,8 @@
 		<label class="control-label" for="org_id" >Организация</label>
 		<div class="controls">
 			<select class="bill_field" id="org_id" name="org_id">
-				<option value="<?=$user->state->executive?>"><?=$user->state->executiveOrg->name?></option>
-				<option value="<?=$user->state->legislature?>"><?=$user->state->legislatureOrg->name?></option>
+				<? if ($user->state->executiveOrg): ?><option value="<?=$user->state->executive?>"><?=$user->state->executiveOrg->name?></option><? endif ?>
+				<? if ($user->state->legislatureOrg): ?><option value="<?=$user->state->legislature?>"><?=$user->state->legislatureOrg->name?></option><? endif ?>
 			</select>
 	 	</div>
         </div>
