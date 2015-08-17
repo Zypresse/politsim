@@ -182,14 +182,14 @@ class State extends NalogPayer
         return $this->hasMany('app\models\User', array('state_id' => 'id'));
     }
 
-    public function getStateLicenseByType($type_id)
+    /**
+     * 
+     * @param HoldingLicenseType $licenseType
+     * @return StateLicense
+     */
+    public function getStateLicenseByType($licenseType)
     {        
-        foreach ($this->licenses as $l) {
-            if ($l->license_id === $type_id) {
-                return $l;
-            }
-        }
-        return null;
+        return StateLicense::findOrCreate(['state_id' => $this->id, 'license_id' => $licenseType->id], true);
     }
 
     /**

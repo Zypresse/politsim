@@ -514,8 +514,7 @@ class ModalController extends MyController
                 return $this->_r("Have not citizenship");
             }
 
-            $stateLicense = $user->state->getStateLicenseByType($license_id);
-
+            $stateLicense = $user->state->getStateLicenseByType($licenseType);
             return $this->render("licenses-controls-change",["licenseType"=>$licenseType,"stateLicense"=>$stateLicense]);
 
         } else {
