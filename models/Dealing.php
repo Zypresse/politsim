@@ -8,6 +8,7 @@ use app\components\MyModel;
  * Сделка между игроками. Таблица "dealings".
  *
  * @property integer $id
+ * @property integer $type_id ID типа сделки
  * @property integer $from_unnp ID отправителя
  * @property integer $to_unnp ID получателя
  * @property double $sum Сумма (сколько отправил отправитель)
@@ -16,8 +17,9 @@ use app\components\MyModel;
  * @property integer $is_secret Является ли сделка тайной
  * @property integer $time Время совершения сделки (-1 для непринятой)
  * 
- * @property User $sender Отправитель
- * @property User $recipient Получатель
+ * @property NalogPayer $sender Отправитель
+ * @property NalogPayer $recipient Получатель
+ * @property PayType $type Тип сделки
  */
 class Dealing extends MyModel
 {
@@ -37,7 +39,7 @@ class Dealing extends MyModel
     {
         return [
             [['from_unnp', 'to_unnp'], 'required'],
-            [['from_unnp', 'to_unnp', 'is_anonim', 'is_secret', 'time'], 'integer'],
+            [['from_unnp', 'to_unnp', 'is_anonim', 'is_secret', 'time', 'type_id'], 'integer'],
             [['sum'], 'number'],
             [['items'], 'string']
         ];
@@ -78,8 +80,9 @@ class Dealing extends MyModel
      */
     public static function getMyList($uid, $viewer_id = false)
     {
-        if ($viewer_id === false)
+        if ($viewer_id === false) {
             $viewer_id = $uid;
+        }
         $is_own    = ($viewer_id === $uid);
         
         $user = User::findByPk($uid);
