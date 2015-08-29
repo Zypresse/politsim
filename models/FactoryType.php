@@ -16,8 +16,10 @@ use app\components\MyModel;
  * @property float $build_cost
  * 
  * @property FactoryCategory $category Категория фабрик
+ * @property FactoryKit[] $resurses Набор всех ресурсов
  * @property FactoryKit[] $export Производимый набор ресурсов
  * @property FactoryKit[] $import Потребляемый набор ресурсов
+ * @property FactoryKit[] $used Используемый набор ресурсов
  * @property FactoryTypeWorker[] $workers Используемые наборы рабочих
  * @property HoldingLicenseType[] $licenses Необходимые лицензии
  */
@@ -66,6 +68,11 @@ class FactoryType extends MyModel
         return $this->hasOne('app\models\FactoryCategory', array('id' => 'category_id'));
     }
 
+    public function getResurses()
+    {
+        return $this->hasMany('app\models\FactoryKit', array('type_id' => 'id'));
+    }
+
     public function getExport()
     {
         return $this->hasMany('app\models\FactoryKit', array('type_id' => 'id'))->where(['direction' => 2]);
@@ -74,6 +81,11 @@ class FactoryType extends MyModel
     public function getImport()
     {
         return $this->hasMany('app\models\FactoryKit', array('type_id' => 'id'))->where(['direction' => 1]);
+    }
+
+    public function getUsed()
+    {
+        return $this->hasMany('app\models\FactoryKit', array('type_id' => 'id'))->where(['direction' => 3]);
     }
 
     public function getWorkers()

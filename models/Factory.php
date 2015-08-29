@@ -194,5 +194,48 @@ class Factory extends NalogPayer
             return 0;
         }
     }
+    
+    public function pushToStorage($resutse_id, $count) 
+    {
+        $store = FactoryStorage::findOrCreate([
+            'factory_id' => $this->id,
+            'resurse_id' => $resutse_id
+        ], false, [
+            'count' => 0
+        ]);
+        $store->count += $count;
+        
+        return $store->save();
+    }
+    
+    public function delFromStorage($resutse_id, $count) 
+    {
+        $store = FactoryStorage::findOrCreate([
+            'factory_id' => $this->id,
+            'resurse_id' => $resutse_id
+        ], false, [
+            'count' => 0
+        ]);
+        $store->count -= $count;
+        
+        return $store->save();
+    }
+
+    public function afterSave($insert, $changedAttributes)
+    {
+        if ($insert) {
+            foreach ($this->type->resurses as $kit) {
+                if ($kit->resurse->isStorable()) {
+                    $fs = new FactoryStorage([
+                        'factory_id' => $this->id,
+                        'resurse_id' => $kit->resurse_id,
+                        'count' => 0
+                    ]);
+                    $fs->save();
+                }
+            }
+        }
+        return parent::afterSave($insert, $changedAttributes);
+    }
 
 }

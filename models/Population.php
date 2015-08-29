@@ -259,13 +259,8 @@ class Population extends NalogPayer {
     {
 
         $new = new self;
-        $new->class = $this->class;
-        $new->nation = $this->nation;
-        $new->ideology = $this->ideology;
-        $new->religion = $this->religion;
-        $new->sex = $this->sex;
-        $new->age = $this->age;
-        $new->region_id = $this->region_id;
+        $new->attributes = $this->attributes;
+        $new->id = null;
         $new->count = $size;
         if ($new->save()) {
             $this->count -= $size;

@@ -61,6 +61,10 @@ class UpdateHourlyController extends Controller
             $time = microtime(true);
             $this->updatePopAnalogies();
             printf("Updated populations analogies: %f s.".PHP_EOL, microtime(true)-$time);
+
+            $time = microtime(true);
+            $this->updateFactoryProduction();
+            printf("Updated factory productions: %f s.".PHP_EOL, microtime(true)-$time);
         }
     }
 
@@ -258,14 +262,14 @@ class UpdateHourlyController extends Controller
             $query = new \yii\db\Query;
             $countAnalog = intval(@$query->addSelect(["SUM(count)"])
                   ->from([Population::tableName()])
-                  ->where(['class' => $pop->class, 'nation' => $pop->nation, 'ideology' => $pop->ideology, 'sex' => $pop->sex, 'age' => $pop->age, 'factory_id' => $pop->factory_id, 'region_id' => $pop->region_id])->column()[0]);
+                  ->where(['class' => $pop->class, 'nation' => $pop->nation, 'ideology' => $pop->ideology, 'religion' => $pop->religion, 'sex' => $pop->sex, 'age' => $pop->age, 'factory_id' => $pop->factory_id, 'region_id' => $pop->region_id])->column()[0]);
             
             if ($countAnalog > $pop->count) {
                 $obrabotannue[] = $pop->getUniqueKey();
                 
                 Population::deleteAll(
-                    'class = :class AND nation = :nation AND ideology = :ideology AND sex = :sex AND age = :age AND factory_id '.($pop->factory_id?'=':'IS').' :factory_id AND region_id = :region_id AND id <> :id',
-                    [ ':class' => $pop->class, ':nation' => $pop->nation, ':ideology' => $pop->ideology, ':sex' => $pop->sex, ':age' => $pop->age, ':factory_id' => $pop->factory_id, ':region_id' => $pop->region_id, ':id' => $pop->id]);
+                    'class = :class AND nation = :nation AND ideology = :ideology AND religion = :religion AND sex = :sex AND age = :age AND factory_id '.($pop->factory_id?'=':'IS').' :factory_id AND region_id = :region_id AND id <> :id',
+                    [ ':class' => $pop->class, ':nation' => $pop->nation, ':ideology' => $pop->ideology, ':religion' => $pop->religion, ':sex' => $pop->sex, ':age' => $pop->age, ':factory_id' => $pop->factory_id, ':region_id' => $pop->region_id, ':id' => $pop->id]);
                 
                 $pop->count = $countAnalog;
                 $pop->save();
@@ -297,7 +301,7 @@ class UpdateHourlyController extends Controller
                 }
             }
             if ($allLicencesExist) {
-                $factory->status = 1;
+                $factory->status = Factory::STATUS_ACTIVE;
                 $factory->save();
             }
         }
@@ -338,6 +342,17 @@ class UpdateHourlyController extends Controller
                     $building->save();
                     break;
                 }
+            }
+        }
+    }
+    
+    private function updateFactoryProduction()
+    {
+        $factories = Factory::find()->where(['status'=>Factory::STATUS_ACTIVE])->all();
+
+        foreach ($factories as $factory) {
+            foreach ($factory->type->import as $kit) {
+                
             }
         }
     }

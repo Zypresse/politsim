@@ -66,6 +66,20 @@ use app\components\MyHtmlHelper;
 <? } ?>
 </p>
 
+<p><strong>Склады предприятия:</strong>
+<? if (count($factory->storages)) { ?>
+<ul>
+    <? foreach ($factory->storages as $store): if ($store->resurse->isStorable()): ?>
+    <li>
+        <?=MyHtmlHelper::icon($store->resurse->code)?> <?=$store->resurse->name?> (<?=$store->count?> / <?=number_format($factory->storageSize($store->resurse_id),0,'',' ')?>)
+    </li>
+    <? endif; endforeach; ?>
+</ul>
+<? } else { ?>
+<br>Нет складов
+<? } ?>
+</p>
+
 <h3>Действия</h3>
 <p>
     <button class="btn btn-small btn-info" onclick="$('#salaries_manager').modal()">Зарплаты</button>

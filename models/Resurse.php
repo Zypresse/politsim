@@ -68,5 +68,10 @@ class Resurse extends MyModel
      * Нехранимые (электричество)
      */
     const LEVEL_NOTSTORED = 4;
+    
+    public function isStorable()
+    {
+        return $this->level !== static::LEVEL_NOTSTORED;
+    }
 
 }
