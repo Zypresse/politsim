@@ -22,14 +22,14 @@ use yii\helpers\Html;
     </thead>
     <tbody>
 <? if (count($user->stocks)) {
-    foreach ($user->stocks as $stock) { ?>
+    foreach ($user->stocks as $stock): if ($stock->holding): ?>
                 <tr>
-                    <td><a href="#" onclick="load_page('holding-info', {'id':<?= $stock->holding ?>})"><?= $stock->holding->name ?></a></td>
+                    <td><a href="#" onclick="load_page('holding-info', {'id':<?= $stock->holding_id ?>})"><?= $stock->holding->name ?></a></td>
                     <td><?= MyHtmlHelper::formateNumberword($stock->count, "акций", "акция", "акции") ?> (<?= round($stock->getPercents(), 2) ?>%)</td>
                     <td>≈ <?= number_format($stock->getCost(), 0, '', ' ') ?> <?= MyHtmlHelper::icon('money') ?></td>
                     <td><?= Html::a("Управление", "#", ['class' => 'btn btn-primary', 'onclick' => 'load_page("holding-info",{"id":' . $stock->holding_id . '})']) ?></td>
                 </tr>
-    <? }
+    <? endif; endforeach;
 } else { ?>
             <tr><td colspan="4">Не владеет акциями</td></tr>
         <? } ?>
