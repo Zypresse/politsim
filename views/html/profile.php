@@ -117,9 +117,9 @@ use app\components\MyHtmlHelper;
       <label class="control-label" for="#holding_id">Компания</label>
       <div class="controls">
           <select id="holding_id" >
-              <? foreach ($viewer->stocks as $stock) { ?>
+              <? foreach ($viewer->stocks as $stock): if ($stock->holding): ?>
               <option value="<?=$stock->holding_id?>"><?=$stock->holding->name?> (<?=number_format($stock->count,0,'',' ')?>)</option>
-              <? } ?>
+              <? endif; endforeach; ?>
           </select>
       </div>
       </div>
