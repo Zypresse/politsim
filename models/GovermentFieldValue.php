@@ -60,10 +60,18 @@ class GovermentFieldValue extends MyModel
     {
         return $this->hasOne('app\models\State', array('id' => 'state_id'));
     }
+    
+    /**
+     * Не синхронизировать после сохранения
+     * @var boolean false
+     */
+    public $noSync = false;
 
     public function afterSave($insert, $changedAttributes)
     {
-        $this->type->syncronize($this);
+        if (!$this->noSync) {
+            $this->type->syncronize($this);
+        }
 
         return parent::afterSave($insert, $changedAttributes);
     }
