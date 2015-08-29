@@ -1025,7 +1025,7 @@ class JsonController extends MyController
 
     public function actionCreateHolding($name,$capital)
     {
-        $capital = intval($capital);
+        $capital = floatval($capital);
         $user = $this->getUser();
         if ($user->region && $user->state_id) {
             $inHome = $user->region->state_id === $user->state_id;
@@ -1035,7 +1035,7 @@ class JsonController extends MyController
                 if ($capital < $mincap || ($maxcap>0 && $capital > $maxcap)) {
                     return $this->_r("Invalid capitalisation");
                 }
-                $sum = $capital + $inHome?$user->region->state->register_holdings_cost:$user->region->state->register_holdings_noncitizens_cost;
+                $sum = $capital + ($inHome?$user->region->state->register_holdings_cost:$user->region->state->register_holdings_noncitizens_cost);
                 if ($user->money >= $sum) {
                     if (!(empty($name))) {
                         $holding = new Holding();

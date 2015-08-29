@@ -64,7 +64,7 @@ use yii\helpers\Html;
     </tbody>
 </table>
 <?php 
-    $inHomeland = ($user->region->state_id === $user->state_id);
+    $inHomeland = ($user->region && $user->region->state_id === $user->state_id);
 ?>
 <? if ($user->region && $user->region->state && $user->state_id) { ?>
     <? if ($inHomeland) : ?>
