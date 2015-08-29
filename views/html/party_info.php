@@ -59,7 +59,7 @@
         }
     }
     
-    $isNeedRequestForSpeaker = $user->state->legislatureOrg && ($user->state->legislatureOrg->leader_dest === \app\models\Org::DEST_ORG_VOTE && is_null($user->state->legislatureOrg->leader->user) && $user->party->isParlamentarian() );
+    $isNeedRequestForSpeaker = $user->state && $user->state->legislatureOrg && ($user->state->legislatureOrg->leader_dest === \app\models\Org::DEST_ORG_VOTE && is_null($user->state->legislatureOrg->leader->user) && $user->party->isParlamentarian() );
     if ($isNeedRequestForSpeaker) {
         $req = \app\models\ElectOrgLeaderRequest::find()->where(['party_id'=>$user->party_id, 'org_id'=>$user->state->legislature])->one();
         if ($req) $isNeedRequestForSpeaker = FALSE;
