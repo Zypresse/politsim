@@ -70,7 +70,7 @@ class GovermentFieldValue extends MyModel
     public function afterSave($insert, $changedAttributes)
     {
         if (!$this->noSync) {
-            $this->type->syncronize($this);
+            $this->syncronize();
         }
 
         return parent::afterSave($insert, $changedAttributes);
@@ -78,7 +78,7 @@ class GovermentFieldValue extends MyModel
     
     public function syncronize()
     {
-        $this->type->syncronize($this);
+        $this->type->syncronize($this, $this->state);
     }
 
 }

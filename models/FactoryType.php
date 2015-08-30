@@ -92,6 +92,11 @@ class FactoryType extends MyModel
     {
         return $this->hasMany('app\models\FactoryTypeWorker', array('type_id' => 'id'));
     }    
+
+    public function getSumNeedWorkers()
+    {
+        return intval($this->hasMany('app\models\FactoryTypeWorker', array('type_id' => 'id'))->sum("count"));
+    }    
     
     public function getLicenses()
     {
@@ -134,15 +139,11 @@ class FactoryType extends MyModel
      */
     const LEVEL_STORE = 6;
     
-    function getSumNeedWorkers()
-    {
-        $sum = 0;
-        foreach ($this->workers as $worker) {
-            $sum += $worker->count;
-        }
-        return $sum;
-    }
-
+    /**
+     * Электростанции
+     */
+    const LEVEL_POWERPLANT = 7;
+    
     /**
      * Фабрика для создания фабрики текущего типа
      * @param Region $region

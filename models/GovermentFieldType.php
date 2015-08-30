@@ -188,110 +188,113 @@ class GovermentFieldType extends MyModel {
      * Установление реальных настроек по этому пункту конституции
      * @param GovermentFieldValue $value
      */
-    public function syncronize($value) {
+    public function syncronize($value, $state = null) {
+        if (is_null($state)) {
+            $state = $value->state;
+        }
         switch ($this->id) {
             case static::TYPE_ALLOW_REGISTER_PARTIES:
                 $value->value = ($value->value) ? 1 : 0;
-                $value->state->allow_register_parties = $value->value;
-                $value->state->save();
+                $state->allow_register_parties = $value->value;
+                $state->save();
                 break;
             case static::TYPE_EXECUTIVE_DEST:
-                if ($value->state->executiveOrg) {
-                    $value->state->executiveOrg->dest = $value->value;
-                    $value->state->executiveOrg->save();
+                if ($state->executiveOrg) {
+                    $state->executiveOrg->dest = $value->value;
+                    $state->executiveOrg->save();
                 }
                 break;
             case static::TYPE_LEGISLATURE_DEST:
-                if ($value->state->legislatureOrg) {
-                    $value->state->legislatureOrg->dest = $value->value;
-                    $value->state->legislatureOrg->save();
+                if ($state->legislatureOrg) {
+                    $state->legislatureOrg->dest = $value->value;
+                    $state->legislatureOrg->save();
                 }
                 break;
             case static::TYPE_EXECUTIVE_LEADER_DEST: // 
-                if ($value->state->executiveOrg) {
-                    $value->state->executiveOrg->leader_dest = $value->value;
-                    $value->state->executiveOrg->save();
+                if ($state->executiveOrg) {
+                    $state->executiveOrg->leader_dest = $value->value;
+                    $state->executiveOrg->save();
                 }
                 break;
             case static::TYPE_LEGISLATURE_LEADER_DEST: // 
-                if ($value->state->legislatureOrg) {
-                    $value->state->legislatureOrg->leader_dest = $value->value;
-                    $value->state->legislatureOrg->save();
+                if ($state->legislatureOrg) {
+                    $state->legislatureOrg->leader_dest = $value->value;
+                    $state->legislatureOrg->save();
                 }
                 break;
             case static::TYPE_EXECUTIVE_ELECT_PERIOD: // 
-                if ($value->state->executiveOrg) {
+                if ($state->executiveOrg) {
                     if ($value->value > 1) {
-                        $value->state->executiveOrg->elect_period = intval($value->value);
+                        $state->executiveOrg->elect_period = intval($value->value);
                     } else {
                         $value->value = '-1';
-                        $value->state->executiveOrg->elect_period = -1;
+                        $state->executiveOrg->elect_period = -1;
                     }
-                    $value->state->executiveOrg->save();  
+                    $state->executiveOrg->save();  
                 }                  
                 break;
             case static::TYPE_LEGISLATURE_ELECT_PERIOD: // 
-                if ($value->state->legislatureOrg) {
+                if ($state->legislatureOrg) {
                     if ($value->value > 1) {
-                        $value->state->legislatureOrg->elect_period = intval($value->value);
+                        $state->legislatureOrg->elect_period = intval($value->value);
                     } else {
                         $value->value = '-1';
-                        $value->state->legislatureOrg->elect_period = -1;
+                        $state->legislatureOrg->elect_period = -1;
                     }
-                    $value->state->legislatureOrg->save();
+                    $state->legislatureOrg->save();
                 }
                 break;
             case static::TYPE_LEADER_CAN_MAKE_DICTATOR_BILLS: // 
-                if ($value->state->executiveOrg) {
+                if ($state->executiveOrg) {
                     $value->value = ($value->value) ? 1 : 0;
-                    $value->state->executiveOrg->leader_can_make_dicktator_bills = $value->value;
-                    $value->state->executiveOrg->save();
+                    $state->executiveOrg->leader_can_make_dicktator_bills = $value->value;
+                    $state->executiveOrg->save();
                 }
                 break;
             case static::TYPE_LEADER_CAN_CREATE_BILLS: // Разрешение лидеру страны предлагать законопроекты
-                if ($value->state->executiveOrg) {
+                if ($state->executiveOrg) {
                     $value->value = ($value->value) ? 1 : 0;
-                    $value->state->executiveOrg->leader_can_create_bills = $value->value;
-                    $value->state->executiveOrg->save();
+                    $state->executiveOrg->leader_can_create_bills = $value->value;
+                    $state->executiveOrg->save();
                 }
                 break;
             case static::TYPE_LEADER_CAN_VOTE_FOR_BILLS: // Разрешение лидеру страны голосовать по законопроектам
-                if ($value->state->executiveOrg) {
+                if ($state->executiveOrg) {
                     $value->value = ($value->value) ? 1 : 0;
-                    $value->state->executiveOrg->leader_can_vote_for_bills = $value->value;
-                    $value->state->executiveOrg->save();
+                    $state->executiveOrg->leader_can_vote_for_bills = $value->value;
+                    $state->executiveOrg->save();
                 }
                 break;
             case static::TYPE_LEADER_CAN_VETO_BILLS: // Разрешение лидеру страны иметь право вето по законопроектам
-                if ($value->state->executiveOrg) {
+                if ($state->executiveOrg) {
                     $value->value = ($value->value) ? 1 : 0;
-                    $value->state->executiveOrg->leader_can_veto_bills = $value->value;
-                    $value->state->executiveOrg->save();
+                    $state->executiveOrg->leader_can_veto_bills = $value->value;
+                    $state->executiveOrg->save();
                 }
                 break;
             case static::TYPE_LEGISLATURE_CAN_CREATE_BILLS: // Разрешение членам законодательной власти предлагать законопроекты
-                if ($value->state->legislatureOrg) {
+                if ($state->legislatureOrg) {
                     $value->value = ($value->value) ? 1 : 0;
-                    $value->state->legislatureOrg->can_create_bills = $value->value;
-                    $value->state->legislatureOrg->save();
+                    $state->legislatureOrg->can_create_bills = $value->value;
+                    $state->legislatureOrg->save();
                 }
                 break;
             case static::TYPE_LEGISLATURE_CAN_VOTE_FOR_BILLS: // Разрешение членам законодательной власти голосовать по законопроектам
-                if ($value->state->legislatureOrg) {
+                if ($state->legislatureOrg) {
                     $value->value = ($value->value) ? 1 : 0;
-                    $value->state->legislatureOrg->can_vote_for_bills = $value->value;
-                    $value->state->legislatureOrg->save();
+                    $state->legislatureOrg->can_vote_for_bills = $value->value;
+                    $state->legislatureOrg->save();
                 }
                 break;
             case static::TYPE_LEADER_CAN_DROP_LEGISLATURE: // Право лидера страны на роспуск парламента
                 $value->value = ($value->value) ? 1 : 0;
-                $value->state->leader_can_drop_legislature = $value->value;
-                $value->state->save();
+                $state->leader_can_drop_legislature = $value->value;
+                $state->save();
                 break;
             case static::TYPE_ALLOW_REGISTER_HOLDINGS: // Право создавать холдинги
                 $value->value = ($value->value) ? 1 : 0;
-                $value->state->allow_register_holdings = $value->value;
-                $value->state->save();
+                $state->allow_register_holdings = $value->value;
+                $state->save();
                 break;
             case static::TYPE_MAX_PERCENT_FOR_NONCITIZENS_IN_GOS: // Максимальный процент акций, который могут иметь иностранцы в гос. компаниях
                 $value->value = intval($value->value);
@@ -302,8 +305,8 @@ class GovermentFieldType extends MyModel {
                     $value->value = 100;
                 }
 
-                $value->state->mpfnig = $value->value;
-                $value->state->save();
+                $state->mpfnig = $value->value;
+                $state->save();
                 break;
             case static::TYPE_MAX_PERCENT_FOR_NONCITIZENS_IN_PRIVATE: // Максимальный процент акций, который могут иметь иностранцы в частных компаниях
                 $value->value = intval($value->value);
@@ -314,58 +317,58 @@ class GovermentFieldType extends MyModel {
                     $value->value = 100;
                 }
 
-                $value->state->mpfnih = $value->value;
-                $value->state->save();
+                $state->mpfnih = $value->value;
+                $state->save();
                 break;
 
             case static::TYPE_LEGISLATURE_CAN_DROP_STATELEADER: // Право парламента на отправку в отставку лидера государства
-                if ($value->state->legislatureOrg) {
+                if ($state->legislatureOrg) {
                     $value->value = ($value->value) ? 1 : 0;
-                    $value->state->legislatureOrg->can_drop_stateleader = $value->value;
-                    $value->state->save();
+                    $state->legislatureOrg->can_drop_stateleader = $value->value;
+                    $state->save();
                 }
                 break;
 
             case static::TYPE_ALLOW_REGISTER_HOLDINGS_NONCITIZENS:
                 $value->value = ($value->value) ? 1 : 0;
-                $value->state->allow_register_holdings_noncitizens = $value->value;
-                $value->state->save();
+                $state->allow_register_holdings_noncitizens = $value->value;
+                $state->save();
                 break;
 
             case static::TYPE_REGISTER_HOLDINGS_COST:
                 $value->value = floatval($value->value) > 0 ? floatval($value->value) : 0;
-                $value->state->register_holdings_cost = $value->value;
-                $value->state->save();
+                $state->register_holdings_cost = $value->value;
+                $state->save();
                 break;
 
             case static::TYPE_REGISTER_HOLDINGS_NONCITIZENS_COST:
                 $value->value = floatval($value->value) > 0 ? floatval($value->value) : 0;
-                $value->state->register_holdings_noncitizens_cost = $value->value;
-                $value->state->save();
+                $state->register_holdings_noncitizens_cost = $value->value;
+                $state->save();
                 break;
             
             case static::TYPE_REGISTER_HOLDINGS_MINCAP:
                 $value->value = floatval($value->value) > 0 ? floatval($value->value) : 0;
-                $value->state->register_holdings_mincap = $value->value;
-                $value->state->save();
+                $state->register_holdings_mincap = $value->value;
+                $state->save();
                 break;
             
             case static::TYPE_REGISTER_HOLDINGS_NONCITIZENS_MINCAP:
                 $value->value = floatval($value->value) > 0 ? floatval($value->value) : 0;
-                $value->state->register_holdings_noncitizens_mincap = $value->value;
-                $value->state->save();
+                $state->register_holdings_noncitizens_mincap = $value->value;
+                $state->save();
                 break;
             
             case static::TYPE_REGISTER_HOLDINGS_MAXCAP:
                 $value->value = floatval($value->value) > 0 ? floatval($value->value) : -1;
-                $value->state->register_holdings_maxcap = $value->value;
-                $value->state->save();
+                $state->register_holdings_maxcap = $value->value;
+                $state->save();
                 break;
             
             case static::TYPE_REGISTER_HOLDINGS_NONCITIZENS_MAXCAP:
                 $value->value = floatval($value->value) > 0 ? floatval($value->value) : -1;
-                $value->state->register_holdings_noncitizens_maxcap = $value->value;
-                $value->state->save();
+                $state->register_holdings_noncitizens_maxcap = $value->value;
+                $state->save();
                 break;
         }
         

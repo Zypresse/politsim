@@ -13,6 +13,8 @@ use app\components\NalogPayer,
  * @property integer $state_id IS государства
  * @property string $name Название региона
  * @property string $city Название города
+ * @property string $name_default Название региона
+ * @property string $city_default Название города
  * @property string $b Через запятую — коды соседних регионов
  * @property double $lat Широта центра
  * @property double $lng Долгота центра
@@ -220,6 +222,11 @@ class Region extends NalogPayer
     {
         // Если изменилось государство
         if (!$insert && isset($changedAttributes["state_id"])) {
+            
+            $this->name = $this->name_default;
+            $this->city = $this->city_default;
+            $this->save();
+            
             /*
              * У каждого предприятия есть регион и страна (регион при этом может принадлежать другой стране).
              *  При смене владельца региона проходимся по всем его предприятиям и для каждого:

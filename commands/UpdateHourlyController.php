@@ -63,8 +63,12 @@ class UpdateHourlyController extends Controller
             printf("Updated populations analogies: %f s.".PHP_EOL, microtime(true)-$time);
 
             $time = microtime(true);
+            $this->updatePowerplantProduction();
+            printf("Updated powerplants production: %f s.".PHP_EOL, microtime(true)-$time);
+
+            $time = microtime(true);
             $this->updateFactoryProduction();
-            printf("Updated factory productions: %f s.".PHP_EOL, microtime(true)-$time);
+            printf("Updated factories production: %f s.".PHP_EOL, microtime(true)-$time);
         }
     }
 
@@ -346,6 +350,18 @@ class UpdateHourlyController extends Controller
         }
     }
     
+    /**
+     * Производство электричества
+     */
+    private function updatePowerplantProduction()
+    {
+        $powerplants = Factory::findPowerplants()->andWhere(['status'=>Factory::STATUS_ACTIVE])->all();
+        
+        foreach ($powerplants as $powerplant) {
+//            var_dump($powerplant->getWorkersEff());
+        }
+    }
+
     private function updateFactoryProduction()
     {
         $factories = Factory::find()->where(['status'=>Factory::STATUS_ACTIVE])->all();

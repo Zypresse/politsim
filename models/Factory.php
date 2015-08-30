@@ -3,7 +3,8 @@
 namespace app\models;
 
 use app\components\NalogPayer,
-    app\models\Unnp;
+    app\models\Unnp,
+    app\models\FactoryType;
 
 /**
  * Фабрика/завод/сх-предприятие. Таблица "factories".
@@ -143,6 +144,11 @@ class Factory extends NalogPayer
         return $this->hasMany('app\models\Population', array('factory_id' => 'id'));
     }
     
+    public function getWorkersCount()
+    {
+        return intval($this->hasMany('app\models\Population', array('factory_id' => 'id'))->sum("count"));
+    }
+    
     public function getSalaries()
     {
         return $this->hasMany('app\models\FactoryWorkersSalary', array('factory_id' => 'id'));
@@ -236,6 +242,34 @@ class Factory extends NalogPayer
             }
         }
         return parent::afterSave($insert, $changedAttributes);
+    }
+    
+    /**
+     * 
+     * @return \yii\db\ActiveQuery
+     */
+    public function findPowerplants()
+    {
+        $types = FactoryType::find()->select(['id'])->where(['level'=>FactoryType::LEVEL_POWERPLANT])->column();
+        return Factory::find()->where('type_id IN ('.implode(',',$types).')');
+    }
+    
+    /**
+     * Эффективность работы от числа работников
+     * @return double
+     */
+    public function getWorkersEff()
+    {
+        return \app\components\MyMathHelper::myHalfExpo($this->workersCount/($this->type->sumNeedWorkers*$this->size));
+    }
+    
+    /**
+     * Эффективность работы от региона
+     * @return double
+     */
+    public function getRegionEff()
+    {
+        return 1;
     }
 
 }
