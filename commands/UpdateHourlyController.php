@@ -358,18 +358,19 @@ class UpdateHourlyController extends Controller
         $powerplants = Factory::findPowerplants()->andWhere(['status'=>Factory::STATUS_ACTIVE])->all();
         
         foreach ($powerplants as $powerplant) {
-//            var_dump($powerplant->getWorkersEff());
+            $powerplant->work();
         }
     }
-
+    
+    /**
+     * Работа всех остальных предприятий
+     */
     private function updateFactoryProduction()
     {
-        $factories = Factory::find()->where(['status'=>Factory::STATUS_ACTIVE])->all();
+        $factories = Factory::findNoPowerplants()->andWhere(['status'=>Factory::STATUS_ACTIVE])->all();
 
         foreach ($factories as $factory) {
-            foreach ($factory->type->import as $kit) {
-                
-            }
+            $factory->work();
         }
     }
     

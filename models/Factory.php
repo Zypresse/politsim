@@ -201,17 +201,21 @@ class Factory extends NalogPayer
         }
     }
     
-    public function pushToStorage($resutse_id, $count) 
+    public function pushToStorage($resurse_id, $count) 
     {
         $store = FactoryStorage::findOrCreate([
             'factory_id' => $this->id,
-            'resurse_id' => $resutse_id
+            'resurse_id' => $resurse_id
         ], false, [
             'count' => 0
         ]);
-        $store->count += $count;
+        if ($store->count+$count <= $this->storageSize($resurse_id)) {
+            $store->count += $count;
         
-        return $store->save();
+            return $store->save();
+        } else {
+            return false;
+        }
     }
     
     public function delFromStorage($resutse_id, $count) 
@@ -222,9 +226,13 @@ class Factory extends NalogPayer
         ], false, [
             'count' => 0
         ]);
-        $store->count -= $count;
+        if ($store->count >= $count) {
+            $store->count -= $count;
         
-        return $store->save();
+            return $store->save();
+        } else {
+            return false;;
+        }
     }
 
     public function afterSave($insert, $changedAttributes)
@@ -255,6 +263,16 @@ class Factory extends NalogPayer
     }
     
     /**
+     * 
+     * @return \yii\db\ActiveQuery
+     */
+    public function findNoPowerplants()
+    {
+        $types = FactoryType::find()->select(['id'])->where(['level'=>FactoryType::LEVEL_POWERPLANT])->column();
+        return Factory::find()->where('type_id NOT IN ('.implode(',',$types).')');
+    }
+    
+    /**
      * Эффективность работы от числа работников
      * @return double
      */
@@ -270,6 +288,21 @@ class Factory extends NalogPayer
     public function getRegionEff()
     {
         return 1;
+    }
+    
+    public function work()
+    {
+        if ($this->status == static::STATUS_ACTIVE) {
+            // var_dump($this->getWorkersEff());
+            // тут проверка на наличие ресурсов для производства и их уничтожение
+            // Автозакупка электричества
+            
+            foreach ($this->type->export as $kit) {
+                $count = floor($kit->count * $this->size * $this->getWorkersEff() * $this->getRegionEff());
+                
+                $this->pushToStorage($kit->resurse_id, $count);
+            }
+        }
     }
 
 }
