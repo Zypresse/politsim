@@ -103,6 +103,7 @@ class User extends NalogPayer implements \yii\web\IdentityInterface
     {
         return [
             [['sex', 'last_vote', 'last_tweet', 'party_id', 'state_id', 'post_id', 'region_id', 'star', 'heart', 'chart_pie'], 'integer'],
+            [['party_id', 'state_id', 'post_id', 'region_id'], 'required', 'default' => 0],
             [['money'], 'number'],
             [['name', 'photo', 'photo_big'], 'string', 'max' => 255],
         ];
