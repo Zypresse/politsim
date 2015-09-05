@@ -46,8 +46,10 @@ class ElectionsController extends Controller {
         foreach ($orgs as $org) {
             if ($org->isLeaderElected() || $org->isElected()) {
                 foreach ($org->posts as $post) {
-                    if ($post->user)
-                        $post->unlink('user', $post->user);
+                    if ($post->user) {
+                        $post->user->post_id = 0;
+                        $post->user->save();
+                    }
                     if ($post->party_reserve) {
                         $post->party_reserve = 0;
                         $post->save();
