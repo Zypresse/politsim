@@ -25,6 +25,7 @@ class Unnp extends MyModel
     const TYPE_POST = 7;
     const TYPE_REGION = 8;
     const TYPE_STATE = 9;
+    const TYPE_LINE = 10;
 
     /**
      * @inheritdoc
@@ -59,6 +60,8 @@ class Unnp extends MyModel
                 return $this->hasOne('app\models\Post', ['id' => 'p_id']);
             case static::TYPE_REGION:
                 return $this->hasOne('app\models\Region', ['id' => 'p_id']);
+            case static::TYPE_LINE:
+                return $this->hasOne('app\models\Line', ['id' => 'p_id']);
         }
     }
 

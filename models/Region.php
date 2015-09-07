@@ -35,10 +35,10 @@ use app\components\NalogPayer,
  * @property double $wool Эффективность производства шерсти и кожи (0-1)
  * @property double $b_materials Эффективность добычи добываемых стройматериалов (0-1)
  * 
- * @property \app\models\State $state Государство
- * @property \app\models\Population[] $populationGroups Группы населения
- * @property \app\models\Population[] $populationGroupsWithoutFactory Группы населения не работающие на фабриках
- * @property \app\models\CoreCountry[] $cores "Щитки"
+ * @property State $state Государство
+ * @property Population[] $populationGroups Группы населения
+ * @property Population[] $populationGroupsWithoutFactory Группы населения не работающие на фабриках
+ * @property CoreCountry[] $cores "Щитки"
  * @property Holding[] $holdings Компании
  * @property Factory[] $factories Фабрики
  * @property Vacansy[] $vacansies Вакансии
@@ -161,6 +161,29 @@ class Region extends NalogPayer
         }
 
         return $b;
+    }
+
+    /**
+     * Список пограничных регионов
+     * @return Region[]
+     */
+    public function getBordersArray()
+    {
+        $this->b = explode(",", $this->b);
+        if ($this->b) {
+            return Region::findBySql('SELECT * FROM '.$this->tableName().' WHERE code IN (\'' . implode("','", $this->b) . '\') ORDER BY state_id')->all();
+        } else {
+            return [];
+        }
+    }
+    
+    /**
+     * 
+     * @param Region $to
+     */
+    public function calcDist($to)
+    {
+        return sqrt(pow(123*($to->lat - $this->lat), 2)+pow(86*($to->lng - $this->lng), 2));
     }
 
     public function getState()

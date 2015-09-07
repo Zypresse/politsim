@@ -545,5 +545,21 @@ class ModalController extends MyController
             return $this->_r("Invalid govement field type ID");
         }
     }
+    
+    public function actionBuildLineVariants($resurse_id,$region1_id)
+    {
+        $regionBase = Region::findByPk($region1_id);
+        if ($regionBase) {
+            foreach ($regionBase->getBordersArray() as $i => $region) {
+                ?>
+                <? if ($i == 0 || $regions[$i - 1]->state_id != $region->state_id) { ?>
+                    <?= ($i) ? '</optgroup>' : '' ?><optgroup label="<?= ($region->state) ? $region->state->name : 'Ничейные регионы' ?>">
+                <? } ?>
+                        <option value="<?= $region->id ?>" ><?= $region->name ?> (<?=number_format($region->calcDist($regionBase),2,'.',' ')?> км.)</option>
+            <? }
+        } else {
+            return $this->_r("Invalid region ID");
+        }
+    }
 
 }

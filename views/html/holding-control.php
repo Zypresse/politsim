@@ -182,7 +182,8 @@ $factoryCategories = FactoryCategory::find()->all();
             Управление недвижимостью <span class="caret"></span>
         </button>
         <ul class="dropdown-menu">
-            <li><a href="#" onclick="$('#new_factory_modal').modal();" >Построить новый обьект</a></li>
+            <li><a href="#" onclick="$('#new_factory_modal').modal();" >Построить новое предприятие</a></li>
+            <li><a href="#" onclick="$('#new_line_modal').modal();recalc_build_line_variants();" >Построить новый объект инфраструктуры</a></li>
             <li><a href="#" onclick="$('#set_manager_modal').modal();" >Назначить управляющего</a></li>
             <li><a href="#" onclick="$('#rename_factory_modal').modal();" >Переименовать обьект</a></li>
         </ul>
@@ -459,7 +460,68 @@ foreach ($regions as $i => $region) {
     </div>
 </div>
 
+<div style="display:none;" class="modal" id="new_line_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabelnew_line_modal" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3>Строительство</h3>
+    </div>
+    <div id="new_line_modal_body" class="modal-body">
+
+        <div class="control-group" >
+
+            <label class="control-label" for="#line_new_resurse_id">Тип</label>
+            <div class="controls">
+                <select id="line_new_resurse_id">
+                    <option value="1">Нефтепровод</option>
+                    <option value="2">Газопровод</option>
+                    <option value="16">ЛЭП</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="control-group" >
+
+            <label class="control-label" for="#line_new_region1">Откуда</label>
+            <div class="controls">
+                <select id="line_new_region1">
+<?
+foreach ($regions as $i => $region) {
+    ?>
+    <? if ($i == 0 || $regions[$i - 1]->state_id != $region->state_id) { ?>
+        <?= ($i) ? '</optgroup>' : '' ?><optgroup label="<?= ($region->state) ? $region->state->name : 'Ничейные регионы' ?>">
+    <? } ?>
+                            <option value="<?= $region->id ?>" <?= ($region->id == $holding->region_id) ? "selected='selected'" : '' ?>><?= $region->name ?></option>
+<? } ?>
+                </select>
+            </div>
+        </div>
+
+        <div class="control-group" >
+
+            <label class="control-label" for="#line_new_region2">Куда</label>
+            <div class="controls">
+                <select id="line_new_region2" disabled="disabled" >
+                    <option>...</option>
+                </select>
+            </div>
+        </div>
+
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" id="build_fabric_page2" >Начать строительство</button>
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+    </div>
+</div>
+
 <script>
+    function recalc_build_line_variants() {
+        get_html('build-line-variants',{'resurse_id':$('#line_new_resurse_id').val(),'region1_id':$('#line_new_region1').val()},function(html){
+            $('#line_new_region2').html(html);
+            $('#line_new_region2').removeAttr("disabled");
+        })
+    }
+    
     function rename_holding(id) {
         if ($('#holding_new_name').val()) {
             json_request('new-holding-decision', {'holding_id': id, 'type': 1, 'new_name': $('#holding_new_name').val()});
@@ -553,5 +615,7 @@ foreach ($regions as $i => $region) {
                 'holding_id':<?= $holding->id ?>
             }, 'new_factory_modal', 'new_factory_modal_body');
         });
+        
+        $('#line_new_region1').change(recalc_build_line_variants);
     });
 </script>
