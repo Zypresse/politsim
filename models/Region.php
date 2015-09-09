@@ -150,6 +150,7 @@ class Region extends NalogPayer
      * Список пограничных регионов
      * @return Region[]
      */
+    /** @TODO wtf delete this shit */
     public function getBorders()
     {
         $b = [];
@@ -163,27 +164,32 @@ class Region extends NalogPayer
         return $b;
     }
 
+    private $_bordersArray = null;
     /**
      * Список пограничных регионов
      * @return Region[]
      */
     public function getBordersArray()
     {
-        $this->b = explode(",", $this->b);
-        if ($this->b) {
-            return Region::findBySql('SELECT * FROM '.$this->tableName().' WHERE code IN (\'' . implode("','", $this->b) . '\') ORDER BY state_id')->all();
-        } else {
-            return [];
+        if (is_null($this->_bordersArray)) {
+            $this->b = explode(",", $this->b);
+            if ($this->b) {
+                $this->_bordersArray = Region::findBySql('SELECT * FROM '.$this->tableName().' WHERE code IN (\'' . implode("','", $this->b) . '\') ORDER BY state_id')->all();
+            } else {
+                $this->_bordersArray = [];
+            }
         }
+        return $this->_bordersArray;
     }
     
     /**
-     * 
+     * Дистанция от этого региона до переданного в км.
      * @param Region $to
      */
     public function calcDist($to)
     {
-        return sqrt(pow(123*($to->lat - $this->lat), 2)+pow(86*($to->lng - $this->lng), 2));
+        // магические константы для говнокарты
+        return \sqrt(\pow(123*($to->lat - $this->lat), 2)+\pow(86*($to->lng - $this->lng), 2));
     }
 
     public function getState()
