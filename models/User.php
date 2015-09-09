@@ -72,9 +72,9 @@ class User extends NalogPayer implements \yii\web\IdentityInterface
         return $authKey == $this->authKey;
     }
 
-    const SEX_UNDEFINED = '0';
-    const SEX_FEMALE = '1';
-    const SEX_MALE = '2';
+    const SEX_UNDEFINED = 0;
+    const SEX_FEMALE = 1;
+    const SEX_MALE = 2;
     
     public static function stringGenderToSex($gender)
     {

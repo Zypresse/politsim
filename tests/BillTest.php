@@ -19,28 +19,79 @@ class BillTest extends PHPUnit_Framework_TestCase
         
     }
     
-    public function testCreateAndDelete()
+
+    public function testCreateAndAccept()
     {
-        $bill = new app\models\Bill;
-        $this->assertInstanceOf("app\models\Bill", $bill);
+        $state = app\models\State::find()->one();
         
-        $bill->creator = 1;
-        $bill->bill_type = 1;
-        $bill->state_id = 137;
-        $bill->created = time();
-        $bill->vote_ended = time()+24*60*60;
+        $new_name = uniqid();
         
+        $bill = new app\models\bills\Bill([
+            'creator' => 0,
+            'prototype_id' => 1,
+            'state_id' => $state->id,
+            'created' => time(),
+            'vote_ended' => time(),
+            'data' => json_encode(['new_name' => $new_name, 'new_short_name' => strtoupper(substr(uniqid(),0,3))])
+        ]);
+                
         $this->assertTrue($bill->save());        
-        $this->assertGreaterThan(1, $bill->id);
+        $this->assertGreaterThan(0, $bill->id);
         
-        $bill2 = app\models\Bill::findByPk($bill->id);
-        $this->assertInstanceOf("app\models\Bill", $bill2);
-        $this->assertEquals($bill2->id, $bill->id);
-        $this->assertEquals($bill2->state_id, $bill->state_id);
+        $bill2 = app\models\bills\Bill::findByPk($bill->id);
+        $this->assertTrue($bill2->equals($bill));
         
-        $bill->delete();
+        $this->assertTrue($bill->accept());
         
-        $bill3 = app\models\Bill::findByPk($bill->id);
-        $this->assertNull($bill3);
+        $state = app\models\State::findByPk($state->id);
+        
+        $this->assertEquals($state->name,$new_name);
+        
+        $region1 = \app\models\Region::findByPk(1);
+        $region2 = \app\models\Region::findByPk(10);
+        $region1->state_id = $state->id;
+        $region2->state_id = $state->id;
+        $region1->save();
+        $region2->save();
+        
+        if ($state->capital == $region1->id) {
+            $regId = $region2->id;
+        } else {
+            $regId = $region1->id;
+        }
+        
+        $bill = new app\models\bills\Bill([
+            'creator' => 0,
+            'prototype_id' => 2,
+            'state_id' => $state->id,
+            'created' => time(),
+            'vote_ended' => time(),
+            'data' => json_encode(['new_capital' => $regId])
+        ]);
+        
+        $this->assertTrue($bill->accept());
+        
+        $state = app\models\State::findByPk($state->id);
+        
+        $this->assertEquals($state->capital,$regId);
+        
+        $new_name = uniqid();
+        
+        $bill = new app\models\bills\Bill([
+            'creator' => 0,
+            'prototype_id' => 3,
+            'state_id' => $state->id,
+            'created' => time(),
+            'vote_ended' => time(),
+            'data' => json_encode(['region_id' => $region1->id, 'new_name' => $new_name])
+        ]);
+        
+        $this->assertTrue($bill->accept());
+        
+        $region1 = \app\models\Region::findByPk($region1->id);
+        
+        $this->assertEquals($region1->name,$new_name);
+        
     }
+    
 }

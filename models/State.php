@@ -14,7 +14,7 @@ use app\components\NalogPayer,
  * @property string $name Название
  * @property string $short_name Короткое название (2-3 буквы)
  * @property string $flag Ссылка на флаг
- * @property string $capital Код региона-столицы
+ * @property integer $capital ID региона-столицы
  * @property string $color Цвет страны на карте (с #)
  * @property integer $legislature ID организации законодательной власти
  * @property integer $executive ID организации исполнительной власти
@@ -78,12 +78,12 @@ class State extends NalogPayer
     {
         return [
             [['name', 'short_name', 'flag', 'capital'], 'required'],
-            [['legislature', 'executive', 'state_structure', 'goverment_form', 'population', 'sum_star', 'allow_register_parties', 'leader_can_drop_legislature', 'allow_register_holdings', 'allow_register_holdings_noncitizens', 'register_holdings_mincap', 'register_holdings_noncitizens_mincap', 'register_holdings_maxcap', 'register_holdings_noncitizens_maxcap', 'register_parties_cost', 'core_id', 'mpfnig', 'mpfnih'], 'integer'],
+            [['capital', 'legislature', 'executive', 'state_structure', 'goverment_form', 'population', 'sum_star', 'allow_register_parties', 'leader_can_drop_legislature', 'allow_register_holdings', 'allow_register_holdings_noncitizens', 'register_holdings_mincap', 'register_holdings_noncitizens_mincap', 'register_holdings_maxcap', 'register_holdings_noncitizens_maxcap', 'register_parties_cost', 'core_id', 'mpfnig', 'mpfnih'], 'integer'],
             [['register_holdings_cost', 'register_holdings_noncitizens_cost'], 'number'],
             [['name'], 'string', 'max' => 100],
             [['short_name'], 'string', 'max' => 4],
             [['flag'], 'string', 'max' => 1000],
-            [['capital', 'color'], 'string', 'max' => 7]
+            [['color'], 'string', 'max' => 7]
         ];
     }
 
@@ -149,7 +149,7 @@ class State extends NalogPayer
 
     public function getCapitalRegion()
     {
-        return $this->hasOne('app\models\Region', array('code' => 'capital'));
+        return $this->hasOne('app\models\Region', array('id' => 'capital'));
     }
 
     public function getRegions()

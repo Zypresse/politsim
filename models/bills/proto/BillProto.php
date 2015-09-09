@@ -1,26 +1,27 @@
 <?php
 
-namespace app\models;
+namespace app\models\bills\proto;
 
 use app\components\MyModel,
+    app\components\MyHtmlHelper,
     app\models\Org,
     app\models\State,
     app\models\GovermentFieldValue,
     app\models\Notification,
     app\models\StateLicense,
     app\models\CoreCountry,
-    app\components\MyHtmlHelper,
     app\models\constitution\ConstitutionFactory;
 
 /**
- * Тип законопроекта. Таблица "bill_types".
+ * Тип законопроекта. Таблица "bill_prototypes".
  *
  * @property integer $id
  * @property string $name
+ * @property string $class_name
  * @property integer $only_auto
  * @property integer $only_dictator
  */
-class BillType extends MyModel
+class BillProto extends MyModel
 {
 
     /**
@@ -28,7 +29,7 @@ class BillType extends MyModel
      */
     public static function tableName()
     {
-        return 'bill_types';
+        return 'bill_prototypes';
     }
 
     /**
@@ -37,9 +38,10 @@ class BillType extends MyModel
     public function rules()
     {
         return [
-            [['name', 'only_auto', 'only_dictator'], 'required'],
+            [['name', 'class_name', 'only_auto', 'only_dictator'], 'required'],
             [['only_auto', 'only_dictator'], 'integer'],
-            [['name'], 'string', 'max' => 1000]
+            [['name'], 'string', 'max' => 1000],
+            [['class_name'], 'string', 'max' => 100]
         ];
     }
 
@@ -51,6 +53,7 @@ class BillType extends MyModel
         return [
             'id'            => 'ID',
             'name'          => 'Name',
+            'class_name'          => 'Class Name',
             'only_auto'     => 'Only Auto',
             'only_dictator' => 'Only Dictator',
         ];
@@ -59,6 +62,19 @@ class BillType extends MyModel
     public function getFields()
     {
         return $this->hasMany('app\models\BillTypeField', array('bill_id' => 'id'));
+    }
+    
+    public static function findByPk($id)
+    {
+        $proto = parent::findByPk($id);
+        if (is_null($proto)) {
+            return null;
+        } else {
+            $class_name = 'app\\models\\bills\\proto\\'.$proto->class_name;
+            $r = new $class_name;
+            $r->attributes = $proto->attributes;
+            return $r;
+        }
     }
 
     /**
@@ -137,6 +153,26 @@ class BillType extends MyModel
      * @return boolean
      */
     public function accept($bill)
+    {
+        
+        $bill->accepted = time();
+        $bill->save();
+
+        if ($bill->creatorUser) {
+            Notification::send($bill->creatorUser->id, "Предложенный вами законопроект, предлагающий «" . $this->name . "» одобрен и вступил в силу");
+        }
+        
+        foreach ($bill->votes as $vote) {
+            $vote->delete();
+        }
+        
+        foreach ($bill->state->govermentFields as $article) {
+            $article->syncronize();
+        }
+
+        return true;
+    }
+/*
     {
         if (is_null($bill->state)) {
             return $bill->delete();
@@ -290,5 +326,5 @@ class BillType extends MyModel
 
         return true;
     }
-
+*/
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models;
+namespace app\models\bills\proto;
 
 use app\components\MyModel;
 

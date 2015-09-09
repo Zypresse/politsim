@@ -111,7 +111,7 @@ class Auth extends MyModel
             case 'vkapp':
                 $user = new User([
                     'name' => $attributes['first_name'] . ' ' . $attributes['last_name'],
-                    'sex' => (string)$attributes['sex'],
+                    'sex' => intval($attributes['sex']),
                     'photo' => $attributes['photo_50'],
                     'photo_big' => (isset($attributes['photo_400_orig'])) ? $attributes['photo_400_orig'] : $attributes['photo_big'],
                     'money' => 100000                    

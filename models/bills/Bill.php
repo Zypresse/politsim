@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models;
+namespace app\models\bills;
 
 use app\components\MyModel;
 
@@ -8,18 +8,19 @@ use app\components\MyModel;
  * Законопроект. Таблица "bills".
  *
  * @property integer $id
- * @property integer $bill_type
+ * @property integer $prototype_id
  * @property integer $creator
  * @property integer $created
  * @property integer $vote_ended
  * @property integer $accepted
  * @property integer $dicktator
  * @property integer $state_id
+ * @property string $data
  * 
- * @property BillVote[] $votes Голоса
- * @property BillType $type Тип законопроекта
- * @property State $state Государство
- * @property User $user Автор законопроекта
+ * @property \app\models\BillVote[] $votes Голоса
+ * @property proto\BillProto $proto Тип законопроекта
+ * @property \app\models\State $state Государство
+ * @property \app\models\User $user Автор законопроекта
  */
 class Bill extends MyModel
 {
@@ -38,8 +39,8 @@ class Bill extends MyModel
     public function rules()
     {
         return [
-            [['bill_type', 'creator', 'created', 'vote_ended'], 'required'],
-            [['bill_type', 'creator', 'created', 'vote_ended', 'accepted', 'dicktator', 'state_id'], 'integer'],
+            [['prototype_id', 'creator', 'created', 'vote_ended'], 'required'],
+            [['prototype_id', 'creator', 'created', 'vote_ended', 'accepted', 'dicktator', 'state_id'], 'integer'],
             [['data'], 'string']
         ];
     }
@@ -51,7 +52,7 @@ class Bill extends MyModel
     {
         return [
             'id'         => 'ID',
-            'bill_type'  => 'Bill Type',
+            'prototype_id'  => 'Bill Type',
             'creator'    => 'Creator',
             'created'    => 'Created',
             'vote_ended' => 'Vote Ended',
@@ -64,12 +65,12 @@ class Bill extends MyModel
 
     public function getVotes()
     {
-        return $this->hasMany('app\models\BillVote', array('bill_id' => 'id'));
+        return $this->hasMany('app\models\bills\BillVote', array('bill_id' => 'id'));
     }
 
-    public function getType()
+    public function getProto()
     {
-        return $this->hasOne('app\models\BillType', array('id' => 'bill_type'));
+        return proto\BillProto::findByPk($this->prototype_id);
     }
 
     public function getState()
@@ -88,7 +89,7 @@ class Bill extends MyModel
      */
     public function accept()
     {
-        return $this->type->accept($this);
+        return $this->proto->accept($this);
     }
 
     /**
