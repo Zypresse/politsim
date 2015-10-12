@@ -57,14 +57,16 @@ abstract class MyModel extends ActiveRecord
      * @param array $paramsToCreate
      * @return \self
      */
-    public static function findOrCreate($params, $save = false, $paramsToCreate = [])
+    public static function findOrCreate($params, $save = false, $paramsToCreate = [], $paramsToLoad = [])
     {
         $m = static::find()->where($params)->one();
         if (is_null($m)) {
             $m = new static(array_merge($params,$paramsToCreate));
-            if ($save) {
-                $m->save();
-            }
+        } else {
+            $m->load($paramsToLoad, '');
+        }
+        if ($save) {
+            $m->save();
         }
         
         return $m;

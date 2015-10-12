@@ -40,7 +40,7 @@ use app\components\NalogPayer,
  * @property Population[] $populationGroupsWithoutFactory Группы населения не работающие на фабриках
  * @property CoreCountry[] $cores "Щитки"
  * @property Holding[] $holdings Компании
- * @property Factory[] $factories Фабрики
+ * @property factories\Factory[] $factories Фабрики
  * @property Vacansy[] $vacansies Вакансии
  * @property Vacansy[] $vacansiesWithSalaryAndCount Актуальнаые вакансии
  * @property Vacansy[] $vacansiesWithSalary Потенцальные вакансии
@@ -53,9 +53,9 @@ class Region extends NalogPayer
         return Unnp::TYPE_REGION;
     }
 
-    public function isGoverment()
+    public function isGoverment($stateId)
     {
-        return true;
+        return $this->state_id === $stateId;
     }
     
     /**
@@ -214,7 +214,7 @@ class Region extends NalogPayer
 
     public function getFactories()
     {
-        return $this->hasMany('app\models\Factory', array('region_id' => 'id'));
+        return $this->hasMany('app\models\factories\Factory', array('region_id' => 'id'));
     }
 
     public function getVacansies()
@@ -238,7 +238,7 @@ class Region extends NalogPayer
      */
     public function isCapital()
     {
-        return ($this->state && $this->state->capital === $this->code);
+        return ($this->state && $this->state->capital === $this->id);
     }
 
     public function getCores()

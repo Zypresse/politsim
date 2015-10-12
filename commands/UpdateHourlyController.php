@@ -2,12 +2,15 @@
 
 namespace app\commands;
 
-use yii\console\Controller,
+use Yii,
+    yii\db\Query,
+    yii\console\Controller,
     app\models\Region,
     app\models\State,
+    app\models\CoreCountryState,
     app\models\Party,        
     app\models\Holding,
-    app\models\Factory,
+    app\models\factories\Factory,
     app\models\Population;
 
 /**
@@ -95,9 +98,28 @@ class UpdateHourlyController extends Controller
         $states = State::find()->with('regions')->all();
         foreach ($states as $state) {
             $state->population = 0;
+            $cores = [];
             foreach ($state->regions as $region) {
                 $state->population += $region->population;
+                foreach ($region->cores as $core) {
+                    if (isset($cores[$core->id])) {
+                        $cores[$core->id]['count']++;
+                    } else {
+                        $cores[$core->id] = [
+                            'all' => intval($core->getRegions()->count()),
+                            'count' => 1
+                        ];
+                    }
+                }
             }
+            foreach ($cores as $coreId => $info) {
+                $ar = ['percents' => $info['count']/$info['all']];
+                CoreCountryState::findOrCreate([
+                    'state_id' => $state->id,
+                    'core_id' => $coreId
+                ], true, $ar, $ar);
+            }
+            
             $state->sum_star = 0;
             foreach ($state->users as $user) {
                 $state->sum_star += $user->star;
@@ -161,7 +183,7 @@ class UpdateHourlyController extends Controller
             
             // стоимость зданий как стоимость их постройки
             foreach ($holding->factories as $factory) {
-                $capital += $factory->size * $factory->type->build_cost;
+                $capital += $factory->size * $factory->proto->build_cost;
             }
             
             $capital += $holding->balance;
@@ -191,7 +213,7 @@ class UpdateHourlyController extends Controller
             shuffle($unworkers);
             
             foreach ($vacansiesSumByPopClass as $popClassID => $countAll) {
-                $allreadyStudied = \Yii::$app->db->createCommand("SELECT sum(count) FROM ".Population::tableName()." WHERE class = {$popClassID} AND region_id = {$region->id}")->queryScalar();
+                $allreadyStudied = Yii::$app->db->createCommand("SELECT sum(count) FROM ".Population::tableName()." WHERE class = {$popClassID} AND region_id = {$region->id}")->queryScalar();
 //                echo $popClassID.": ".$allreadyStudied."/".$countAll.PHP_EOL;
                 if ($allreadyStudied >= $countAll) {
                     continue;
@@ -263,7 +285,7 @@ class UpdateHourlyController extends Controller
         
         foreach ($popGroups as $pop) {
         if (!(in_array($pop->getUniqueKey(), $obrabotannue))) {            
-            $query = new \yii\db\Query;
+            $query = new Query;
             $countAnalog = intval(@$query->addSelect(["SUM(count)"])
                   ->from([Population::tableName()])
                   ->where(['class' => $pop->class, 'nation' => $pop->nation, 'ideology' => $pop->ideology, 'religion' => $pop->religion, 'sex' => $pop->sex, 'age' => $pop->age, 'factory_id' => $pop->factory_id, 'region_id' => $pop->region_id])->column()[0]);
@@ -286,7 +308,7 @@ class UpdateHourlyController extends Controller
     {
         $factories = Factory::find()->where(['status'=>Factory::STATUS_ACTIVE])->all();
         foreach ($factories as $factory) {
-            foreach ($factory->type->licenses as $tLicense) {
+            foreach ($factory->proto->licenses as $tLicense) {
                 if (!$factory->holding->isHaveLicense($factory->region->state_id,$tLicense->id)) {
                     $factory->status = Factory::STATUS_HAVE_NOT_LICENSE;
                     $factory->save();
@@ -298,7 +320,7 @@ class UpdateHourlyController extends Controller
         $factories = Factory::find()->where(['status'=>Factory::STATUS_HAVE_NOT_LICENSE])->all();
         foreach ($factories as $factory) {
             $allLicencesExist = true;
-            foreach ($factory->type->licenses as $tLicense) {
+            foreach ($factory->proto->licenses as $tLicense) {
                 if (!$factory->holding->isHaveLicense($factory->region->state_id,$tLicense->id)) {
                     $allLicencesExist = false;
                     break;
@@ -316,7 +338,7 @@ class UpdateHourlyController extends Controller
     {
         $factories = Factory::find()->where(['status'=>Factory::STATUS_ACTIVE])->all();
         foreach ($factories as $building) {
-            foreach ($building->type->workers as $tWorker) {
+            foreach ($building->proto->workers as $tWorker) {
                 $count = 0;
                 foreach ($building->workers as $pop) {
                     if ($pop->class == $tWorker->pop_class_id) {
@@ -334,7 +356,7 @@ class UpdateHourlyController extends Controller
         // Проверка не набрали ли фабрики нужного числа рабочих
         $factories = Factory::find()->where(['status'=>Factory::STATUS_NOT_ENOUGHT_WORKERS])->all();
         foreach ($factories as $building) {
-            foreach ($building->type->workers as $tWorker) {
+            foreach ($building->proto->workers as $tWorker) {
                 $count = 0;
                 foreach ($building->workers as $pop) {
                     if ($pop->class == $tWorker->pop_class_id) {

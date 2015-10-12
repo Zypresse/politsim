@@ -86,11 +86,12 @@ class Stock extends MyModel
 
     /**
      * Принадлежит государству
+     * @param integer $stateId
      * @return boolean
      */
-    public function isGos()
+    public function isGos($stateId)
     {
-        return $this->master->isGoverment();
+        return $this->master->isGoverment($stateId);
     }
 
 }

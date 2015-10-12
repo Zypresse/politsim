@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\components\MyController,
+    app\components\MyHtmlHelper,
     yii\helpers\ArrayHelper,
     app\models\Region,
     app\models\Post,
@@ -11,16 +12,16 @@ use app\components\MyController,
     app\models\State,
     app\models\ElectRequest,
     app\models\ElectVote,
-    app\models\BillType,
-    app\models\BillTypeField,
-    app\models\GovermentFieldType,
-    app\models\GovermentFieldValue,
+    app\models\bills\proto\BillProto,
+    app\models\bills\proto\BillProtoField,
+    app\models\articles\proto\ArticleProto,
+    app\models\articles\Article,
     app\models\Population,
     app\models\Twitter,
     app\models\ElectResult,
-    app\models\HoldingLicenseType,
+    app\models\licenses\proto\LicenseProto,
     app\models\Holding,
-    app\models\FactoryCategory;
+    app\models\factories\proto\FactoryProtoCategory;
 
 class ModalController extends MyController
 {
@@ -37,7 +38,7 @@ class ModalController extends MyController
 
             $forms = [['id' => 4, 'name' => 'Диктатура'],['id' => 2, 'name' => 'Президентская республика'],['id' => 3, 'name' => 'Парламентская республика']];
 
-            return $this->render("create_state_dialog", ['region' => $region, 'forms' => $forms]);
+            return $this->render("create-state-dialog", ['region' => $region, 'forms' => $forms]);
         } else {
             return $this->_r("Invalid code");
         }
@@ -66,7 +67,7 @@ class ModalController extends MyController
 
     public function actionTweetAboutHuman()
     {
-        return $this->render("tweet_about_human");
+        return $this->render("tweet-about-human");
     }
 
     public function actionElectExitpolls($org_id, $leader = 0)
@@ -113,7 +114,7 @@ class ModalController extends MyController
                     $yavka_star = ($org->state->sum_star) ? $sum_star / $org->state->sum_star : 0;
                     $yavka      = $yavka_time * $yavka_star;
 
-                    return $this->render("elect_exitpolls", ['requests' => $requests, 'results' => $results, 'sum_a_r' => $sum_a_r, 'org' => $org, 'yavka' => $yavka, 'leader' => $leader]);
+                    return $this->render("elect-exitpolls", ['requests' => $requests, 'results' => $results, 'sum_a_r' => $sum_a_r, 'org' => $org, 'yavka' => $yavka, 'leader' => $leader]);
                 } else {
                     return $this->_r("No requests on elections");
                 }
@@ -129,86 +130,18 @@ class ModalController extends MyController
     {
         $id = intval($id);
         if ($id > 0) {
-            $bill_type = BillType::findByPk($id);
+            $bill_type = BillProto::findByPk($id);
             if (is_null($bill_type)) {
                 return $this->_r("Bill type not found");
             }
-            $fields    = BillTypeField::find()->where(['bill_id' => $id])->all();
+            $fields = BillProtoField::find()->where(['proto_id' => $id])->all();
 
             $user = $this->getUser();
             if (is_null($user->state)) {
                 return $this->_r("No citizenship");
             }
-
-            $additional_data = [];
             
             return $this->render("newbill/{$id}", ['bill_type' => $bill_type, 'user' => $user]);
-
-            
-            if (is_array($fields)) {
-                foreach ($fields as $field) {
-                    switch ($field->type) {
-                        case 'regions': // регионы исключая столицу
-                            $additional_data['regions']               = Region::find()->where("state_id = {$user->state_id} AND code <> '{$user->state->capital}'")->orderBy('name')->all();
-                            break;
-                        case 'cities':
-                            $additional_data['regions']               = Region::find()->where("state_id = {$user->state_id} AND code <> '{$user->state->capital}'")->orderBy('city')->all();
-                            break;
-                        case 'regions_all': // все регионы
-                            $additional_data['regions']               = Region::find()->where(["state_id" => $user->state_id])->orderBy('name')->all();
-                            break;
-                        case 'cities_all':
-                            $additional_data['regions']               = Region::find()->where(["state_id" => $user->state_id])->orderBy('city')->all();
-                            break;
-                        case 'goverment_field_types': // типы полей конституции
-                            $additional_data['goverment_field_types'] = GovermentFieldType::find()->where(['hide' => 0])->all();
-                            break;
-                        case 'legislature_types':
-                            $additional_data['legislature_types']     = [
-                                ['id' => 1, 'display_name' => 'Стандартный парламент (10 мест)']
-                            ];
-                            break;
-                        case 'elected_variants':
-                            $additional_data['elected_variants']      = [];
-                            if ($user->state->executiveOrg->isElected()) {
-                                $additional_data['elected_variants'][]    = ['key' => $user->state->executive . '_0', 'name' => 'Выборы в организацию «' . $user->state->executiveOrg->name . '»'];
-                            }
-                            if ($user->state->executiveOrg->isLeaderElected()) {
-                                $additional_data['elected_variants'][]    = ['key' => $user->state->executive . '_1', 'name' => 'Выборы лидера организации «' . $user->state->executiveOrg->name . '»'];
-                            }
-                            if ($user->state->legislatureOrg->isElected()) {
-                                $additional_data['elected_variants'][]    = ['key' => $user->state->legislature . '_0', 'name' => 'Выборы в организации «' . $user->state->legislatureOrg->name . '»'];
-                            }
-                            if ($user->state->legislatureOrg->isLeaderElected()) {
-                                $additional_data['elected_variants'][]    = ['key' => $user->state->legislature . '_1', 'name' => 'Выборы лидера организации «' . $user->state->legislatureOrg->name . '»'];
-                            }
-                            break;
-                        case 'licenses':
-                            $additional_data['licenses']              = HoldingLicenseType::find()->all();
-                            break;
-                        case 'orgs':
-                            $additional_data['orgs']                  = Org::find()->where(['state_id' => $user->state_id])->all();
-                            break;
-                        case 'cores':
-                            $additional_data['cores']                 = ['Не выделять'];
-                            foreach ($user->state->regions as $region) {
-                                foreach ($region->cores as $core) {
-                                    if (!(in_array($core, $additional_data['cores']))) {
-                                        $additional_data['cores'][] = $core;
-                                    }
-                                }
-                            }
-
-
-                            break;
-                        default:
-
-                            break;
-                    }
-                }
-            }
-
-            return $this->render("new_bill", ['bill_type' => $bill_type, 'fields' => $fields, 'additional_data' => $additional_data]);
         }
         else {
             return $this->_r("Invalid bill type ID");
@@ -245,9 +178,9 @@ class ModalController extends MyController
                 if ($leader) {
                     switch ($org->leader_dest) {
                         case 'nation_individual_vote':
-                            return $this->render("elect_leader_ind", ['org' => $org, 'leader' => $leader, 'elect_requests' => $elect_requests]);
+                            return $this->render("elect-leader-ind", ['org' => $org, 'leader' => $leader, 'elect_requests' => $elect_requests]);
                         case 'nation_party_vote':
-                            return $this->render("elect_leader_party", ['org' => $org, 'leader' => $leader, 'elect_requests' => $elect_requests]);
+                            return $this->render("elect-leader-party", ['org' => $org, 'leader' => $leader, 'elect_requests' => $elect_requests]);
                         default:
                             return $this->_r("Undefined elections type");
                     }
@@ -255,7 +188,7 @@ class ModalController extends MyController
                 else {
                     switch ($org->dest) {
                         case 'nation_party_vote':
-                            return $this->render("elect_party", ['org' => $org, 'leader' => $leader, 'elect_requests' => $elect_requests]);
+                            return $this->render("elect-party", ['org' => $org, 'leader' => $leader, 'elect_requests' => $elect_requests]);
                         default:
                             return $this->_r("Undefined elections type");
                     }
@@ -293,7 +226,7 @@ class ModalController extends MyController
                             if (ElectRequest::find()->where(['org_id' => $org_id, 'candidat' => $user->id, 'leader' => 1])->count()) {
                                 return $this->_r("Allready have request");
                             } else {
-                                return $this->render("elect_leader_ind_req", ['org' => $org, 'leader' => $leader, 'user' => $user]);
+                                return $this->render("elect-leader-ind-req", ['org' => $org, 'leader' => $leader, 'user' => $user]);
                             }
                         case 'nation_party_vote':
                             if ($user->isPartyLeader()) {
@@ -302,7 +235,7 @@ class ModalController extends MyController
                                     return $this->_r("Allready have request from party");
                                 }
                             
-                                return $this->render("elect_leader_party_req", ['org' => $org, 'leader' => $leader, 'user' => $user]);
+                                return $this->render("elect-leader-party-req", ['org' => $org, 'leader' => $leader, 'user' => $user]);
                             } else {
                                 return $this->_r("Only party leader can make request");
                             }
@@ -318,7 +251,7 @@ class ModalController extends MyController
                                     return $this->_r("Allready have request from party");
                                 }
                             
-                                return $this->render("elect_party_req", ['org' => $org, 'leader' => $leader, 'user' => $user]);
+                                return $this->render("elect-party-req", ['org' => $org, 'leader' => $leader, 'user' => $user]);
                             } else {
                                 return $this->_r("Only party leader can make request");
                             }
@@ -345,7 +278,7 @@ class ModalController extends MyController
 
             $user = User::findByPk($this->viewer_id);
 
-            return $this->render("region_info", ['region' => $region, 'user' => $user]);
+            return $this->render("region-info", ['region' => $region, 'user' => $user]);
         } else {
             return $this->_r("Invalid code or ID");
         }
@@ -360,7 +293,7 @@ class ModalController extends MyController
             }
             $query  = Population::find()->where(['region_id' => $region->id]);
 
-            return $this->render("region_population", ['region' => $region, 'people' => Population::getAllGroups($query), 'people_by_class' => Population::getGroupsByClass($query)]);
+            return $this->render("region-population", ['region' => $region, 'people' => Population::getAllGroups($query), 'people_by_class' => Population::getGroupsByClass($query)]);
         }
         else {
             return $this->_r("Invalid code");
@@ -375,7 +308,7 @@ class ModalController extends MyController
                 return $this->_r("Region not found");
             }
 
-            return $this->render("region_resurses", ['region' => $region]);
+            return $this->render("region-resurses", ['region' => $region]);
         }
         else {
             return $this->_r("Invalid code");
@@ -395,7 +328,7 @@ class ModalController extends MyController
                 $tweets = Twitter::find()->where("retweets > 0 AND date < " . $time)->offset($offset)->limit(5)->orderBy('date DESC')->all();
             }
 
-            return $this->render("twitter_feed", ['tweets' => $tweets, 'viewer_id' => $this->viewer_id]);
+            return $this->render("twitter-feed", ['tweets' => $tweets, 'viewer_id' => $this->viewer_id]);
         } else {
             return $this->_r("Invalid params");
         }
@@ -437,9 +370,9 @@ class ModalController extends MyController
     {
         $region = Region::findByPk($region_id);
         $holding = Holding::findByPk($holding_id);
-        $factoryCategories = FactoryCategory::find()->all();
+        $factoryCategories = FactoryProtoCategory::find()->all();
         
-        return $this->render("build_factory",[
+        return $this->render("build-factory",[
             'region' => $region,
             'holding' => $holding,
             'user' => $this->getUser(),
@@ -480,14 +413,14 @@ class ModalController extends MyController
                 }
                 if ($holding->state_id === $state->id) {
                     if ($stateLicense->cost) {
-                        $text = number_format($stateLicense->cost, 0, '', ' ') . ' ' . \app\components\MyHtmlHelper::icon('money');
+                        $text = number_format($stateLicense->cost, 0, '', ' ') . ' ' . MyHtmlHelper::icon('money');
                     }
                     if ($stateLicense->is_need_confirm) {
                         $text .= "<br>Необходимо подтверждение министра";
                     }
                 } else {
                     if ($stateLicense->cost_noncitizens) {
-                        $text = number_format($stateLicense->cost_noncitizens, 0, '', ' ') . ' ' . \app\components\MyHtmlHelper::icon('money');
+                        $text = number_format($stateLicense->cost_noncitizens, 0, '', ' ') . ' ' . MyHtmlHelper::icon('money');
                     }
                     if ($stateLicense->is_need_confirm_noncitizens) {
                         $text .= "<br>Необходимо подтверждение министра";
@@ -500,11 +433,11 @@ class ModalController extends MyController
             }
     }
 
-    public function actionLicensesControlsChange($license_id)
+    public function actionLicensesControlsChange($license_proto_id)
     {
-        $license_id = intval($license_id);
-        if ($license_id > 0) {
-            $licenseType = HoldingLicenseType::findByPk($license_id);
+        $license_proto_id = intval($license_proto_id);
+        if ($license_proto_id > 0) {
+            $licenseType = LicenseProto::findByPk($license_proto_id);
             if (is_null($licenseType)) {
                 return $this->_r("License type not found");
             }
@@ -514,7 +447,7 @@ class ModalController extends MyController
                 return $this->_r("Have not citizenship");
             }
 
-            $stateLicense = $user->state->getStateLicenseByType($licenseType);
+            $stateLicense = $user->state->getLicenseRuleByPrototype($licenseType);
             return $this->render("licenses-controls-change",["licenseType"=>$licenseType,"stateLicense"=>$stateLicense]);
 
         } else {
@@ -522,12 +455,12 @@ class ModalController extends MyController
         }
     }
     
-    public function actionGovermentFieldValue($type)
+    public function actionGovermentFieldValue($proto_id)
     {
-        $type = intval($type);
-        if ($type > 0) {
+        $proto_id = intval($proto_id);
+        if ($proto_id > 0) {
             
-            $gft = GovermentFieldType::findByPk($type);
+            $gft = ArticleProto::findByPk($proto_id);
             if (is_null($gft)) {
                 return $this->_r("Govement field type not found");
             }
@@ -537,7 +470,7 @@ class ModalController extends MyController
                 return $this->_r("Have not citizenship");
             }
             
-            $gfv = GovermentFieldValue::findOrCreate(['state_id'=>$user->state_id,'type_id'=>$type], true, ['value'=>$gft->default_value]);
+            $gfv = Article::findOrCreate(['state_id'=>$user->state_id,'proto_id'=>$proto_id], true, ['value'=>$gft->default_value]);
             
             return $this->render("newbill/goverment-field-value",['gfv'=>$gfv,'gft'=>$gft]);
         

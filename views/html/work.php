@@ -1,12 +1,10 @@
 <?php
-use app\components\MyHtmlHelper;
-use app\models\BillType;
-use app\models\Region;
-use app\models\GovermentFieldType;
-use app\models\Org;
-use app\models\Bill;
-use app\components\widgets\BillListWidget;
-use yii\helpers\Html;
+use app\components\MyHtmlHelper,
+    app\models\Org,
+    app\models\bills\Bill,
+    app\models\bills\proto\BillProto,
+    app\components\widgets\BillListWidget,
+    yii\helpers\Html;
 
 $gft = null;
 ?>
@@ -193,28 +191,31 @@ if (count($user->post->org->speakerRequests)) {
 </div>
 <script type="text/javascript">
 	function rename_org(id) {
-		name = prompt('Введите новое название для организации');
-		if (name != "null" && name) {
-			json_request('rename-org',{'id':id,'name':name});
-		}
+            name = prompt('Введите новое название для организации');
+            if (name != "null" && name) {
+                json_request('rename-org',{'id':id,'name':name});
+            }
 	}
 
 	function create_new_post(id) {
-		name = prompt('Введите название новой должности');
-		if (name != "null" && name) {
-			json_request('create-post',{'id':id,'name':name});
-		}
+            name = prompt('Введите название новой должности');
+            if (name != "null" && name) {
+                var name_ministry = prompt("Введите название организации, подчинённой этому посту");
+                if (name_ministry != "null" && name_ministry) {
+                    json_request('create-post',{'id':id, 'name':name, 'name_ministry':name_ministry});
+                }
+            }
 	}
 
 	function naznach(id) {
-                load_modal('naznach',{'id':id},'naznach','naznach_body');
+            load_modal('naznach',{'id':id},'naznach','naznach_body');
 	}
 
 	function set_post(uid,id,name,post_name) {
-		if (confirm('Вы действительно хотите назначить человека по имени '+name+' на должность «'+post_name+'»?')) {
-			json_request('set-post',{'id':id,'uid':uid});
-			$('.modal-backdrop').remove();
-		}
+            if (confirm('Вы действительно хотите назначить человека по имени '+name+' на должность «'+post_name+'»?')) {
+                json_request('set-post',{'id':id,'uid':uid});
+                $('.modal-backdrop').remove();
+            }
 	}
 </script>
 <? } ?>
@@ -250,9 +251,12 @@ if (count($user->post->org->speakerRequests)) {
             } else {
                 $where['only_dictator']=0;
             }
-        foreach (BillType::find()->where($where)->all() as $bill_type) { ?>
-    		<option value="<?=$bill_type->id?>" ><?=htmlspecialchars($bill_type->name)?></option>
-	    <? } ?>
+        foreach (BillProto::find()->where($where)->asArray()->all() as $bill_type) { 
+            $className = "app\\models\\bills\\proto\\".$bill_type['class_name'];
+            if ($className::isVisible($user->state)) {
+            ?>
+    		<option value="<?=$className::$id?>" ><?=htmlspecialchars($className::$name)?></option>
+        <? }} ?>
     </select>
   </div>
   <div class="modal-footer">
@@ -277,21 +281,21 @@ if (count($user->post->org->speakerRequests)) {
 function new_zakon_modal() {
 	$('#new_zakon_select_modal').modal();
 }
-var bill_id;
+var bill_proto_id;
 
 function new_zakon_form_modal() {
-	bill_id = $('#new_zakon_select').val();
-        load_modal('new-bill',{'id':bill_id},'new_zakon_form_modal','new_zakon_form_modal_body');
+	bill_proto_id = $('#new_zakon_select').val();
+        load_modal('new-bill',{'id':bill_proto_id},'new_zakon_form_modal','new_zakon_form_modal_body');
 }
 $(function(){
 	$('#send_new_zakon').click(function(){
 		var fields = $('.bill_field');
-		var f = {'bill_type_id':bill_id};
+		var f = {'bill_proto_id':bill_proto_id};
 		for (var i=0,l=fields.length;i<l;i++) {
 			var $f = $(fields[i]);
 			f[$f.attr("name")] = $f.val();
 			// console.log($f.val(),$f.attr("type"));
-			if($f.attr("type") == "checkbox") {
+			if($f.attr("type") === "checkbox") {
 				f[$f.attr("name")] = $f.prop("checked")?1:0;
 			}
 		}

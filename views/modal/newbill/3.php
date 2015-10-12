@@ -4,11 +4,11 @@
 <h3>Переименование региона</h3>
 <form class="form-horizontal">
 	<div class="control-group">	
-		<label class="control-label" for="bill_region_code" >Регион</label>
+		<label class="control-label" for="bill_region_id" >Регион</label>
 		<div class="controls">
-			<select class="bill_field" id="bill_region_code" name="region_code">
+			<select class="bill_field" id="bill_region_id" name="region_id">
 		 	<? foreach ($user->state->regions as $region): ?>
-		 		<option value="<?=$region->code?>"><?=$region->name?></option>
+		 		<option value="<?=$region->id?>"><?=$region->name?></option>
 		 	<? endforeach ?>
 			</select>
 	 	</div>

@@ -5,7 +5,8 @@
  * I dont care how you use it
  */
 
-use app\components\MyHtmlHelper;
+use app\components\MyHtmlHelper,
+    app\models\Ideology;
 
 ?>
 <h4>Вы не состоите ни в одной партии</h4>
@@ -57,7 +58,7 @@ if ($user->state) {
       <div class="controls">
         <select id="party_ideology" >
         <? 
-            $ideologies = \app\models\Ideology::find()->all();
+            $ideologies = Ideology::find()->all();
         foreach ($ideologies as $ideology) { ?>
           <option value="<?=$ideology->id?>"><?=htmlspecialchars($ideology->name)?></option>
         <? } ?>

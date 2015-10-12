@@ -1,6 +1,6 @@
 <?
-use app\components\MyHtmlHelper;
-$own = ($viewer_id === $user->id);
+    use app\components\MyHtmlHelper;
+    $own = ($viewer_id === $user->id);
 ?>
 <div style="display:none" class="modal" id="tweet_about_human" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-header">

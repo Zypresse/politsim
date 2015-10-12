@@ -6,12 +6,18 @@
 
 use app\components\MyHtmlHelper,
     yii\helpers\Html,
-    app\models\FactoryCategory,
-    app\models\HoldingDecision;
+    app\models\factories\proto\FactoryProtoCategory,
+    app\models\factories\proto\FactoryProto,
+    app\models\factories\Factory,
+    app\models\HoldingDecision,
+    app\models\licenses\proto\LicenseProto,
+    app\models\User,
+    app\models\State,
+    app\models\Region;
 
 /* @var $user \app\models\User */
 $userStock = $user->getShareholderStock($holding);
-$factoryCategories = FactoryCategory::find()->all();
+$factoryCategories = FactoryProtoCategory::find()->all();
 ?>
 <h1>Управление «<?= $holding->name ?>»</h1>
 <p>Капитализация: <?= number_format($holding->capital, 0, '', ' ') ?> <?= MyHtmlHelper::icon('money') ?></p>
@@ -30,7 +36,7 @@ $factoryCategories = FactoryCategory::find()->all();
     <ul id="list_licenses" style="display: none" >
     <? foreach ($holding->licenses as $license) { ?>
             <li>
-            <?= $license->type->name ?> (<?= $license->state->name ?>)
+            <?= $license->proto->name ?> (<?= $license->state->name ?>)
             </li>
             <? } ?>
     </ul>
@@ -90,28 +96,28 @@ $factoryCategories = FactoryCategory::find()->all();
                             echo 'Выплата дивидентов в размере ' . $data->sum . ' ' . MyHtmlHelper::icon('money');
                             break;
                         case HoldingDecision::DECISION_GIVELICENSE:
-                            $license = app\models\HoldingLicenseType::findByPk($data->license_id);
-                            $state = \app\models\State::findByPk($data->state_id);
+                            $license = LicenseProto::findByPk($data->license_id);
+                            $state = State::findByPk($data->state_id);
                             echo 'Получение лицензии на «' . $license->name . '» в государстве ' . $state->name;
                             break;
                         case HoldingDecision::DECISION_BUILDFABRIC:
-                            $fType = app\models\FactoryType::findByPk($data->factory_type);
-                            $region = app\models\Region::findByPk($data->region_id);
+                            $fType = FactoryProto::findByPk($data->factory_type);
+                            $region = Region::findByPk($data->region_id);
                             echo "Строительство нового обьекта: {$fType->name} под названием «{$data->name}» в регионе {$region->name}";
                             break;
                         case HoldingDecision::DECISION_SETMANAGER:
-                            $user = app\models\User::findByPk($data->uid);
-                            $factory = app\models\Factory::findByPk($data->factory_id);
+                            $user = User::findByPk($data->uid);
+                            $factory = Factory::findByPk($data->factory_id);
                             $region_name = $factory->region->name . ($factory->region->state ? ', ' . $factory->region->state->short_name : '');
                             echo "Назначение человека по имени {$user->name} на должность управляющего обьектом {$factory->name} ({$region_name})";
                             break;
                         case HoldingDecision::DECISION_SETMAINOFFICE:
-                            $factory = app\models\Factory::findByPk($data->factory_id);
+                            $factory = Factory::findByPk($data->factory_id);
                             $region_name = $factory->region->name . ($factory->region->state ? ', ' . $factory->region->state->short_name : '');
                             echo "Назначение офиса {$factory->name} ({$region_name}) главным офисом компании";
                             break;
                         case HoldingDecision::DECISION_RENAMEFABRIC:
-                            $factory = app\models\Factory::findByPk($data->factory_id);
+                            $factory = Factory::findByPk($data->factory_id);
                             $region_name = $factory->region->name . ($factory->region->state ? ', ' . $factory->region->state->short_name : '');
                             echo "Переименование объекта {$factory->name} ({$region_name}) в {$data->new_name}";
                             break;
@@ -211,7 +217,7 @@ $factoryCategories = FactoryCategory::find()->all();
                 <div class="controls">            
                     <select id="new_license_state_id">
                         <?
-                        $states = app\models\State::find()->all();
+                        $states = State::find()->all();
                         foreach ($states as $state):
                             ?>
                             <option <? if ($state->id === $holding->state_id): ?> selected="selected" <? endif ?> id="state_option<?= $state->id ?>" value="<?= $state->id ?>" ><?= $state->name ?></option>       
@@ -222,13 +228,13 @@ $factoryCategories = FactoryCategory::find()->all();
                 <div class="controls">
                     <select id="new_license_id">
                         <?
-                        $licenses = app\models\HoldingLicenseType::find()->all();
+                        $licenses = LicenseProto::find()->all();
 
                         foreach ($licenses as $license) {
                             $stateLicense = null;
                             $allowed = true;
                             foreach ($holding->licenses as $hl) {
-                                if ($license->id === $hl->license_id) {
+                                if ($license->id === $hl->proto_id) {
                                     $allowed = false;
                                     $break;
                                 }
@@ -237,7 +243,7 @@ $factoryCategories = FactoryCategory::find()->all();
                                 continue;
 
                             foreach ($holding->state->licenses as $sl) {
-                                if ($sl->license_id === $license->id) {
+                                if ($license->id === $sl->proto_id) {
                                     $stateLicense = $sl;
                                     break;
                                 }
@@ -410,7 +416,7 @@ $factoryCategories = FactoryCategory::find()->all();
             <div class="controls">
                 <select id="new_main_office_id">
 <? foreach ($holding->factories as $factory) {
-    if ($factory->type_id == 4) {
+    if ($factory->proto_id == 4) {
         ?>
                             <option value="<?= $factory->id ?>"><?= $factory->name ?> (<?= $factory->region->name ?>)</option>
     <? }

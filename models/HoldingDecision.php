@@ -2,9 +2,11 @@
 
 namespace app\models;
 
-use app\components\MyModel;
-use app\models\HoldingLicense;
-use app\models\StateLicense;
+use app\components\MyModel,
+    app\models\factories\Factory,
+    app\models\factories\proto\FactoryProto,
+    app\models\licenses\License,
+    app\models\licenses\LicenseRule;
 
 /**
  * Решение по управлению АО. Таблица "holding_decisions".
@@ -143,7 +145,10 @@ class HoldingDecision extends MyModel
                 break;
             case self::DECISION_GIVELICENSE: // Получение лицензии
                 if ($this->holding->state) {
-                    $stateLicense = StateLicense::find()->where(['state_id' => $data->state_id, 'license_id' => $data->license_id])->one();
+                    $stateLicense = LicenseRule::find()->where([
+                        'state_id' => $data->state_id,
+                        'proto_id' => $data->license_id
+                    ])->one();
                     $allow        = true;
                     $cost         = 0;
                     if (!(is_null($stateLicense))) {
@@ -172,10 +177,10 @@ class HoldingDecision extends MyModel
                         }
                     }
                     if ($allow) {
-                        $hl             = new HoldingLicense();
+                        $hl             = new License();
                         $hl->holding_id = $this->holding_id;
                         $hl->state_id   = $data->state_id;
-                        $hl->license_id = $data->license_id;
+                        $hl->proto_id = $data->license_id;
                         $hl->save();
 
                         if ($cost) {
@@ -187,7 +192,7 @@ class HoldingDecision extends MyModel
 
                 break;
             case self::DECISION_BUILDFABRIC:
-                $factoryType = FactoryType::findByPk($data->factory_type);
+                $factoryType = FactoryProto::findByPk($data->factory_type);
                 if ($factoryType) {
                     $region = Region::findByPk($data->region_id);
                     // TODO: Здесь проверка на возможность строить в регионе
@@ -228,7 +233,7 @@ class HoldingDecision extends MyModel
                                 $factory->builded = time() + 24*60*60;
                                 $factory->name = strip_tags(trim($data->name));
                                 $factory->region_id = $region->id;
-                                $factory->type_id = $factoryType->id;
+                                $factory->proto_id = $factoryType->id;
                                 $factory->status = -1;
                                 $factory->size = $data->size;
 

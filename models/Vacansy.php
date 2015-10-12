@@ -15,7 +15,7 @@ use app\components\MyModel;
  * @property integer $count_all
  * @property double $salary
  * 
- * @property Factory $factory
+ * @property factories\Factory $factory
  * @property Region $region
  * @property PopClass $popClass
  */
@@ -60,7 +60,7 @@ class Vacansy extends MyModel
     
     public function getFactory()
     {
-        return $this->hasOne('app\models\Factory', array('id' => 'factory_id'));
+        return $this->hasOne('app\models\factories\Factory', array('id' => 'factory_id'));
     }
     
     public function getRegion()

@@ -39,7 +39,7 @@ use yii\helpers\Html;
 <ul>
     <? foreach ($holding->factories as $factory) { ?>
     <li>
-        <?=Html::a($factory->name,'#',['onclick'=>"load_page('factory-info',{'id':{$factory->id}})"])?> 
+        <?=Html::a($factory->proto->name.' «'.$factory->name.'»','#',['onclick'=>"load_page('factory-info',{'id':{$factory->id}})"])?> 
             <? if ($factory->status < 0) { ?><span style="color:red;">(не достроено, запланированная дата окончания строительства: <span class="formatDate" data-unixtime="<?=$factory->builded?>"><?=date('d-M-Y H:i',$factory->builded)?></span>)</span><? } ?>
             <? if ($factory->status > 1) { ?><span style="color:red;">(не работает)</span><? } ?>
     </li>

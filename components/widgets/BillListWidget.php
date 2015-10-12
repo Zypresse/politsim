@@ -3,7 +3,6 @@
 namespace app\components\widgets;
 
 use yii\base\Widget;
-use yii\helpers\Html;
 
 /**
  * Виджет для вывода списка законопроектов
@@ -23,6 +22,6 @@ class BillListWidget extends Widget {
     }
     
     public function run(){
-        return $this->render("bill-list", ['user'=>$this->user, 'bills'=>$this->bills,'id'=>$this->id ? $this->id : uniqid(),'style'=>$this->style,'showVoteButtons'=>$this->showVoteButtons]);
+        return $this->render("bill-list", ['user'=>$this->user, 'bills'=>$this->bills, 'id'=>$this->id ? $this->id : uniqid(),'style'=>$this->style,'showVoteButtons'=>$this->showVoteButtons]);
     }
 }

@@ -7,13 +7,13 @@ use app\components\MyController,
     app\models\Dealing,
     app\models\Org,
     app\models\Region,
-    app\models\Resurse,
+    app\models\resurses\proto\ResurseProto,
     app\models\Party,
     app\models\State,
     app\models\Ideology,
     app\models\Twitter,
     app\models\Holding,
-    app\models\Factory;
+    app\models\factories\Factory;
 
 class HtmlController extends MyController
 {
@@ -85,7 +85,7 @@ class HtmlController extends MyController
                 return $this->_r("Organisation not found");
             }
 
-            return $this->render("org_info", ['org' => $org]);
+            return $this->render("org-info", ['org' => $org]);
         } else {
             return $this->_r("Invalid organisation ID");
         }
@@ -95,29 +95,29 @@ class HtmlController extends MyController
     {
         $regions = Region::find()->all();
 
-        return $this->render("map_politic", ['regions' => $regions]);
+        return $this->render("map-politic", ['regions' => $regions]);
     }
 
     public function actionMapCores()
     {
         $regions = Region::find()->all();
 
-        return $this->render("map_cores", ['regions' => $regions]);
+        return $this->render("map-cores", ['regions' => $regions]);
     }
 
     public function actionMapPopulation()
     {
         $regions = Region::find()->all();
 
-        return $this->render("map_population", ['regions' => $regions]);
+        return $this->render("map-population", ['regions' => $regions]);
     }
 
     public function actionMapResurses()
     {
         $regions  = Region::find()->all();
-        $resurses = Resurse::find()->where(['level' => 0])->all();
+        $resurses = ResurseProto::find()->where(['level' => 0])->all();
 
-        return $this->render("map_resurses", ['regions' => $regions, 'resurses' => $resurses]);
+        return $this->render("map-resurses", ['regions' => $regions, 'resurses' => $resurses]);
     }
 
     public function actionChartPeoples()
@@ -127,23 +127,24 @@ class HtmlController extends MyController
         $r     = $user->star + $user->heart / 10 + $user->chart_pie / 100;
         $place = User::find()->where('`star` + `heart`/10 + `chart_pie`/100 > ' . $r)->count() + 1;
 
-        return $this->render("chart_peoples", ['users' => $users, 'user' => $user, 'place' => $place]);
+        return $this->render("chart-peoples", ['users' => $users, 'user' => $user, 'place' => $place]);
     }
 
     public function actionChartParties($state_id = false)
     {
         if ($state_id) {
             $state = State::findByPk($state_id);
-            if (is_null($state))
+            if (is_null($state)) {
                 return $this->_r("State not found");
+            }
 
             $parties = Party::find()->where(['state_id' => $state_id])->orderBy('`star` + `heart`/10 + `chart_pie`/100 DESC')->limit(100)->all();
 
-            return $this->render("chart_parties", ['parties' => $parties, 'state' => $state]);
+            return $this->render("chart-parties", ['parties' => $parties, 'state' => $state]);
         } else {
             $parties = Party::find()->orderBy('`star` + `heart`/10 + `chart_pie`/100 DESC')->limit(100)->all();
 
-            return $this->render("chart_parties", ['parties' => $parties, 'state' => false]);
+            return $this->render("chart-parties", ['parties' => $parties, 'state' => false]);
         }
     }
 
@@ -151,14 +152,14 @@ class HtmlController extends MyController
     {
         $states = State::find()->orderBy('population DESC')->all();
 
-        return $this->render("chart_states", ['states' => $states]);
+        return $this->render("chart-states", ['states' => $states]);
     }
 
     public function actionChartHoldings()
     {
         $holdings = Holding::find()->orderBy('capital DESC')->all();
 
-        return $this->render("chart_holdings", ['holdings' => $holdings]);
+        return $this->render("chart-holdings", ['holdings' => $holdings]);
     }
 
     public function actionElections($state_id = false)
@@ -210,7 +211,7 @@ class HtmlController extends MyController
 
             $ideologies = Ideology::find()->all();
 
-            return $this->render("state_info", ['state' => $state, 'ideologies' => $ideologies, 'user' => $user]);
+            return $this->render("state-info", ['state' => $state, 'ideologies' => $ideologies, 'user' => $user]);
         } else {
             return $this->_r("Invalid state ID");
         }
@@ -236,7 +237,7 @@ class HtmlController extends MyController
                 return $this->render("notfound/party", ['party_id' => $id, 'user' => $user]);
             }
 
-            return $this->render("party_info", ['party' => $party, 'user' => $user]);
+            return $this->render("party-info", ['party' => $party, 'user' => $user]);
         } else {
             return $this->_r("Invalid party ID");
         }

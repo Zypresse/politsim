@@ -8,7 +8,7 @@
 		<div class="controls">
 			<select class="bill_field" id="bill_new_capital" name="new_capital">
 		 	<? foreach ($user->state->regions as $region): ?>
-		 		<option <? if ($region->code === $user->state->capital): ?>selected="selected"<? endif ?> value="<?=$region->code?>"><?=$region->city?></option>
+		 		<option <? if ($region->id === $user->state->capital): ?>selected="selected"<? endif ?> value="<?=$region->code?>"><?=$region->city?></option>
 		 	<? endforeach ?>
 			</select>
 	 	</div>

@@ -3,9 +3,10 @@
 namespace app\models;
 
 use app\components\NalogPayer,
-    app\models\GovermentFieldType,
-    app\models\GovermentFieldValue,
-    app\models\Unnp;
+    app\models\articles\Article,
+    app\models\articles\proto\ArticleProto,
+    app\models\Unnp,
+    app\models\CoreCountryState;
 
 /**
  * Государство. Таблица "states".
@@ -45,10 +46,11 @@ use app\components\NalogPayer,
  * @property \app\models\CoreCountry $core Государство-предок
  * @property \app\models\Region[] $regions Список регионов
  * @property \app\models\Region[] $cities Список городов
- * @property \app\models\StateLicense[] $licenses Список экономических правил
- * @property \app\models\GovermentFieldValue[] $govermentFields Список пунктов конституции
+ * @property \app\models\licenses\LicenseRule[] $licenses Список экономических правил
+ * @property \app\models\articles\Article[] $articles Список пунктов конституции
  * @property \app\models\Party[] $parties Список партий
  * @property \app\models\User[] $users Список игроков
+ * @property CoreCountryState[] $coreCountryStates Список привязок к корневым странам
  */
 class State extends NalogPayer
 {
@@ -58,9 +60,9 @@ class State extends NalogPayer
         return Unnp::TYPE_STATE;
     }
     
-    public function isGoverment()
+    public function isGoverment($stateId)
     {
-        return true;
+        return $this->id === $stateId;
     }
 
     /**
@@ -164,12 +166,12 @@ class State extends NalogPayer
 
     public function getLicenses()
     {
-        return $this->hasMany('app\models\StateLicense', array('state_id' => 'id'));
+        return $this->hasMany('app\models\licenses\LicenseRule', array('state_id' => 'id'));
     }
 
-    public function getGovermentFields()
+    public function getArticles()
     {
-        return $this->hasMany('app\models\GovermentFieldValue', array('state_id' => 'id'));
+        return $this->hasMany('app\models\articles\Article', array('state_id' => 'id'))->orderBy('proto_id');
     }
 
     public function getParties()
@@ -181,15 +183,33 @@ class State extends NalogPayer
     {
         return $this->hasMany('app\models\User', array('state_id' => 'id'));
     }
+    
+    public function getCoreCountryStates()
+    {
+        return $this->hasMany(CoreCountryState::className(), ['state_id' => 'id']);
+    }
 
     /**
      * 
-     * @param HoldingLicenseType $licenseType
-     * @return StateLicense
+     * @param licenses\proto\LicenseProto $licenseType
+     * @return licenses\LicenseRule
      */
-    public function getStateLicenseByType($licenseType)
+    public function getLicenseRuleByPrototype($licenseType)
     {        
-        return StateLicense::findOrCreate(['state_id' => $this->id, 'license_id' => $licenseType->id], true);
+        return licenses\LicenseRule::findOrCreate(['state_id' => $this->id, 'proto_id' => $licenseType->id], true);
+    }
+
+    /**
+     * 
+     * @param CoreCountry $coreCountry
+     * @return CoreCountryState
+     */
+    public function getCoreCountryState($coreCountry = null)
+    {        
+        if (is_null($coreCountry)) {
+            $coreCountry = $this->core;
+        }
+        return CoreCountryState::findOrCreate(['state_id' => $this->id, 'core_id' => $coreCountry->id], true);
     }
 
     /**
@@ -209,7 +229,7 @@ class State extends NalogPayer
             $region->state_id = 0;
             $region->save();
         }
-        foreach ($this->govermentFields as $gf) {
+        foreach ($this->articles as $gf) {
             $gf->delete();
         }
         foreach ($this->licenses as $l) {

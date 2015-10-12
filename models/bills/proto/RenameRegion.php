@@ -5,15 +5,16 @@ namespace app\models\bills\proto;
 use app\models\Region;
 
 /**
- * Description of RenameRegion
+ * Переименовать регион
  *
  * @author ilya
  */
 class RenameRegion extends BillProto {
     
-    public $id = 3;
+    public static $id = 3;
+    public static $name = "Переименовать регион";
     
-    public function accept($bill)
+    public static function accept($bill)
     {
         if (is_null($bill->state)) {
             return $bill->delete();
@@ -30,7 +31,7 @@ class RenameRegion extends BillProto {
         return parent::accept($bill);
     }
     
-    public function isVisible($state)
+    public static function isVisible($state)
     {
         return true;
     }

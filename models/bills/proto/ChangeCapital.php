@@ -5,15 +5,16 @@ namespace app\models\bills\proto;
 use app\models\Region;
 
 /**
- * Description of ChangeCapital
+ * Перенести столицу государства
  *
  * @author ilya
  */
 class ChangeCapital extends BillProto {
     
-    public $id = 2;
-    
-    public function accept($bill)
+    public static $id = 2;
+    public static $name = "Перенести столицу государства";
+
+    public static function accept($bill)
     {
         if (is_null($bill->state)) {
             return $bill->delete();
@@ -29,10 +30,14 @@ class ChangeCapital extends BillProto {
         
         return parent::accept($bill);
     }
-    
-    public function isVisible($state)
+   
+    /**
+     * 
+     * @param \app\models\State $state
+     */
+    public static function isVisible($state)
     {
-        return true;
+        return (intval($state->getRegions()->count()) > 1);
     }
     
 }

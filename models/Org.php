@@ -37,17 +37,16 @@ use app\components\NalogPayer,
  * @property \app\models\ElectRequest[] $lrequests Заявки на выборы лидера
  * @property \app\models\ElectOrgLeaderRequest[] $speakerRequests Заявки на выборы лидера по голосованию организации
  */
-class Org extends NalogPayer
-{
+class Org extends NalogPayer {
 
     protected function getUnnpType()
     {
         return Unnp::TYPE_ORG;
     }
-    
-    public function isGoverment()
+
+    public function isGoverment($stateId)
     {
-        return true;
+        return $this->state_id === $stateId;
     }
 
     /**
@@ -77,21 +76,21 @@ class Org extends NalogPayer
     public function attributeLabels()
     {
         return [
-            'id'                      => 'ID',
-            'state_id'                => 'State ID',
-            'name'                    => 'Name',
-            'leader_post'             => 'Leader Post',
-            'leader_dest'             => 'Leader Dest',
-            'dest'                    => 'Dest',
+            'id' => 'ID',
+            'state_id' => 'State ID',
+            'name' => 'Name',
+            'leader_post' => 'Leader Post',
+            'leader_dest' => 'Leader Dest',
+            'dest' => 'Dest',
             'leader_can_create_posts' => 'Leader Can Create Posts',
-            'next_elect'              => 'Next Elect',
-            'elect_period'            => 'в днях',
-            'other_org_id'            => 'Other Org ID',
-            'vote_party_id'           => 'Vote Party ID',
-            'elect_with_org'          => 'Выборы не прямые, а вместе с выборами в другой организации',
-            'elect_leader_with_org'   => 'Выборы лидера не прямые а вместе с выборами в другой организации',
-            'can_vote_for_bills'      => 'Организация может голосовать за законопроекты',
-            'can_create_bills'        => 'Организация может создавать законопроекты'
+            'next_elect' => 'Next Elect',
+            'elect_period' => 'в днях',
+            'other_org_id' => 'Other Org ID',
+            'vote_party_id' => 'Vote Party ID',
+            'elect_with_org' => 'Выборы не прямые, а вместе с выборами в другой организации',
+            'elect_leader_with_org' => 'Выборы лидера не прямые а вместе с выборами в другой организации',
+            'can_vote_for_bills' => 'Организация может голосовать за законопроекты',
+            'can_create_bills' => 'Организация может создавать законопроекты'
         ];
     }
 
@@ -199,7 +198,7 @@ class Org extends NalogPayer
                 }
             }
         }
-        
+
         return $ret;
     }
 
@@ -208,19 +207,19 @@ class Org extends NalogPayer
      */
 
     const DEST_NATION_INDIVIDUAL_VOTE = 'nation_individual_vote';
-    const DEST_NATION_PARTY_VOTE      = 'nation_party_vote';
-    const DEST_ORG_VOTE               = 'org_vote';
-    const DEST_UNLIMITED              = 'unlimited';
-    const DEST_BY_LEADER              = 'dest_by_leader';
+    const DEST_NATION_PARTY_VOTE = 'nation_party_vote';
+    const DEST_ORG_VOTE = 'org_vote';
+    const DEST_UNLIMITED = 'unlimited';
+    const DEST_BY_LEADER = 'dest_by_leader';
 
 
     /*
      * Стандартные типы организаций
      * Используются для только генераций новых
      */
-    const EXECUTIVE_JUNTA          = 12340; // Исполнительная власть хунты
-    const EXECUTIVE_PRESIDENT      = 12341; // Исполнительная власть президентской республики
-    const EXECUTIVE_PRIMEMINISTER  = 12342; // Исполнительная власть парламентской республики
+    const EXECUTIVE_JUNTA = 12340; // Исполнительная власть хунты
+    const EXECUTIVE_PRESIDENT = 12341; // Исполнительная власть президентской республики
+    const EXECUTIVE_PRIMEMINISTER = 12342; // Исполнительная власть парламентской республики
     const LEGISLATURE_PARLIAMENT10 = 12345; // Стандартный парламент на 10 парламентариев и спикера
 
     /**
@@ -232,19 +231,19 @@ class Org extends NalogPayer
 
     public static function generate(\app\models\State $state, $type)
     {
-        $org           = new Org();
+        $org = new Org();
         $org->state_id = $state->id;
         switch ($type) {
             case static::EXECUTIVE_JUNTA:
-                $org->name                            = "Правительство " . $state->short_name;
-                $org->dest                            = static::DEST_BY_LEADER;
-                $org->leader_dest                     = static::DEST_UNLIMITED;
-                $org->leader_can_veto_bills           = 1;
+                $org->name = "Правительство " . $state->short_name;
+                $org->dest = static::DEST_BY_LEADER;
+                $org->leader_dest = static::DEST_UNLIMITED;
+                $org->leader_can_veto_bills = 1;
                 $org->leader_can_make_dicktator_bills = 1;
-                $org->leader_can_create_posts         = 1;
+                $org->leader_can_create_posts = 1;
                 $org->save();
-                $post                                 = Post::generate($org, Post::TYPE_PRESIDENT);
-                $org->leader_post                     = $post->id;
+                $post = Post::generate($org, Post::TYPE_PRESIDENT);
+                $org->leader_post = $post->id;
 
                 Post::generate($org, Post::TYPE_MINISTER_DEFENCE);
                 Post::generate($org, Post::TYPE_MINISTER_ECONOMY);
@@ -252,49 +251,51 @@ class Org extends NalogPayer
 
                 break;
             case static::EXECUTIVE_PRESIDENT:
-                $org->name                    = "Правительство " . $state->short_name;
-                $org->dest                    = static::DEST_BY_LEADER;
-                $org->leader_dest             = static::DEST_NATION_INDIVIDUAL_VOTE;
-                $org->leader_can_veto_bills   = 1;
+                $org->name = "Правительство " . $state->short_name;
+                $org->dest = static::DEST_BY_LEADER;
+                $org->leader_dest = static::DEST_NATION_INDIVIDUAL_VOTE;
+                $org->leader_can_veto_bills = 1;
+                $org->leader_can_vote_for_bills = 1;
+                $org->leader_can_create_bills = 1;
                 $org->leader_can_create_posts = 1;
-                $org->elect_period            = 14;
-                $org->next_elect              = time() + 2 * 24 * 60 * 60;
+                $org->elect_period = 14;
+                $org->next_elect = time() + 2 * 24 * 60 * 60;
                 $org->save();
-                $post                         = Post::generate($org, Post::TYPE_PRESIDENT);
-                $org->leader_post             = $post->id;
+                $post = Post::generate($org, Post::TYPE_PRESIDENT);
+                $org->leader_post = $post->id;
 
                 Post::generate($org, Post::TYPE_MINISTER_DEFENCE);
                 Post::generate($org, Post::TYPE_MINISTER_ECONOMY);
                 Post::generate($org, Post::TYPE_MINISTER_INDUSTRY);
                 break;
             case static::EXECUTIVE_PRIMEMINISTER:
-                $org->name                    = "Правительство " . $state->short_name;
-                $org->dest                    = static::DEST_BY_LEADER;
-                $org->leader_dest             = static::DEST_NATION_PARTY_VOTE;
+                $org->name = "Правительство " . $state->short_name;
+                $org->dest = static::DEST_BY_LEADER;
+                $org->leader_dest = static::DEST_NATION_PARTY_VOTE;
                 $org->leader_can_create_posts = 1;
-                $org->elect_period            = 14;
-                $org->next_elect              = time() + 2 * 24 * 60 * 60;
+                $org->elect_period = 14;
+                $org->next_elect = time() + 2 * 24 * 60 * 60;
                 $org->save();
-                $post                         = Post::generate($org, Post::TYPE_MINISTER_PRIME);
-                $org->leader_post             = $post->id;
+                $post = Post::generate($org, Post::TYPE_MINISTER_PRIME);
+                $org->leader_post = $post->id;
 
                 Post::generate($org, Post::TYPE_MINISTER_DEFENCE);
                 Post::generate($org, Post::TYPE_MINISTER_ECONOMY);
                 Post::generate($org, Post::TYPE_MINISTER_INDUSTRY);
                 break;
             case static::LEGISLATURE_PARLIAMENT10:
-                $org->name                      = "Парламент " . $state->short_name;
-                $org->dest                      = static::DEST_NATION_PARTY_VOTE;
-                $org->leader_dest               = static::DEST_ORG_VOTE;
+                $org->name = "Парламент " . $state->short_name;
+                $org->dest = static::DEST_NATION_PARTY_VOTE;
+                $org->leader_dest = static::DEST_ORG_VOTE;
                 $org->leader_can_vote_for_bills = 1;
-                $org->leader_can_create_bills   = 1;
-                $org->can_vote_for_bills        = 1;
-                $org->can_create_bills          = 1;
-                $org->elect_period              = 14;
-                $org->next_elect                = time() + 2 * 24 * 60 * 60;
+                $org->leader_can_create_bills = 1;
+                $org->can_vote_for_bills = 1;
+                $org->can_create_bills = 1;
+                $org->elect_period = 14;
+                $org->next_elect = time() + 2 * 24 * 60 * 60;
                 $org->save();
-                $post                           = Post::generate($org, Post::TYPE_SPEAKER);
-                $org->leader_post               = $post->id;
+                $post = Post::generate($org, Post::TYPE_SPEAKER);
+                $org->leader_post = $post->id;
 
                 for ($i = 0; $i < 10; $i++) {
                     Post::generate($org, Post::TYPE_PARLAMENTARIAN);
@@ -304,7 +305,7 @@ class Org extends NalogPayer
         $org->save();
         return $org;
     }
-    
+
     public function afterDelete()
     {
         foreach ($this->posts as $post) {

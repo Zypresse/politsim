@@ -41,7 +41,7 @@ use Yii,
  * @property \app\models\Stock[] $stocks Акции
  * @property \app\models\ElectRequest[] $requests Заявки на выборы
  * @property \app\models\Notification[] $notifications Уведомления
- * @property \app\models\Factory[] $factories 
+ * @property \app\models\factories\Factory[] $factories 
  * @property \app\models\Auth[] $accounts
  */
 class User extends NalogPayer implements \yii\web\IdentityInterface
@@ -193,7 +193,7 @@ class User extends NalogPayer implements \yii\web\IdentityInterface
 
     public function getFactories()
     {
-        return $this->hasMany('app\models\Factory', array('manager_uid' => 'id'));
+        return $this->hasMany('app\models\factories\Factory', array('manager_uid' => 'id'));
     }
 
     public function getAccounts()

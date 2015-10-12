@@ -5,14 +5,14 @@ namespace app\models\bills\proto;
 use app\components\MyModel;
 
 /**
- * Поле типа законопроекта. Таблица "bill_types_fields".
+ * Поле типа законопроекта. Таблица "bill_prototypes_fields".
  *
- * @property integer $bill_id
+ * @property integer $proto_id
  * @property string $name
  * @property string $system_name
  * @property string $type
  */
-class BillTypeField extends MyModel
+class BillProtoField extends MyModel
 {
 
     /**
@@ -20,7 +20,7 @@ class BillTypeField extends MyModel
      */
     public static function tableName()
     {
-        return 'bill_types_fields';
+        return 'bill_prototypes_fields';
     }
 
     /**
@@ -29,8 +29,8 @@ class BillTypeField extends MyModel
     public function rules()
     {
         return [
-            [['bill_id', 'name', 'system_name', 'type'], 'required'],
-            [['bill_id'], 'integer'],
+            [['proto_id', 'name', 'system_name', 'type'], 'required'],
+            [['proto_id'], 'integer'],
             [['name'], 'string', 'max' => 1000],
             [['system_name', 'type'], 'string', 'max' => 255]/* ,
               [['system_name'], 'unique'] */
@@ -43,7 +43,7 @@ class BillTypeField extends MyModel
     public function attributeLabels()
     {
         return [
-            'bill_id'     => 'Bill ID',
+            'proto_id'     => 'Bill ID',
             'name'        => 'Name',
             'system_name' => 'System Name',
             'type'        => 'Type',

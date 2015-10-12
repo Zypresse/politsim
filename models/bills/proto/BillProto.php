@@ -2,7 +2,8 @@
 
 namespace app\models\bills\proto;
 
-use app\components\MyModel,
+use Yii,
+    app\components\MyModel,
     app\components\MyHtmlHelper,
     app\models\Org,
     app\models\State,
@@ -21,7 +22,7 @@ use app\components\MyModel,
  * @property integer $only_auto
  * @property integer $only_dictator
  */
-class BillProto extends MyModel
+abstract class BillProto extends MyModel
 {
 
     /**
@@ -53,7 +54,7 @@ class BillProto extends MyModel
         return [
             'id'            => 'ID',
             'name'          => 'Name',
-            'class_name'          => 'Class Name',
+            'class_name'    => 'Class Name',
             'only_auto'     => 'Only Auto',
             'only_dictator' => 'Only Dictator',
         ];
@@ -61,20 +62,13 @@ class BillProto extends MyModel
 
     public function getFields()
     {
-        return $this->hasMany('app\models\BillTypeField', array('bill_id' => 'id'));
+        return $this->hasMany('app\models\bills\proto\BillProtoField', array('proto_id' => 'id'));
     }
     
     public static function findByPk($id)
     {
-        $proto = parent::findByPk($id);
-        if (is_null($proto)) {
-            return null;
-        } else {
-            $class_name = 'app\\models\\bills\\proto\\'.$proto->class_name;
-            $r = new $class_name;
-            $r->attributes = $proto->attributes;
-            return $r;
-        }
+        $class_name = 'app\\models\\bills\\proto\\'.Yii::$app->db->createCommand("SELECT class_name FROM `".static::tableName()."` WHERE id = {$id}")->queryScalar();
+        return $class_name::find()->where(['id'=>$id])->one();
     }
 
     /**
@@ -149,29 +143,33 @@ class BillProto extends MyModel
 
     /**
      * Принятие законопроекта
-     * @param Bill $bill
+     * @param \app\models\bills\Bill $bill
      * @return boolean
      */
-    public function accept($bill)
+    public static function accept($bill)
     {
         
         $bill->accepted = time();
-        $bill->save();
 
         if ($bill->creatorUser) {
-            Notification::send($bill->creatorUser->id, "Предложенный вами законопроект, предлагающий «" . $this->name . "» одобрен и вступил в силу");
+            Notification::send($bill->creatorUser->id, "Предложенный вами законопроект, предлагающий «" . $bill->proto->name . "» одобрен и вступил в силу");
         }
         
         foreach ($bill->votes as $vote) {
             $vote->delete();
         }
-        
-        foreach ($bill->state->govermentFields as $article) {
+        /*
+        foreach ($bill->state->articles as $article) {
             $article->syncronize();
         }
-
-        return true;
+        */
+        return $bill->save();
     }
+    
+    /**
+     * @param \app\models\State $state
+     */
+    abstract public static function isVisible($state);
 /*
     {
         if (is_null($bill->state)) {

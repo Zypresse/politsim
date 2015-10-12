@@ -19,7 +19,6 @@ use app\components\NalogPayer,
  * @property \app\models\Org $org Организация
  * @property \app\models\Party $partyReserve Партия, которой принадлежит этот пост
  * @property \app\models\User $user Игрок, занимающий этот пост
- * @property \app\models\Stock[] $stocks Акции, принадлежащие этому посту
  */
 class Post extends NalogPayer
 {
@@ -29,9 +28,9 @@ class Post extends NalogPayer
         return Unnp::TYPE_POST;
     }
 
-    public function isGoverment()
+    public function isGoverment($stateId)
     {
-        return true;
+        return $this->org->state_id === $stateId;
     }
     
     /**

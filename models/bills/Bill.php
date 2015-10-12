@@ -8,7 +8,7 @@ use app\components\MyModel;
  * Законопроект. Таблица "bills".
  *
  * @property integer $id
- * @property integer $prototype_id
+ * @property integer $proto_id
  * @property integer $creator
  * @property integer $created
  * @property integer $vote_ended
@@ -39,8 +39,8 @@ class Bill extends MyModel
     public function rules()
     {
         return [
-            [['prototype_id', 'creator', 'created', 'vote_ended'], 'required'],
-            [['prototype_id', 'creator', 'created', 'vote_ended', 'accepted', 'dicktator', 'state_id'], 'integer'],
+            [['proto_id', 'creator', 'created', 'vote_ended'], 'required'],
+            [['proto_id', 'creator', 'created', 'vote_ended', 'accepted', 'dicktator', 'state_id'], 'integer'],
             [['data'], 'string']
         ];
     }
@@ -52,7 +52,7 @@ class Bill extends MyModel
     {
         return [
             'id'         => 'ID',
-            'prototype_id'  => 'Bill Type',
+            'proto_id'  => 'Bill Type',
             'creator'    => 'Creator',
             'created'    => 'Created',
             'vote_ended' => 'Vote Ended',
@@ -70,7 +70,7 @@ class Bill extends MyModel
 
     public function getProto()
     {
-        return proto\BillProto::findByPk($this->prototype_id);
+        return proto\BillProto::findByPk($this->proto_id);
     }
 
     public function getState()

@@ -16,12 +16,12 @@
 	 	</div>
  	</div>
         <div class="control-group">	
-		<label class="control-label" for="bill_region_code" >Столица</label>
+		<label class="control-label" for="bill_region_id" >Столица</label>
 		<div class="controls">
-			<select class="bill_field" id="bill_region_code" name="new_capital">
+			<select class="bill_field" id="bill_region_id" name="new_capital">
 		 	<? foreach ($user->state->regions as $region): ?>
-                            <? if ($region->code != $user->state->capital): ?>
-		 		<option value="<?=$region->code?>"><?=$region->city?></option>
+                            <? if ($region->id != $user->state->capital): ?>
+		 		<option value="<?=$region->id?>"><?=$region->city?> (<?=$region->name?>)</option>
                             <? endif ?>
 		 	<? endforeach ?>
 			</select>
@@ -33,12 +33,14 @@
                     <? 
                         $cores = [['Не выделять',[]]];
                         foreach ($user->state->regions as $region) {
-                            if ($region->code != $user->state->capital) {
+                            if ($region->id != $user->state->capital) {
                                 foreach ($region->cores as $core) {
-                                    if (!(isset($cores[$core->id]))) {
-                                        $cores[$core->id] = [$core->name, [$region->name]];
-                                    } else {
-                                        $cores[$core->id][1][] = $region->name;
+                                    if ($core->id !== $user->state->core_id) {
+                                        if (!(isset($cores[$core->id]))) {
+                                            $cores[$core->id] = [$core->name, [$region->name]];
+                                        } else {
+                                            $cores[$core->id][1][] = $region->name;
+                                        }
                                     }
                                 }
                             }
@@ -54,7 +56,7 @@
                     <? endforeach ?>
                     </select>
                     <div id="cores_info" style="display: none">
-                        Новому государству отойдут следующие регионы: <span id="satellit_region_list" ></span>
+                        Новому государству так же отойдут следующие регионы: <span id="satellit_region_list" ></span>
                     </div>
 	 	</div>
         </div>

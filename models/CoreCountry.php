@@ -11,6 +11,7 @@ use app\components\MyModel;
  * @property string $name
  * 
  * @property Region[] $regions Регионы
+ * @property State[] $states
  */
 class CoreCountry extends MyModel
 {
@@ -47,8 +48,13 @@ class CoreCountry extends MyModel
 
     public function getRegions()
     {
-        return $this->hasMany('app\models\Region', ['id' => 'region_id'])
+        return $this->hasMany(Region::className(), ['id' => 'region_id'])
                 ->viaTable('cores_regions', ['core_id' => 'id']);
+    }
+    
+    public function getStates()
+    {
+        return $this->hasMany(State::className(),['core_id' => 'id']);
     }
 
 }

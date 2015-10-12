@@ -16,8 +16,8 @@ use app\components\NalogPayer,
  * @property double $balance
  * 
  * @property Stock[] $stocks Акции
- * @property HoldingLicense[] $licenses Лицензии
- * @property Factory[] $factories Фабрики
+ * @property licenses\License[] $licenses Лицензии
+ * @property factories\Factory[] $factories Фабрики
  */
 class Holding extends NalogPayer
 {
@@ -90,17 +90,17 @@ class Holding extends NalogPayer
 
     public function getLicenses()
     {
-        return $this->hasMany('app\models\HoldingLicense', array('holding_id' => 'id'));
+        return $this->hasMany('app\models\licenses\License', array('holding_id' => 'id'));
     }
     
     public function getLicensesByState($stateID)
     {
-        return HoldingLicense::find()->where(['holding_id' => $this->id,'state_id'=>$stateID])->all();
+        return License::find()->where(['holding_id' => $this->id,'state_id'=>$stateID])->all();
     }
 
     public function getFactories()
     {
-        return $this->hasMany('app\models\Factory', array('holding_id' => 'id'));
+        return $this->hasMany('app\models\factories\Factory', array('holding_id' => 'id'));
     }
 
     private $_sumStocks = null;
@@ -124,14 +124,16 @@ class Holding extends NalogPayer
 
     /**
      * Является ли гос. предприятием
+     * 
+     * @param integer $stateId
      * @return boolean
      */
-    public function isGosHolding()
+    public function isGosHolding($stateId)
     {
         if (is_null($this->_isGosHolding)) {
             $this->_isGosHolding = false;
             foreach ($this->stocks as $stock) {
-                if ($stock->isGos() && $stock->getPercents() > 50) {
+                if ($stock->isGos($stateId) && $stock->getPercents() > 50) {
                     $this->_isGosHolding = true;
                     break;
                 }
@@ -149,7 +151,7 @@ class Holding extends NalogPayer
     public function isHaveLicense($stateId,$licenseTypeId)
     {
         foreach ($this->licenses as $license) {
-            if ($license->license_id === $licenseTypeId && $license->state_id === $stateId) {
+            if ($license->proto_id === $licenseTypeId && $license->state_id === $stateId) {
                 return true;
             }
         }
@@ -163,7 +165,7 @@ class Holding extends NalogPayer
     public function deleteLicense($licenseTypeId)
     {
         foreach ($this->licenses as $license) {
-            if ($license->license_id === $licenseTypeId) {
+            if ($license->proto_id === $licenseTypeId) {
                 $license->delete();
                 return;
             }

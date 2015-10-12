@@ -3,9 +3,9 @@
 namespace app\commands;
 
 use yii\console\Controller,
-    app\models\Bill,
+    app\models\bills\Bill,
     app\models\HoldingDecision,
-    app\models\Factory,
+    app\models\factories\Factory,
     app\models\Vacansy;
 
 /**
@@ -108,7 +108,7 @@ class UpdateMinutlyController extends Controller {
             
             //Vacansy::deleteAll("factory_id = {$building->id}");
             
-            foreach ($building->type->workers as $tWorker) {
+            foreach ($building->proto->workers as $tWorker) {
                 $count = 0;
                 foreach ($building->workers as $pop) {
                     if ($pop->class == $tWorker->pop_class_id) {

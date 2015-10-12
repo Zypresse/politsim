@@ -23,10 +23,9 @@ use app\components\NalogPayer,
  * @property PopClass $classinfo Класс населения
  * @property PopNation $nationinfo Национальность
  * @property Region $region Регион
- * @property Factory $factory Фабрика
+ * @property factories\Factory $factory Фабрика
  * @property Ideology $ideologyinfo Идеология
  * @property Religion $religioninfo Религия
- * @property Factory $factory Фабрика, на которой они работают
  */
 class Population extends NalogPayer {
 

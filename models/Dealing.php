@@ -17,8 +17,8 @@ use app\components\MyModel;
  * @property integer $is_secret Является ли сделка тайной
  * @property integer $time Время совершения сделки (-1 для непринятой)
  * 
- * @property NalogPayer $sender Отправитель
- * @property NalogPayer $recipient Получатель
+ * @property \app\components\NalogPayer $sender Отправитель
+ * @property \app\components\NalogPayer $recipient Получатель
  * @property PayType $type Тип сделки
  */
 class Dealing extends MyModel

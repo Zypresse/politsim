@@ -22,10 +22,6 @@ class Line extends NalogPayer \yii\db\ActiveRecord
         return Unnp::TYPE_LINE;
     }
     
-    public function isGoverment()
-    {
-        return false;
-    }
     /**
      * @inheritdoc
      */

@@ -6,13 +6,13 @@ use yii\helpers\ArrayHelper,
     app\components\MyController,
     app\components\MyHtmlHelper,
     app\models\User,
-    app\models\GovermentFieldType,
+    app\models\articles\proto\ArticleProto,
     app\models\Org,
-    app\models\Resurse,
+    app\models\resurses\proto\ResurseProto,
     app\models\Region,
-    app\models\BillType,
-    app\models\Bill,
-    app\models\BillVote,
+    app\models\bills\proto\BillProto,
+    app\models\bills\Bill,
+    app\models\bills\BillVote,
     app\models\ElectRequest,
     app\models\ElectVote,
     app\models\Post,
@@ -25,8 +25,12 @@ use yii\helpers\ArrayHelper,
     app\models\HoldingDecision,
     app\models\HoldingDecisionVote,
     app\models\Notification,
-    app\models\Factory,
-    app\models\FactoryWorkersSalary,
+    app\models\ElectOrgLeaderRequest,
+    app\models\ElectOrgLeaderVote,
+    app\models\Vacansy,
+    app\models\factories\Factory,
+    app\models\factories\proto\FactoryProto,
+    app\models\factories\FactoryWorkersSalary,
     app\models\constitution\ConstitutionFactory;
 
 class JsonController extends MyController
@@ -74,15 +78,15 @@ class JsonController extends MyController
         return $this->_r();
     }
 
-    public function actionGovermentFieldTypeInfo($id)
+    public function actionArticleProtoInfo($id)
     {
         $id = intval($id);
         if ($id > 0) {
-            $govermentFieldType = GovermentFieldType::findByPk($id);
-            if (is_null($govermentFieldType)) {
-                $this->error = "Goverment field type not found";
+            $articleProto = ArticleProto::findByPk($id);
+            if (is_null($articleProto)) {
+                $this->error = "Article prototype not found";
             } else {
-                $this->result = $govermentFieldType->getPublicAttributes();
+                $this->result = $articleProto->getPublicAttributes();
             }
         } else {
             $this->error = "Invalid ID";
@@ -123,17 +127,17 @@ class JsonController extends MyController
         return $this->_r();
     }
 
-    public function actionRegionsResurses($code)
+    public function actionRegionsResurses($id)
     {
-        if ($code) {
-            $resurse = Resurse::findByCode($code);
+        if ($id) {
+            $resurse = ResurseProto::findByPk($id);
             if (is_null($resurse)) {
                 $this->error = "Resurse not found";
             } else {
                 $regions = Region::find()->all();
                 $this->result = [];
                 foreach ($regions as $region) {
-                    $this->result[] = ['code' => $region->code, $code => $region->attributes[$code]];
+                    $this->result[] = ['region' => $region->code, 'count' => 0];
                 }
             }
         } else {
@@ -155,11 +159,11 @@ class JsonController extends MyController
         return $this->_r();
     }
 
-    public function actionNewBill($bill_type_id)
+    public function actionNewBill($bill_proto_id)
     {
-        $bill_type_id = intval($bill_type_id);
-        if ($bill_type_id > 0) {
-            $bill_type = BillType::findByPk($bill_type_id);
+        $bill_proto_id = intval($bill_proto_id);
+        if ($bill_proto_id > 0) {
+            $bill_type = BillProto::findByPk($bill_proto_id);
             if (is_null($bill_type))
                 return $this->_r("Bill type not found");
 
@@ -174,7 +178,7 @@ class JsonController extends MyController
                     if (isset($_REQUEST[$field->system_name])) {
                         $data[$field->system_name] = strip_tags($_REQUEST[$field->system_name]);
                     } else {
-                        return $this->_r("Неправильно заполнены поля");
+                        return $this->_r("Неправильно заполнены поля ({$field->system_name})");
                     }
                 }
 
@@ -185,7 +189,7 @@ class JsonController extends MyController
                 }
 
                 $bill = new Bill();
-                $bill->bill_type = $bill_type_id;
+                $bill->proto_id = $bill_proto_id;
                 $bill->creator = $user->id;
                 $bill->created = time();
                 $bill->vote_ended = ($user->isOrgLeader() && $user->post->org->leader_can_make_dicktator_bills) ? time() - 1 : time() + 24 * 60 * 60;
@@ -307,7 +311,7 @@ class JsonController extends MyController
             $user = User::findByPk($this->viewer_id);
             if ($user->state_id)
                 return $this->_r("You allready have citizenship");
-            $region = Region::findByCode($capital);
+            $region = Region::findByPk($capital);
             if (is_null($region))
                 return $this->_r("Region not found");
             if ($region->state_id)
@@ -617,26 +621,30 @@ class JsonController extends MyController
             return $this->_r("Invalid image");
     }
 
-    public function actionCreatePost($name)
+    public function actionCreatePost($name, $name_ministry = null)
     {
         $name = trim(strip_tags($name));
         if ($name) {
             $user = User::findByPk($this->viewer_id);
-            if (is_null($user->post))
+            if (is_null($user->post)) {
                 return $this->_r("You have not post");
+            }
             $org = Org::findByPk($user->post->org_id);
-            if (is_null($org))
+            if (is_null($org)) {
                 return $this->_r("Organisation not found");
+            }
             if ($user->isOrgLeader() && $user->post->org->leader_can_create_posts) {
                 $post = new Post();
                 $post->name = $name;
+                $post->ministry_name = $name_ministry;
                 $post->org_id = $org->id;
                 $post->can_delete = 1;
 
-                if ($post->save())
+                if ($post->save()) {
                     return $this->_rOk();
-                else
+                } else {
                     return $this->_r($post->getErrors());
+                }
             } else
                 return $this->_r("Not allowed");
         } else
@@ -799,7 +807,7 @@ class JsonController extends MyController
             if (is_null($region))
                 return $this->_r("Region not found");
 
-            $user = User::findByPk($this->viewer_id);
+            $user = $this->getUser();
             $user->region_id = $id;
             $user->save();
 
@@ -1251,7 +1259,7 @@ class JsonController extends MyController
                             $factory_type = intval($_REQUEST['factory_type']);
                             $size = intval($_REQUEST['size']);
 
-                            $fType = \app\models\FactoryType::findByPk($factory_type);
+                            $fType = FactoryProto::findByPk($factory_type);
 
                             if (is_null($fType)) {
                                 return $this->_r("Factory type not found");
@@ -1279,7 +1287,7 @@ class JsonController extends MyController
                             $uid = intval($_REQUEST['uid']);
                             if ($factory_id > 0 && $uid > 0) {
                                 
-                                $factory = \app\models\Factory::findByPk($factory_id);
+                                $factory = Factory::findByPk($factory_id);
                                 if ($factory->holding_id == $holding_id) {
                                     
                                     $decision->data = [
@@ -1302,8 +1310,8 @@ class JsonController extends MyController
                             $factory_id = intval($_REQUEST['factory_id']);
                             if ($factory_id > 0 ) {
                                 
-                                $factory = \app\models\Factory::findByPk($factory_id);
-                                if ($factory->holding_id == $holding_id && $factory->type_id == 4) {
+                                $factory = Factory::findByPk($factory_id);
+                                if ($factory->holding_id == $holding_id && $factory->proto_id == 4) {
                                     
                                     $decision->data = [
                                         'factory_id' => $factory_id
@@ -1325,7 +1333,7 @@ class JsonController extends MyController
                             $new_name = trim(strip_tags($_REQUEST['new_name']));
                             if ($factory_id > 0 && !(empty($new_name))) {
                                 
-                                $factory = \app\models\Factory::findByPk($factory_id);
+                                $factory = Factory::findByPk($factory_id);
                                 if ($factory->holding_id == $holding_id) {
                                     
                                     $decision->data = [
@@ -1460,7 +1468,7 @@ class JsonController extends MyController
                 return $this->_r("Not allowed. Error #3");
             }
 
-            $request = new \app\models\ElectOrgLeaderRequest();
+            $request = new ElectOrgLeaderRequest();
             $request->org_id = $org_id;
             $request->party_id = $me->party_id;
             $request->uid = $uid;
@@ -1479,7 +1487,7 @@ class JsonController extends MyController
         $request_id = intval($request_id);
 
         if ($request_id) {
-            $req = \app\models\ElectOrgLeaderRequest::findByPk($request_id);
+            $req = ElectOrgLeaderRequest::findByPk($request_id);
             if (is_null($req)) {
                 return $this->_r("Request not found");
             }
@@ -1494,7 +1502,7 @@ class JsonController extends MyController
                 return $this->_r("Allready voted");
             }
 
-            $vote = new \app\models\ElectOrgLeaderVote();
+            $vote = new ElectOrgLeaderVote();
             $vote->post_id = $user->post_id;
             $vote->request_id = $request_id;
             $vote->save();
@@ -1559,7 +1567,7 @@ class JsonController extends MyController
             
             if ($factory->manager_uid && $this->viewer_id == $factory->manager_uid) {
                 
-                foreach ($factory->type->workers as $tWorker) {
+                foreach ($factory->proto->workers as $tWorker) {
                     if (!(isset($_REQUEST['salary_'.$tWorker->pop_class_id]))) {
                         return $this->_r("Invalid fields 1");
                     }
@@ -1582,7 +1590,7 @@ class JsonController extends MyController
                     }
                     
                     if ($saved) {
-                        $vacansy = \app\models\Vacansy::find()->where(['factory_id'=>$factory_id,'pop_class_id'=>$tWorker->pop_class_id])->one();
+                        $vacansy = Vacansy::find()->where(['factory_id'=>$factory_id,'pop_class_id'=>$tWorker->pop_class_id])->one();
                         if ($vacansy) {
                             $vacansy->salary = $new_salary_value;
                             $vacansy->save();

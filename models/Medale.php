@@ -12,7 +12,7 @@ use app\components\MyModel;
  * @property integer $uid_vk
  * @property integer $type
  * 
- * @property \app\models\MedaleType $medaletype Тип значка
+ * @property \app\models\MedaleProto $proto Тип значка
  */
 class Medale extends MyModel
 {
@@ -49,9 +49,9 @@ class Medale extends MyModel
         ];
     }
 
-    public function getMedaletype()
+    public function getProto()
     {
-        return $this->hasOne('app\models\MedaleType', array('id' => 'type'));
+        return $this->hasOne('app\models\MedaleProto', array('id' => 'type'));
     }
 
 }

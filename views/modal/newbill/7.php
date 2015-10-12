@@ -1,12 +1,12 @@
 <?
     use app\components\MyHtmlHelper,
-        app\models\GovermentFieldType;
+        app\models\articles\proto\ArticleProto;
 ?>
 <p>Внесение поправки в конституцию</p>
 <form class="form-horizontal">
     <div class="control-group">
-        <select class="bill_field" id="bill7_goverment_field_type" name="goverment_field_type">
-            <? foreach (GovermentFieldType::find()->where(['hide' => 0])->all() as $type) { ?>
+        <select class="bill_field" id="bill_article_proto_id" name="article_proto_id">
+            <? foreach (ArticleProto::find()->where(['hide' => 0])->all() as $type) { ?>
             <option value="<?=$type->id?>"><?=$type->name?></option>
             <? } ?>
         </select>
@@ -19,12 +19,12 @@
 
 var load_field_input = function() {
     $('#goverment_field_value_block').empty();
-    get_html("goverment-field-value", {type: $('#bill7_goverment_field_type').val()}, function(data){
+    get_html("goverment-field-value", {'proto_id': $('#bill_article_proto_id').val()}, function(data){
         $("#goverment_field_value_block").html(data);
     });
 };
 
-$('#bill7_goverment_field_type').change(load_field_input);
+$('#bill_article_proto_id').change(load_field_input);
 
 $(load_field_input);
 

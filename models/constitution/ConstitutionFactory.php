@@ -2,8 +2,8 @@
 
 namespace app\models\constitution;
 
-use app\models\GovermentFieldType as ArticleProto,
-    app\models\GovermentFieldValue as Article;
+use app\models\articles\proto\ArticleProto,
+    app\models\articles\Article;
 
 /**
  * Description of ConstitutionFactory
@@ -24,7 +24,7 @@ abstract class ConstitutionFactory {
         foreach ($articlePrototypes as $articleProto) {
             $article = new Article([
                 'state_id'  => $stateId,
-                'type_id'   => $articleProto->id,
+                'proto_id'   => $articleProto->id,
                 'value'     => (string)$constitutionPrototype::getArticleValue($articleProto)
             ]);
             $article->save();

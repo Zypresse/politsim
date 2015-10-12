@@ -3,7 +3,7 @@
 use app\components\MyHtmlHelper;
 
 ?>
-<h2><?=$factory->type->name?> &laquo;<?=htmlspecialchars($factory->name)?>&raquo;</h2>
+<h2><?=$factory->proto->name?> &laquo;<?=htmlspecialchars($factory->name)?>&raquo;</h2>
 
 <p><strong>Местоположение:</strong> <?=MyHtmlHelper::a($factory->region->name, "show_region({$factory->region_id})")?></p>
 <p><strong>Владелец:</strong> <?=MyHtmlHelper::a($factory->holding->name,"load_page('holding-info',{'id':{$factory->holding_id}})")?></p>
@@ -19,7 +19,7 @@ use app\components\MyHtmlHelper;
 </p>
 <p><strong>Необходимые работники:</strong>
 <ul>
-    <? foreach ($factory->type->workers as $tWorker) { ?>
+    <? foreach ($factory->proto->workers as $tWorker) { ?>
     <li>
         <?=$tWorker->popClass->name?> — <?=$tWorker->count*$factory->size?>
     </li>
@@ -69,9 +69,9 @@ use app\components\MyHtmlHelper;
 <p><strong>Склады предприятия:</strong>
 <? if (count($factory->storages)) { ?>
 <ul>
-    <? foreach ($factory->storages as $store): if ($store->resurse->isStorable()): ?>
+    <? foreach ($factory->storages as $store): if ($store->proto->isStorable()): ?>
     <li>
-        <?=MyHtmlHelper::icon($store->resurse->code)?> <?=$store->resurse->name?> (<?=$store->count?> / <?=number_format($factory->storageSize($store->resurse_id),0,'',' ')?>)
+        <?=MyHtmlHelper::icon($store->proto->class)?> <?=$store->proto->name?> (<?=$store->count?> / <?=number_format($factory->storageSize($store->proto_id),0,'',' ')?>)
     </li>
     <? endif; endforeach; ?>
 </ul>
@@ -94,7 +94,7 @@ use app\components\MyHtmlHelper;
   <div id="salaries_manager_body" class="modal-body">
         <h3>Вакансии:</h3>
         <dl>
-            <? foreach ($factory->type->workers as $tWorker) { 
+            <? foreach ($factory->proto->workers as $tWorker) { 
                 $actived = 0;
                 foreach ($factory->workers as $worker) {
                     if ($worker->class == $tWorker->pop_class_id) {
@@ -139,7 +139,7 @@ function save_salaries() {
     var data = {
         'factory_id': <?=$factory->id?>
     }
-    <? foreach ($factory->type->workers as $tWorker) { ?>
+    <? foreach ($factory->proto->workers as $tWorker) { ?>
             data.salary_<?=$tWorker->pop_class_id?> = $('#salary_<?=$tWorker->pop_class_id?>').val();
     <? } ?>
         json_request('factory-manager-salaries-save',data);

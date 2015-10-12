@@ -22,12 +22,12 @@ use app\components\MyHtmlHelper;
 <? } else { ?>
 	<? if ($user->sex === 1) { ?>Гражданка<? } else { ?>Гражданин<? } ?> мира
 <? } ?></p>
-<? if ($user->region) { ?><p>Живет в регионе «<?=htmlspecialchars($user->region->name)?>»</p><? } ?>
+    <? if ($user->region) { ?><p>Живет в регионе «<a href="#" onclick="show_region(<?=$user->region->id?>)"><?=htmlspecialchars($user->region->name)?></a>»</p><? } ?>
 <? if ($user->post) { ?><p><i class="icon-briefcase"></i> Занимает пост &laquo;<?=htmlspecialchars($user->post->name)?>&raquo;<? if ($user->post->org) { ?> в организации &laquo;<a href="#" onclick="load_page('org-info',{'id':<?=$user->post->org_id?>});"><?=htmlspecialchars($user->post->org->name)?></a>&raquo;</p><? } ?><? } ?>
 <? if (count($user->medales)) { ?><p>
 <h4>Значки:</h4>
 <? foreach ($user->medales as $medale) { ?>
-<a href="#" rel="popover" class="medale" data-content="<?=htmlspecialchars($medale->medaletype->desc)?>" data-original-title="<?=htmlspecialchars($medale->medaletype->name)?>" ><img src="<?=$medale->medaletype->image?>" alt="<?=htmlspecialchars($medale->medaletype->name)?>" class="img-polaroid" ></a> 
+<a href="#" rel="popover" class="medale" data-content="<?=htmlspecialchars($medale->proto->desc)?>" data-original-title="<?=htmlspecialchars($medale->proto->name)?>" ><img src="<?=$medale->proto->image?>" alt="<?=htmlspecialchars($medale->proto->name)?>" class="img-polaroid" ></a> 
 <? } ?>
 </p>
 <script type="text/javascript">
@@ -235,4 +235,16 @@ use app\components\MyHtmlHelper;
 
 </script>
 <? } ?>
+<div style="display:none" class="modal" id="region_info" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel">Информация о регионе</h3>
+  </div>
+  <div id="region_info_body" class="modal-body">
+    <p>Загрузка…</p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+  </div>
+</div>
 </div>

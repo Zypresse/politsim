@@ -3,7 +3,7 @@
 use app\components\MyHtmlHelper;
 
 ?>
-<h3><?=$factory->type->name?> &laquo;<?=htmlspecialchars($factory->name)?>&raquo;</h3>
+<h3><?=$factory->proto->name?> &laquo;<?=htmlspecialchars($factory->name)?>&raquo;</h3>
 
 <p><strong>Местоположение:</strong> <?=MyHtmlHelper::a($factory->region->name, "show_region({$factory->region_id})")?></p>
 <p><strong>Владелец:</strong> <?=MyHtmlHelper::a($factory->holding->name,"load_page('holding-info',{'id':{$factory->holding_id}})")?></p>
@@ -19,7 +19,7 @@ use app\components\MyHtmlHelper;
 </p>
 <p><strong>Необходимые работники:</strong>
 <ul>
-    <? foreach ($factory->type->workers as $tWorker) { ?>
+    <? foreach ($factory->proto->workers as $tWorker) { ?>
     <li>
         <?=$tWorker->popClass->name?> — <?=$tWorker->count*$factory->size?>
     </li>
