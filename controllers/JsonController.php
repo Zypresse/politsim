@@ -33,8 +33,7 @@ use yii\helpers\ArrayHelper,
     app\models\factories\FactoryWorkersSalary,
     app\models\constitution\ConstitutionFactory;
 
-class JsonController extends MyController
-{
+class JsonController extends MyController {
 
     public function actions()
     {
@@ -306,16 +305,22 @@ class JsonController extends MyController
         if ($name && $short_name && $goverment_form && $capital && $color) {
 
             $goverment_form = intval($goverment_form);
-            $flag = ($flag) ? $flag : "http://placehold.it/300x200/eeeeee/000000&text=" . urlencode(MyHtmlHelper::transliterate($short_name));
+
+            if (!$flag || !MyHtmlHelper::isImageLink($flag)) {
+                $flag = "http://placehold.it/300x200/eeeeee/000000&text=" . urlencode(MyHtmlHelper::transliterate($short_name));
+            }
 
             $user = User::findByPk($this->viewer_id);
-            if ($user->state_id)
+            if ($user->state_id) {
                 return $this->_r("You allready have citizenship");
+            }
             $region = Region::findByPk($capital);
-            if (is_null($region))
+            if (is_null($region)) {
                 return $this->_r("Region not found");
-            if ($region->state_id)
+            }
+            if ($region->state_id) {
                 return $this->_r("Region claimed by other state");
+            }
 
             $state = new State();
             $state->name = trim(strip_tags($name));
@@ -333,7 +338,7 @@ class JsonController extends MyController
                         $executive = Org::generate($state, Org::EXECUTIVE_JUNTA);
                         $state->executive = $executive->id;
                         $state->save();
-                        
+
                         ConstitutionFactory::generate('Junta', $state->id);
                         break;
                     case 2: // Президентская республика
@@ -355,7 +360,7 @@ class JsonController extends MyController
                         ConstitutionFactory::generate('ParliamentRepublic', $state->id);
                         break;
                 }
-                
+
                 $region->state_id = $state->id;
                 $region->save();
 
@@ -472,7 +477,7 @@ class JsonController extends MyController
                 'sum' => $count,
                 'is_anonim' => $is_anonim ? 1 : 0,
                 'is_secret' => $is_secret ? 1 : 0,
-                'time' => time()                
+                'time' => time()
             ]);
             if ($dealing->save()) {
                 return $this->_rOk();
@@ -488,22 +493,26 @@ class JsonController extends MyController
     {
         $name = trim(strip_tags($name));
         $short_name = mb_strtoupper(mb_substr(trim(strip_tags($short_name)), 0, 6));
-        $image = trim(strip_tags($image));
-        $image = ($image) ? $image : "http://placehold.it/300x200/eeeeee/000000&text=" . urlencode(MyHtmlHelper::transliterate($short_name));
+
+        if (!$image || !MyHtmlHelper::isImageLink($image)) {
+            $image = "http://placehold.it/300x200/eeeeee/000000&text=" . urlencode(MyHtmlHelper::transliterate($short_name));
+        }
         $ideology = intval($ideology);
 
         if ($name && $short_name && $image && $ideology) {
             $user = User::findByPk($this->viewer_id);
 
-            if (!$user->state_id)
+            if (!$user->state_id) {
                 return $this->_r("You have not citizenship");
-            if ($user->party_id)
+            }
+            if ($user->party_id) {
                 return $this->_r("You allready have party");
+            }
 
             $party = new Party();
             $party->name = $name;
             $party->short_name = $short_name;
-            $party->image = $image;
+            $party->image = trim(strip_tags($image));
             $party->state_id = $user->state_id;
             $party->leader = $user->id;
             $party->ideology = $ideology;
@@ -512,11 +521,13 @@ class JsonController extends MyController
                 $user->party_id = $party->id;
                 $user->save();
                 $this->result = "ok";
-            } else
+            } else {
                 $this->error = $party->getErrors();
+            }
             return $this->_r();
-        } else
+        } else {
             return $this->_r("Invalid params");
+        }
     }
 
     public function actionPublicStatement($uid, $type = 'positive')
@@ -524,11 +535,13 @@ class JsonController extends MyController
         $uid = intval($uid);
         if ($uid > 0) {
             $user = User::findByPk($uid);
-            if (is_null($user))
+            if (is_null($user)) {
                 return $this->_r("User not found");
+            }
             $self = User::findByPk($this->viewer_id);
-            if ($self->last_vote > time() - 24 * 60 * 60)
+            if ($self->last_vote > time() - 24 * 60 * 60) {
                 return $this->_r("timeout", ['time' => ($self->last_vote + 24 * 60 * 60 - time())]);
+            }
 
             $user->star += round($self->star / mt_rand(10, 50));
             $self->star += round(mt_rand(0, 100) / 100);
@@ -555,10 +568,10 @@ class JsonController extends MyController
             $user->save();
             $self->save();
 
-            $this->result = "ok";
-            return $this->_r();
-        } else
+            return $this->_rOk();
+        } else {
             return $this->_r("Invalid user ID");
+        }
     }
 
     public function actionRenameOrg($name)
@@ -566,21 +579,26 @@ class JsonController extends MyController
         $name = trim(strip_tags($name));
         if ($name) {
             $user = User::findByPk($this->viewer_id);
-            if (is_null($user->post))
+            if (is_null($user->post)) {
                 return $this->_r("You have not post");
+            }
             $org = Org::findByPk($user->post->org_id);
-            if (is_null($org))
+            if (is_null($org)) {
                 return $this->_r("Organisation not found");
+            }
             if ($user->isOrgLeader()) {
                 $org->name = $name;
-                if ($org->save())
+                if ($org->save()) {
                     return $this->_rOk();
-                else
+                } else {
                     return $this->_r($org->getErrors());
-            } else
+                }
+            } else {
                 return $this->_r("Not allowed");
-        } else
+            }
+        } else {
             return $this->_r("Invalid name");
+        }
     }
 
     public function actionRenameParty($name, $short_name)
@@ -593,32 +611,37 @@ class JsonController extends MyController
                 $user->party->name = $name;
                 $user->party->short_name = $short_name;
 
-                if ($user->party->save())
+                if ($user->party->save()) {
                     return $this->_rOk();
-                else
+                } else {
                     return $this->_r($user->party->getErrors());
-            } else
+                }
+            } else {
                 return $this->_r("Not allowed");
-        } else
+            }
+        } else {
             return $this->_r("Invalid params");
+        }
     }
 
     public function actionChangePartyLogo($image)
     {
         $image = trim(strip_tags($image));
-        if ($image) {
-            $user = User::findByPk($this->viewer_id);
-            if ($user->party_id && $user->isPartyLeader()) {
-                $user->party->image = $image;
+        if (!$image || !MyHtmlHelper::isImageLink($image)) {
+            return $this->_r("Неправильная ссылка на изображение");
+        }
+        $user = User::findByPk($this->viewer_id);
+        if ($user->party && $user->isPartyLeader()) {
+            $user->party->image = $image;
 
-                if ($user->party->save())
-                    return $this->_rOk();
-                else
-                    return $this->_r($user->party->getErrors());
-            } else
-                return $this->_r("Not allowed");
-        } else
-            return $this->_r("Invalid image");
+            if ($user->party->save()) {
+                return $this->_rOk();
+            } else {
+                return $this->_r($user->party->getErrors());
+            }
+        } else {
+            return $this->_r("Not allowed");
+        }
     }
 
     public function actionCreatePost($name, $name_ministry = null)
@@ -1031,19 +1054,19 @@ class JsonController extends MyController
             return $this->_r("Invalid fields");
     }
 
-    public function actionCreateHolding($name,$capital)
+    public function actionCreateHolding($name, $capital)
     {
         $capital = floatval($capital);
         $user = $this->getUser();
         if ($user->region && $user->state_id) {
             $inHome = $user->region->state_id === $user->state_id;
             if (($inHome && $user->state->allow_register_holdings) || (!$inHome && $user->region->state->allow_register_holdings_noncitizens)) {
-                $mincap = $inHome?$user->region->state->register_holdings_mincap:$user->region->state->register_holdings_noncitizens_mincap;
-                $maxcap = $inHome?$user->region->state->register_holdings_maxcap:$user->region->state->register_holdings_noncitizens_maxcap;
-                if ($capital < $mincap || ($maxcap>0 && $capital > $maxcap)) {
+                $mincap = $inHome ? $user->region->state->register_holdings_mincap : $user->region->state->register_holdings_noncitizens_mincap;
+                $maxcap = $inHome ? $user->region->state->register_holdings_maxcap : $user->region->state->register_holdings_noncitizens_maxcap;
+                if ($capital < $mincap || ($maxcap > 0 && $capital > $maxcap)) {
                     return $this->_r("Invalid capitalisation");
                 }
-                $sum = $capital + ($inHome?$user->region->state->register_holdings_cost:$user->region->state->register_holdings_noncitizens_cost);
+                $sum = $capital + ($inHome ? $user->region->state->register_holdings_cost : $user->region->state->register_holdings_noncitizens_cost);
                 if ($user->money >= $sum) {
                     if (!(empty($name))) {
                         $holding = new Holding();
@@ -1286,21 +1309,20 @@ class JsonController extends MyController
                             $factory_id = intval($_REQUEST['factory_id']);
                             $uid = intval($_REQUEST['uid']);
                             if ($factory_id > 0 && $uid > 0) {
-                                
+
                                 $factory = Factory::findByPk($factory_id);
                                 if ($factory->holding_id == $holding_id) {
-                                    
+
                                     $decision->data = [
                                         'factory_id' => $factory_id,
                                         'uid' => $uid
                                     ];
-                                    
                                 } else {
                                     return $this->_r("Not allowed");
-                                }                                
+                                }
                             } else {
                                 return $this->_r("Invalid fields");
-                            }                            
+                            }
                         } else {
                             return $this->_r("Invalid fields");
                         }
@@ -1308,18 +1330,17 @@ class JsonController extends MyController
                     case HoldingDecision::DECISION_SETMAINOFFICE:
                         if (isset($_REQUEST['factory_id'])) {
                             $factory_id = intval($_REQUEST['factory_id']);
-                            if ($factory_id > 0 ) {
-                                
+                            if ($factory_id > 0) {
+
                                 $factory = Factory::findByPk($factory_id);
                                 if ($factory->holding_id == $holding_id && $factory->proto_id == 4) {
-                                    
+
                                     $decision->data = [
                                         'factory_id' => $factory_id
                                     ];
-                                    
                                 } else {
                                     return $this->_r("Not allowed");
-                                }                                
+                                }
                             } else {
                                 return $this->_r("Invalid fields");
                             }
@@ -1332,18 +1353,17 @@ class JsonController extends MyController
                             $factory_id = intval($_REQUEST['factory_id']);
                             $new_name = trim(strip_tags($_REQUEST['new_name']));
                             if ($factory_id > 0 && !(empty($new_name))) {
-                                
+
                                 $factory = Factory::findByPk($factory_id);
                                 if ($factory->holding_id == $holding_id) {
-                                    
+
                                     $decision->data = [
                                         'factory_id' => $factory_id,
                                         'new_name' => $new_name
                                     ];
-                                    
                                 } else {
                                     return $this->_r("Not allowed");
-                                }                                
+                                }
                             } else {
                                 return $this->_r("Invalid fields");
                             }
@@ -1564,15 +1584,15 @@ class JsonController extends MyController
             if (is_null($factory)) {
                 return $this->_r("Factory not found");
             }
-            
+
             if ($factory->manager_uid && $this->viewer_id == $factory->manager_uid) {
-                
+
                 foreach ($factory->proto->workers as $tWorker) {
-                    if (!(isset($_REQUEST['salary_'.$tWorker->pop_class_id]))) {
+                    if (!(isset($_REQUEST['salary_' . $tWorker->pop_class_id]))) {
                         return $this->_r("Invalid fields 1");
                     }
-                    $new_salary_value = abs(floatval($_REQUEST['salary_'.$tWorker->pop_class_id]));
-                    
+                    $new_salary_value = abs(floatval($_REQUEST['salary_' . $tWorker->pop_class_id]));
+
                     $saved = false;
                     foreach ($factory->salaries as $salary) {
                         if ($salary->pop_class_id == $tWorker->pop_class_id) {
@@ -1588,28 +1608,27 @@ class JsonController extends MyController
                         $salary->salary = $new_salary_value;
                         $saved = $salary->save();
                     }
-                    
+
                     if ($saved) {
-                        $vacansy = Vacansy::find()->where(['factory_id'=>$factory_id,'pop_class_id'=>$tWorker->pop_class_id])->one();
+                        $vacansy = Vacansy::find()->where(['factory_id' => $factory_id, 'pop_class_id' => $tWorker->pop_class_id])->one();
                         if ($vacansy) {
                             $vacansy->salary = $new_salary_value;
                             $vacansy->save();
                         }
                     }
-                    
+
                     if (!$saved) {
                         return isset($salary) ? $this->_r($salary->getErrors()) : 'Undefined error';
                     }
                 }
-                
+
                 return $this->_rOk();
-                
             } else {
                 return $this->_r("Not allowed");
-            }            
+            }
         } else {
             return $this->_r("Invalid factory ID");
         }
     }
-    
+
 }
