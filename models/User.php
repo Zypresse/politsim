@@ -28,7 +28,7 @@ use Yii,
  * @property integer $heart Доверие
  * @property integer $chart_pie Успешность
  * @property string $twitter_nickname
- * @property integer $died Флаг смерти
+ * @property integer $invited Флаг есть ли инвайт у юзера
  * 
  * @property string $authKey Авторизационный ключ
  * 

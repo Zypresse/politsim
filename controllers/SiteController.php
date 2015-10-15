@@ -4,8 +4,9 @@ namespace app\controllers;
 
 use Yii,
     yii\web\Controller,
-    app\models\User,
-    app\models\Auth;
+    yii\web\UploadedFile,
+    app\models\Auth,
+    app\models\InviteForm;
 
 class SiteController extends Controller
 {
@@ -25,7 +26,11 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
-        return $this->render('index');
+        if (Yii::$app->user->isGuest || Yii::$app->user->identity->invited) {
+            return $this->render('index');
+        } else {
+            return $this->redirect(["invite"]);
+        }
     }
     
     public function actionVkAppAuth($viewer_id, $auth_key)
@@ -37,8 +42,8 @@ class SiteController extends Controller
         
         $VK = new \app\components\vkapi\VkApi(Yii::$app->params['VK_APP_ID'],Yii::$app->params['VK_APP_KEY']);
        
-        $isMember = $VK->api('groups.isMember', ['group_id'=>'politsim','user_id'=>$viewer_id]);
-        if (!$isMember['response']) exit('Игра доступна только для альфа-тестеров.');
+//        $isMember = $VK->api('groups.isMember', ['group_id'=>'politsim','user_id'=>$viewer_id]);
+//        if (!$isMember['response']) exit('Игра доступна только для альфа-тестеров.');
         
         $vkinfo = $VK->api('users.get', array('https'=>1,'user_ids'=>$viewer_id,'fields'=>'sex,photo_50,photo_400_orig,photo_big','v'=>'5.34'));
         
@@ -81,10 +86,12 @@ class SiteController extends Controller
         
         if (Yii::$app->user->isGuest) {
             if ($auth && $auth->user) { // login
-                if (!$auth->user->died) {
-                    Yii::$app->user->login($auth->user);
+                
+                Yii::$app->user->login($auth->user);
+                if ($auth->user->invited) {
+                    $this->redirect("/");
                 } else {
-                    exit("banned");
+                    $this->redirect("invite");
                 }
             } else { // signup
                 Auth::signUp($client->getId(), $attributes);
@@ -104,4 +111,33 @@ class SiteController extends Controller
 
     }
 
+    public function actionInvite()
+    {
+        
+        if (!Yii::$app->user->isGuest) {
+        
+            $model = new InviteForm();
+
+            if (Yii::$app->request->isPost) {
+                $model->imageFile = UploadedFile::getInstance($model, 'imageFile');
+                if ($model->validate()) {
+                    $invite = $model->getInvite();
+                    if ($invite) {
+                        $invite->uid = Yii::$app->user->id;
+                        $invite->time = time();
+                        $invite->save();
+                        Yii::$app->user->identity->invited = 1;
+                        Yii::$app->user->identity->save();
+                        $this->redirect("/");
+                    } else {
+                        $model->addError('imageFile', 'Invalid invite');
+                    }
+                }
+            }
+
+            return $this->render('invite', ['model' => $model]);
+        } else {
+            $this->redirect("/");
+        }
+    }
 }

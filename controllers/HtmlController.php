@@ -56,10 +56,6 @@ class HtmlController extends MyController
                 return $this->_r("User not found");
             }
 
-            if ($user->died) {
-                return $this->_r("User was banned");
-            }
-
             return $this->render("profile", ['user' => $user, 'is_own' => ($this->viewer_id === $user->id), 'viewer' => ($this->viewer_id === $user->id) ? $user : $this->getUser()]);
         } else {
             return $this->_r("Invalid uid");

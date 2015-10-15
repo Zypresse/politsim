@@ -541,3 +541,8 @@ dd {
 .img-polaroid {
     margin-top: 10px;
 }
+
+.auth-clients {
+    display: inline-block;
+    margin-top: 5px;
+}

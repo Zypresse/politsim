@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models\factories\proto;
+namespace app\models;
 
 use app\components\MyModel;
 
