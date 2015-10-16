@@ -274,6 +274,9 @@ function json_request(page, params, noReload, noError, callback) {
     params = params || {};
     noReload = noReload || false;
     noError = noError || false;
+    callback = (typeof callback === 'function') ? callback : function (e) {
+        console.log(e);
+    };
 
     request('/json/'+page,params,'json',function(result){
         if (result.result === 'ok') {

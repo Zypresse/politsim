@@ -59,7 +59,7 @@ class SiteController extends Controller
         if ($auth) { // login
             $user = $auth->user;
             if (!$user->died) {
-                Yii::$app->user->login($user);
+                Yii::$app->user->login($user, 30*24*60*60);
             } else {
                 exit("banned");
             }
@@ -87,7 +87,7 @@ class SiteController extends Controller
         if (Yii::$app->user->isGuest) {
             if ($auth && $auth->user) { // login
                 
-                Yii::$app->user->login($auth->user);
+                Yii::$app->user->login($auth->user, 30*24*60*60);
                 if ($auth->user->invited) {
                     $this->redirect("/");
                 } else {

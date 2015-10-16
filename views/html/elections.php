@@ -233,8 +233,7 @@ var send_elect_request = function() {
 	json_request('elect-request',{'org_id':org_id,'leader':leader,'candidat':candidat});
 }
 var send_elect_vote = function() {
-    console.log(request);
-	if (request) json_request('elect-vote',{'request':request});
+	if (request) json_request('elect-vote',{'request':parseInt(request)});
 }
 
 function drop_elect_request(org_id,leader) {
