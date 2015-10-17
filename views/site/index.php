@@ -117,7 +117,7 @@ $this->title = 'Political Simulator';
                         <li><a onclick="load_page('tv')" href="#">Телевиденье</a></li>-->
                     </ul>
                 </li>
-                <li class="dropdown holding-info_page my-buisness_page market_page holding-control_page">
+                <li class="dropdown holding-info_page my-buisness_page market_page market-factories_page market-forex_page market-stocks_page market-resurses_page holding-control_page">
                     <a href="#" class="aaadropdown-toggle" data-toggle="dropdown"><?= MyHtmlHelper::icon('lg-icons/business') ?><br>Бизнес</a>
                     <ul class="dropdown-menu">
                         <li><a onclick="load_page('my-buisness')" href="#">Мой бизнес</a></li>

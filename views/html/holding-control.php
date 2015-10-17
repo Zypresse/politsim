@@ -90,7 +90,7 @@ $factoryCategories = FactoryProtoCategory::find()->all();
                 <td><?
                     switch ($decision->decision_type) {
                         case HoldingDecision::DECISION_CHANGENAME:
-                            echo 'Переименование холдинга в «' . $data->new_name . '»';
+                            echo 'Переименование компании в «' . $data->new_name . '»';
                             break;
                         case HoldingDecision::DECISION_PAYDIVIDENTS:
                             echo 'Выплата дивидентов в размере ' . $data->sum . ' ' . MyHtmlHelper::icon('money');
@@ -120,6 +120,13 @@ $factoryCategories = FactoryProtoCategory::find()->all();
                             $factory = Factory::findByPk($data->factory_id);
                             $region_name = $factory->region->name . ($factory->region->state ? ', ' . $factory->region->state->short_name : '');
                             echo "Переименование объекта {$factory->name} ({$region_name}) в {$data->new_name}";
+                            break;
+                        case HoldingDecision::DECISION_SELLFACTORY:
+                            $factory = Factory::findByPk($data->factory_id);
+                            $region_name = $factory->region->name . ($factory->region->state ? ', ' . $factory->region->state->short_name : '');
+                            $startPrice = MyHtmlHelper::moneyFormat($data->start_price);
+                            $endPrice = ($data->end_price) ? " и стоп-ценой ".MyHtmlHelper::moneyFormat($data->end_price) : '';
+                            echo "Продажа объекта {$factory->name} ({$region_name}) с начальной ценой ".$startPrice.$endPrice;
                             break;
                     }
                     ?></td><td>
@@ -172,6 +179,7 @@ $factoryCategories = FactoryProtoCategory::find()->all();
             <!--<li class="divider"></li>-->
             <li><a href="#" onclick="$('#rename_holding_modal').modal();" >Переименовать холдинг</a></li>
             <li><a href="#" onclick="$('#set_main_office_modal').modal();" >Установить главный офис</a></li>
+            <li><a href="#" onclick="$('#set_manager_modal').modal();" >Назначить управляющего</a></li>
         </ul>
     </div>
     <div class="btn-group">
@@ -190,8 +198,8 @@ $factoryCategories = FactoryProtoCategory::find()->all();
         <ul class="dropdown-menu">
             <li><a href="#" onclick="$('#new_factory_modal').modal();" >Построить новое предприятие</a></li>
             <li><a href="#" onclick="$('#new_line_modal').modal();recalc_build_line_variants();" >Построить новый объект инфраструктуры</a></li>
-            <li><a href="#" onclick="$('#set_manager_modal').modal();" >Назначить управляющего</a></li>
             <li><a href="#" onclick="$('#rename_factory_modal').modal();" >Переименовать обьект</a></li>
+            <li><a href="#" onclick="$('#sell_factory_modal').modal();" >Выставить предприятие на продажу</a></li>
         </ul>
     </div>
 <? if ($holding->state) { ?>
@@ -362,7 +370,7 @@ $factoryCategories = FactoryProtoCategory::find()->all();
 <div style="display:none;" class="modal" id="rename_holding_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel123" aria-hidden="true">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3 id="myModalLabel1234">Переименование холдинга</h3>
+        <h3 id="myModalLabel1234">Переименование компании</h3>
     </div>
     <div id="rename_holding_modal_body" class="modal-body">
         <div class="control-group">
@@ -401,6 +409,37 @@ $factoryCategories = FactoryProtoCategory::find()->all();
     </div>
     <div class="modal-footer">
         <button class="btn btn-primary" data-dismiss="modal"  onclick="rename_factory()">Переименовать</button>
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+    </div>
+</div>
+
+<div style="display:none;" class="modal" id="sell_factory_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabelsell_factory_modal" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="myModalLabel123sell_factory_modal">Выставление на продажу</h3>
+    </div>
+    <div id="rename_factory_modal_body" class="modal-body">
+        <div class="control-group">
+            <label class="control-label" for="#factory_id_for_sell">Обьект</label>
+            <div class="controls">
+                <select id="factory_id_for_sell">
+                    <? foreach ($holding->factories as $factory): ?>
+                        <option value="<?= $factory->id ?>"><?= $factory->name ?> (<?= $factory->region->name ?>)</option>
+                    <? endforeach ?>
+                </select>
+            </div>
+            <label class="control-label" for="#factory_start_price">Начальная цена</label>
+            <div class="controls">
+                <input type="number" id="factory_start_price" value=""> <?=MyHtmlHelper::icon('money')?>
+            </div>
+            <label class="control-label" for="#factory_end_price">Стоп-цена</label>
+            <div class="controls">
+                <input type="number" id="factory_end_price" value=""> <?=MyHtmlHelper::icon('money')?>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" data-dismiss="modal"  onclick="sell_factory()">Выставить на продажу</button>
         <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
     </div>
 </div>
@@ -562,6 +601,16 @@ foreach ($regions as $i => $region) {
 
     function rename_factory() {
         json_request('new-holding-decision', {'holding_id':<?= $holding->id ?>, 'type': 8, 'factory_id': $('#factory_id_for_rename').val(), 'new_name': $('#factory_new_name').val()});
+    }
+
+    function sell_factory() {
+        json_request('new-holding-decision', {
+            'holding_id': <?= $holding->id ?>,
+            'type': <?=HoldingDecision::DECISION_SELLFACTORY?>,
+            'factory_id': $('#factory_id_for_sell').val(),
+            'start_price': $('#factory_start_price').val(),
+            'end_price': $('#factory_end_price').val()
+        });
     }
 
     function set_main_office() {

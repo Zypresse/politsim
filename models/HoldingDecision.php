@@ -4,6 +4,7 @@ namespace app\models;
 
 use app\components\MyModel,
     app\models\factories\Factory,
+    app\models\factories\FactoryAuction,
     app\models\factories\proto\FactoryProto,
     app\models\licenses\License,
     app\models\licenses\LicenseRule;
@@ -110,6 +111,11 @@ class HoldingDecision extends MyModel
      * Переименование фабрики
      */
     const DECISION_RENAMEFABRIC = 8;
+    
+    /**
+     * Продажа фабрики
+     */
+    const DECISION_SELLFACTORY = 9;
 
     /**
      * Принять решение
@@ -266,6 +272,20 @@ class HoldingDecision extends MyModel
                 if ($factory->holding_id == $this->holding_id) {
                     $factory->name = trim(strip_tags($data->new_name));
                     $factory->save();
+                }
+                break;
+            case self::DECISION_SELLFACTORY:
+                $factory = Factory::findByPk($data->factory_id);
+                $startPrice = floatval($data->start_price) >= 0 ? floatval($data->start_price) : 0;
+                $endPrice = floatval($data->end_price) > 0 ? floatval($data->end_price) : null;
+                if ($factory->holding_id == $this->holding_id) {
+                    $auction = new FactoryAuction([
+                        'factory_id' => $factory->id,
+                        'date_end' => time() + 24*60*60,
+                        'start_price' => $startPrice,
+                        'end_price' => $endPrice
+                    ]);
+                    $auction->save();
                 }
                 break;
         }

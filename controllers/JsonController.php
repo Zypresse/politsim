@@ -1371,6 +1371,31 @@ class JsonController extends MyController {
                             return $this->_r("Invalid fields");
                         }
                         break;
+                    case HoldingDecision::DECISION_SELLFACTORY:
+                        if (isset($_REQUEST['factory_id']) && isset($_REQUEST['start_price'])) {
+                            $factory_id = intval($_REQUEST['factory_id']);
+                            $start_price = floatval($_REQUEST['start_price']);
+                            $end_price = floatval(@$_REQUEST['end_price']);
+                            if ($factory_id > 0 && $start_price >= 0 && $end_price >= 0) {
+
+                                $factory = Factory::findByPk($factory_id);
+                                if ($factory->holding_id == $holding_id) {
+
+                                    $decision->data = [
+                                        'factory_id' => $factory_id,
+                                        'start_price' => $start_price,
+                                        'end_price' => $end_price
+                                    ];
+                                } else {
+                                    return $this->_r("Not allowed");
+                                }
+                            } else {
+                                return $this->_r("Invalid fields 1");
+                            }
+                        } else {
+                            return $this->_r("Invalid fields 2");
+                        }
+                        break;
                 }
                 $decision->data = json_encode($decision->data, JSON_UNESCAPED_UNICODE);
 
