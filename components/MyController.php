@@ -60,34 +60,13 @@ class MyController extends Controller
             if ($viewer_id > 0 && $auth_key) {
                 $real_key = User::getRealKey($viewer_id);
                 if ($auth_key === $real_key) {
-                	$this->viewer_id = $viewer_id;
+                    $this->viewer_id = $viewer_id;
                     return true;
                 }
             }
         } 
         if (isset($action->actionMethod)) $action->actionMethod = 'actionInvalidAuthkey';
         
-        if (isset($_SESSION['add_medales']) && is_array($_SESSION['add_medales'])) {
-            $user = $this->getUser();
-            $_SESSION['add_medales'] = array_unique($_SESSION['add_medales']);
-            foreach ($_SESSION['add_medales'] as $medaleType) {
-                $isHaveMedale = false;
-                foreach ($user->medales as $medale) {
-                    if ($medale->type == $medaleType) {
-                        $isHaveMedale = true;
-                        break;
-                    }
-                }
-
-                if (!$isHaveMedale) {
-                    $medale = new app\models\Medale();
-                    $medale->type = $medaleType;
-                    $medale->uid = $user->id;
-                    $medale->save();
-                }
-            }
-        }
-
         return true;
     }
 

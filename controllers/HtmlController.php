@@ -2,7 +2,8 @@
 
 namespace app\controllers;
 
-use app\components\MyController,
+use Yii,
+    app\components\MyController,
     app\models\User,
     app\models\Dealing,
     app\models\Org,
@@ -13,7 +14,8 @@ use app\components\MyController,
     app\models\Ideology,
     app\models\Twitter,
     app\models\Holding,
-    app\models\factories\Factory;
+    app\models\factories\Factory,
+    app\models\factories\FactoryAuctionSearch;
 
 class HtmlController extends MyController
 {
@@ -334,4 +336,15 @@ class HtmlController extends MyController
         return $this->render("market/index");
     }
 
+    public function actionMarketFactories()
+    {
+        $searchModel = new FactoryAuctionSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('market/factories', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+    
 }

@@ -219,5 +219,20 @@ class MyHtmlHelper {
         
         return (is_array($ar) && count($ar)>1 && in_array(end($ar),['jpg','png','gif','jpeg']));
     }
+    
+    public static function timeFormatFuture($time)
+    {
+        $current = time();
+        $time = intval($time);
+        $d = $time - $current;
+        
+        if ($d < 60) {
+            return "Осталось ".static::formateNumberword($d, "секунд", "секунда", "секунды");
+        } elseif ($d < 3600) {
+            return "Осталось ".static::formateNumberword(round($d/60), "минут", "минута", "минуты");
+        } else {
+            return "Осталось ".static::formateNumberword(round($d/3600), "часов", "час", "часа");
+        }
+    }
 
 }
