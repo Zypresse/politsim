@@ -13,18 +13,33 @@ use yii\grid\GridView,
 <div class="span12" style="margin-top: 10px" >
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
+//        'filterModel' => $searchModel,
         'tableOptions' => [
-            'class' => 'table table-striped table-bordered'
+            'class' => 'table table-striped table-bordered',
+            'id' => 'market-factories-table'
         ],
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
             [
-                'attribute' => 'factory_id',
+                'attribute' => 'factoryName',
                 'label' => 'Предприятие',
                 'content' => function($model) {
-                    return MyHtmlHelper::a($model->factory->type->name . " «" . $model->factory->name . "»","load_page('factory-info',{'id':".$model->factory_id."})");
+                    return $model->factory->proto->name . " «" . MyHtmlHelper::a($model->factoryName,"load_page('factory-info',{'id':".$model->factory_id."})"). "»";
+                }
+            ],
+            [
+                'attribute' => 'holdingName',
+                'label' => 'Продавец',
+                'content' => function($model) {
+                    return MyHtmlHelper::a($model->factory->holding->name,"load_page('holding-info',{'id':".$model->factory->holding_id."})");
+                }
+            ],
+            [
+                'attribute' => 'regionName',
+                'label' => 'Местоположение',
+                'content' => function($model) {
+                    return $model->factory->region->name . ( $model->factory->region->state ? " (" . MyHtmlHelper::a($model->factory->region->state->short_name,"load_page('state-info',{'id':".$model->factory->region->state_id."})") . ")" : '');
                 }
             ],
             [
@@ -38,7 +53,7 @@ use yii\grid\GridView,
                 'attribute' => 'end_price',
                 'label' => 'Стоп-цена',
                 'content' => function($model) {
-                    return MyHtmlHelper::moneyFormat($model->end_price);
+                    return ($model->end_price) ? MyHtmlHelper::moneyFormat($model->end_price) : "<em>не установлена</em>";
                 }
             ],
             [
@@ -52,3 +67,14 @@ use yii\grid\GridView,
         ],
     ]); ?>
 </div>
+
+<script type="text/javascript">
+    $(function() {
+        $('#market-factories-table th a').click(function(){
+            $.get($(this).attr('href'), function(data){
+                $('#row1').html(data);
+            })
+            return false;
+        })
+    })
+</script>

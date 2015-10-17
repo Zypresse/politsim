@@ -3,7 +3,10 @@
 namespace app\models\factories;
 
 use yii\data\ActiveDataProvider,
+    app\models\factories\Factory,
     app\models\factories\FactoryAuction,
+    app\models\Holding,
+    app\models\Region,
     app\components\MyModel;
 
 /**
@@ -11,6 +14,11 @@ use yii\data\ActiveDataProvider,
  */
 class FactoryAuctionSearch extends FactoryAuction
 {
+    
+    public  $factoryName,
+            $holdingName,
+            $regionName;
+    
     /**
      * @inheritdoc
      */
@@ -19,6 +27,7 @@ class FactoryAuctionSearch extends FactoryAuction
         return [
             [['id', 'factory_id', 'date_end', 'winner_unnp'], 'integer'],
             [['start_price', 'end_price', 'current_price'], 'number'],
+            [['factoryName', 'holdingName', 'regionName'], 'safe']
         ];
     }
 
@@ -46,15 +55,44 @@ class FactoryAuctionSearch extends FactoryAuction
             'query' => $query,
         ]);
 
-        if (!isset($params['sort'])) {
-            $params['sort'] = '-date_end';
-        }
+        /**
+        * Setup your sorting attributes
+        * Note: This is setup before the $this->load($params) 
+        * statement below
+        */
+        $dataProvider->setSort([
+           'attributes' => [
+               'id',
+               'factoryName' => [
+                   'asc' => [Factory::tableName().'.name' => SORT_ASC],
+                   'desc' => [Factory::tableName().'.name' => SORT_DESC],
+                   'label' => 'Factory Name'
+               ],
+               'holdingName' => [
+                   'asc' => [Holding::tableName().'.name' => SORT_ASC],
+                   'desc' => [Holding::tableName().'.name' => SORT_DESC],
+                   'label' => 'Holding Name'
+               ],
+               'regionName' => [
+                   'asc' => [Region::tableName().'.name' => SORT_ASC],
+                   'desc' => [Region::tableName().'.name' => SORT_DESC],
+                   'label' => 'Region Name'
+               ],
+               'regionName',
+               'current_price',
+               'end_price',
+               'date_end'
+           ]
+       ]);
         
-        $this->load($params);
-
-        if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
+         if (!($this->load($params) && $this->validate())) {
+            /**
+             * The following line will allow eager loading with country data 
+             * to enable sorting by country on initial loading of the grid.
+             */ 
+            $query->joinWith(['factory']);
+            $query->joinWith(['factory.holding']);
+            $query->joinWith(['factory.region']);
             return $dataProvider;
         }
 
@@ -67,6 +105,14 @@ class FactoryAuctionSearch extends FactoryAuction
             'end_price' => $this->end_price,
             'winner_unnp' => $this->winner_unnp,
         ]);
+        
+        $query->joinWith(['factory' => function ($q) {
+            $q->where(Factory::tableName().'.name LIKE "%' . $this->factoryName . '%"');
+        }])->joinWith(['factory.holding' => function ($q) {
+            $q->where(Holding::tableName().'.name LIKE "%' . $this->holdingName . '%"');
+        }])->joinWith(['factory.region' => function ($q) {
+            $q->where(Region::tableName().'.name LIKE "%' . $this->regionName. '%"');
+        }]);
 
         return $dataProvider;
     }

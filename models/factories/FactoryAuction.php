@@ -18,6 +18,9 @@ use app\components\MyModel,
  * @property integer $winner_unnp
  * 
  * @property Factory $factory
+ * @property string $factoryName
+ * @property string $holdingName
+ * @property string $regionName
  * @property \app\components\NalogPayer $winner
  */
 class FactoryAuction extends MyModel
@@ -67,6 +70,21 @@ class FactoryAuction extends MyModel
     public function getWinner()
     {
         return Unnp::findByPk($this->winner_unnp)->master;
+    }
+    
+    public function getFactoryName()
+    {
+        return $this->factory->name;
+    }
+    
+    public function getHoldingName()
+    {
+        return $this->factory->holding->name;
+    }
+    
+    public function getRegionName()
+    {
+        return $this->factory->region->name;
     }
 
 }
