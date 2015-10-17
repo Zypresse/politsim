@@ -26,7 +26,7 @@ use app\components\NalogPayer,
  * @property \app\models\User $leaderInfo Лидер
  * @property \app\models\State $state Государство
  * @property \app\models\Ideology $ideologyInfo Идеология
- * @property \app\models\Post[] $postsReserve 
+ * @property \app\models\Post[] $postsReserved 
  */
 class Party extends NalogPayer
 {
@@ -127,7 +127,7 @@ class Party extends NalogPayer
     {
         if (is_null($this->_isParlamentarian)) {
             $this->_isParlamentarian = false;
-            foreach ($this->posts as $post) {
+            foreach ($this->postsReserved as $post) {
                 if ($post->org_id === $this->state->legislature) {
                     $this->_isParlamentarian = true;
                     break;
