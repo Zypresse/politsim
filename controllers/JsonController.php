@@ -972,7 +972,7 @@ class JsonController extends MyController {
                 $tweet->user->chart_pie += ($self->chart_pie > $tweet->user->chart_pie) ? 1 : 0;
                 $tweet->user->star += round($self->star / 100);
                 $tweet->user->save();
-                $tweet->retweets += $retweets;
+                $tweet->retweets += $retweets+1;
                 $tweet->save();
 
                 $retweet = new Twitter();
