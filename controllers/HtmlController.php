@@ -328,5 +328,10 @@ class HtmlController extends MyController
             return $this->_r("Invalid factory ID");
         }
     }    
+    
+    public function actionMarket()
+    {
+        return $this->render("market/index");
+    }
 
 }

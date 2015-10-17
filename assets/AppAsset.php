@@ -37,6 +37,7 @@ class AppAsset extends AssetBundle
         'js/jquery.peity.min.js',
         'js/jquery-dateFormat.min.js',
         '//vk.com/js/api/xd_connection.js',
+        '//www.google.com/jsapi?autoload={\'modules\':[{\'name\':\'visualization\',\'version\':\'1\',\'packages\':[\'corechart\']}]}',
         'js/script_all.js',
         
     ];

@@ -117,10 +117,11 @@ $this->title = 'Political Simulator';
                         <li><a onclick="load_page('tv')" href="#">Телевиденье</a></li>-->
                     </ul>
                 </li>
-                <li class="dropdown holding-info_page my-buisness_page holding-control_page">
+                <li class="dropdown holding-info_page my-buisness_page market_page holding-control_page">
                     <a href="#" class="aaadropdown-toggle" data-toggle="dropdown"><?= MyHtmlHelper::icon('lg-icons/business') ?><br>Бизнес</a>
                     <ul class="dropdown-menu">
                         <li><a onclick="load_page('my-buisness')" href="#">Мой бизнес</a></li>
+                        <li><a onclick="load_page('market')" href="#">Рынок</a></li>
                     </ul>
                 </li>
                 <li class="dropdown chart-states_page chart-parties_page chart-peoples_page">
