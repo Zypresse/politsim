@@ -483,7 +483,8 @@ class ModalController extends MyController
     {
         $regionBase = Region::findByPk($region1_id);
         if ($regionBase) {
-            foreach ($regionBase->getBordersArray() as $i => $region) {
+            $regions = $regionBase->getBordersArray();
+            foreach ($regions as $i => $region) {
                 ?>
                 <? if ($i == 0 || $regions[$i - 1]->state_id != $region->state_id) { ?>
                     <?= ($i) ? '</optgroup>' : '' ?><optgroup label="<?= ($region->state) ? $region->state->name : 'Ничейные регионы' ?>">
