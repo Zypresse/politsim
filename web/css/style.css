@@ -546,3 +546,8 @@ dd {
     display: inline-block;
     margin-top: 5px;
 }
+
+#market-change-unnp {
+    float: right;
+    margin-top: 10px;
+}

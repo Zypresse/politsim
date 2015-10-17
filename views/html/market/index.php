@@ -2,9 +2,10 @@
     use app\components\MyHtmlHelper;
     
     /* @var $this yii\web\View */
+    /* @var $user app\models\User */
 ?>
-<h1>Мировой финансовый рынок</h1>
 <?=$this->render('_menu',['active' => 0])?>
+<h3>Мировой финансовый рынок</h3>
 <div id="world_gdp" class="span6"></div>
 <div id="world_mining" class="span6"></div>
 

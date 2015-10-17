@@ -344,6 +344,7 @@ class HtmlController extends MyController
         return $this->render('market/factories', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'user' => $this->getUser()
         ]);
     }
     
