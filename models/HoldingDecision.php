@@ -116,6 +116,11 @@ class HoldingDecision extends MyModel
      * Продажа фабрики
      */
     const DECISION_SELLFACTORY = 9;
+    
+    /**
+     * Назначение директора
+     */
+    const DECISION_SETDIRECTOR = 10;
 
     /**
      * Принять решение
@@ -287,6 +292,10 @@ class HoldingDecision extends MyModel
                     ]);
                     $auction->save();
                 }
+                break;
+            case self::DECISION_SETDIRECTOR:
+                $this->holding->director_id = intval($data->uid);
+                $this->holding->save();                
                 break;
         }
 

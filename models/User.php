@@ -43,6 +43,7 @@ use Yii,
  * @property \app\models\Notification[] $notifications Уведомления
  * @property \app\models\factories\Factory[] $factories 
  * @property \app\models\Auth[] $accounts
+ * @property \app\models\Holding[] $holdings Компании, директором которых является
  */
 class User extends NalogPayer implements \yii\web\IdentityInterface
 {
@@ -199,6 +200,11 @@ class User extends NalogPayer implements \yii\web\IdentityInterface
     public function getAccounts()
     {
         return $this->hasMany('app\models\Auth', array('user_id' => 'id'));
+    }
+
+    public function getHoldings()
+    {
+        return $this->hasMany('app\models\Holding', array('director_id' => 'id'));
     }
 
     /**

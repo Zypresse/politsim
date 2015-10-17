@@ -9,25 +9,29 @@ use yii\grid\GridView,
 /* @var $dataProvider yii\data\ActiveDataProvider */
 /* @var $user app\models\User */
 
+$unnps = [$user->unnp];
+
 ?>
 <?=$this->render('_menu',['active' => 4])?>
 <div id="market-change-unnp" >
     <label for="#market-change-unnp-select" >Действовать от имени: </label>
     <select id="market-change-unnp-select" >
         <option value="<?=$user->unnp?>">Физическое лицо</option>
-        <? if ($user->post && $user->post->org && $user->post->org->isExecutive()): ?>
+        <? if ($user->post && $user->post->org && $user->post->org->isExecutive()): $unnps[] = $user->post->unnp; ?>
         <option value="<?=$user->post->unnp?>"><?=$user->post->ministry_name?$user->post->ministry_name:$user->post->name.' ('.$user->post->org->name.')'?></option>
         <? endif ?>
-        <? if ($user->isOrgLeader()): ?>
+        <? if ($user->isOrgLeader()): $unnps[] = $user->post->org->unnp; ?>
         <option value="<?=$user->post->org->unnp?>"><?=$user->post->org->name?></option>
         <? endif ?>
-        <? if ($user->isStateLeader()): ?>
+        <? if ($user->isStateLeader()): $unnps[] = $user->state->unnp; ?>
         <option value="<?=$user->state->unnp?>"><?=$user->state->name?></option>
         <? endif ?>
         <?/* if ($user->isRegionLeader()): ?>
         <option value="<?=$user->region->unnp?>"><?=$user->region->name?></option>
         <? endif */?>
-        
+        <? foreach ($user->holdings as $holding): $unnps[] = $holding->unnp; ?>
+        <option value="<?=$holding->unnp?>"><?=$holding->name?></option>
+        <? endforeach ?>
     </select>
 </div>
 <h3>Рынок недвижимости</h3>
@@ -88,8 +92,8 @@ use yii\grid\GridView,
                 'label' => 'Действия',
                 'content' => function($model) {
                     return Html::button('Ставка', [
-                        'class' => 'btn btn-small btn-primary',
-                        'onclick' => ''
+                        'class' => 'btn btn-small btn-primary btn-bet hide-on-unnp'.$model->factory->holding->unnp,
+                        'onclick' => 'alert(1)'
                     ]);
                 }
             ]
@@ -105,6 +109,13 @@ use yii\grid\GridView,
                 $('#row1').html(data);
             })
             return false;
+        })
+        
+        $('#market-change-unnp-select').change(function(){
+            var unnp = parseInt($(this).val());
+            console.log(unnp);
+            $('.btn-bet').removeAttr("disabled");
+            $('.hide-on-unnp'+unnp).attr("disabled","disabled");
         })
     })
 </script>

@@ -20,6 +20,7 @@ $userStock = $user->getShareholderStock($holding);
 $factoryCategories = FactoryProtoCategory::find()->all();
 ?>
 <h1>Управление «<?= $holding->name ?>»</h1>
+<p>Директор: <?=$holding->director?  MyHtmlHelper::a($holding->director->name,'load_page("profile",{"id":'.$holding->director_id.'})'):'<em>не назначен</em>'?></p>
 <p>Капитализация: <?= number_format($holding->capital, 0, '', ' ') ?> <?= MyHtmlHelper::icon('money') ?></p>
 <p>Баланс: <?= number_format($holding->balance, 0, '', ' ') ?> <?= MyHtmlHelper::icon('money') ?></p>
 <? if ($holding->state) { ?>
@@ -128,6 +129,10 @@ $factoryCategories = FactoryProtoCategory::find()->all();
                             $endPrice = ($data->end_price) ? " и стоп-ценой ".MyHtmlHelper::moneyFormat($data->end_price) : '';
                             echo "Продажа объекта {$factory->name} ({$region_name}) с начальной ценой ".$startPrice.$endPrice;
                             break;
+                        case HoldingDecision::DECISION_SETDIRECTOR:
+                            $user = User::findByPk($data->uid);
+                            echo "Назначение человека по имени {$user->name} на должность управляющего директора";
+                            break;
                     }
                     ?></td><td>
                     <?
@@ -179,7 +184,7 @@ $factoryCategories = FactoryProtoCategory::find()->all();
             <!--<li class="divider"></li>-->
             <li><a href="#" onclick="$('#rename_holding_modal').modal();" >Переименовать холдинг</a></li>
             <li><a href="#" onclick="$('#set_main_office_modal').modal();" >Установить главный офис</a></li>
-            <li><a href="#" onclick="$('#set_manager_modal').modal();" >Назначить управляющего</a></li>
+            <li><a href="#" onclick="$('#set_director_modal').modal();" >Назначить директора</a></li>
         </ul>
     </div>
     <div class="btn-group">
@@ -200,6 +205,7 @@ $factoryCategories = FactoryProtoCategory::find()->all();
             <li><a href="#" onclick="$('#new_line_modal').modal();recalc_build_line_variants();" >Построить новый объект инфраструктуры</a></li>
             <li><a href="#" onclick="$('#rename_factory_modal').modal();" >Переименовать обьект</a></li>
             <li><a href="#" onclick="$('#sell_factory_modal').modal();" >Выставить предприятие на продажу</a></li>
+            <li><a href="#" onclick="$('#set_manager_modal').modal();" >Назначить управляющего</a></li>
         </ul>
     </div>
 <? if ($holding->state) { ?>
@@ -364,6 +370,40 @@ $factoryCategories = FactoryProtoCategory::find()->all();
     </div>
     <div class="modal-footer">
         <button class="btn btn-primary" data-dismiss="modal"  onclick="json_request('new-holding-decision', {'holding_id':<?= $holding->id ?>, 'factory_id': $('#new_manager_factory').val(), 'uid': $('#new_manager_uid').val(), 'type': 6})">Назначить</button>
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+    </div>
+</div>
+<div style="display:none;" class="modal" id="set_director_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabelsdm" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="myModalLabelsdm">Назначение нового директора</h3>
+    </div>
+    <div id="set_manager_modal_body" class="modal-body">
+        <div class="control-group">
+            <label class="control-label" for="#new_director_uid">Новый директор:</label>
+            <div class="controls">
+                <select id="new_director_uid">
+                    <? foreach ($holding->stocks as $stock) { ?>
+                        <?
+                        switch (get_class($stock->master)) {
+                            case 'app\models\User':
+                                echo "<option value='{$stock->master->id}'>" . Html::a(Html::img($stock->master->photo, ['style' => 'width:20px']) . ' ' . $stock->master->name, "#", ['onclick' => "load_page('profile',{'uid':{$stock->master->id}})"]) . "</option>";
+                                break;
+                            case 'app\models\Post':
+                                echo "<option value='{$stock->master->user->id}'>" . Html::a(Html::img($stock->master->user->photo, ['style' => 'width:20px']) . ' ' . $stock->master->user->name, "#", ['onclick' => "load_page('profile',{'uid':{$stock->master->user->id}})"]) . "</option>";
+                                break;
+                            case 'app\models\Holding':
+
+                                break;
+                        }
+                        ?>
+<? } ?>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" data-dismiss="modal"  onclick="json_request('new-holding-decision', {'holding_id':<?= $holding->id ?>, 'uid': $('#new_director_uid').val(), 'type': <?=HoldingDecision::DECISION_SETDIRECTOR?>})">Назначить</button>
         <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
     </div>
 </div>

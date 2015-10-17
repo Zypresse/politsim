@@ -1396,6 +1396,20 @@ class JsonController extends MyController {
                             return $this->_r("Invalid fields 2");
                         }
                         break;
+                    case HoldingDecision::DECISION_SETDIRECTOR:
+                        if (isset($_REQUEST['uid'])) {
+                            $uid = intval($_REQUEST['uid']);
+                            if ($uid > 0) {
+                                $decision->data = [
+                                    'uid' => $uid
+                                ];
+                            } else {
+                                return $this->_r("Invalid fields 1");
+                            }
+                        } else {
+                            return $this->_r("Invalid fields 2");
+                        }
+                        break;
                 }
                 $decision->data = json_encode($decision->data, JSON_UNESCAPED_UNICODE);
 

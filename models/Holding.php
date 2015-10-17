@@ -12,12 +12,15 @@ use app\components\NalogPayer,
  * @property string $name
  * @property integer $state_id
  * @property integer $region_id
+ * @property integer $director_id
+ * @property integer $main_office_id
  * @property double $capital
  * @property double $balance
  * 
  * @property Stock[] $stocks Акции
  * @property licenses\License[] $licenses Лицензии
  * @property factories\Factory[] $factories Фабрики
+ * @property User $director
  */
 class Holding extends NalogPayer
 {
@@ -42,7 +45,7 @@ class Holding extends NalogPayer
     {
         return [
             [['name', 'state_id'], 'required'],
-            [['state_id', 'region_id'], 'integer'],
+            [['state_id', 'region_id', 'director_id'], 'integer'],
             [['capital', 'balance'], 'number'],
             [['name'], 'string', 'max' => 255],
             [['name'], 'unique']
@@ -59,6 +62,7 @@ class Holding extends NalogPayer
             'name'      => 'Name',
             'state_id'  => 'State ID',
             'region_id' => 'Region ID',
+            'director_id' => 'Director ID',
             'capital'   => 'Капитализация',
         ];
     }
@@ -71,6 +75,11 @@ class Holding extends NalogPayer
     public function getRegion()
     {
         return $this->hasOne('app\models\Region', array('id' => 'region_id'));
+    }
+
+    public function getDirector()
+    {
+        return $this->hasOne('app\models\User', array('id' => 'director_id'));
     }
 
     public function getStocks()
