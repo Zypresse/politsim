@@ -251,7 +251,7 @@ $factoryCategories = FactoryProtoCategory::find()->all();
                             $text = "Получение лицензии бесплатно";
                             if (!(is_null($stateLicense))) {
                                 if ($stateLicense->is_only_goverment) {
-                                    if (!$userStock->master->isGoverment()) {
+                                    if (!$userStock->master->isGoverment($holding->state)) {
                                         continue;
                                     }
                                 }

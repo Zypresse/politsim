@@ -26,6 +26,7 @@ use app\components\NalogPayer,
  * @property \app\models\User $leaderInfo Лидер
  * @property \app\models\State $state Государство
  * @property \app\models\Ideology $ideologyInfo Идеология
+ * @property \app\models\Post[] $postsReserve 
  */
 class Party extends NalogPayer
 {
@@ -52,7 +53,7 @@ class Party extends NalogPayer
             [['name', 'short_name', 'state_id', 'leader', 'ideology'], 'required'],
             [['state_id', 'leader', 'ideology', 'star', 'heart', 'chart_pie'], 'integer'],
             [['name'], 'string', 'max' => 500],
-            [['short_name'], 'string', 'max' => 30],
+            [['short_name'], 'string', 'max' => 4],
             [['image'], 'string', 'max' => 1000]
         ];
     }
@@ -105,6 +106,11 @@ class Party extends NalogPayer
     {
         return $this->hasOne('app\models\Ideology', array('id' => 'ideology'));
     }
+    
+    public function getPostsReserved()
+    {
+        return $this->hasMany('app\models\Post', array('party_reserve' => 'id'));
+    }
 
     /**
      * Возвращает число членов
@@ -121,8 +127,8 @@ class Party extends NalogPayer
     {
         if (is_null($this->_isParlamentarian)) {
             $this->_isParlamentarian = false;
-            foreach ($this->state->legislatureOrg->posts as $post) {
-                if ($post->party_reserve === $this->id) {
+            foreach ($this->posts as $post) {
+                if ($post->org_id === $this->state->legislature) {
                     $this->_isParlamentarian = true;
                     break;
                 }
