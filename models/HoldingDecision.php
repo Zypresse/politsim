@@ -121,6 +121,11 @@ class HoldingDecision extends MyModel
      * Назначение директора
      */
     const DECISION_SETDIRECTOR = 10;
+    
+    /**
+     * Строительство трубопровода/ЛЭП
+     */
+    const DECISION_BUILDLINE = 11;
 
     /**
      * Принять решение

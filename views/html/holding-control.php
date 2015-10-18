@@ -524,7 +524,7 @@ $factoryCategories = FactoryProtoCategory::find()->all();
             <div class="controls">
                 <select id="factory_new_region">
 <?
-$regions = app\models\Region::find()->with('state')->orderBy('state_id')->all();
+$regions = Region::find()->with('state')->orderBy('state_id')->all();
 foreach ($regions as $i => $region) {
     ?>
     <? if ($i == 0 || $regions[$i - 1]->state_id != $region->state_id) { ?>

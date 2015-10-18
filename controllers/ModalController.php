@@ -23,11 +23,10 @@ use app\components\MyController,
     app\models\Holding,
     app\models\factories\proto\FactoryProtoCategory;
 
-class ModalController extends MyController
-{
-    
+class ModalController extends MyController {
+
     public $layout = "api";
-    
+
     public function actionCreateStateDialog($code)
     {
         if ($code) {
@@ -36,7 +35,7 @@ class ModalController extends MyController
                 return $this->_r("Region not found");
             }
 
-            $forms = [['id' => 4, 'name' => 'Диктатура'],['id' => 2, 'name' => 'Президентская республика'],['id' => 3, 'name' => 'Парламентская республика']];
+            $forms = [['id' => 4, 'name' => 'Диктатура'], ['id' => 2, 'name' => 'Президентская республика'], ['id' => 3, 'name' => 'Парламентская республика']];
 
             return $this->render("create-state-dialog", ['region' => $region, 'forms' => $forms]);
         } else {
@@ -56,7 +55,7 @@ class ModalController extends MyController
             if (!($post->org->dest === 'dest_by_leader' && intval($post->org->leader->user->id) === $this->viewer_id && $id !== $post->org->leader_post)) {
                 return $this->_r("No access");
             }
-            
+
             $people = User::find()->where(['state_id' => $post->org->state_id, 'post_id' => 0])->orderBy('`star` + `heart` + `chart_pie` DESC')->all();
 
             return $this->render("naznach", ['post' => $post, 'people' => $people]);
@@ -83,26 +82,26 @@ class ModalController extends MyController
             if ($org->next_elect > time()) {
 
                 $elect_requests = ElectRequest::find()->where(["org_id" => $org_id, "leader" => $leader])->all();
-                $results        = [];
-                $requests       = [];
-                $sum_a_r        = 0;
-                $sum_star       = 0;
-                if (is_array($elect_requests)) {
+                $results = [];
+                $requests = [];
+                $sum_a_r = 0;
+                $sum_star = 0;
+                if (count($elect_requests)) {
                     foreach ($elect_requests as $request) {
 
                         if (($leader && is_null($request->user)) || (!$leader && is_null($request->party))) {
                             return $this->_r("Trololo " . $request->id);
                         }
 
-                        $pr              = is_null($request->party) ? 0 : ($request->party->heart + $request->party->chart_pie / 10);
+                        $pr = is_null($request->party) ? 0 : ($request->party->heart + $request->party->chart_pie / 10);
                         $abstract_rating = $leader ? $request->user->heart + $request->user->chart_pie / 10 + $pr / 10 : $pr;
-                        $votes           = ElectVote::find()->where(["request_id" => $request->id])->all();
+                        $votes = ElectVote::find()->where(["request_id" => $request->id])->all();
                         if (is_array($votes)) {
                             foreach ($votes as $vote) {
                                 $abstract_rating += ($vote->user->star + $vote->user->heart / 10 + $vote->user->chart_pie / 100) / 10;
                             }
                         }
-                        $results[]              = ['id' => $request->id, 'rating' => $abstract_rating];
+                        $results[] = ['id' => $request->id, 'rating' => $abstract_rating];
                         $requests[$request->id] = $request;
                         $sum_a_r += $abstract_rating;
                         $sum_star += $leader ? $request->user->star : $request->party->star;
@@ -112,7 +111,7 @@ class ModalController extends MyController
                         $yavka_time = 1;
                     }
                     $yavka_star = ($org->state->sum_star) ? $sum_star / $org->state->sum_star : 0;
-                    $yavka      = $yavka_time * $yavka_star;
+                    $yavka = $yavka_time * $yavka_star;
 
                     return $this->render("elect-exitpolls", ['requests' => $requests, 'results' => $results, 'sum_a_r' => $sum_a_r, 'org' => $org, 'yavka' => $yavka, 'leader' => $leader]);
                 } else {
@@ -140,10 +139,9 @@ class ModalController extends MyController
             if (is_null($user->state)) {
                 return $this->_r("No citizenship");
             }
-            
+
             return $this->render("newbill/{$id}", ['bill_type' => $bill_type, 'user' => $user]);
-        }
-        else {
+        } else {
             return $this->_r("Invalid bill type ID");
         }
     }
@@ -184,8 +182,7 @@ class ModalController extends MyController
                         default:
                             return $this->_r("Undefined elections type");
                     }
-                }
-                else {
+                } else {
                     switch ($org->dest) {
                         case 'nation_party_vote':
                             return $this->render("elect-party", ['org' => $org, 'leader' => $leader, 'elect_requests' => $elect_requests]);
@@ -193,12 +190,10 @@ class ModalController extends MyController
                             return $this->_r("Undefined elections type");
                     }
                 }
-            }
-            else {
+            } else {
                 return $this->_r("Elections not allowed");
             }
-        }
-        else {
+        } else {
             return $this->_r("Invalid organisation ID");
         }
     }
@@ -208,7 +203,7 @@ class ModalController extends MyController
         $org_id = intval($org_id);
         $leader = intval($leader) ? 1 : 0;
         if ($org_id > 0) {
-            $org  = Org::findByPk($org_id);
+            $org = Org::findByPk($org_id);
             if (is_null($org)) {
                 return $this->_r("Organisation not found");
             }
@@ -230,11 +225,11 @@ class ModalController extends MyController
                             }
                         case 'nation_party_vote':
                             if ($user->isPartyLeader()) {
-                                
+
                                 if (ElectRequest::find()->where(['org_id' => $org_id, 'party_id' => $user->party_id, 'leader' => 1])->count()) {
                                     return $this->_r("Allready have request from party");
                                 }
-                            
+
                                 return $this->render("elect-leader-party-req", ['org' => $org, 'leader' => $leader, 'user' => $user]);
                             } else {
                                 return $this->_r("Only party leader can make request");
@@ -246,11 +241,11 @@ class ModalController extends MyController
                     switch ($org->dest) {
                         case 'nation_party_vote':
                             if ($user->isPartyLeader()) {
-                                
+
                                 if (ElectRequest::find()->where(['org_id' => $org_id, 'party_id' => $user->party_id, 'leader' => 0])->count()) {
                                     return $this->_r("Allready have request from party");
                                 }
-                            
+
                                 return $this->render("elect-party-req", ['org' => $org, 'leader' => $leader, 'user' => $user]);
                             } else {
                                 return $this->_r("Only party leader can make request");
@@ -270,7 +265,8 @@ class ModalController extends MyController
     public function actionRegionInfo($code = false, $id = false)
     {
         if ($code || $id) {
-            if (intval($id) === 0) $code = $id;
+            if (intval($id) === 0)
+                $code = $id;
             $region = ($code) ? Region::findByCode($code) : Region::findByPk($id);
             if (is_null($region)) {
                 return $this->_r("Region not found");
@@ -291,11 +287,10 @@ class ModalController extends MyController
             if (is_null($region)) {
                 return $this->_r("Region not found");
             }
-            $query  = Population::find()->where(['region_id' => $region->id]);
+            $query = Population::find()->where(['region_id' => $region->id]);
 
             return $this->render("region-population", ['region' => $region, 'people' => Population::getAllGroups($query), 'people_by_class' => Population::getGroupsByClass($query)]);
-        }
-        else {
+        } else {
             return $this->_r("Invalid code");
         }
     }
@@ -309,22 +304,20 @@ class ModalController extends MyController
             }
 
             return $this->render("region-resurses", ['region' => $region]);
-        }
-        else {
+        } else {
             return $this->_r("Invalid code");
         }
     }
 
     public function actionGetTwitterFeed($time, $offset, $uid = 0)
     {
-        $time   = intval($time);
+        $time = intval($time);
         $offset = intval($offset);
-        $uid    = intval($uid);
+        $uid = intval($uid);
         if ($time && $offset) {
             if ($uid) {
                 $tweets = Twitter::find()->where("uid = {$uid} AND date < {$time}")->offset($offset)->limit(5)->orderBy('date DESC')->all();
-            }
-            else {
+            } else {
                 $tweets = Twitter::find()->where("retweets > 0 AND date < " . $time)->offset($offset)->limit(5)->orderBy('date DESC')->all();
             }
 
@@ -360,27 +353,27 @@ class ModalController extends MyController
             return $this->_r("Invalid params");
         }
     }
-    
+
     public function actionAccountSettings()
     {
         return $this->render("account-settings", ['user' => $this->getUser()]);
     }
-    
-    public function actionBuildFabric($region_id,$holding_id)
+
+    public function actionBuildFabric($region_id, $holding_id)
     {
         $region = Region::findByPk($region_id);
         $holding = Holding::findByPk($holding_id);
         $factoryCategories = FactoryProtoCategory::find()->all();
-        
-        return $this->render("build-factory",[
-            'region' => $region,
-            'holding' => $holding,
-            'user' => $this->getUser(),
-            'factoryCategories' => $factoryCategories
+
+        return $this->render("build-factory", [
+                    'region' => $region,
+                    'holding' => $holding,
+                    'user' => $this->getUser(),
+                    'factoryCategories' => $factoryCategories
         ]);
     }
-    
-    public function actionLicensesOptions($holding_id,$state_id)
+
+    public function actionLicensesOptions($holding_id, $state_id)
     {
         $holding = Holding::findByPk($holding_id);
         $state = State::findByPk($state_id);
@@ -427,10 +420,10 @@ class ModalController extends MyController
                     }
                 }
             }
-                ?>
-                <option id="license_option<?= $license->id ?>" value="<?= $license->id ?>" data-text="<?= $text ?>" ><?= $license->name ?></option>      
-                <? 
-            }
+            ?>
+            <option id="license_option<?= $license->id ?>" value="<?= $license->id ?>" data-text="<?= $text ?>" ><?= $license->name ?></option>      
+            <?
+        }
     }
 
     public function actionLicensesControlsChange($license_proto_id)
@@ -441,25 +434,24 @@ class ModalController extends MyController
             if (is_null($licenseType)) {
                 return $this->_r("License type not found");
             }
-            
+
             $user = $this->getUser();
             if (is_null($user->state)) {
                 return $this->_r("Have not citizenship");
             }
 
             $stateLicense = $user->state->getLicenseRuleByPrototype($licenseType);
-            return $this->render("licenses-controls-change",["licenseType"=>$licenseType,"stateLicense"=>$stateLicense]);
-
+            return $this->render("licenses-controls-change", ["licenseType" => $licenseType, "stateLicense" => $stateLicense]);
         } else {
             return $this->_r("Invalid license type ID");
         }
     }
-    
+
     public function actionGovermentFieldValue($proto_id)
     {
         $proto_id = intval($proto_id);
         if ($proto_id > 0) {
-            
+
             $gft = ArticleProto::findByPk($proto_id);
             if (is_null($gft)) {
                 return $this->_r("Govement field type not found");
@@ -469,17 +461,16 @@ class ModalController extends MyController
             if (is_null($user->state)) {
                 return $this->_r("Have not citizenship");
             }
-            
-            $gfv = Article::findOrCreate(['state_id'=>$user->state_id,'proto_id'=>$proto_id], true, ['value'=>$gft->default_value]);
-            
-            return $this->render("newbill/goverment-field-value",['gfv'=>$gfv,'gft'=>$gft]);
-        
+
+            $gfv = Article::findOrCreate(['state_id' => $user->state_id, 'proto_id' => $proto_id], true, ['value' => $gft->default_value]);
+
+            return $this->render("newbill/goverment-field-value", ['gfv' => $gfv, 'gft' => $gft]);
         } else {
             return $this->_r("Invalid govement field type ID");
         }
     }
-    
-    public function actionBuildLineVariants($resurse_id,$region1_id)
+
+    public function actionBuildLineVariants($resurse_id, $region1_id)
     {
         $regionBase = Region::findByPk($region1_id);
         if ($regionBase) {
@@ -489,8 +480,9 @@ class ModalController extends MyController
                 <? if ($i == 0 || $regions[$i - 1]->state_id != $region->state_id) { ?>
                     <?= ($i) ? '</optgroup>' : '' ?><optgroup label="<?= ($region->state) ? $region->state->name : 'Ничейные регионы' ?>">
                 <? } ?>
-                        <option value="<?= $region->id ?>" ><?= $region->name ?> (<?=number_format($region->calcDist($regionBase),2,'.',' ')?> км.)</option>
-            <? }
+                    <option value="<?= $region->id ?>" ><?= $region->name ?> (<?= number_format($region->calcDist($regionBase), 2, '.', ' ') ?> км.)</option>
+            <?
+            }
         } else {
             return $this->_r("Invalid region ID");
         }

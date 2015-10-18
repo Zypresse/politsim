@@ -45,38 +45,42 @@ use Yii,
  * @property \app\models\Auth[] $accounts
  * @property \app\models\Holding[] $holdings Компании, директором которых является
  */
-class User extends NalogPayer implements \yii\web\IdentityInterface
-{
-    
+class User extends NalogPayer implements \yii\web\IdentityInterface {
+
     protected function getUnnpType()
     {
         return Unnp::TYPE_USER;
     }
-    
-    public static function findIdentity($id) {
+
+    public static function findIdentity($id)
+    {
         return static::findByPk($id);
     }
-    
-    public static function findIdentityByAccessToken($token, $type = null) {
+
+    public static function findIdentityByAccessToken($token, $type = null)
+    {
         return null;
     }
-    
-    public function getId() {
+
+    public function getId()
+    {
         return $this->id;
     }
-        
-    public function getUid() {
+
+    public function getUid()
+    {
         return $this->id;
     }
-    
-    public function validateAuthKey($authKey) {
+
+    public function validateAuthKey($authKey)
+    {
         return $authKey == $this->authKey;
     }
 
     const SEX_UNDEFINED = 0;
     const SEX_FEMALE = 1;
     const SEX_MALE = 2;
-    
+
     public static function stringGenderToSex($gender)
     {
         switch ($gender) {
@@ -116,21 +120,21 @@ class User extends NalogPayer implements \yii\web\IdentityInterface
     public function attributeLabels()
     {
         return [
-            'id'          => 'ID',
-            'name'        => 'Name',
-            'photo'       => 'Photo',
-            'photo_big'   => 'Photo Big',
-            'last_vote'   => 'Last Vote',
-            'last_tweet'  => 'Last Tweet',
-            'party_id'    => 'Party ID',
-            'state_id'    => 'State ID',
-            'post_id'     => 'Post ID',
-            'region_id'   => 'Region ID',
-            'money'       => 'Money',
-            'sex'         => 'Sex',
-            'star'        => 'Star',
-            'heart'       => 'Heart',
-            'chart_pie'   => 'Chart Pie',
+            'id' => 'ID',
+            'name' => 'Name',
+            'photo' => 'Photo',
+            'photo_big' => 'Photo Big',
+            'last_vote' => 'Last Vote',
+            'last_tweet' => 'Last Tweet',
+            'party_id' => 'Party ID',
+            'state_id' => 'State ID',
+            'post_id' => 'Post ID',
+            'region_id' => 'Region ID',
+            'money' => 'Money',
+            'sex' => 'Sex',
+            'star' => 'Star',
+            'heart' => 'Heart',
+            'chart_pie' => 'Chart Pie',
         ];
     }
 
@@ -174,7 +178,7 @@ class User extends NalogPayer implements \yii\web\IdentityInterface
 
     public function getMedales()
     {
-       return $this->hasMany('app\models\Medale', array('uid' => 'id'));
+        return $this->hasMany('app\models\Medale', array('uid' => 'id'));
     }
 
     public function getVotes()
@@ -353,11 +357,11 @@ class User extends NalogPayer implements \yii\web\IdentityInterface
         }
 
         $this->state_id = 0;
-        $this->post_id  = 0;
+        $this->post_id = 0;
 
         return $this->leaveParty();
     }
-    
+
     public function getAuthKey()
     {
         return static::getRealKey($this->id);

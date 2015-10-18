@@ -227,13 +227,13 @@
   </div>
 </div>
 <script>
-var org_id,leader,candidat,request;
+var org_id,leader,candidat,request_id;
 
 var send_elect_request = function() {
 	json_request('elect-request',{'org_id':org_id,'leader':leader,'candidat':candidat});
 }
 var send_elect_vote = function() {
-	if (request) json_request('elect-vote',{'request':parseInt(request)});
+    if (request_id) json_request('elect-vote',{'request':parseInt(request_id)});
 }
 
 function drop_elect_request(org_id,leader) {

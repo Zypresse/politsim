@@ -37,7 +37,7 @@ usort($results, function($a, $b) {
 	<? if ($leader) { ?>
 		<?=htmlspecialchars($elect_request->user->name)?> (<?=$elect_request->user->party ? htmlspecialchars($elect_request->user->party->short_name) : ($elect_request->user->sex == 1 ? 'беспартийная' : 'беспартийный')?>)
 	<? } else { ?>
-		<?=htmlspecialchars($elect_request->party->name)?>
+		<?=MyHtmlHelper::a($elect_request->party->name,"load_page('party-info',{'id':{$elect_request->party->id}})")?>
 	<? } ?>
 	</td>
 	<td style="font-size:80%">

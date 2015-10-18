@@ -15,7 +15,7 @@ $(function(){
     radioClass: 'iradio_square',
     increaseArea: '20%' // optional
   }).on('ifChecked', function(event){
-  request = $(this).val();
+  request_id = $(this).val();
   $('#elect_vote .btn-primary').show();
 });;
 });

@@ -1,3 +1,6 @@
+<?php
+use app\components\MyHtmlHelper;
+?>
 <h5>Выборы в организацию «<?=htmlspecialchars($org->name)?>»</h5>
 <p><strong>Заявки на выборы подали следующие партии:</strong></p>
 
@@ -6,7 +9,7 @@
 
 <input style="display:inline-block;" class="elect_vote_radio" type="radio" name="elect_vote" value="<?=$elect_request->id?>">
 
-<p style="display:inline-block;line-height: 28px;"><a href="#" onclick="$('.modal-backdrop').hide();load_page('party-info',{'id':<?=$elect_request->party_id?>})"><strong><?=htmlspecialchars($elect_request->party->name)?></strong></a></p>
+<p style="display:inline-block;line-height: 28px;"><strong><?=MyHtmlHelper::a($elect_request->party->name, "load_page('party-info',{'id':{$elect_request->party->id}})")?></strong></p>
 </div>
 <? } ?>
 <p><small>Поставьте галочку напротив выбранной вами партии и нажмите «Проголосовать»</small></p>
@@ -17,8 +20,8 @@ $(function(){
     radioClass: 'iradio_square',
     increaseArea: '20%' // optional
   }).on('ifChecked', function(event){
-  request = $(this).val();
-  console.log(request);
+  request_id = $(this).val();
+  console.log(request_id);
   $('#elect_vote .btn-primary').show();
 });;
 });
