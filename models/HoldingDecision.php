@@ -218,7 +218,7 @@ class HoldingDecision extends MyModel
                         foreach ($factoryType->licenses as $licenseType) {
                             $isCurrentLicenseExists = false;
                             foreach ($this->holding->licenses as $license) {
-                                if ($licenseType->id == $license->license_id && $license->state_id == $region->state_id) {
+                                if ($licenseType->id == $license->proto_id && $license->state_id == $region->state_id) {
                                     $isCurrentLicenseExists = true;
                                     break;
                                 }

@@ -11,7 +11,8 @@ use Yii,
     app\models\Party,        
     app\models\Holding,
     app\models\factories\Factory,
-    app\models\Population;
+    app\models\Population,
+    app\models\User;
 
 /**
  * Update hourly
@@ -82,10 +83,13 @@ class UpdateHourlyController extends Controller
     {
         $regions = Region::find()->all();
         foreach ($regions as $region) {
-            $region->population = 0;
-            foreach ($region->populationGroups as $pop) {
-                $region->population += $pop->count;
-            }
+            
+            $sumPop = (new Query())->from(Population::tableName())->where([
+                'region_id' => $region->id
+            ])->sum('count');
+            $sumUsers = User::find()->where(['region_id'=>$region->id])->count();
+            
+            $region->population = intval($sumPop) + intval($sumUsers);
             $region->save();
         }
     }
@@ -120,10 +124,10 @@ class UpdateHourlyController extends Controller
                 ], true, $ar, $ar);
             }
             
-            $state->sum_star = 0;
-            foreach ($state->users as $user) {
-                $state->sum_star += $user->star;
-            }
+            $state->sum_star = intval((new Query())->from(User::tableName())->where([
+                'state_id' => $state->id
+            ])->sum('star'));
+            
             if ($state->population === 0) {
                 $state->delete();
             } else {
