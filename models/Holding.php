@@ -22,6 +22,7 @@ use app\components\NalogPayer,
  * @property Stock[] $stocks Акции
  * @property licenses\License[] $licenses Лицензии
  * @property factories\Factory[] $factories Фабрики
+ * @property factories\Line[] $lines
  * @property User $director
  */
 class Holding extends MyModel implements NalogPayer
@@ -126,6 +127,11 @@ class Holding extends MyModel implements NalogPayer
     public function getFactories()
     {
         return $this->hasMany('app\models\factories\Factory', array('holding_id' => 'id'));
+    }
+
+    public function getLines()
+    {
+        return $this->hasMany('app\models\factories\Line', array('holding_id' => 'id'));
     }
 
     private $_sumStocks = null;

@@ -6,6 +6,8 @@ use app\components\MyModel,
     app\models\factories\Factory,
     app\models\factories\FactoryAuction,
     app\models\factories\proto\FactoryProto,
+    app\models\factories\Line,
+    app\models\factories\proto\LineProto,
     app\models\licenses\License,
     app\models\licenses\LicenseRule,
     app\models\Dealing;
@@ -23,8 +25,7 @@ use app\components\MyModel,
  * @property HoldingDecisionVote[] $votes
  * @property Holding $holding
  */
-class HoldingDecision extends MyModel
-{
+class HoldingDecision extends MyModel {
 
     /**
      * @inheritdoc
@@ -52,12 +53,12 @@ class HoldingDecision extends MyModel
     public function attributeLabels()
     {
         return [
-            'id'            => 'ID',
+            'id' => 'ID',
             'decision_type' => 'Decision Type',
-            'created'       => 'Created',
-            'accepted'      => 'Accepted',
-            'data'          => 'Data',
-            'holding_id'    => 'Holding ID',
+            'created' => 'Created',
+            'accepted' => 'Accepted',
+            'data' => 'Data',
+            'holding_id' => 'Holding ID',
         ];
     }
 
@@ -77,52 +78,52 @@ class HoldingDecision extends MyModel
             $vote->delete();
         }
     }
-    
+
     /**
      * смена названия холдинга
      */
     const DECISION_CHANGENAME = 1;
-    
+
     /**
      * выплата дивидентов
      */
     const DECISION_PAYDIVIDENTS = 2;
-    
+
     /**
      * Получение лицензии
      */
     const DECISION_GIVELICENSE = 3;
-    
+
     /**
      * Строительство фабрики
      */
     const DECISION_BUILDFABRIC = 5;
-    
+
     /**
      * Назначение менеджера
      */
     const DECISION_SETMANAGER = 6;
-    
+
     /**
      * Назначение главного офиса
      */
     const DECISION_SETMAINOFFICE = 7;
-    
+
     /**
      * Переименование фабрики
      */
     const DECISION_RENAMEFABRIC = 8;
-    
+
     /**
      * Продажа фабрики
      */
     const DECISION_SELLFACTORY = 9;
-    
+
     /**
      * Назначение директора
      */
     const DECISION_SETDIRECTOR = 10;
-    
+
     /**
      * Строительство трубопровода/ЛЭП
      */
@@ -149,34 +150,18 @@ class HoldingDecision extends MyModel
                             'sum' => ($data->sum * $stock->getPercents() / 100),
                             'time' => -1
                         ]);
-                        $dealing->save();
-//                        $dealing->accept();
-//                        $sum = $data->sum * $stock->getPercents() / 100;
-//                        switch (get_class($stock->master)) {
-//                            case 'app\models\User':
-//                                $stock->master->money+=$sum;
-//                                break;
-//                            case 'app\models\Post':
-//                                $stock->master->balance+=$sum;
-//                                break;
-//                            case 'app\models\Holding':
-//                                $stock->master->balance+=$sum;
-//                                break;
-//                        }
-//                        $stock->master->save();
+                        $dealing->accept();
                     }
-//                    $this->holding->balance -= $data->sum;
-//                    $this->holding->save();
                 }
                 break;
             case self::DECISION_GIVELICENSE: // Получение лицензии
                 if ($this->holding->state) {
                     $stateLicense = LicenseRule::find()->where([
-                        'state_id' => $data->state_id,
-                        'proto_id' => $data->license_id
-                    ])->one();
-                    $allow        = true;
-                    $cost         = 0;
+                                'state_id' => $data->state_id,
+                                'proto_id' => $data->license_id
+                            ])->one();
+                    $allow = true;
+                    $cost = 0;
                     if (!(is_null($stateLicense))) {
                         if ($data->state_id == $this->holding->state_id) {
                             if ($stateLicense->is_only_goverment) {
@@ -203,9 +188,9 @@ class HoldingDecision extends MyModel
                         }
                     }
                     if ($allow) {
-                        $hl             = new License();
+                        $hl = new License();
                         $hl->holding_id = $this->holding_id;
-                        $hl->state_id   = $data->state_id;
+                        $hl->state_id = $data->state_id;
                         $hl->proto_id = $data->license_id;
                         $hl->save();
 
@@ -223,7 +208,7 @@ class HoldingDecision extends MyModel
                     $region = Region::findByPk($data->region_id);
                     // TODO: Здесь проверка на возможность строить в регионе
                     if ($region) {
-                        
+
                         $allLicensesExitst = true;
                         foreach ($factoryType->licenses as $licenseType) {
                             $isCurrentLicenseExists = false;
@@ -238,7 +223,7 @@ class HoldingDecision extends MyModel
                                 break;
                             }
                         }
-                        
+
                         if ($allLicensesExitst) {
 
                             $buildCost = $factoryType->build_cost * $data->size;
@@ -256,7 +241,7 @@ class HoldingDecision extends MyModel
 
                                 $factory = new Factory();
                                 $factory->holding_id = $this->holding_id;
-                                $factory->builded = time() + 24*60*60;
+                                $factory->builded = time() + 24 * 60 * 60;
                                 $factory->name = strip_tags(trim($data->name));
                                 $factory->region_id = $region->id;
                                 $factory->proto_id = $factoryType->id;
@@ -301,7 +286,7 @@ class HoldingDecision extends MyModel
                 if ($factory->holding_id == $this->holding_id) {
                     $auction = new FactoryAuction([
                         'factory_id' => $factory->id,
-                        'date_end' => time() + 24*60*60,
+                        'date_end' => time() + 24 * 60 * 60,
                         'start_price' => $startPrice,
                         'end_price' => $endPrice
                     ]);
@@ -310,7 +295,36 @@ class HoldingDecision extends MyModel
                 break;
             case self::DECISION_SETDIRECTOR:
                 $this->holding->director_id = intval($data->uid);
-                $this->holding->save();                
+                $this->holding->save();
+                break;
+            case self::DECISION_BUILDLINE:
+                $proto = LineProto::findByPk($data->proto_id);
+                if ($proto) {
+                    $region1 = Region::findByPk($data->region1_id);
+                    $region2 = Region::findByPk($data->region2_id);
+                    // TODO: Здесь проверка на возможность строить в регионе
+                    if ($region1 && $region2) {
+                        
+                        // TODO: тут проверка лицензий
+
+                        $buildCost = round($proto->build_cost * $region1->calcDist($region2));
+                        if ($this->holding->balance >= $buildCost) {
+
+                            $this->holding->changeBalance(-1*$buildCost);
+
+                            $line = new Line([
+                                'holding_id' => $this->holding_id,
+                                'region1_id' => $region1->id,
+                                'region2_id' => $region2->id,
+                                'proto_id' => $proto->id
+                            ]);
+
+                            if (!$line->save()) {
+                                var_dump($line->getErrors());
+                            }
+                        }
+                    }
+                }
                 break;
         }
 

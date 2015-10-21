@@ -470,17 +470,18 @@ class ModalController extends MyController {
         }
     }
 
-    public function actionBuildLineVariants($resurse_id, $region1_id)
+    public function actionBuildLineVariants($proto_id, $region1_id)
     {
         $regionBase = Region::findByPk($region1_id);
         if ($regionBase) {
             $regions = $regionBase->getBordersArray();
             foreach ($regions as $i => $region) {
+                $distance = $region->calcDist($regionBase);
                 ?>
                 <? if ($i == 0 || $regions[$i - 1]->state_id != $region->state_id) { ?>
                     <?= ($i) ? '</optgroup>' : '' ?><optgroup label="<?= ($region->state) ? $region->state->name : 'Ничейные регионы' ?>">
                 <? } ?>
-                    <option value="<?= $region->id ?>" ><?= $region->name ?> (<?= number_format($region->calcDist($regionBase), 2, '.', ' ') ?> км.)</option>
+                    <option data-distance="<?=$distance?>" value="<?= $region->id ?>" ><?= $region->name ?> (<?= number_format($distance, 2, '.', ' ') ?> км.)</option>
             <?
             }
         } else {

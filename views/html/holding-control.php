@@ -10,6 +10,7 @@ use app\components\MyHtmlHelper,
     app\models\factories\proto\FactoryProtoCategory,
     app\models\factories\proto\FactoryProto,
     app\models\factories\Factory,
+    app\models\factories\proto\LineProto,
     app\models\resurses\proto\ResurseProto,
     app\models\licenses\proto\LicenseProto,
     app\models\User,
@@ -53,6 +54,18 @@ $factoryCategories = FactoryProtoCategory::find()->all();
             <?= Html::a($factory->name, '#', ['onclick' => "load_page('factory-info',{'id':{$factory->id}})"]) ?> 
                 <? if ($factory->status < 0) { ?><span style="color:red;">(не достроено, запланированная дата окончания строительства: <span class="formatDate" data-unixtime="<?= $factory->builded ?>"><?= date('d-M-Y H:i', $factory->builded) ?></span>)</span><? } ?>
                 <? if ($factory->status > 1) { ?><span style="color:red;">(не работает)</span><? } ?>
+            </li>
+            <? } ?>
+    </ul>
+    <? } else { ?>
+    <p>Компания не владеет недвижимостью</p>
+<? } ?>
+<h3>Инфраструктура</h3>
+<? if (count($holding->lines)) { ?>
+    <ul>
+    <? foreach ($holding->lines as $line) { ?>
+            <li>
+                <?=$line->proto->name?> <?=$line->region1->name?> — <?=$line->region2->name?>
             </li>
             <? } ?>
     </ul>
@@ -135,10 +148,10 @@ $factoryCategories = FactoryProtoCategory::find()->all();
                             echo "Назначение человека по имени {$user->name} на должность управляющего директора";
                             break;
                         case HoldingDecision::DECISION_BUILDLINE:
-                            $resProto = ResurseProto::findByPk($data->resurse_proto_id);
+                            $lineProto = LineProto::findByPk($data->proto_id);
                             $region1 = Region::findByPk($data->region1_id);
                             $region2 = Region::findByPk($data->region2_id);
-                            echo "Строительство транспортного узла для ресурса {$resProto->name} между регионами {$region1->name} и {$region2->name}";
+                            echo "Строительство объекта «{$lineProto->name}» между регионами {$region1->name} и {$region2->name}";
                             break;
                     }
                     ?></td><td>
@@ -561,12 +574,13 @@ foreach ($regions as $i => $region) {
 
         <div class="control-group" >
 
-            <label class="control-label" for="#line_new_resurse_id">Тип</label>
+            <label class="control-label" for="#line_new_proto_id">Тип</label>
             <div class="controls">
-                <select id="line_new_resurse_id">
-                    <option value="1">Нефтепровод</option>
-                    <option value="2">Газопровод</option>
-                    <option value="16">ЛЭП</option>
+                <select id="line_new_proto_id">
+                    <? $protos = LineProto::find()->all();
+                    foreach ($protos as $proto): ?>
+                    <option data-cost="<?=$proto->build_cost?>" value="<?=$proto->id?>"><?=$proto->name?></option>
+                    <? endforeach ?>
                 </select>
             </div>
         </div>
@@ -597,21 +611,33 @@ foreach ($regions as $i => $region) {
                 </select>
             </div>
         </div>
+        
+        <div class="help-block">
+            Стоимость: <span id="line_new_cost_sum">0</span> <?=MyHtmlHelper::icon('money')?>
+        </div>
 
 
     </div>
     <div class="modal-footer">
-        <button class="btn btn-primary" id="build_fabric_page2" >Начать строительство</button>
+        <button class="btn btn-primary" onclick="start_build_line()" >Начать строительство</button>
         <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
     </div>
 </div>
 
 <script>
     function recalc_build_line_variants() {
-        get_html('build-line-variants',{'resurse_id':$('#line_new_resurse_id').val(),'region1_id':$('#line_new_region1').val()},function(html){
+        get_html('build-line-variants',{'proto_id':$('#line_new_proto_id').val(),'region1_id':$('#line_new_region1').val()},function(html){
             $('#line_new_region2').html(html);
             $('#line_new_region2').removeAttr("disabled");
+            recalc_build_line_cost();
         })
+    }
+    
+    function recalc_build_line_cost() {
+        var cost = parseFloat($('#line_new_proto_id').find(':selected').data('cost')),
+            dist = parseFloat($('#line_new_region2').find(':selected').data('distance'));
+            
+        $('#line_new_cost_sum').text(number_format(cost*dist,0,'.',' '));
     }
     
     function rename_holding(id) {
@@ -683,6 +709,23 @@ foreach ($regions as $i => $region) {
         }
     }
 
+    function start_build_line() {
+        var cost = parseFloat($('#line_new_proto_id').find(':selected').data('cost')),
+            dist = parseFloat($('#line_new_region2').find(':selected').data('distance'));
+    
+        if (Math.round(cost*dist) > <?= $holding->balance ?>) {
+            alert("На счету фирмы недостаточно денег для строительства");
+        } else {
+            json_request('new-holding-decision', {
+                'holding_id':<?= $holding->id ?>,
+                'type': <?=HoldingDecision::DECISION_BUILDLINE?>,
+                'region1_id': $('#line_new_region1').val(),
+                'region2_id': $('#line_new_region2').val(),
+                'proto_id': $('#line_new_proto_id').val(),
+            });
+        }
+    }
+
     $(function () {
         updateLicenseInfo();
         $('#new_license_id').change(updateLicenseInfo);
@@ -719,5 +762,8 @@ foreach ($regions as $i => $region) {
         });
         
         $('#line_new_region1').change(recalc_build_line_variants);
+        
+        $('#line_new_region2').change(recalc_build_line_cost);
+        $('#line_new_proto_id').change(recalc_build_line_cost);
     });
 </script>

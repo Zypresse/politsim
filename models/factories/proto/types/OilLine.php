@@ -10,5 +10,10 @@ use app\models\factories\proto\LineProto;
  * @author ilya
  */
 class OilLine extends LineProto {
-    //put your code here
+
+    public function getName()
+    {
+        return "Нефтепровод";
+    }
+    
 }

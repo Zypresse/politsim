@@ -4,6 +4,7 @@ namespace app\models\factories;
 
 use app\components\NalogPayer,
     app\components\MyHtmlHelper,
+    app\models\objects\UnmovableObject,
     app\models\Holding,
     app\models\Region,
     app\models\factories\proto\LineProto;

@@ -32,7 +32,8 @@ use yii\helpers\ArrayHelper,
     app\models\factories\proto\FactoryProto,
     app\models\factories\FactoryWorkersSalary,
     app\models\constitution\ConstitutionFactory,
-    app\models\factories\Line;
+    app\models\factories\Line,
+    app\models\factories\proto\LineProto;
 
 class JsonController extends MyController {
 
@@ -1380,6 +1381,27 @@ class JsonController extends MyController {
                             }
                         } else {
                             return $this->_r("Invalid fields 2");
+                        }
+                        break;
+                    case HoldingDecision::DECISION_BUILDLINE:
+                        if (isset($_REQUEST['region1_id']) && isset($_REQUEST['region2_id']) && isset($_REQUEST['proto_id'])) {
+                            $region1_id = intval($_REQUEST['region1_id']);
+                            $region2_id = intval($_REQUEST['region2_id']);
+                            $proto_id = intval($_REQUEST['proto_id']);
+
+                            $proto = LineProto::findByPk($proto_id);
+
+                            if (is_null($proto)) {
+                                return $this->_r("Line type not found");
+                            }
+                            
+                            $decision->data = [
+                                'region1_id' => $region1_id,
+                                'region2_id' => $region2_id,
+                                'proto_id' => $proto_id,
+                            ];
+                        } else {
+                            return $this->_r("Invalid fields aaa".  print_r($_REQUEST, true));
                         }
                         break;
                 }
