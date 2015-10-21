@@ -7,7 +7,8 @@ use app\components\MyModel,
     app\models\factories\FactoryAuction,
     app\models\factories\proto\FactoryProto,
     app\models\licenses\License,
-    app\models\licenses\LicenseRule;
+    app\models\licenses\LicenseRule,
+    app\models\Dealing;
 
 /**
  * Решение по управлению АО. Таблица "holding_decisions".
@@ -141,22 +142,31 @@ class HoldingDecision extends MyModel
             case self::DECISION_PAYDIVIDENTS: // выплата дивидентов
                 if ($this->holding->balance >= $data->sum) {
                     foreach ($this->holding->stocks as $stock) {
-                        $sum = $data->sum * $stock->getPercents() / 100;
-                        switch (get_class($stock->master)) {
-                            case 'app\models\User':
-                                $stock->master->money+=$sum;
-                                break;
-                            case 'app\models\Post':
-                                $stock->master->balance+=$sum;
-                                break;
-                            case 'app\models\Holding':
-                                $stock->master->balance+=$sum;
-                                break;
-                        }
-                        $stock->master->save();
+                        $dealing = new Dealing([
+                            'proto_id' => 3,
+                            'from_unnp' => $this->holding->unnp,
+                            'to_unnp' => $stock->master->unnp,
+                            'sum' => ($data->sum * $stock->getPercents() / 100),
+                            'time' => -1
+                        ]);
+                        $dealing->save();
+//                        $dealing->accept();
+//                        $sum = $data->sum * $stock->getPercents() / 100;
+//                        switch (get_class($stock->master)) {
+//                            case 'app\models\User':
+//                                $stock->master->money+=$sum;
+//                                break;
+//                            case 'app\models\Post':
+//                                $stock->master->balance+=$sum;
+//                                break;
+//                            case 'app\models\Holding':
+//                                $stock->master->balance+=$sum;
+//                                break;
+//                        }
+//                        $stock->master->save();
                     }
-                    $this->holding->balance -= $data->sum;
-                    $this->holding->save();
+//                    $this->holding->balance -= $data->sum;
+//                    $this->holding->save();
                 }
                 break;
             case self::DECISION_GIVELICENSE: // Получение лицензии

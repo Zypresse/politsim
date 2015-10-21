@@ -5,19 +5,19 @@ namespace app\models;
 use app\components\MyModel;
 
 /**
- * Типы сделок. Таблица "paytypes".
+ * Типы сделок. Таблица "dealing_prototypes".
  *
  * @property integer $id
  * @property string $name
  */
-class PayType extends MyModel
+class DealingProto extends MyModel
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'paytypes';
+        return 'dealing_prototypes';
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace app\models\factories;
 
 use app\components\NalogPayer,
+    app\components\MyHtmlHelper,
     app\models\Holding,
     app\models\Region,
     app\models\factories\proto\LineProto;
@@ -99,6 +100,21 @@ class Line extends UnmovableObject implements NalogPayer
     public function getProto()
     {
         return $this->hasOne(LineProto::className(), array('id' => 'proto_id'));
+    }
+
+    public function changeBalance($delta)
+    {
+        
+    }
+
+    public function getBalance()
+    {
+        return 0;
+    }
+
+    public function getHtmlName()
+    {
+        return $this->proto->name;
     }
 
 }

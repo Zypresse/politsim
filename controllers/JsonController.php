@@ -1153,59 +1153,30 @@ class JsonController extends MyController {
                 return $this->_r("Not allowed");
             }
 
-            if ($dealing->sum < 0 && abs($dealing->sum) > $dealing->recipient->money) {
+            if ($dealing->sum < 0 && abs($dealing->sum) > $dealing->recipient->balance) {
                 return $this->_r("У вас недостаточно денег");
             }
 
-            if ($dealing->sum > 0 && $dealing->sum > $dealing->sender->money) {
+            if ($dealing->sum > 0 && $dealing->sum > $dealing->sender->balance) {
                 return $this->_r("У отправителя недостаточно денег");
             }
 
             $items = json_decode($dealing->items, true);
 
-            foreach ($items as $item) {
-                switch ($item['type']) {
-                    case "stock":
-                        $stock = Stock::find()->where(['holding_id' => $item['holding_id'], 'unnp' => $dealing->from_unnp])->one();
-                        if (is_null($stock) || $stock->count < $item['count']) {
-                            return $this->_r("Отправитель не имеет акций, которые предлагает");
-                        }
-                        break;
+            if (is_array($items)) {
+                foreach ($items as $item) {
+                    switch ($item['type']) {
+                        case "stock":
+                            $stock = Stock::find()->where(['holding_id' => $item['holding_id'], 'unnp' => $dealing->from_unnp])->one();
+                            if (is_null($stock) || $stock->count < $item['count']) {
+                                return $this->_r("Отправитель не имеет акций, которые предлагает");
+                            }
+                            break;
+                    }
                 }
             }
-
-            $dealing->time = time();
-            $dealing->save();
-
-            if ($dealing->sum) {
-                $dealing->recipient->money += $dealing->sum;
-                if (!$dealing->recipient->save()) {
-                    return $this->_r($dealing->recipient->getErrors());
-                }
-                $dealing->sender->money -= $dealing->sum;
-                if (!$dealing->sender->save()) {
-                    return $this->_r($dealing->sender->getErrors());
-                }
-            }
-
-            foreach ($items as $item) {
-                switch ($item['type']) {
-                    case "stock":
-                        $stock = Stock::find()->where(['holding_id' => $item['holding_id'], 'unnp' => $dealing->sender->unnp])->one();
-                        $recStock = Stock::findOrCreate(['holding_id' => $item['holding_id'], 'unnp' => $dealing->recipient->unnp], false, ['count' => 0]);
-
-                        $stock->count -= $item['count'];
-                        $recStock->count += $item['count'];
-
-                        if ($stock->count > 0) {
-                            $stock->save();
-                        } else {
-                            $stock->delete();
-                        }
-                        $recStock->save();
-                        break;
-                }
-            }
+            
+            $dealing->accept();
 
             return $this->_rOk();
         } else

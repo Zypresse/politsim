@@ -19,8 +19,11 @@ interface NalogPayer {
     }*/
     
     public function isGoverment($stateId);
-    /*{
-        return false;
-    }*/
+    
+    public function getBalance();
+    
+    public function changeBalance($delta);
+    
+    public function getHtmlName();
     
 }

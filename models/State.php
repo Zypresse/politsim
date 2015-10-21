@@ -4,8 +4,7 @@ namespace app\models;
 
 use app\components\NalogPayer,
     app\components\MyModel,
-    app\models\articles\Article,
-    app\models\articles\proto\ArticleProto,
+    app\components\MyHtmlHelper,
     app\models\Unnp,
     app\models\CoreCountryState;
 
@@ -272,6 +271,21 @@ class State extends MyModel implements NalogPayer
         }
 
         return parent::afterSave($insert, $changedAttributes);
+    }
+
+    public function changeBalance($delta)
+    {
+        
+    }
+
+    public function getBalance()
+    {
+        return 0;
+    }
+
+    public function getHtmlName()
+    {
+        return MyHtmlHelper::a($this->name, "load_page('state-info',{'id':{$this->id}})");
     }
 
 }

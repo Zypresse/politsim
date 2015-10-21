@@ -3,6 +3,7 @@
 namespace app\models\factories;
 
 use app\components\MyMathHelper,
+    app\components\MyHtmlHelper,
     app\components\NalogPayer,
     app\models\Unnp,
     app\models\factories\proto\FactoryProto,
@@ -36,6 +37,7 @@ use app\components\MyMathHelper,
  */
 class Factory extends UnmovableObject implements NalogPayer
 {
+        
     /**
      * Строится
      */
@@ -306,6 +308,21 @@ class Factory extends UnmovableObject implements NalogPayer
             $this->_unnp = ($u) ? $u->id : 0;
         } 
         return $this->_unnp;
+    }
+
+    public function changeBalance($delta)
+    {
+        
+    }
+
+    public function getBalance()
+    {
+        return 0;
+    }
+
+    public function getHtmlName()
+    {
+        return MyHtmlHelper::a("{$this->proto->name} «{$this->name}»", "load_page('factory-info',{'id':{$this->id}})");
     }
 
 }

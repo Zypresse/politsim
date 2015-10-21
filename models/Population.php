@@ -20,6 +20,7 @@ use app\components\NalogPayer,
  * @property integer $count Число людей
  * @property integer $region_id ID региона
  * @property integer $factory_id ID региона
+ * @property double $money
  * 
  * @property PopClass $classinfo Класс населения
  * @property PopNation $nationinfo Национальность
@@ -288,6 +289,22 @@ class Population extends MyModel implements NalogPayer {
     public function getUniqueKey()
     {
         return $this->class . '_' . $this->nation . '_' . $this->ideology . '_' . $this->religion . '_' . $this->sex . '_' . $this->age . '_' . $this->region_id . '_' . $this->factory_id;
+    }
+
+    public function changeBalance($delta)
+    {
+        $this->money += $delta;
+        $this->save();
+    }
+
+    public function getBalance()
+    {
+        return $this->money;
+    }
+
+    public function getHtmlName()
+    {
+        return "население";
     }
 
 }

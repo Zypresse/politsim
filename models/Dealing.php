@@ -2,13 +2,14 @@
 
 namespace app\models;
 
-use app\components\MyModel;
+use app\components\MyModel,
+    app\models\Stock;
 
 /**
  * Сделка между игроками. Таблица "dealings".
  *
  * @property integer $id
- * @property integer $type_id ID типа сделки
+ * @property integer $proto_id ID типа сделки
  * @property integer $from_unnp ID отправителя
  * @property integer $to_unnp ID получателя
  * @property double $sum Сумма (сколько отправил отправитель)
@@ -19,7 +20,7 @@ use app\components\MyModel;
  * 
  * @property \app\components\NalogPayer $sender Отправитель
  * @property \app\components\NalogPayer $recipient Получатель
- * @property PayType $type Тип сделки
+ * @property DealingProto $proto Тип сделки
  */
 class Dealing extends MyModel
 {
@@ -39,7 +40,7 @@ class Dealing extends MyModel
     {
         return [
             [['from_unnp', 'to_unnp'], 'required'],
-            [['from_unnp', 'to_unnp', 'is_anonim', 'is_secret', 'time', 'type_id'], 'integer'],
+            [['from_unnp', 'to_unnp', 'is_anonim', 'is_secret', 'time', 'proto_id'], 'integer'],
             [['sum'], 'number'],
             [['items'], 'string']
         ];
@@ -97,4 +98,41 @@ class Dealing extends MyModel
         return $dealings;
     }
 
+    /**
+     * 
+     */
+    public function accept()
+    {
+        
+        $this->time = time();
+        $this->save();
+
+        if ($this->sum) {
+            $this->recipient->changeBalance($this->sum);
+            $this->sender->changeBalance(-1*$this->sum);
+        }
+
+        $items = json_decode($this->items, true);
+        if (is_array($items)) {
+            foreach ($items as $item) {
+                switch ($item['type']) {
+                    case "stock":
+                        $stock = Stock::find()->where(['holding_id' => $item['holding_id'], 'unnp' => $this->sender->unnp])->one();
+                        $recStock = Stock::findOrCreate(['holding_id' => $item['holding_id'], 'unnp' => $this->recipient->unnp], false, ['count' => 0]);
+
+                        $stock->count -= $item['count'];
+                        $recStock->count += $item['count'];
+
+                        if ($stock->count > 0) {
+                            $stock->save();
+                        } else {
+                            $stock->delete();
+                        }
+                        $recStock->save();
+                        break;
+                }
+            }
+        }
+    }
+    
 }

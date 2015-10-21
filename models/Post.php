@@ -4,6 +4,7 @@ namespace app\models;
 
 use app\components\NalogPayer,
     app\components\MyModel,
+    app\components\MyHtmlHelper,
     app\models\Unnp;
 
 /**
@@ -179,6 +180,22 @@ class Post extends MyModel implements NalogPayer
         }
         $post->save();
         return $post;
+    }
+
+    public function changeBalance($delta)
+    {
+        $this->balance += $delta;
+        $this->save();
+    }
+
+    public function getBalance()
+    {
+        return $this->balance;
+    }
+
+    public function getHtmlName()
+    {
+        return $this->name." организации «".MyHtmlHelper::a($this->org->name, "load_page('org-info',{'id':{$this->id}})")."»";
     }
 
 }

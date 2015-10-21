@@ -4,6 +4,7 @@ namespace app\models;
 
 use app\components\NalogPayer,
     app\components\MyModel,
+    app\components\MyHtmlHelper,
     app\models\User,
     app\models\Unnp;
 
@@ -164,6 +165,21 @@ class Party extends MyModel implements NalogPayer
         foreach ($this->lrequests as $request) {
             $request->delete();
         }
+    }
+
+    public function changeBalance($delta)
+    {
+        
+    }
+
+    public function getBalance()
+    {
+        return 0;
+    }
+
+    public function getHtmlName()
+    {
+        return MyHtmlHelper::a($this->name, "load_page('party-info',{'id':{$this->id}})");
     }
 
 }

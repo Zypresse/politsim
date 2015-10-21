@@ -334,7 +334,7 @@ $factoryCategories = FactoryProtoCategory::find()->all();
         <p>Деньги будут выплачены со счёта компании акционерам в долях, равных их долям в компании.</p>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-primary" data-dismiss="modal"  onclick="pay_dividents(<?= $holding->id ?>)">Внести</button>
+        <button class="btn btn-primary" data-dismiss="modal"  onclick="pay_dividents(<?= $holding->id ?>)">Выплатить</button>
         <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
     </div>
 </div>

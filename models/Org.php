@@ -4,6 +4,7 @@ namespace app\models;
 
 use app\components\NalogPayer,
     app\components\MyModel,
+    app\components\MyHtmlHelper,
     app\models\Post,
     app\models\Unnp;
 
@@ -326,6 +327,21 @@ class Org extends MyModel implements NalogPayer {
         foreach ($this->posts as $post) {
             $post->delete();
         }
+    }
+
+    public function changeBalance($delta)
+    {
+        
+    }
+
+    public function getBalance()
+    {
+        return 0;
+    }
+
+    public function getHtmlName()
+    {
+        return MyHtmlHelper::a($this->name, "load_page('org-info',{'id':{$this->id}})");
     }
 
 }

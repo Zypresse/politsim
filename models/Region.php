@@ -4,6 +4,7 @@ namespace app\models;
 
 use app\components\NalogPayer,
     app\components\MyModel,
+    app\components\MyHtmlHelper,
     app\models\Unnp;
 
 /**
@@ -310,4 +311,20 @@ class Region extends MyModel implements NalogPayer
         
         return parent::afterSave($insert,$changedAttributes);
     }
+
+    public function changeBalance($delta)
+    {
+        
+    }
+
+    public function getBalance()
+    {
+        return 0;
+    }
+
+    public function getHtmlName()
+    {
+        return $this->name.($this->state?" (".MyHtmlHelper::a($this->state->short_name, "load_page('state-info',{'id':{$this->state_id}})").")":"");
+    }
+
 }

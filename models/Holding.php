@@ -4,6 +4,7 @@ namespace app\models;
 
 use app\components\NalogPayer,
     app\components\MyModel,
+    app\components\MyHtmlHelper,
     app\models\Unnp;
 
 /**
@@ -194,6 +195,22 @@ class Holding extends MyModel implements NalogPayer
                 return;
             }
         }
+    }
+
+    public function changeBalance($delta)
+    {
+        $this->balance += $delta;
+        $this->save();
+    }
+
+    public function getBalance()
+    {
+        return $this->balance;
+    }
+
+    public function getHtmlName()
+    {
+        return MyHtmlHelper::a($this->name, "load_page('holding-info',{'id':{$this->id}})");
     }
 
 }

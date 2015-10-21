@@ -6,6 +6,8 @@ use Yii,
     yii\web\IdentityInterface,
     app\components\NalogPayer,
     app\components\MyModel,
+    app\components\MyHtmlHelper,
+    yii\helpers\Html,
     app\models\Twitter,
     app\models\Unnp,
     app\models\Dealing;
@@ -391,6 +393,22 @@ class User extends MyModel implements NalogPayer, IdentityInterface {
     public static function getRealKey($viewer_id)
     {
         return md5($viewer_id . Yii::$app->params['AUTH_KEY_SECRET']);
+    }
+
+    public function changeBalance($delta)
+    {
+        $this->money += $delta;
+        $this->save();
+    }
+
+    public function getBalance()
+    {
+        return $this->money;
+    }
+
+    public function getHtmlName()
+    {
+        return MyHtmlHelper::a(Html::img($dealing->sender->photo,['style'=>'width:20px']), "load_page('profile',{'id':{$this->id}})")." ".MyHtmlHelper::a($this->name, "load_page('profile',{'id':{$this->id}})");
     }
 
 }
