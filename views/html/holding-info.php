@@ -48,3 +48,15 @@ use yii\helpers\Html;
 <? } else { ?>
 <p>Компания не владеет недвижимостью</p>
 <? } ?>
+<h3>Инфраструктура</h3>
+<? if (count($holding->lines)) { ?>
+    <ul>
+    <? foreach ($holding->lines as $line) { ?>
+            <li>
+                <?=$line->proto->name?> <?=$line->region1->name?> — <?=$line->region2->name?>
+            </li>
+            <? } ?>
+    </ul>
+    <? } else { ?>
+    <p>Компания не владеет недвижимостью</p>
+<? } ?>
