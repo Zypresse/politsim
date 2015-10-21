@@ -17,19 +17,7 @@ use yii\helpers\Html;
 <? foreach ($holding->stocks as $stock) { 
     ?>
     <tr>
-        <td><?
-            switch (get_class($stock->master)) {
-                case 'app\models\User':
-                    echo Html::a($stock->master->name,'#',['onclick'=>"load_page('profile',{'uid':{$stock->master->id}})"]);
-                break;
-                case 'app\models\Post':
-                    echo ($stock->master->ministry_name ? $stock->master->ministry_name : $stock->master->name).' ('.Html::a($stock->master->org->name,'#',['onclick'=>"load_page('org-info',{'id':{$stock->master->org_id}})"]).')';
-                break;
-                case 'app\models\Holding':
-                    echo Html::a($stock->master->name,'#',['onclick'=>"load_page('holding-info',{'id':{$stock->master->id}})"]);
-                break;
-            }
-        ?></td>
+        <td><?=$stock->master->getHtmlName()?></td>
         <td><?=MyHtmlHelper::formateNumberword($stock->count, "акций","акция","акции")?> (<?=round($stock->getPercents(),2)?>%)</td>
     </tr>
 <? } ?>
@@ -58,5 +46,5 @@ use yii\helpers\Html;
             <? } ?>
     </ul>
     <? } else { ?>
-    <p>Компания не владеет недвижимостью</p>
+    <p>Компания не владеет объектами инфраструктуры</p>
 <? } ?>

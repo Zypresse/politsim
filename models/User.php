@@ -408,7 +408,7 @@ class User extends MyModel implements NalogPayer, IdentityInterface {
 
     public function getHtmlName()
     {
-        return MyHtmlHelper::a(Html::img($dealing->sender->photo,['style'=>'width:20px']), "load_page('profile',{'id':{$this->id}})")." ".MyHtmlHelper::a($this->name, "load_page('profile',{'id':{$this->id}})");
+        return MyHtmlHelper::a(Html::img($this->photo,['style'=>'width:20px']), "load_page('profile',{'id':{$this->id}})")." ".MyHtmlHelper::a($this->name, "load_page('profile',{'id':{$this->id}})");
     }
 
 }
