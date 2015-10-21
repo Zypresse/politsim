@@ -2,38 +2,25 @@
 
 namespace app\components;
 
-use app\models\Unnp;
-
 /**
- * Description of NalogPayer
+ * 
  *
  * @author ilya
  * 
  * @property int $unnp ИНН
  */
-abstract class NalogPayer extends MyModel {
+interface NalogPayer {
     
-    private $unnp = null;
+    public function getUnnp();
     
-    abstract protected function getUnnpType();
-
-    public function getUnnp()
-    {
-        if (is_null($this->unnp)) {
-            $u = Unnp::findOneOrCreate(['p_id' => $this->id, 'type' => $this->getUnnpType()]);
-            $this->unnp = ($u) ? $u->id : 0;
-        } 
-        return $this->unnp;
-    }
-    
-    public function getStocks()
+    /*public function getStocks();
     {
         return $this->hasMany('app\models\Stock', array('unnp' => 'unnp'));
-    }
+    }*/
     
-    public function isGoverment($stateId)
-    {
+    public function isGoverment($stateId);
+    /*{
         return false;
-    }
+    }*/
     
 }

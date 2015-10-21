@@ -5,7 +5,7 @@ namespace app\models\factories;
 use app\components\NalogPayer,
     app\models\Holding,
     app\models\Region,
-    app\models\resurses\proto\ResurseProto;
+    app\models\factories\proto\LineProto;
 
 /**
  * Трубопроводы, ЛЭП и т.п. Таблица "lines".
@@ -13,22 +13,41 @@ use app\components\NalogPayer,
  * @property integer $id
  * @property integer $region1_id
  * @property integer $region2_id
- * @property integer $resurse_proto_id
+ * @property integer $proto_id
  * @property integer $holding_id
  * 
  * @property Region $region1
  * @property Region $region2
  * @property Holding $holding
- * @property ResurseProto $resurseProto
+ * @property proto\LineProto $proto
  */
-class Line extends NalogPayer
+class Line extends UnmovableObject implements NalogPayer
 {
+    
+    private $_unnp;
+    public function getUnnp() {
+        if (is_null($this->_unnp)) {
+            $u = Unnp::findOneOrCreate(['p_id' => $this->id, 'type' => $this->getUnnpType()]);
+            $this->_unnp = ($u) ? $u->id : 0;
+        } 
+        return $this->_unnp;
+    }
 
     protected function getUnnpType()
     {
         return Unnp::TYPE_LINE;
     }
     
+    public function isGoverment($stateId)
+    {
+        return false;
+    }
+    
+    public static function getPrice($distance)
+    {
+        return $distance * $this->proto->build_cost;
+    }
+
     /**
      * @inheritdoc
      */
@@ -43,8 +62,8 @@ class Line extends NalogPayer
     public function rules()
     {
         return [
-            [['region1_id', 'region2_id', 'resurse_proto_id', 'holding_id'], 'required'],
-            [['region1_id', 'region2_id', 'resurse_proto_id', 'holding_id'], 'integer']
+            [['region1_id', 'region2_id', 'proto_id', 'holding_id'], 'required'],
+            [['region1_id', 'region2_id', 'proto_id', 'holding_id'], 'integer']
         ];
     }
 
@@ -77,9 +96,9 @@ class Line extends NalogPayer
         return $this->hasOne(Region::className(), array('id' => 'region2_id'));
     }
         
-    public function getResurseProto()
+    public function getProto()
     {
-        return $this->hasOne(ResurseProto::className(), array('id' => 'resurse_proto_id'));
+        return $this->hasOne(LineProto::className(), array('id' => 'proto_id'));
     }
 
 }

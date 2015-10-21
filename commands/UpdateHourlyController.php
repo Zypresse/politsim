@@ -313,6 +313,7 @@ class UpdateHourlyController extends Controller
         $factories = Factory::find()->where(['status'=>Factory::STATUS_ACTIVE])->all();
         foreach ($factories as $factory) {
             foreach ($factory->proto->licenses as $tLicense) {
+                
                 if (!$factory->holding->isHaveLicense($factory->region->state_id,$tLicense->id)) {
                     $factory->status = Factory::STATUS_HAVE_NOT_LICENSE;
                     $factory->save();

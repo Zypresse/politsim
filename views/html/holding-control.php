@@ -6,10 +6,11 @@
 
 use app\components\MyHtmlHelper,
     yii\helpers\Html,
+    app\models\HoldingDecision,
     app\models\factories\proto\FactoryProtoCategory,
     app\models\factories\proto\FactoryProto,
     app\models\factories\Factory,
-    app\models\HoldingDecision,
+    app\models\resurses\proto\ResurseProto,
     app\models\licenses\proto\LicenseProto,
     app\models\User,
     app\models\State,
@@ -132,6 +133,12 @@ $factoryCategories = FactoryProtoCategory::find()->all();
                         case HoldingDecision::DECISION_SETDIRECTOR:
                             $user = User::findByPk($data->uid);
                             echo "Назначение человека по имени {$user->name} на должность управляющего директора";
+                            break;
+                        case HoldingDecision::DECISION_BUILDLINE:
+                            $resProto = ResurseProto::findByPk($data->resurse_proto_id);
+                            $region1 = Region::findByPk($data->region1_id);
+                            $region2 = Region::findByPk($data->region2_id);
+                            echo "Строительство транспортного узла для ресурса {$resProto->name} между регионами {$region1->name} и {$region2->name}";
                             break;
                     }
                     ?></td><td>

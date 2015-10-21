@@ -31,7 +31,8 @@ use yii\helpers\ArrayHelper,
     app\models\factories\Factory,
     app\models\factories\proto\FactoryProto,
     app\models\factories\FactoryWorkersSalary,
-    app\models\constitution\ConstitutionFactory;
+    app\models\constitution\ConstitutionFactory,
+    app\models\factories\Line;
 
 class JsonController extends MyController {
 
@@ -1668,6 +1669,15 @@ class JsonController extends MyController {
         } else {
             return $this->_r("Invalid factory ID");
         }
+    }
+    
+    public function actionGetBuildLineCost($resurse_proto_id, $distance)
+    {
+        $distance = floatval($distance);
+        $resurse_proto_id = intval($resurse_proto_id);
+        
+        $this->result = Line::getPrice($resurse_proto_id, $distance);
+        return $this->_r();
     }
 
 }

@@ -2,7 +2,7 @@
 
 namespace app\models\factories\proto;
 
-use app\components\MyModel;
+use app\models\objects\proto\UnmovableObjectProto;
 
 /**
  * Тип фабрики. Таблица "factory_prototypes".
@@ -13,7 +13,8 @@ use app\components\MyModel;
  * @property string $system_name
  * @property integer $category_id
  * @property integer $can_build_npc
- * @property float $build_cost
+ * @property double $build_cost
+ * @property string $class_name
  * 
  * @property FactoryProtoCategory $category Категория фабрик
  * @property FactoryProtoKit[] $resurses Набор всех ресурсов
@@ -23,9 +24,21 @@ use app\components\MyModel;
  * @property FactoryProtoWorker[] $workers Используемые наборы рабочих
  * @property FactoryProtoLicenses[] $licenses Необходимые лицензии
  */
-class FactoryProto extends MyModel
+class FactoryProto extends UnmovableObjectProto
 {
+    /*
+    public static function find()
+    {
+        return new ObjectProtoQuery(static::class, ['class_name' => static::class]);
+    }
+     */
 
+    public static function instantiate($row)
+    {
+        $className = "app\\models\\factories\\proto\\types\\{$row['class_name']}";
+        return new $className;
+    }
+    
     /**
      * @inheritdoc
      */
@@ -40,10 +53,12 @@ class FactoryProto extends MyModel
     public function rules()
     {
         return [
-            [['name', 'level', 'system_name', 'category_id'], 'required'],
+            [['name', 'level', 'system_name', 'category_id', 'build_cost', 'class_name'], 'required'],
+            [['name', 'system_name', 'class_name'], 'string'],
             [['level', 'category_id', 'can_build_npc'], 'integer'],
             [['build_cost'],'number'],
-            [['name', 'system_name'], 'string', 'max' => 255]
+            [['build_cost'], 'number'],
+            [['class_name'], 'unique']
         ];
     }
 
@@ -53,13 +68,14 @@ class FactoryProto extends MyModel
     public function attributeLabels()
     {
         return [
-            'id'            => 'ID',
-            'name'          => 'Name',
-            'level'         => 'Level',
-            'system_name'   => 'System Name',
-            'category_id'   => 'Category ID',
+            'id' => 'ID',
+            'name' => 'Name',
+            'level' => 'Level',
+            'system_name' => 'System Name',
+            'category_id' => 'Category ID',
             'can_build_npc' => 'Can Build Npc',
-            'build_cost'    => 'Build cost',
+            'build_cost' => 'Build Cost',
+            'class_name' => 'Class Name',
         ];
     }
 

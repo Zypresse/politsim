@@ -3,6 +3,7 @@
 namespace app\models;
 
 use app\components\NalogPayer,
+    app\components\MyModel,
     app\models\User,
     app\models\Unnp;
 
@@ -28,14 +29,28 @@ use app\components\NalogPayer,
  * @property \app\models\Ideology $ideologyInfo Идеология
  * @property \app\models\Post[] $postsReserved 
  */
-class Party extends NalogPayer
+class Party extends MyModel implements NalogPayer
 {
 
     protected function getUnnpType()
     {
         return Unnp::TYPE_PARTY;
     }
+    
+    private $_unnp;
+    public function getUnnp() {
+        if (is_null($this->_unnp)) {
+            $u = Unnp::findOneOrCreate(['p_id' => $this->id, 'type' => $this->getUnnpType()]);
+            $this->_unnp = ($u) ? $u->id : 0;
+        } 
+        return $this->_unnp;
+    }
 
+    public function isGoverment($stateId)
+    {
+        return false;
+    }
+    
     /**
      * @inheritdoc
      */

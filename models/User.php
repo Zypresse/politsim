@@ -3,7 +3,9 @@
 namespace app\models;
 
 use Yii,
+    yii\web\IdentityInterface,
     app\components\NalogPayer,
+    app\components\MyModel,
     app\models\Twitter,
     app\models\Unnp,
     app\models\Dealing;
@@ -45,11 +47,25 @@ use Yii,
  * @property \app\models\Auth[] $accounts
  * @property \app\models\Holding[] $holdings Компании, директором которых является
  */
-class User extends NalogPayer implements \yii\web\IdentityInterface {
+class User extends MyModel implements NalogPayer, IdentityInterface {
 
     protected function getUnnpType()
     {
         return Unnp::TYPE_USER;
+    }
+    
+    private $_unnp;
+    public function getUnnp() {
+        if (is_null($this->_unnp)) {
+            $u = Unnp::findOneOrCreate(['p_id' => $this->id, 'type' => $this->getUnnpType()]);
+            $this->_unnp = ($u) ? $u->id : 0;
+        } 
+        return $this->_unnp;
+    }
+    
+    public function isGoverment($stateId)
+    {
+        return false;
     }
 
     public static function findIdentity($id)
@@ -209,6 +225,11 @@ class User extends NalogPayer implements \yii\web\IdentityInterface {
     public function getHoldings()
     {
         return $this->hasMany('app\models\Holding', array('director_id' => 'id'));
+    }
+    
+    public function getStocks()
+    {
+        return $this->hasMany('app\models\Stock', array('unnp' => 'unnp'));
     }
 
     /**

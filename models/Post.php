@@ -3,6 +3,7 @@
 namespace app\models;
 
 use app\components\NalogPayer,
+    app\components\MyModel,
     app\models\Unnp;
 
 /**
@@ -20,12 +21,26 @@ use app\components\NalogPayer,
  * @property \app\models\Party $partyReserve Партия, которой принадлежит этот пост
  * @property \app\models\User $user Игрок, занимающий этот пост
  */
-class Post extends NalogPayer
+class Post extends MyModel implements NalogPayer
 {
 
     protected function getUnnpType()
     {
         return Unnp::TYPE_POST;
+    }
+
+    public function getStocks()
+    {
+        return $this->hasMany('app\models\Stock', array('unnp' => 'unnp'));
+    }
+    
+    private $_unnp;
+    public function getUnnp() {
+        if (is_null($this->_unnp)) {
+            $u = Unnp::findOneOrCreate(['p_id' => $this->id, 'type' => $this->getUnnpType()]);
+            $this->_unnp = ($u) ? $u->id : 0;
+        } 
+        return $this->_unnp;
     }
 
     public function isGoverment($stateId)

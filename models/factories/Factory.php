@@ -7,7 +7,8 @@ use app\components\MyMathHelper,
     app\models\Unnp,
     app\models\factories\proto\FactoryProto,
     app\models\factories\proto\FactoryProtoKit,
-    app\models\resurses\Resurse;
+    app\models\resurses\Resurse,
+    app\models\objects\UnmovableObject;
 
 /**
  * Фабрика/завод/сх-предприятие. Таблица "factories".
@@ -33,7 +34,7 @@ use app\components\MyMathHelper,
  * @property \app\models\Vacansy[] $vacansiesWithSalaryAndCount Актуальнаые вакансии
  * @property \app\models\Vacansy[] $vacansiesWithSalary Потенцальные вакансии
  */
-class Factory extends NalogPayer
+class Factory extends UnmovableObject implements NalogPayer
 {
     /**
      * Строится
@@ -84,6 +85,12 @@ class Factory extends NalogPayer
     {
         return Unnp::TYPE_FACTORY;
     }
+    
+    public function isGoverment($stateId)
+    {
+        return false;
+    }
+    
     /**
      * @inheritdoc
      */
@@ -172,11 +179,6 @@ class Factory extends NalogPayer
         return $this->hasMany('app\models\Vacansy', array('factory_id' => 'id'))->where('salary > 0')->orderBy("salary DESC");
     }
     
-    public function getStorages()
-    {
-        return $this->hasMany('app\models\resurses\Resurse', array('factory_id' => 'id'));
-    }
-    
     public function getStatusName()
     {
         $names = [
@@ -210,7 +212,7 @@ class Factory extends NalogPayer
     public function pushToStorage($proto_id, $count) 
     {
         $store = Resurse::findOrCreate([
-            'factory_id' => $this->id,
+            'place_id' => $this->id,
             'proto_id' => $proto_id
         ], false, [
             'count' => 0
@@ -227,7 +229,7 @@ class Factory extends NalogPayer
     public function delFromStorage($proto_id, $count) 
     {
         $store = Resurse::findOrCreate([
-            'factory_id' => $this->id,
+            'place_id' => $this->id,
             'proto_id' => $proto_id
         ], false, [
             'count' => 0
@@ -244,23 +246,6 @@ class Factory extends NalogPayer
         }
     }
 
-    public function afterSave($insert, $changedAttributes)
-    {
-        if ($insert) {
-            /*foreach ($this->proto->resurses as $kit) {
-                if ($kit->resurse->isStorable()) {
-                    $fs = new Resurse([
-                        'factory_id' => $this->id,
-                        'resurse_id' => $kit->resurse_id,
-                        'count' => 0
-                    ]);
-                    $fs->save();
-                }
-            }*/
-        }
-        return parent::afterSave($insert, $changedAttributes);
-    }
-    
     /**
      * 
      * @return \yii\db\ActiveQuery
@@ -312,6 +297,15 @@ class Factory extends NalogPayer
                 $this->pushToStorage($kit->resurse_proto_id, $count);
             }
         }
+    }
+    
+    private $_unnp;
+    public function getUnnp() {
+        if (is_null($this->_unnp)) {
+            $u = Unnp::findOneOrCreate(['p_id' => $this->id, 'type' => $this->getUnnpType()]);
+            $this->_unnp = ($u) ? $u->id : 0;
+        } 
+        return $this->_unnp;
     }
 
 }

@@ -64,11 +64,17 @@ abstract class BillProto extends MyModel
     {
         return $this->hasMany('app\models\bills\proto\BillProtoField', array('proto_id' => 'id'));
     }
-    
+    /*
     public static function findByPk($id)
     {
         $class_name = 'app\\models\\bills\\proto\\'.Yii::$app->db->createCommand("SELECT class_name FROM `".static::tableName()."` WHERE id = {$id}")->queryScalar();
         return $class_name::find()->where(['id'=>$id])->one();
+    }*/
+    
+    public static function instantiate($row)
+    {
+        $className = "app\\models\\bills\\proto\\{$row['class_name']}";
+        return new $className;
     }
 
     /**

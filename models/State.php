@@ -3,6 +3,7 @@
 namespace app\models;
 
 use app\components\NalogPayer,
+    app\components\MyModel,
     app\models\articles\Article,
     app\models\articles\proto\ArticleProto,
     app\models\Unnp,
@@ -52,7 +53,7 @@ use app\components\NalogPayer,
  * @property \app\models\User[] $users Список игроков
  * @property CoreCountryState[] $coreCountryStates Список привязок к корневым странам
  */
-class State extends NalogPayer
+class State extends MyModel implements NalogPayer
 {
 
     protected function getUnnpType()
@@ -63,6 +64,20 @@ class State extends NalogPayer
     public function isGoverment($stateId)
     {
         return $this->id === $stateId;
+    }
+
+    public function getStocks()
+    {
+        return $this->hasMany('app\models\Stock', array('unnp' => 'unnp'));
+    }
+    
+    private $_unnp;
+    public function getUnnp() {
+        if (is_null($this->_unnp)) {
+            $u = Unnp::findOneOrCreate(['p_id' => $this->id, 'type' => $this->getUnnpType()]);
+            $this->_unnp = ($u) ? $u->id : 0;
+        } 
+        return $this->_unnp;
     }
 
     /**

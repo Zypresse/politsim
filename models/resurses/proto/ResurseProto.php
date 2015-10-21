@@ -8,7 +8,7 @@ use app\components\MyModel;
  * Тип ресурса. Таблица "resurses_prototypes".
  *
  * @property integer $id
- * @property string $class Класс ресурса (напр. "Oil")
+ * @property string $class_name Класс ресурса (напр. "Oil")
  * @property string $name Имя ресурса (напр. "Нефть")
  * @property integer $level Уровень ресурса (0 - добываемые, 1 - переработанные, 2 - отходы, 3 - люди, 4 - временные ресурсы)
  */
@@ -29,10 +29,10 @@ class ResurseProto extends MyModel
     public function rules()
     {
         return [
-            [['code', 'name', 'level'], 'required'],
+            [['code', 'class_name', 'level'], 'required'],
             [['level'], 'integer'],
-            [['code'], 'string', 'max' => 100],
-            [['name'], 'string', 'max' => 1000]
+            [['class_name', 'name'], 'string'],
+            [['class_name'], 'unique']
         ];
     }
 
@@ -42,10 +42,10 @@ class ResurseProto extends MyModel
     public function attributeLabels()
     {
         return [
-            'id'    => 'ID',
-            'code'  => 'Code',
-            'name'  => 'Name',
+            'id' => 'ID',
             'level' => 'Level',
+            'class_name' => 'Class Name', 
+            'name' => 'Name', 
         ];
     }
     
@@ -69,6 +69,10 @@ class ResurseProto extends MyModel
      */
     const LEVEL_NOTSTORED = 4;
     
+    /**
+     * 
+     * @return boolean
+     */
     public function isStorable()
     {
         return $this->level !== static::LEVEL_NOTSTORED;

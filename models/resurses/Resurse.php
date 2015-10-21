@@ -2,20 +2,20 @@
 
 namespace app\models\resurses;
 
-use app\components\MyModel;
+use app\models\objects\MovableObject;
 
 /**
  * This is the model class for table "resurses".
  *
  * @property integer $id
- * @property integer $factory_id
  * @property integer $proto_id
+ * @property integer $place_id
  * @property double $count
  *
  * @property proto\ResurseProto $proto
  * @property \app\models\factories\Factory $factory
  */
-class Resurse extends MyModel
+class Resurse extends MovableObject
 {
     /**
      * @inheritdoc
@@ -31,8 +31,8 @@ class Resurse extends MyModel
     public function rules()
     {
         return [
-            [['factory_id', 'proto_id', 'count'], 'required'],
-            [['factory_id', 'proto_id'], 'integer'],
+            [['place_id', 'proto_id', 'count'], 'required'],
+            [['place_id', 'proto_id'], 'integer'],
             [['count'], 'number']
         ];
     }
@@ -44,7 +44,7 @@ class Resurse extends MyModel
     {
         return [
             'id' => 'ID',
-            'factory_id' => 'Factory ID',
+            'place_id' => 'Place ID',
             'proto_id' => 'Proto ID',
             'count' => 'Count',
         ];
@@ -55,8 +55,4 @@ class Resurse extends MyModel
         return $this->hasOne('app\models\resurses\proto\ResurseProto', array('id' => 'proto_id'));
     }
 
-    public function getFactory()
-    {
-        return $this->hasOne('app\models\factories\Factory', array('id' => 'factory_id'));
-    }
 }

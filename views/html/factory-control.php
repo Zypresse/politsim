@@ -67,11 +67,11 @@ use app\components\MyHtmlHelper;
 </p>
 
 <p><strong>Склады предприятия:</strong>
-<? if (count($factory->storages)) { ?>
+<? if (count($factory->content)) { ?>
 <ul>
-    <? foreach ($factory->storages as $store): if ($store->proto->isStorable()): ?>
+    <? foreach ($factory->content as $store): if ($store->proto->isStorable()): ?>
     <li>
-        <?=MyHtmlHelper::icon($store->proto->class)?> <?=$store->proto->name?> (<?=$store->count?> / <?=number_format($factory->storageSize($store->proto_id),0,'',' ')?>)
+        <?=MyHtmlHelper::icon($store->proto->class_name)?> <?=$store->proto->name?> (<?=$store->count?> / <?=number_format($factory->storageSize($store->proto_id),0,'',' ')?>)
     </li>
     <? endif; endforeach; ?>
 </ul>
