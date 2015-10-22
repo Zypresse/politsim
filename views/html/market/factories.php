@@ -16,21 +16,24 @@ $unnps = [$user->unnp];
 <div id="market-change-unnp" >
     <label for="#market-change-unnp-select" >Действовать от имени: </label>
     <select id="market-change-unnp-select" >
-        <option value="<?=$user->unnp?>">Физическое лицо</option>
+        <option disabled value="<?=$user->unnp?>">Физическое лицо</option>
         <? if ($user->post && $user->post->org && $user->post->org->isExecutive()): $unnps[] = $user->post->unnp; ?>
-        <option value="<?=$user->post->unnp?>"><?=$user->post->ministry_name?$user->post->ministry_name:$user->post->name.' ('.$user->post->org->name.')'?></option>
+        <option disabled value="<?=$user->post->unnp?>"><?=$user->post->ministry_name?$user->post->ministry_name:$user->post->name.' ('.$user->post->org->name.')'?></option>
         <? endif ?>
         <? if ($user->isOrgLeader()): $unnps[] = $user->post->org->unnp; ?>
-        <option value="<?=$user->post->org->unnp?>"><?=$user->post->org->name?></option>
+        <option disabled value="<?=$user->post->org->unnp?>"><?=$user->post->org->name?></option>
         <? endif ?>
         <? if ($user->isStateLeader()): $unnps[] = $user->state->unnp; ?>
-        <option value="<?=$user->state->unnp?>"><?=$user->state->name?></option>
+        <option disabled value="<?=$user->state->unnp?>"><?=$user->state->name?></option>
         <? endif ?>
         <?/* if ($user->isRegionLeader()): ?>
-        <option value="<?=$user->region->unnp?>"><?=$user->region->name?></option>
+        <option disabled value="<?=$user->region->unnp?>"><?=$user->region->name?></option>
         <? endif */?>
         <? foreach ($user->holdings as $holding): $unnps[] = $holding->unnp; ?>
         <option value="<?=$holding->unnp?>"><?=$holding->name?></option>
+        <? endforeach ?>
+        <? foreach ($user->factories as $factory): $unnps[] = $factory->unnp; ?>
+        <option disabled value="<?=$factory->unnp?>"><?=$factory->name?></option>
         <? endforeach ?>
     </select>
 </div>
@@ -64,7 +67,7 @@ $unnps = [$user->unnp];
                 'attribute' => 'regionName',
                 'label' => 'Местоположение',
                 'content' => function($model) {
-                    return $model->factory->region->name . ( $model->factory->region->state ? " (" . MyHtmlHelper::a($model->factory->region->state->short_name,"load_page('state-info',{'id':".$model->factory->region->state_id."})") . ")" : '');
+                    return MyHtmlHelper::a($model->factory->region->name, "show_region({$model->factory->region->id})") . ( $model->factory->region->state ? " (" . MyHtmlHelper::a($model->factory->region->state->short_name,"load_page('state-info',{'id':".$model->factory->region->state_id."})") . ")" : '');
                 }
             ],
             [
@@ -85,7 +88,7 @@ $unnps = [$user->unnp];
                 'attribute' => 'date_end',
                 'label' => 'Завершение',
                 'content' => function($model) {
-                    return MyHtmlHelper::timeFormatFuture($model->date_end);
+                    return ($model->date_end > time()) ? MyHtmlHelper::timeFormatFuture($model->date_end) : "завершён";
                 }
             ],
             [
@@ -93,7 +96,7 @@ $unnps = [$user->unnp];
                 'content' => function($model) {
                     return Html::button('Ставка', [
                         'class' => 'btn btn-small btn-primary btn-bet hide-on-unnp'.$model->factory->holding->unnp,
-                        'onclick' => 'alert(1)'
+                        'onclick' => 'load_modal("factory-auction-info",{"id":'.$model->id.',"unnp":parseInt($("#market-change-unnp-select").val())},"factory_auction_info","factory_auction_info_body")'
                     ]);
                 }
             ]
@@ -102,20 +105,51 @@ $unnps = [$user->unnp];
     ]); ?>
 </div>
 
+<div style="display:none" class="modal" id="region_info" tabindex="-1" role="dialog" aria-labelledby="myModalLabel345543" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel345543">Информация о регионе</h3>
+  </div>
+  <div id="region_info_body" class="modal-body">
+    <p>Загрузка…</p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+    <!--<button class="btn btn-primary">Save changes</button>-->
+  </div>
+</div>
+
+<div style="display:none" class="modal" id="factory_auction_info" tabindex="-1" role="dialog" aria-labelledby="factory_auction_info_label" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="factory_auction_info_label">Информация о аукционе</h3>
+  </div>
+  <div id="factory_auction_info_body" class="modal-body">
+    <p>Загрузка…</p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+    <!--<button class="btn btn-primary">Save changes</button>-->
+  </div>
+</div>
+
 <script type="text/javascript">
+    function updateButtons() {
+        var unnp = parseInt($('#market-change-unnp-select').val());
+        console.log(unnp);
+        $('.btn-bet').removeAttr("disabled");
+        $('.hide-on-unnp'+unnp).attr("disabled","disabled");
+    }
+    
     $(function() {
         $('#market-factories-table th a').click(function(){
             $.get($(this).attr('href'), function(data){
                 $('#row1').html(data);
             })
             return false;
-        })
+        });
         
-        $('#market-change-unnp-select').change(function(){
-            var unnp = parseInt($(this).val());
-            console.log(unnp);
-            $('.btn-bet').removeAttr("disabled");
-            $('.hide-on-unnp'+unnp).attr("disabled","disabled");
-        })
+        $('#market-change-unnp-select').change(updateButtons);
+        updateButtons();
     })
 </script>
