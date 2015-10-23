@@ -21,7 +21,9 @@ use app\components\MyController,
     app\models\ElectResult,
     app\models\licenses\proto\LicenseProto,
     app\models\Holding,
-    app\models\factories\proto\FactoryProtoCategory;
+    app\models\factories\proto\FactoryProtoCategory,
+    app\models\factories\FactoryAuction,
+    app\models\Unnp;
 
 class ModalController extends MyController {
 
@@ -487,6 +489,27 @@ class ModalController extends MyController {
         } else {
             return $this->_r("Invalid region ID");
         }
+    }
+    
+    public function actionFactoryAuctionInfo($id, $unnp)
+    {
+        $id = intval($id);
+        $unnp = intval($unnp);
+        
+        $auc = FactoryAuction::findByPk($id);
+        if (is_null($auc)) {
+            return $this->_r("Invalid auction ID");
+        }
+        
+        $n = Unnp::findByPk($unnp);
+        if (is_null($n) || is_null($n->master)) {
+            return $this->_r("Invalid UNNP");
+        }
+        
+        return $this->render("factory-auction-info",[
+            'auction' => $auc,
+            'master' => $n->master
+        ]);
     }
 
 }
