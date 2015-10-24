@@ -37,20 +37,20 @@ class MyHtmlHelper {
             'newspaper' => 'Газеты',
             'radio_modern' => 'Радио',
             'twitter_bird' => 'Соц. сети',
-            'oil' => 'Нефть',
-            'natural_gas' => 'Природный газ',
-            'coal' => 'Уголь',
-            'nf_ores' => 'Руды цветных металлов',
-            'f_ores' => 'Руды чёрных металлов',
-            're_ores' => 'Руды редкоземельных металлов',
-            'u_ores' => 'Урановые руды',
-            'wood' => 'Древесина',
-            'corn' => 'Зерно',
-            'fruits' => 'Фрукты',
-            'fish' => 'Рыба и морепродукты',
-            'meat' => 'Мясо и молочная продукция',
-            'wool' => 'Шерсть и кожа',
-            'b_materials' => 'Стройматериалы (добываемые)',
+            'Oil' => 'Нефть',
+            'NaturalGas' => 'Природный газ',
+            'Coal' => 'Уголь',
+            'NFOre' => 'Руды цветных металлов',
+            'FOre' => 'Руды чёрных металлов',
+            'REOre' => 'Руды редкоземельных металлов',
+            'UOre' => 'Урановые руды',
+            'Wood' => 'Древесина',
+            'Corn' => 'Зерно',
+            'Fruits' => 'Фрукты',
+            'Fish' => 'Рыба и морепродукты',
+            'Meat' => 'Мясо и молочная продукция',
+            'Wool' => 'Шерсть и кожа',
+            'Sand' => 'Стройматериалы (добываемые)',
             'money' => 'долларов',
             'lg-icons/business' => 'Бизнес',
             'lg-icons/goverment' => 'Правительство',
@@ -96,6 +96,25 @@ class MyHtmlHelper {
             return 'высокий уровень';
         } else {
             return 'высочайший уровень';
+        }
+    }
+
+    public static function zeroOne2Stars($n)
+    {
+        if ($n === 0) {
+            return '';
+        } else if ($n < 0.3) {
+            return '<span style="color:red" title="крайне низкий уровень" >★</span>';
+        } else if ($n < 0.5) {
+            return '<span style="color:#ED8931" title="низкий уровень" >★★</span>';
+        } else if ($n < 0.7) {
+            return '<span style="color:#1470DF" title="средний уровень" >★★★</span>';
+        } else if ($n < 0.82) {
+            return '<span style="color:#89891B" title="уровень выше среднего" >★★★★</span>';
+        } else if ($n < 0.95) {
+            return '<span style="color:#238619" title="высокий уровень" >★★★★★</span>';
+        } else {
+            return '<span style="color:gold" title="высочайший уровень" >★★★★★★</span>';
         }
     }
 

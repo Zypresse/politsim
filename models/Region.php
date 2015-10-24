@@ -20,23 +20,8 @@ use app\components\NalogPayer,
  * @property string $b Через запятую — коды соседних регионов
  * @property double $lat Широта центра
  * @property double $lng Долгота центра
- * @property double $separate_risk Риск восстаний (0-1)
  * @property integer $population Население
- * @property double $oil Эффективность добычи нефти (0-1)
- * @property double $natural_gas Эффективность добычи газа (0-1)
- * @property double $coal Эффективность добычи угля (0-1)
- * @property double $nf_ores Эффективность добычи руд цвет. металов (0-1)
- * @property double $f_ores Эффективность добычи руд железа (0-1)
- * @property double $re_ores Эффективность добычи руд редкозем. металов (0-1)
- * @property double $u_ores Эффективность добычи урановой руды (0-1)
- * @property double $wood Эффективность добычи древесины (0-1)
- * @property double $corn Эффективность выращивания зерновых (0-1)
- * @property double $fruits Эффективность выращивания фруктов и овощей (0-1)
- * @property double $fish Эффективность вылова рыбы и морепродуктов (0-1)
- * @property double $meat Эффективность производства мяса и молока (0-1)
- * @property double $wool Эффективность производства шерсти и кожи (0-1)
- * @property double $b_materials Эффективность добычи добываемых стройматериалов (0-1)
- * 
+ *  
  * @property State $state Государство
  * @property Population[] $populationGroups Группы населения
  * @property Population[] $populationGroupsWithoutFactory Группы населения не работающие на фабриках
@@ -46,6 +31,7 @@ use app\components\NalogPayer,
  * @property Vacansy[] $vacansies Вакансии
  * @property Vacansy[] $vacansiesWithSalaryAndCount Актуальнаые вакансии
  * @property Vacansy[] $vacansiesWithSalary Потенцальные вакансии
+ * @property RegionDiggingEff[] $diggingEffs
  */
 class Region extends MyModel implements NalogPayer
 {
@@ -246,6 +232,11 @@ class Region extends MyModel implements NalogPayer
     public function getVacansiesWithSalary()
     {
         return $this->hasMany('app\models\Vacansy', array('region_id' => 'id'))->where('salary > 0')->orderBy("salary DESC");
+    }
+    
+    public function getDiggingEffs()
+    {
+        return $this->hasMany('app\models\RegionDiggingEff', array('region_id' => 'id'))->orderBy('group_id');
     }
 
     /**

@@ -137,10 +137,17 @@ class JsonController extends MyController {
             if (is_null($resurse)) {
                 $this->error = "Resurse not found";
             } else {
-                $regions = Region::find()->all();
+                $regions = Region::find()->with('diggingEffs')->all();
                 $this->result = [];
                 foreach ($regions as $region) {
-                    $this->result[] = ['region' => $region->code, 'count' => 0];
+                    $count = 0;
+                    foreach ($region->diggingEffs as $de) {
+                        if ($de->resurse_proto_id === $resurse->id) {
+                            $count = $de->k;
+                            break;
+                        }
+                    }
+                    $this->result[] = ['region' => $region['code'], 'count' => $count];
                 }
             }
         } else {
