@@ -157,10 +157,10 @@ class UpdateMinutlyController extends Controller {
     
     private function updateFactoryAuctions()
     {
-        $auctions = FactoryAuction::find()->where(['<=', 'date_end', 'time'])->all();
+        $auctions = FactoryAuction::find()->where(['<=', 'date_end', time()])->all();
         
         foreach ($auctions as $auction) {
-            $auction->delete();
+            
         }
     }
     

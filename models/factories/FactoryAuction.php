@@ -41,8 +41,7 @@ class FactoryAuction extends MyModel
         return [
             [['factory_id', 'date_end', 'start_price'], 'required'],
             [['factory_id', 'date_end', 'winner_unnp'], 'integer'],
-            [['start_price', 'end_price', 'current_price'], 'number'],
-            [['factory_id'], 'unique']
+            [['start_price', 'end_price', 'current_price'], 'number']
         ];
     }
 
