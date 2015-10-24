@@ -3,7 +3,8 @@
 namespace app\models;
 
 use app\components\MyModel,
-    app\models\Stock;
+    app\models\Stock,
+    app\models\factories\Factory;
 
 /**
  * Сделка между игроками. Таблица "dealings".
@@ -129,6 +130,14 @@ class Dealing extends MyModel
                             $stock->delete();
                         }
                         $recStock->save();
+                        break;
+                    case "factory":
+                        $factory = Factory::findByPk($item['factory_id']);
+                        
+                        if ($this->recipient->getUnnpType() === Unnp::TYPE_HOLDING) {
+                            $factory->holding_id = $this->recipient->id;
+                            $factory->save();
+                        }
                         break;
                 }
             }

@@ -31,7 +31,7 @@ use app\components\NalogPayer,
  */
 class Population extends MyModel implements NalogPayer {
 
-    protected function getUnnpType()
+    public function getUnnpType()
     {
         return Unnp::TYPE_POP;
     }

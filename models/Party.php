@@ -33,7 +33,7 @@ use app\components\NalogPayer,
 class Party extends MyModel implements NalogPayer
 {
 
-    protected function getUnnpType()
+    public function getUnnpType()
     {
         return Unnp::TYPE_PARTY;
     }

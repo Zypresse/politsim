@@ -28,7 +28,7 @@ use app\components\NalogPayer,
 class Holding extends MyModel implements NalogPayer
 {
 
-    protected function getUnnpType()
+    public function getUnnpType()
     {
         return Unnp::TYPE_HOLDING;
     }

@@ -51,7 +51,7 @@ use Yii,
  */
 class User extends MyModel implements NalogPayer, IdentityInterface {
 
-    protected function getUnnpType()
+    public function getUnnpType()
     {
         return Unnp::TYPE_USER;
     }

@@ -26,4 +26,6 @@ interface NalogPayer {
     
     public function getHtmlName();
     
+    public function getUnnpType();
+    
 }

@@ -6,13 +6,8 @@ use yii\helpers\ArrayHelper,
     app\components\MyController,
     app\components\MyHtmlHelper,
     app\models\User,
-    app\models\articles\proto\ArticleProto,
     app\models\Org,
-    app\models\resurses\proto\ResurseProto,
     app\models\Region,
-    app\models\bills\proto\BillProto,
-    app\models\bills\Bill,
-    app\models\bills\BillVote,
     app\models\ElectRequest,
     app\models\ElectVote,
     app\models\Post,
@@ -22,17 +17,24 @@ use yii\helpers\ArrayHelper,
     app\models\Twitter,
     app\models\Holding,
     app\models\Stock,
+    app\models\Vacansy,
+    app\models\Unnp,
     app\models\HoldingDecision,
     app\models\HoldingDecisionVote,
     app\models\Notification,
     app\models\ElectOrgLeaderRequest,
     app\models\ElectOrgLeaderVote,
-    app\models\Vacansy,
-    app\models\factories\Factory,
-    app\models\factories\proto\FactoryProto,
-    app\models\factories\FactoryWorkersSalary,
+    app\models\articles\proto\ArticleProto,
+    app\models\resurses\proto\ResurseProto,
+    app\models\bills\Bill,
+    app\models\bills\BillVote,
+    app\models\bills\proto\BillProto,
     app\models\constitution\ConstitutionFactory,
+    app\models\factories\Factory,
+    app\models\factories\FactoryWorkersSalary,
+    app\models\factories\FactoryAuction,
     app\models\factories\Line,
+    app\models\factories\proto\FactoryProto,
     app\models\factories\proto\LineProto;
 
 class JsonController extends MyController {
@@ -1671,6 +1673,54 @@ class JsonController extends MyController {
         
         $this->result = Line::getPrice($resurse_proto_id, $distance);
         return $this->_r();
+    }
+    
+    public function actionFactoryMarketBet($unnp, $auction_id, $bet_size)
+    {
+        $unnpModel = Unnp::findByPk($unnp);
+        if (is_null($unnpModel)) {
+            return $this->_r("Invalid UNNP");
+        }
+        
+        $auction = FactoryAuction::findByPk($auction_id);
+        if (is_null($auction)) {
+            return $this->_r("Invalid auction ID");
+        }
+        
+        $bet_size = floatval($bet_size);
+        $minBet = max([$auction->start_price,round($auction->current_price*1.1)]);
+        if ($bet_size < $minBet) {
+            return $this->_r("Слишком маленькая ставка");
+        }
+        
+        if ($auction->end_price && $bet_size >= $auction->end_price) {
+            // Выкуп по стоп-цене
+            
+            $auction->current_price = $bet_size;
+            $auction->winner_unnp = $unnpModel->id;
+            $auction->date_end = time();
+            $auction->save();
+                        
+            $dealing = new Dealing([
+                'proto_id' => 1,
+                'from_unnp' => $auction->factory->holding->unnp,
+                'to_unnp' => $unnpModel->id,
+                'sum' => -1*$bet_size,
+                'items' => json_encode([
+                    [
+                        'type' => 'factory',
+                        'factory_id' => $auction->factory->id
+                    ]
+                ])
+            ]);
+            $dealing->accept();
+            
+            return $this->_rOk();
+            
+        } else {
+            // 
+        }
+        
     }
 
 }

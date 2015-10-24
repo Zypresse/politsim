@@ -6,6 +6,7 @@ use yii\console\Controller,
     app\models\bills\Bill,
     app\models\HoldingDecision,
     app\models\factories\Factory,
+//    app\models\factories\FactoryAuction,
     app\models\Vacansy;
 
 /**
@@ -24,7 +25,7 @@ class UpdateMinutlyController extends Controller {
         $this->updateBuildinds();   
         
         $this->updateFactoryVacansies();     
-        
+                
     }
 
     /**
@@ -151,5 +152,11 @@ class UpdateMinutlyController extends Controller {
             }
         }
     }
+    /*
+    private function updateFactoryAuctions()
+    {
+        $auctions = FactoryAuction::find()->where(['<=', 'date_end', 'time'])->all();
         
+    }
+    */
 }

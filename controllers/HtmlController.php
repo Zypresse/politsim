@@ -15,6 +15,7 @@ use Yii,
     app\models\Twitter,
     app\models\Holding,
     app\models\factories\Factory,
+    app\models\factories\FactoryAuction,
     app\models\factories\FactoryAuctionSearch;
 
 class HtmlController extends MyController
@@ -339,7 +340,14 @@ class HtmlController extends MyController
     public function actionMarketFactories()
     {
         $searchModel = new FactoryAuctionSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search(
+            Yii::$app->request->queryParams,
+            FactoryAuction::find()->where([
+                'winner_unnp' => null,
+            ])->andWhere([
+                '>', 'date_end', time()
+            ])
+        );
 
         return $this->render('market/factories', [
             'searchModel' => $searchModel,

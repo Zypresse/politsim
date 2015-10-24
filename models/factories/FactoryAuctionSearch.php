@@ -47,9 +47,11 @@ class FactoryAuctionSearch extends FactoryAuction
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
+    public function search($params = [], $query = null)
     {
-        $query = FactoryAuction::find();
+        if (is_null($query)) {
+            $query = FactoryAuction::find();
+        }
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

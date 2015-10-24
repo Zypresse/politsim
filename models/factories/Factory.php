@@ -83,7 +83,7 @@ class Factory extends UnmovableObject implements NalogPayer
      */
     const STATUS_HAVE_NOT_LICENSE = 6;
 
-    protected function getUnnpType()
+    public function getUnnpType()
     {
         return Unnp::TYPE_FACTORY;
     }

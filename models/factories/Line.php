@@ -35,7 +35,7 @@ class Line extends UnmovableObject implements NalogPayer
         return $this->_unnp;
     }
 
-    protected function getUnnpType()
+    public function getUnnpType()
     {
         return Unnp::TYPE_LINE;
     }

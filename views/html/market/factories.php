@@ -136,7 +136,6 @@ $unnps = [$user->unnp];
 <script type="text/javascript">
     function updateButtons() {
         var unnp = parseInt($('#market-change-unnp-select').val());
-        console.log(unnp);
         $('.btn-bet').removeAttr("disabled");
         $('.hide-on-unnp'+unnp).attr("disabled","disabled");
     }

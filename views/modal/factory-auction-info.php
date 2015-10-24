@@ -4,6 +4,9 @@
 
 use app\components\MyHtmlHelper;
 
+$minBet = max([$auction->start_price,round($auction->current_price*1.1)]);
+$maxBet = min([$auction->end_price ? $auction->end_price : INF,$master->getBalance()]);
+
 ?>
 <h4><?=$auction->factory->getHtmlName()?></h4>
 <p>Владелец: <?=$auction->factory->holding->getHtmlName()?></p>
@@ -19,27 +22,59 @@ use app\components\MyHtmlHelper;
 <p>Пока не сделано ни одной ставки</p>
 
 <h5>Действия:</h5>
-<table class="table">
-<tr>
-    <td>
-        <input type="number" id="bet_size" class="input-money" value="<?=max([$auction->start_price,round($auction->current_price*1.1)])?>" >
-        <?=MyHtmlHelper::icon('money')?>
-    </td>
-    <td>
-        <button class="btn btn-default btn-sm" id="make_bet" >
-          Сделать ставку
-        </button>
-    </td>
-</tr>
-<? if ($auction->end_price): ?>
-    <tr>
-        <td>
-            <?=MyHtmlHelper::moneyFormat($auction->end_price)?>
-        </td>
-        <td>
-            <button class="btn btn-success" id="make_end_bet" title="Купить лот не дожидаясь конца аукциона, заплатив стоп-цену" >
-                Выкупить лот
-            </button>
-        </td>
-    </tr>
-<? endif ?>
+<div class="row">
+    <div class="span4">
+        <table class="table">
+            <tr>
+                <td style="text-align: right" >
+                    <input type="number" id="bet_size" class="input-money" value="<?=$minBet?>" >
+                    <?=MyHtmlHelper::icon('money')?>
+                </td>
+                <td>
+                    <button class="btn btn-default" id="make_bet" disabled >
+                      Сделать ставку
+                    </button>
+                </td>
+            </tr>
+            <? if ($auction->end_price): ?>
+                <tr>
+                    <td style="text-align: right" >
+                        <?=MyHtmlHelper::moneyFormat($auction->end_price)?>
+                    </td>
+                    <td>
+                        <button class="btn btn-warning" id="make_end_bet" title="Купить лот не дожидаясь конца аукциона, заплатив стоп-цену" >
+                            Выкупить лот
+                        </button>
+                    </td>
+                </tr>
+            <? endif ?>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    
+    var updateBetSize = function() {
+        var size = parseFloat($('#bet_size').val());
+        if (size < <?=$minBet?>) {
+            $('#bet_size').val(<?=$minBet?>);
+        }
+        if (size > <?=$maxBet?>) {
+            $('#bet_size').val(<?=$maxBet?>);
+        }
+    }
+    
+    $(function(){
+        $('#bet_size').keyup(updateBetSize);
+        $('#bet_size').change(updateBetSize);
+        
+        $('#make_end_bet').click(function(){
+            if (<?=intval($auction->end_price)?> > <?=$master->getBalance()?>) {
+                alert('У <?=$master->name?> недостаточно денег на счету!');
+            } else {
+                json_request('factory-market-bet',{'unnp':<?=$master->unnp?>, 'auction_id':<?=$auction->id?>, 'bet_size':<?=intval($auction->end_price)?>});
+            }
+        })
+    })
+    
+</script>
