@@ -2,6 +2,8 @@
 
 namespace app\models\factories\proto\types;
 
+use app\models\licenses\proto\LicenseProto;
+
 /**
  * Description of OilDerrick
  *

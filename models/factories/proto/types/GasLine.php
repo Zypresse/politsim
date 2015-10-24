@@ -2,7 +2,8 @@
 
 namespace app\models\factories\proto\types;
 
-use app\models\factories\proto\LineProto;
+use app\models\factories\proto\LineProto,
+    app\models\licenses\proto\LicenseProto;
 
 /**
  * Description of GasLine

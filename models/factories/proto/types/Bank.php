@@ -2,7 +2,8 @@
 
 namespace app\models\factories\proto\types;
 
-use app\models\factories\proto\FactoryProto;
+use app\models\factories\proto\FactoryProto,
+    app\models\licenses\proto\LicenseProto;
 
 /**
  * Description of Bank
