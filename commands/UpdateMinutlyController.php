@@ -7,7 +7,8 @@ use yii\console\Controller,
     app\models\HoldingDecision,
     app\models\factories\Factory,
     app\models\factories\FactoryAuction,
-    app\models\Vacansy;
+    app\models\Vacansy,
+    app\models\Dealing;
 
 /**
  * Update all, crontab minutly
@@ -157,10 +158,28 @@ class UpdateMinutlyController extends Controller {
     
     private function updateFactoryAuctions()
     {
-        $auctions = FactoryAuction::find()->where(['<=', 'date_end', time()])->all();
+        $auctions = FactoryAuction::find()->where(['<=', 'date_end', time()])->andWhere(['>', 'date_end', time()-60*60])->all();
         
         foreach ($auctions as $auction) {
-            
+
+            if ($auction->lastBet) {
+                $auction->winner_unnp = $auction->lastBet->holding->unnp;
+                $auction->save();
+                        
+                $dealing = new Dealing([
+                    'proto_id' => 1,
+                    'from_unnp' => $auction->factory->holding->unnp,
+                    'to_unnp' => $auction->lastBet->holding->unnp,
+                    'sum' => -1*$auction->lastBet->bet,
+                    'items' => json_encode([
+                        [
+                            'type' => 'factory',
+                            'factory_id' => $auction->factory->id
+                        ]
+                    ])
+                ]);
+                $dealing->accept();
+            }
         }
     }
     

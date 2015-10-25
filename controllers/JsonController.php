@@ -33,6 +33,7 @@ use yii\helpers\ArrayHelper,
     app\models\factories\Factory,
     app\models\factories\FactoryWorkersSalary,
     app\models\factories\FactoryAuction,
+    app\models\factories\FactoryAuctionBet,
     app\models\factories\Line,
     app\models\factories\proto\FactoryProto,
     app\models\factories\proto\LineProto;
@@ -1722,11 +1723,19 @@ class JsonController extends MyController {
             ]);
             $dealing->accept();
             
-            return $this->_rOk();
-            
         } else {
-            // 
+            
+            $bet = new FactoryAuctionBet([
+                'auction_id' => $auction->id,
+                'holding_id' => $unnpModel->master->id,
+                'bet' => $bet_size,
+                'time' => time()
+            ]);
+            $bet->save();
+
         }
+        
+        return $this->_rOk();
         
     }
 

@@ -5,6 +5,9 @@
 use app\components\MyHtmlHelper;
 
 $minBet = max([$auction->start_price,round($auction->current_price*1.1)]);
+if ($minBet === floatval($auction->current_price)) {
+    $minBet++;
+}
 $maxBet = min([$auction->end_price ? $auction->end_price : INF,$master->getBalance()]);
 
 ?>
@@ -19,8 +22,19 @@ $maxBet = min([$auction->end_price ? $auction->end_price : INF,$master->getBalan
 <? endif ?>
 
 <h5>Ставки:</h5>
+<? if (count($auction->bets)): ?>
+<ul>
+    <? foreach ($auction->bets as $bet): ?>
+        <li><?=MyHtmlHelper::moneyFormat($bet->bet)?>  <?=$bet->holding->getHtmlName()?></li>
+    <? endforeach ?>
+</ul>
+<? else: ?>
 <p>Пока не сделано ни одной ставки</p>
+<? endif ?>
 
+<? if ($auction->lastBet->holding_id === $master->id): ?>
+<p style="color:green">Ваша ставка последняя за этот лот</p>
+<? else: ?>
 <h5>Действия:</h5>
 <div class="row">
     <div class="span4">
@@ -31,7 +45,7 @@ $maxBet = min([$auction->end_price ? $auction->end_price : INF,$master->getBalan
                     <?=MyHtmlHelper::icon('money')?>
                 </td>
                 <td>
-                    <button class="btn btn-default" id="make_bet" disabled >
+                    <button class="btn btn-default" id="make_bet" >
                       Сделать ставку
                     </button>
                 </td>
@@ -75,6 +89,17 @@ $maxBet = min([$auction->end_price ? $auction->end_price : INF,$master->getBalan
                 json_request('factory-market-bet',{'unnp':<?=$master->unnp?>, 'auction_id':<?=$auction->id?>, 'bet_size':<?=intval($auction->end_price)?>});
             }
         })
+
+        $('#make_bet').click(function(){
+            var size = parseFloat($('#bet_size').val());
+
+            if (size > <?=$master->getBalance()?>) {
+                alert('У <?=$master->name?> недостаточно денег на счету!');
+            } else {
+                json_request('factory-market-bet',{'unnp':<?=$master->unnp?>, 'auction_id':<?=$auction->id?>, 'bet_size':size});
+            }
+        })
     })
     
 </script>
+<? endif ?>

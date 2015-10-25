@@ -4,6 +4,7 @@ namespace app\models\factories;
 
 use app\components\MyModel,
     app\models\factories\Factory,
+    app\models\factories\FactoryAuctionBet,
     app\models\Unnp;
 
 /**
@@ -22,6 +23,8 @@ use app\components\MyModel,
  * @property string $holdingName
  * @property string $regionName
  * @property \app\components\NalogPayer $winner
+ * @property FactoryAuctionBet[] $bets
+ * @property FactoryAuctionBet $lastBet
  */
 class FactoryAuction extends MyModel
 {
@@ -64,6 +67,16 @@ class FactoryAuction extends MyModel
     public function getFactory()
     {
         return $this->hasOne(Factory::className(), array('id' => 'factory_id'));
+    }
+    
+    public function getBets()
+    {
+        return $this->hasMany(FactoryAuctionBet::className(), array('auction_id' => 'id'))->orderBy('time DESC');
+    }
+    
+    public function getLastBet()
+    {
+        return $this->hasOne(FactoryAuctionBet::className(), array('auction_id' => 'id'))->orderBy('time DESC');
     }
     
     public function getWinner()

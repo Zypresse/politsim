@@ -346,7 +346,7 @@ class HtmlController extends MyController
                 'winner_unnp' => null,
             ])->andWhere([
                 '>', 'date_end', time()
-            ])
+            ])->with('factory.holding')->with('lastBet.holding')
         );
 
         return $this->render('market/factories', [
