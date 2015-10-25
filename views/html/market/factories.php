@@ -95,7 +95,7 @@ $unnps = [$user->unnp];
                 'label' => 'Действия',
                 'content' => function($model) {
                     return Html::button('Ставка', [
-                        'class' => 'btn btn-small btn-primary btn-bet hide-on-unnp'.$model->factory->holding->unnp.' hide-on-unnp'.$model->lastBet->holding->unnp,
+                        'class' => 'btn btn-small btn-primary btn-bet hide-on-unnp'.$model->factory->holding->unnp.($model->lastBet ? ' hide-on-unnp'.$model->lastBet->holding->unnp : ''),
                         'onclick' => 'load_modal("factory-auction-info",{"id":'.$model->id.',"unnp":parseInt($("#market-change-unnp-select").val())},"factory_auction_info","factory_auction_info_body")'
                     ]);
                 }
