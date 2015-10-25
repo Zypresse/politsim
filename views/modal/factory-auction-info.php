@@ -32,7 +32,7 @@ $maxBet = min([$auction->end_price ? $auction->end_price : INF,$master->getBalan
 <p>Пока не сделано ни одной ставки</p>
 <? endif ?>
 
-<? if ($auction->lastBet->holding_id === $master->id): ?>
+<? if ($auction->lastBet && $auction->lastBet->holding_id === $master->id): ?>
 <p style="color:green">Ваша ставка последняя за этот лот</p>
 <? else: ?>
 <h5>Действия:</h5>
