@@ -121,6 +121,15 @@ class FactoryProto extends UnmovableObjectProto
     }
     
     /**
+     * Эффективность работы от региона
+     * @return double
+     */
+    public function getRegionEff($region)
+    {
+        return 1;
+    }
+
+    /**
      * Добывающие ресурсы 0 уровня
      */
     const LEVEL_DIG = 0;

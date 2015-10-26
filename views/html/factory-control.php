@@ -6,6 +6,8 @@ use app\components\MyHtmlHelper;
 <h2><?=$factory->proto->name?> &laquo;<?=htmlspecialchars($factory->name)?>&raquo;</h2>
 
 <p><strong>Местоположение:</strong> <?=MyHtmlHelper::a($factory->region->name, "show_region({$factory->region_id})")?></p>
+<p><strong>Эффективность работы (регион):</strong> <?=MyHtmlHelper::zeroOne2Stars($factory->getRegionEff())?></p>
+<p><strong>Эффективность работы (рабочие):</strong> <?=MyHtmlHelper::zeroOne2Stars($factory->getWorkersEff())?></p>
 <p><strong>Владелец:</strong> <?=MyHtmlHelper::a($factory->holding->name,"load_page('holding-info',{'id':{$factory->holding_id}})")?></p>
 <p><strong>Управляющий:</strong> <?=$factory->manager ? MyHtmlHelper::a($factory->manager->name,"load_page('profile',{'uid':{$factory->manager_uid}})") : "не назначен"?></p>
 <p>
@@ -44,7 +46,7 @@ use app\components\MyHtmlHelper;
 <ul>
     <? foreach ($factory->workers as $worker) { ?>
     <li>
-        <?=$worker->classinfo->name?> (<?=$worker->sex?"(женщины)":"(мужчины)"?> — <?=$worker->count?>
+        <?=$worker->classinfo->name?> <?=$worker->sex?"(женщины)":"(мужчины)"?> — <?=$worker->count?>
     </li>
     <? } ?>
 </ul>

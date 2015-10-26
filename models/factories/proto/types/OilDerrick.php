@@ -20,4 +20,12 @@ class OilDerrick extends Mine {
         ];
     }   
     
+    /**
+     * Эффективность работы от региона
+     * @return double
+     */
+    public function getRegionEff($region)
+    {
+        return $region->getDiggingEff(1)->k;
+    }
 }

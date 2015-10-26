@@ -283,7 +283,7 @@ class Factory extends UnmovableObject implements NalogPayer
      */
     public function getRegionEff()
     {
-        return 1;
+        return $this->proto->getRegionEff($this->region);
     }
     
     public function work()

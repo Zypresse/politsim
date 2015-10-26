@@ -239,6 +239,11 @@ class Region extends MyModel implements NalogPayer
         return $this->hasMany('app\models\RegionDiggingEff', array('region_id' => 'id'))->orderBy('group_id');
     }
 
+    public function getDiggingEff($resurse_proto_id)
+    {
+        return $this->hasOne('app\models\RegionDiggingEff', array('region_id' => 'id'))->where(['resurse_proto_id' => $resurse_proto_id])->one();
+    }
+
     /**
      * Является ли столицей государства
      * @return boolean
