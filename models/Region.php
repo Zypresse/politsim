@@ -74,9 +74,9 @@ class Region extends MyModel implements NalogPayer
     public function rules()
     {
         return [
-            [['code', 'name', 'city', /* 'b', */ 'lat', 'lng', 'natural_gas', 'coal', 'nf_ores', 'f_ores', 're_ores', 'u_ores', 'wood', 'corn', 'fruits', 'fish', 'meat', 'wool', 'b_materials'], 'required'],
+            [['code', 'name', 'city', /* 'b', */ 'lat', 'lng'], 'required'],
             [['state_id', 'population'], 'integer'],
-            [['lat', 'lng', 'separate_risk', 'oil', 'natural_gas', 'coal', 'nf_ores', 'f_ores', 're_ores', 'u_ores', 'wood', 'corn', 'fruits', 'fish', 'meat', 'wool', 'b_materials'], 'number'],
+            [['lat', 'lng'], 'number'],
             [['code'], 'string', 'max' => 7],
             [['name', 'city'], 'string', 'max' => 300],
             //[['b'], 'string', 'max' => 2555],

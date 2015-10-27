@@ -67,6 +67,10 @@ class UpdateHourlyController extends Controller
             printf("Updated populations analogies: %f s.".PHP_EOL, microtime(true)-$time);
 
             $time = microtime(true);
+            $this->updateFactories();
+            printf("Updated factories: %f s.".PHP_EOL, microtime(true)-$time);
+
+            $time = microtime(true);
             $this->updatePowerplantProduction();
             printf("Updated powerplants production: %f s.".PHP_EOL, microtime(true)-$time);
 
@@ -374,6 +378,16 @@ class UpdateHourlyController extends Controller
                     break;
                 }
             }
+        }
+    }
+
+    private function updateFactories()
+    {
+        $factories = Factory::find()->all();
+
+        foreach ($factories as $factory) {
+            $factory->calcEff();
+            $factory->save();
         }
     }
     

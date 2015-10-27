@@ -23,6 +23,8 @@ use app\components\MyMathHelper,
  * @property string $name
  * @property integer $size
  * @property integer $manager_uid
+ * @property double $eff_region
+ * @property double $eff_workers
  * 
  * @property proto\FactoryProto $proto Тип фабрики
  * @property \app\models\Holding $holding Компания-владелец
@@ -109,6 +111,7 @@ class Factory extends UnmovableObject implements NalogPayer
         return [
             [['proto_id', 'builded', 'name'], 'required'],
             [['proto_id', 'builded', 'holding_id', 'region_id', 'status', 'size', 'manager_uid'], 'integer'],
+            [['eff_region', 'eff_workers'], 'number'],
             [['name'], 'string', 'max' => 255]
         ];
     }
@@ -272,18 +275,24 @@ class Factory extends UnmovableObject implements NalogPayer
      * Эффективность работы от числа работников
      * @return double
      */
-    public function getWorkersEff()
+    public function calcWorkersEff()
     {
-        return MyMathHelper::myHalfExpo($this->workersCount/($this->proto->sumNeedWorkers*$this->size));
+        $this->eff_workers = MyMathHelper::myHalfExpo($this->workersCount/($this->proto->sumNeedWorkers*$this->size));
     }
     
     /**
      * Эффективность работы от региона
      * @return double
      */
-    public function getRegionEff()
+    public function calcRegionEff()
     {
-        return $this->proto->getRegionEff($this->region);
+        $this->eff_region = $this->proto->getRegionEff($this->region);
+    }
+
+    public function calcEff()
+    {
+        $this->calcWorkersEff();
+        $this->calcRegionEff();
     }
     
     public function work()
@@ -294,7 +303,7 @@ class Factory extends UnmovableObject implements NalogPayer
             // Автозакупка электричества
             
             foreach ($this->proto->export as $kit) {
-                $count = floor($kit->count * $this->size * $this->getWorkersEff() * $this->getRegionEff());
+                $count = floor($kit->count * $this->size * $this->eff_workers * $this->eff_region);
                 
                 $this->pushToStorage($kit->resurse_proto_id, $count);
             }
