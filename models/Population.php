@@ -15,7 +15,7 @@ use app\components\NalogPayer,
  * @property integer $nation ID национальности
  * @property integer $ideology ID идеологии
  * @property integer $religion ID религии
- * @property integer $sex Пол (0 - неопр., 1 - женский, 2 - мужской)
+ * @property integer $sex Пол (0 - мужск., 1 - женск.)
  * @property integer $age Возраст
  * @property integer $count Число людей
  * @property integer $region_id ID региона

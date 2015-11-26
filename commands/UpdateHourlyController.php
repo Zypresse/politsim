@@ -236,6 +236,9 @@ class UpdateHourlyController extends Controller
                 $studied = 0;
                 
                 foreach ($unworkers as $unworker) {
+                    if ($popClassID === 1 && $unworker->sex === 1 && mt_rand() > 0.4) {
+                        continue;
+                    }
                     if ($unworker->count <= $speed-$studied) {
                         $unworker->class = $popClassID;
                         $unworker->save();
