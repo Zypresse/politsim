@@ -244,7 +244,7 @@ function load_page(page, params, time) {
         url = '/#!' + page;
         for (var i in params) {
             if (i !== 'viewer_id' && i !== 'auth_key')
-                url += '/' + i + '/' + encodeURIComponent(params[i]);
+                url += '&' + i + '=' + encodeURIComponent(params[i]);
         }
         $('#page_content').empty();
         request('/html/'+page,params,'html',function(d){

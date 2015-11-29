@@ -46,14 +46,15 @@ class HtmlController extends MyController
         }
     }
 
-    public function actionProfile($uid = false)
+    public function actionProfile($uid = false, $id = false)
     {
-        if ($uid === false) {
+        
+        if ($uid === false && $id === false) {
             $uid = $this->viewer_id;
         }
-        $uid = intval($uid);
+        $uid = $uid ? intval($uid) : intval($id);
 
-        if ($uid) {
+        if ($uid > 0) {
             $user = User::findByPk($uid);
             if (is_null($user)) {
                 return $this->_r("User not found");

@@ -15,13 +15,12 @@ function init_app() {
     update_header();
 
     if (document.location.hash) {
-        var ar = document.location.hash.split('/');
+        var ar = document.location.hash.split('&');
         page = ar.shift().substr(2);
         params = {};
         for (var i = 0, l = ar.length; i < l; i++) {
-            if (i % 2) {
-                params[ar[i - 1]] = ar[i];
-            }
+            var ar2 = ar[i].split('=');            
+            params[ar2[0]] = ar2[1];
         }
         load_page(page, params);
     } else

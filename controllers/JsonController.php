@@ -19,6 +19,7 @@ use yii\helpers\ArrayHelper,
     app\models\Stock,
     app\models\Vacansy,
     app\models\Unnp,
+    app\models\Ideology,
     app\models\HoldingDecision,
     app\models\HoldingDecisionVote,
     app\models\Notification,
@@ -1737,6 +1738,23 @@ class JsonController extends MyController {
         
         return $this->_rOk();
         
+    }
+    
+    public function actionChangeIdeology($id)
+    {
+        if (intval($id) <= 0) {
+            return $this->_r("Invalid ideology ID");
+        }
+        
+        $ideology = Ideology::findByPk($id);
+        if (is_null($ideology)) {
+            return $this->_r("Ideology not found");
+        }
+        
+        $this->user->ideology_id = $ideology->id;
+        $this->user->save();
+        
+        return $this->_rOk();
     }
 
 }

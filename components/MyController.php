@@ -18,9 +18,14 @@
 
 namespace app\components;
 
-use yii;
-use yii\web\Controller;
-use app\models\User;
+use Yii,
+    yii\web\Controller,
+    app\models\User;
+
+/**
+ * 
+ * @property app\models\User $user
+ */
 
 class MyController extends Controller
 {

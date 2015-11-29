@@ -33,6 +33,7 @@ use Yii,
  * @property integer $chart_pie Успешность
  * @property string $twitter_nickname
  * @property integer $invited Флаг есть ли инвайт у юзера
+ * @property integer $ideology_id ID Идеологии
  * 
  * @property string $authKey Авторизационный ключ
  * 
@@ -48,6 +49,7 @@ use Yii,
  * @property \app\models\factories\Factory[] $factories 
  * @property \app\models\Auth[] $accounts
  * @property \app\models\Holding[] $holdings Компании, директором которых является
+ * @property app\models\Ideology $ideology Идеология
  */
 class User extends MyModel implements NalogPayer, IdentityInterface {
 
@@ -192,6 +194,11 @@ class User extends MyModel implements NalogPayer, IdentityInterface {
     public function getRegion()
     {
         return $this->hasOne('app\models\Region', array('id' => 'region_id'));
+    }
+    
+    public function getIdeology()
+    {
+        return $this->hasOne('app\models\Ideology', array('id' => 'ideology_id'));
     }
 
     public function getMedales()

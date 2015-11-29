@@ -23,7 +23,8 @@ use app\components\MyController,
     app\models\Holding,
     app\models\factories\proto\FactoryProtoCategory,
     app\models\factories\FactoryAuction,
-    app\models\Unnp;
+    app\models\Unnp,
+    app\models\Ideology;
 
 class ModalController extends MyController {
 
@@ -510,6 +511,12 @@ class ModalController extends MyController {
             'auction' => $auc,
             'master' => $n->master
         ]);
+    }
+    
+    public function actionChangeIdeology()
+    {
+        $ideologies = Ideology::find()->orderBy('d ASC')->all();
+        return $this->render('change-ideology',['ideologies' => $ideologies]);
     }
 
 }

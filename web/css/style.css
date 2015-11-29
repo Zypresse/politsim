@@ -588,3 +588,8 @@ dd {
 #page_content .dropdown-menu a {
     text-decoration: none;
 }
+
+.avarar-container {
+    position:relative;
+    margin-bottom: 10px;
+}

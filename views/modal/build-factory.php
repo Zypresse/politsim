@@ -31,7 +31,7 @@
         </div>
     </div>
 <div class="control-group" id="new_factory_add_info" style="display:none;">
-      <label class="control-label" for="#factory_new_name">Название</label>
+      <label class="control-label" for="#new_factory_name">Название</label>
       <div class="controls">
           <input type="text" id="new_factory_name" value="">
       </div>

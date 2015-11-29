@@ -155,10 +155,9 @@ $this->title = 'Political Simulator';
                     </li>
                     <li>
                         <a href="#" onclick="load_page('map-cores')">
-                            <i class="icon-legal"></i> Карта корневых провинций
+                            <i class="icon-legal"></i> Карта претензий
                         </a>
                     </li>
-                    <li class="divider"></li>
                     <li>
                         <a href="#" onclick="load_page('map-resurses')">
                             <i class="icon-money"></i> Экономическая карта
