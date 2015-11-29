@@ -18,7 +18,9 @@ use app\components\MyHtmlHelper;
                         
             <button onclick="load_modal('change-ideology',{},'change_ideology_modal','change_ideology_modal_body')" class="btn btn-lightblue btn-block"><? if ($user->ideology) { ?>Сменить<? } else { ?>Выбрать<? } ?> идеологию</button>
             
-            <div style="display:none" class="modal" id="change_ideology_modal" tabindex="-1" role="dialog" aria-labelledby="change_ideology_modal_label" aria-hidden="true">
+            <div style="display:none" class="modal fade" id="change_ideology_modal" tabindex="-1" role="dialog" aria-labelledby="change_ideology_modal_label" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                     <h3 id="change_ideology_modal_label">Выбор идеологии</h3>
@@ -29,6 +31,8 @@ use app\components\MyHtmlHelper;
                 <div class="modal-footer">
                     <button onclick="json_request('change-ideology',{'id':$('#new_ideology_id').val()})" class="btn btn-green" data-dismiss="modal" aria-hidden="true">Сохранить</button>
                     <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+                </div>
+                    </div>
                 </div>
             </div>
         </div>

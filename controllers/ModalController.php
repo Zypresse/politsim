@@ -516,7 +516,10 @@ class ModalController extends MyController {
     public function actionChangeIdeology()
     {
         $ideologies = Ideology::find()->orderBy('d ASC')->all();
-        return $this->render('change-ideology',['ideologies' => $ideologies]);
+        return $this->render('change-ideology',[
+            'ideologies' => $ideologies,
+            'user' => $this->user
+        ]);
     }
 
 }
