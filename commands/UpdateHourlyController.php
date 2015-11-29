@@ -21,62 +21,62 @@ use Yii,
 class UpdateHourlyController extends Controller
 {
 
-    public function actionIndex($method = false)
+    public function actionIndex($method = false, $debug = false)
     {
         
         if ($method) {            
             $time = microtime(true);
             $this->$method();
-            printf("{$method}: %f s.".PHP_EOL, microtime(true)-$time);
+            if ($debug) printf("{$method}: %f s.".PHP_EOL, microtime(true)-$time);
         } else {
 
             $time = microtime(true);
             $this->updateRegions();
-            printf("Updated regions: %f s.".PHP_EOL, microtime(true)-$time);
+            if ($debug) printf("Updated regions: %f s.".PHP_EOL, microtime(true)-$time);
 
             $time = microtime(true);
             $this->updateStates();
-            printf("Updated states: %f s.".PHP_EOL, microtime(true)-$time);
+            if ($debug) printf("Updated states: %f s.".PHP_EOL, microtime(true)-$time);
 
             $time = microtime(true);
             $this->updateParties();
-            printf("Updated parties: %f s.".PHP_EOL, microtime(true)-$time);
+            if ($debug) printf("Updated parties: %f s.".PHP_EOL, microtime(true)-$time);
 
             $time = microtime(true);
             $this->updateHoldings();
-            printf("Updated holdings: %f s.".PHP_EOL, microtime(true)-$time);
+            if ($debug) printf("Updated holdings: %f s.".PHP_EOL, microtime(true)-$time);
 
             $time = microtime(true);
             $this->updateFactoryLicenseStatus();
-            printf("Updated factory licenses status: %f s.".PHP_EOL, microtime(true)-$time);
+            if ($debug) printf("Updated factory licenses status: %f s.".PHP_EOL, microtime(true)-$time);
 
             $time = microtime(true);
             $this->updateFactoryWorkersStatus();
-            printf("Updated factory workers status: %f s.".PHP_EOL, microtime(true)-$time);
+            if ($debug) printf("Updated factory workers status: %f s.".PHP_EOL, microtime(true)-$time);
 
             $time = microtime(true);
             $this->updatePopStudy();
-            printf("Updated populations study: %f s.".PHP_EOL, microtime(true)-$time);
+            if ($debug) printf("Updated populations study: %f s.".PHP_EOL, microtime(true)-$time);
 
             $time = microtime(true);
             $this->updatePopWorkers();
-            printf("Updated populations works: %f s.".PHP_EOL, microtime(true)-$time);
+            if ($debug) printf("Updated populations works: %f s.".PHP_EOL, microtime(true)-$time);
 
             $time = microtime(true);
             $this->updatePopAnalogies();
-            printf("Updated populations analogies: %f s.".PHP_EOL, microtime(true)-$time);
+            if ($debug) printf("Updated populations analogies: %f s.".PHP_EOL, microtime(true)-$time);
 
             $time = microtime(true);
             $this->updateFactories();
-            printf("Updated factories: %f s.".PHP_EOL, microtime(true)-$time);
+            if ($debug) printf("Updated factories: %f s.".PHP_EOL, microtime(true)-$time);
 
             $time = microtime(true);
             $this->updatePowerplantProduction();
-            printf("Updated powerplants production: %f s.".PHP_EOL, microtime(true)-$time);
+            if ($debug) printf("Updated powerplants production: %f s.".PHP_EOL, microtime(true)-$time);
 
             $time = microtime(true);
             $this->updateFactoryProduction();
-            printf("Updated factories production: %f s.".PHP_EOL, microtime(true)-$time);
+            if ($debug) printf("Updated factories production: %f s.".PHP_EOL, microtime(true)-$time);
         }
     }
 

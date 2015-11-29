@@ -14,7 +14,7 @@ use app\models\Notification;
  */
 class ElectionsController extends Controller {
 
-    public function actionIndex() {
+    public function actionIndex($debug = false) {
 
         $orgs = Org::find()->where('next_elect - elect_period * 24*60*60 <= ' . (time()-24*60*60) . ' AND leader_dest = \'' . Org::DEST_ORG_VOTE .'\'')->all();
 
@@ -95,7 +95,7 @@ class ElectionsController extends Controller {
                     }
                 });
 
-                foreach ($results as $result) {
+                if ($debug) foreach ($results as $result) {
                     echo "{$result['req']->user->name} — {$result['rating']}" . PHP_EOL;
                 }
 
@@ -182,7 +182,7 @@ class ElectionsController extends Controller {
                     }
                 });
 
-                foreach ($results as $result) {
+                if ($debug) foreach ($results as $result) {
                     echo "{$result['req']->party->name} — {$result['rating']}" . PHP_EOL;
                 }
 
