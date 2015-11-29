@@ -2,28 +2,16 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-    <h4>Запасы ресурсов по регионам</h4>
-    <p>
-        <? foreach ($resurses as $i => $res) { ?>
-            <button type="button" class="btn btn-default <? if ($i === 0) { ?>active<? } ?> economic_map_btn" data-id="<?= $res->id ?>" ><img src="/img/<?= $res->class_name ?>.png" alt="<?= $res->name ?>" title="<?= $res->name ?>"></button>
-        <? } ?>
-    </p>
-    <div id="mapdiv" style="width: 100%; height: 500px;background-color:#EEEEEE; "></div> </div>
-<div style="display:none" class="modal" id="region_info" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3 id="myModalLabel">Информация о регионе</h3>
-    </div>
-    <div id="region_info_body" class="modal-body">
-        <p>Загрузка…</p>
-    </div>
-    <div class="modal-footer">
-        <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
-        <!--<button class="btn btn-primary">Save changes</button>-->
-    </div>
-</div>
+            <h4>Запасы ресурсов по регионам</h4>
+            <p>
+                <? foreach ($resurses as $i => $res) { ?>
+                    <button type="button" class="btn btn-default <? if ($i === 0) { ?>active<? } ?> economic_map_btn" data-id="<?= $res->id ?>" ><img src="/img/<?= $res->class_name ?>.png" alt="<?= $res->name ?>" title="<?= $res->name ?>"></button>
+                <? } ?>
+            </p>
+            <div id="mapdiv" style="width: 100%; height: 500px;background-color:#EEEEEE; "></div>
         </div>
     </div>
+</div>
 <script>
     var region, map;
     $(function () {

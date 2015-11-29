@@ -83,11 +83,13 @@ use yii\helpers\Html;
             <p>Иностранцам запрещено регистрировать компании в этой стране.</p>
         <? endif ?>
     <? endif ?>
-    <div style="display:none" class="modal" id="create_holding_dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div style="display:none" class="modal fade" id="create_holding_dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+                    <div class="modal-content">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             <h3 id="myModalLabel">Создать акционерное общество</h3>
-        </div><form class="well form-horizontal">
+        </div>
             <div id="create_holding_dialog_body" class="modal-body">
                 <p>Вы сейчас находитесь в регионе <?= $user->region->name ?>, компания будет зарегистрирована в государстве <?= $user->region->state->name ?></p>
                 <div class="control-group">
@@ -123,7 +125,8 @@ use yii\helpers\Html;
             <div class="modal-footer">
                 <button type="submit" onclick="if ($('#holding_name').val() && $('#new_holding_capitalisation').val()) json_request('create-holding', {'name': $('#holding_name').val(),'capital':$('#new_holding_capitalisation').val()})" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Создать</button>
                 <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
-            </div></form>
+            </div>
+                    </div></div>
     </div>
     </div>
 </div>

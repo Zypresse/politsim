@@ -41,7 +41,7 @@ use app\components\MyHtmlHelper;
 </tr>
 <? } ?>
 </table>
-<h4>Все группы: <button class="btn btn-sm btn-default" id="show_all_groups_population">Показать</button></h4>
+<h4>Все группы: <button class="btn btn-xs btn-default" id="show_all_groups_population">Показать</button></h4>
 <table class="table" id="all_groups_population" style="display: none">
 <tr>
     <th>Класс</th>
@@ -73,12 +73,14 @@ use app\components\MyHtmlHelper;
 <script>
 $(function(){
 
-$('#show_all_groups_population').toggle(function() {
-    	$(this).val('Скрыть');
-    	$('#all_groups_population').slideDown();
-    },function() {
-    	$(this).val('Показать');
-    	$('#all_groups_population').slideUp();
+    $('#show_all_groups_population').click(function() {
+        if ($(this).val() === 'Показать') {
+            $(this).val('Скрыть');
+            $('#all_groups_population').slideDown();
+        } else {
+            $(this).val('Показать');
+            $('#all_groups_population').slideUp();
+        }
     })
 
 	$(".pie-colours-1").peity("pie", {

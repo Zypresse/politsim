@@ -93,8 +93,10 @@ use app\components\MyHtmlHelper;
     </div>
 </div>
 
-<div style="display:none" class="modal" id="salaries_manager" tabindex="-1" role="dialog" aria-labelledby="myModalLabel123213" aria-hidden="true">
-  <div class="modal-header">
+<div style="display:none" class="modal fade" id="salaries_manager" tabindex="-1" role="dialog" aria-labelledby="myModalLabel123213" aria-hidden="true">
+<div class="modal-dialog">
+                    <div class="modal-content">
+    <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
     <h3 id="myModalLabel123213">Управление зарплатами</h3>
   </div>
@@ -125,21 +127,9 @@ use app\components\MyHtmlHelper;
       <button class="btn btn-green" onclick="save_salaries()">Сохранить</button>
     <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
   </div>
+                    </div></div>
 </div>
 
-<div style="display:none" class="modal" id="region_info" tabindex="-1" role="dialog" aria-labelledby="myModalLabel345543" aria-hidden="true">
-  <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h3 id="myModalLabel345543">Информация о регионе</h3>
-  </div>
-  <div id="region_info_body" class="modal-body">
-    <p>Загрузка…</p>
-  </div>
-  <div class="modal-footer">
-    <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
-    <!--<button class="btn btn-green">Save changes</button>-->
-  </div>
-</div>
 <script>
 
 function save_salaries() {

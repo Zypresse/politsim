@@ -108,22 +108,11 @@ $unnps = [$user->unnp];
     ]); ?>
 </div>
 
-<div style="display:none" class="modal" id="region_info" tabindex="-1" role="dialog" aria-labelledby="myModalLabel345543" aria-hidden="true">
-  <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h3 id="myModalLabel345543">Информация о регионе</h3>
-  </div>
-  <div id="region_info_body" class="modal-body">
-    <p>Загрузка…</p>
-  </div>
-  <div class="modal-footer">
-    <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
-    <!--<button class="btn btn-blue">Save changes</button>-->
-  </div>
-</div>
 
-<div style="display:none" class="modal" id="factory_auction_info" tabindex="-1" role="dialog" aria-labelledby="factory_auction_info_label" aria-hidden="true">
-  <div class="modal-header">
+<div style="display:none" class="modal fade" id="factory_auction_info" tabindex="-1" role="dialog" aria-labelledby="factory_auction_info_label" aria-hidden="true">
+  <div class="modal-dialog">
+                    <div class="modal-content">
+    <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
     <h3 id="factory_auction_info_label">Информация о аукционе</h3>
   </div>
@@ -135,7 +124,8 @@ $unnps = [$user->unnp];
     <!--<button class="btn btn-blue">Save changes</button>-->
   </div>
 </div>
-
+  </div>
+</div>
         </div>
     </div>
 </div>

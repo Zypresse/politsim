@@ -300,4 +300,21 @@ $this->title = 'Political Simulator';
             <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
         </div>
     </div>
+    <div style="display:none;" class="modal fade" id="region_info" tabindex="-1" role="dialog" aria-labelledby="region_info_label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3 id="region_info_label">Информация о регионе</h3>
+                </div>
+                <div id="region_info_body" class="modal-body">
+                    <p>Загрузка…</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+                    <!--<button class="btn btn-green">Save changes</button>-->
+                </div>
+            </div>
+        </div>
+    </div>
 <?php endif ?>

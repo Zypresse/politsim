@@ -6,35 +6,43 @@ $own = ($viewer_id === $user->id);
 ?>
 <div class="container">
     <div class="row">
-        <div style="display:none" class="modal" id="tweet_about_human" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h3 id="myModalLabel">Написать пост о другом человеке</h3>
-            </div>
-            <div id="tweet_about_human_body" class="modal-body">
-                Загрузка...
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
-                <button class="btn btn-blue" id="send_tweet_human">Отправить</button>
+        <div style="display:none" class="modal fade" id="tweet_about_human" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h3 id="myModalLabel">Написать пост о другом человеке</h3>
+                    </div>
+                    <div id="tweet_about_human_body" class="modal-body">
+                        Загрузка...
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+                        <button class="btn btn-blue" id="send_tweet_human">Отправить</button>
+                    </div>
+                </div>
             </div>
         </div>
-<? if (!$user->twitter_nickname && $own) { ?>
-            <div style="display:none" class="modal" id="set_twitter_nickname" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <h3 id="myModalLabel2">У вас не установлен ник в соц. сетях!</h3>
-                </div>
-                <div id="set_twitter_nickname_body" class="modal-body">
-                    <p>Введите ваш никнейм, по нему о вас смогут писать другие пользователи</p>
-                    <p><input type="text" id="new_nickname" ></p>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
-                    <button class="btn btn-green" id="save_nickname" >Сохранить</button>
+        <? if (!$user->twitter_nickname && $own) { ?>
+            <div style="display:none" class="modal fade" id="set_twitter_nickname" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                            <h3 id="myModalLabel2">У вас не установлен ник в соц. сетях!</h3>
+                        </div>
+                        <div id="set_twitter_nickname_body" class="modal-body">
+                            <p>Введите ваш никнейм, по нему о вас смогут писать другие пользователи</p>
+                            <p><input type="text" id="new_nickname" ></p>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+                            <button class="btn btn-green" id="save_nickname" >Сохранить</button>
+                        </div>
+                    </div>
                 </div>
             </div>
-<? } ?>
+        <? } ?>
         <div class="row" style="margin-left:0">
             <div class="col-md-3">
                 <p>
@@ -44,46 +52,46 @@ $own = ($viewer_id === $user->id);
                 <h4><a href="#" onclick="load_page('profile', {'uid':<?= $user->id ?>});"><?= htmlspecialchars($user->name) ?></a></h4>
                 <? if ($user->twitter_nickname) { ?><h5 style="color:#333">@<?= $user->twitter_nickname ?></h5><? } ?>
                 <p><i class="icon-user"></i> <strong><?= MyHtmlHelper::formateNumberword($user->getTwitterSubscribersCount(), '</strong> подписчиков', '</strong> подписчик', '</strong> подписчика') ?></p>
-<? if ($user->region) { ?><p><i class="icon-map-marker"></i> <?= htmlspecialchars($user->region->name) ?> </p><? } ?>
+                <? if ($user->region) { ?><p><i class="icon-map-marker"></i> <?= htmlspecialchars($user->region->name) ?> </p><? } ?>
             </div>
             <div class="col-md-4" id="twitter_user_feed"><? if ($own) { ?>
                     <h5>Выберите, о чём написать:</h5>
                     <p>
-                        <button class="btn btn-default" onclick="load_modal('tweet-about-human', {}, 'tweet_about_human', 'tweet_about_human_body');">О человеке</button>
-                        <button class="btn btn-default" disabled="disabled">О событии</button>
-                        <button class="btn btn-default" disabled="disabled">О погоде</button>
+                        <button class="btn btn-default btn-sm" onclick="load_modal('tweet-about-human', {}, 'tweet_about_human', 'tweet_about_human_body');">О человеке</button>
+<!--                        <button class="btn btn-default" disabled="disabled">О событии</button>
+                        <button class="btn btn-default" disabled="disabled">О погоде</button>-->
                     </p>
                     <h5>Новый пост:</h5>
                     <textarea autofocus id="new_message" name="new_message"
                               placeholder="Введите ваше сообщение" rows="5" class="socnet-textarea"></textarea>
                     <span class="pull-right" id="symbols_count">140 символов осталось</span>
-                    <button class="btn btn-green" type="submit" onclick="if ($('#new_message').val())
-                                json_request('tweet', {'text': $('#new_message').val()})">Отправить</button>
+                    <button class="btn btn-blue btn-xs" type="submit" onclick="if ($('#new_message').val())
+                                    json_request('tweet', {'text': $('#new_message').val()})">Отправить</button>
                     <br>
                 <? } else { ?>
                     <button class="btn btn-block btn-red" onclick="load_page('twitter')">Вернуться свой профиль</button>
                 <? } ?>
                 <h4>Последние посты <small>(всего <?= $user->getTweetsCount() ?>)</small></h4>
-                    <? foreach ($tweets as $i => $tweet) { ?>
+                <? foreach ($tweets as $i => $tweet) { ?>
                     <div class="tweet <? if ($i === count($tweets) - 1) { ?>last<? } ?>">
                         <strong><a href="#" onclick="load_page('twitter', {'uid':<?= $user->id ?>})"><?= htmlspecialchars($user->name) ?></a></strong> <span class="date prettyDate" data-unixtime="<?= $tweet->date ?>"><?= date('d-M-Y H:i', $tweet->date) ?></span>
-    <? if ($tweet->originalUser) { ?><p class="date">Репост от <a href="#" onclick="load_page('twitter', {'uid':<?= $tweet->original ?>})"><?= htmlspecialchars($tweet->originalUser->name) ?></a></p><? } ?>
+                        <? if ($tweet->originalUser) { ?><p class="date">Репост от <a href="#" onclick="load_page('twitter', {'uid':<?= $tweet->original ?>})"><?= htmlspecialchars($tweet->originalUser->name) ?></a></p><? } ?>
                         <p><?= MyHtmlHelper::parseTwitterLinks($tweet->text) ?></p>
                         <p class="tweet-footer"><? if ($tweet->uid !== $viewer_id && !$own && $tweet->original !== $viewer_id) { ?><a href="#" class="btn btn-xs btn-default repost" data-id="<?= $tweet->id ?>" title="Репост"><i class="icon-repeat"></i></a><? } else { ?><i class="icon-repeat"></i><? } ?> <?= MyHtmlHelper::formateNumberword($tweet->retweets, 'репостов', 'репост', 'репоста') ?> <? if ($own) { ?><button class="btn btn-red btn-sm delete delete_tweet" title="Удалить" data-id="<?= $tweet->id ?>" >X</button><? } ?></p>
                     </div>
-<? } ?>
+                <? } ?>
                 <button class="btn btn-block btn-default" id="update_user_feed" data-time="<?= $timeFeedGenerated ?>" data-offset="3" data-uid="<?= $user->id ?>" >Далее</button>
             </div>
             <div class="col-md-4" id="twitter_popular_feed">
                 <h4>Популярные посты</h4>
-                    <? foreach ($feed as $i => $tweet) { ?>
+                <? foreach ($feed as $i => $tweet) { ?>
                     <div class="tweet <? if ($i === count($feed) - 1) { ?>last<? } ?>">
                         <a href="#" onclick="load_page('twitter', {'uid':<?= $tweet->uid ?>})"><strong><?= htmlspecialchars($tweet->user->name) ?></strong><? if ($tweet->user->twitter_nickname): ?> @<?= $tweet->user->twitter_nickname ?><? endif ?></a> <span class="date prettyDate" data-unixtime="<?= $tweet->date ?>"><?= date('d-M-Y H:i', $tweet->date) ?></span>
-    <? if ($tweet->originalUser) { ?><p class="date">Репост от <a href="#" onclick="load_page('twitter', {'uid':<?= $tweet->original ?>})"><?= htmlspecialchars($tweet->originalUser->name) ?></a></p><? } ?>
+                        <? if ($tweet->originalUser) { ?><p class="date">Репост от <a href="#" onclick="load_page('twitter', {'uid':<?= $tweet->original ?>})"><?= htmlspecialchars($tweet->originalUser->name) ?></a></p><? } ?>
                         <p><?= MyHtmlHelper::parseTwitterLinks($tweet->text) ?></p>
                         <p class="tweet-footer"><? if ($tweet->uid !== $viewer_id && $tweet->original !== $viewer_id) { ?><a href="#" class="btn btn-xs btn-default repost" title="Репост" data-id="<?= $tweet->id ?>"><i class="icon-repeat"></i></a><? } else { ?><i class="icon-repeat"></i><? } ?> <?= MyHtmlHelper::formateNumberword($tweet->retweets, 'репостов', 'репост', 'репоста') ?></p>
                     </div>
-<? } ?>
+                <? } ?>
                 <button class="btn btn-block btn-default" id="update_feed" data-time="<?= $timeFeedGenerated ?>" data-offset="5" >Далее</button>
             </div></div>
 
