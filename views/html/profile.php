@@ -1,7 +1,7 @@
 <?php
 use app\components\MyHtmlHelper;
 ?>
-<div class="span3" style="position:relative">
+<div class="col-md-3" style="position:relative">
 	<img src="<?=$user->photo_big?>" class="img-polaroid">
 
 	<div class="photo_bottom_container">
@@ -10,7 +10,7 @@ use app\components\MyHtmlHelper;
 		<span class="chart_pie"><?=$user->chart_pie?> <?=MyHtmlHelper::icon('chart_pie')?></span>
 	</div>
 </div>
-<div class="span9">
+<div class="col-md-9">
 <h1><?=htmlspecialchars($user->name)?> <? if ($is_own) { ?><small>(это вы)</small><? } ?></h1>
 <p><? if ($user->party) { ?>
 	Состоит в партии <a href="#" onclick="load_page('party-info',{'id':<?=$user->party_id?>})"><?=htmlspecialchars($user->party->name)?></a>

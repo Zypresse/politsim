@@ -96,7 +96,7 @@ if (count($org->speakerRequests)) {
 <p>В организации <?=$org->getUsersCount()?> из <?=$org->getPostsCount()?> участников<br>
 
 <div class="row">
-<div class="span10 offset1" style="text-align:center">
+<div class="col-md-10 col-md-offset-1" style="text-align:center">
 
 <? foreach ($org->posts as $player) { ?>
 <? if ($player->user) { ?>

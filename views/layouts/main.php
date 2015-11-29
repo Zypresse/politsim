@@ -25,14 +25,14 @@ AppAsset::register($this);
         
         <?= $content ?>
         
-        <footer class='footer '>
+        <footer class='footer'>
             <div class="container">
                 <div class="row">
-                    <div class="span6">
+                    <div class="col-md-6">
                         <p>Разработка — <a href="http://lazzyteam.com" target="_blank">Lazzy Team</a> 2011-<?= date('Y') ?></p>
 
                     </div>
-                    <div class="span6" style="text-align:right">
+                    <div class="col-md-6" style="text-align:right">
                         <p>Используются иконки <a href="http://www.fatcow.com/free-icons" target="_blank" >FatCow</a> и <a href="http://icons8.com/web-app/" target="_blank" >Icons8</a></p>
                     </div>
                 </div>

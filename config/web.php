@@ -1,6 +1,7 @@
 <?php
 
 $params = require(__DIR__ . '/params.php');
+$authClients = require(__DIR__ . '/auth-clients.php');
 
 $config = [
     'id' => 'basic',
@@ -8,8 +9,7 @@ $config = [
     'bootstrap' => ['log'],
     'components' => [
         'request' => [
-            // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
-            'cookieValidationKey' => 'cbykD2ZgRg9u4-8MFHu-Xm0913geyLHy',
+            'cookieValidationKey' => $params['cookieValidationKey'],
         ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
@@ -44,25 +44,7 @@ $config = [
         ],
         'authClientCollection' => [
             'class' => 'yii\authclient\Collection',
-            'clients' => [
-                'google' => [
-                    'class' => 'yii\authclient\clients\GoogleOAuth',
-                    'clientId' => '95701989043-8dh4etcl3dheudfs156mg131ftd0pbpv.apps.googleusercontent.com',
-                    'clientSecret' => 'oxmR-jiruIs0Qi0aLbFu3fuq',
-                ],
-                'facebook' => [
-                    'class' => 'yii\authclient\clients\Facebook',
-                    'clientId' => '224855404195119',
-                    'clientSecret' => 'bd1a30f8d7655efd4a132e3c9aea10e2',
-                ],
-                'vkontakte' => [
-                    'class' => 'yii\authclient\clients\VKontakte',
-                    'clientId' => '4540646',
-                    'clientSecret' => 'xtJOMSSdAtk7qcIO9z2H',
-                    'title' => 'VK',
-                    'attributeNames' => ['sex','photo_50','photo_400_orig','photo_big']
-                ],
-            ],
+            'clients' => $authClients,
         ]
     ],
     'params' => $params,

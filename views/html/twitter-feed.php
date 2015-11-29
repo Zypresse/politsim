@@ -9,10 +9,10 @@ use app\components\MyHtmlHelper;
 ?>
 
 <div class="row" style="margin-left:0">
-              <div class="span3">
+              <div class="col-md-3">
                   <h4>Популярные теги:</h4>
               </div>
-              <div class="span4" id="twitter_user_feed">
+              <div class="col-md-4" id="twitter_user_feed">
                 <button class="btn btn-block btn-warning" onclick="load_page('twitter')">Вернуться свой профиль</button>
                <h4>Последние посты по тегу #<?=$tag?></h4>
                <? foreach ($tweets as $i => $tweet) { ?>
@@ -25,7 +25,7 @@ use app\components\MyHtmlHelper;
                <? } ?>
                   <button class="btn btn-block" id="update_tag_feed" data-time="<?=$timeFeedGenerated?>" data-offset="3" data-tag="<?=$tag?>" >Далее</button>
                 </div>
-                <div class="span4" id="twitter_popular_feed">
+                <div class="col-md-4" id="twitter_popular_feed">
                 <h4>Популярные посты</h4>
                <? foreach ($feed as $i => $tweet) { ?>
                  <div class="tweet <? if ($i === count($feed)-1) { ?>last<? } ?>">

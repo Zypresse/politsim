@@ -1,4 +1,4 @@
-<div class="span12">
+<div class="col-md-12">
 <h4>Политическая карта</h4>
 <div id="mapdiv" style="width: 100%; height: 500px;background-color:#EEEEEE; "></div> </div>
 <div style="display:none" class="modal" id="region_info" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

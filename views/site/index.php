@@ -9,13 +9,13 @@ $this->title = 'Political Simulator';
     <header class="index-header" >
         <div class="container" >
             <div class="row">
-                <div class="span6">
+                <div class="col-md-6">
                     <h1>Political Simulator</h1>
                     <p class="subtitle">Мультиплеерный реалистичный симулятор геополитики и бизнеса.</p>
                     <p>Следите за обновлениями в социальных сетях: <a href="https://plus.google.com/110425397057830817568" rel="publisher" target="_blank">Google+</a>, <a href="https://vk.com/politsim" target="_blank">VK</a></p>
                     <p>Так же рекомендуется к прочтению: <a href="http://blog.politsim.net">официальный блог разработки</a>, <a href="http://wiki.politsim.net">вики по игре</a>.</p>
                 </div>
-                <div class="span6">
+                <div class="col-md-6">
                     <h3>Вход через соц. сети:</h3>
                     <?=yii\authclient\widgets\AuthChoice::widget([
                         'baseAuthUrl' => ['site/auth']

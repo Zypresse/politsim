@@ -32,7 +32,7 @@
 </div>
 <? } ?>
 <div class="row" style="margin-left:0">
-              <div class="span3">
+              <div class="col-md-3">
               <p>
                <a  href="#" onclick="load_page('profile',{'uid':<?=$user->id?>});">
                 <img class="img-polaroid" style="vertical-align: top;" src="<?=$user->photo_big?>" alt=''>
@@ -42,7 +42,7 @@
                 <p><i class="icon-user"></i> <strong><?=MyHtmlHelper::formateNumberword($user->getTwitterSubscribersCount(),'</strong> подписчиков','</strong> подписчик','</strong> подписчика')?></p>
                 <? if ($user->region) { ?><p><i class="icon-map-marker"></i> <?=htmlspecialchars($user->region->name)?> </p><? } ?>
               </div>
-              <div class="span4" id="twitter_user_feed"><? if ($own) { ?>
+              <div class="col-md-4" id="twitter_user_feed"><? if ($own) { ?>
               <h5>Выберите, о чём написать:</h5>
               <p>
                 <button class="btn" onclick="load_modal('tweet-about-human',{},'tweet_about_human','tweet_about_human_body');">О человеке</button>
@@ -69,7 +69,7 @@
                <? } ?>
                   <button class="btn btn-block" id="update_user_feed" data-time="<?=$timeFeedGenerated?>" data-offset="3" data-uid="<?=$user->id?>" >Далее</button>
                 </div>
-                <div class="span4" id="twitter_popular_feed">
+                <div class="col-md-4" id="twitter_popular_feed">
                 <h4>Популярные посты</h4>
                <? foreach ($feed as $i => $tweet) { ?>
                  <div class="tweet <? if ($i === count($feed)-1) { ?>last<? } ?>">

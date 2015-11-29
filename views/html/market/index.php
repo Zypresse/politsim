@@ -6,8 +6,8 @@
 ?>
 <?=$this->render('_menu',['active' => 0])?>
 <h3>Мировой финансовый рынок</h3>
-<div id="world_gdp" class="span6"></div>
-<div id="world_mining" class="span6"></div>
+<div id="world_gdp" class="col-md-6"></div>
+<div id="world_mining" class="col-md-6"></div>
 
 <script type="text/javascript">
     $(function(){

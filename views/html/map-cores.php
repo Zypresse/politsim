@@ -6,7 +6,7 @@
     $cores = CoreCountry::find()->all();
     
 ?>
-<div class="span12">
+<div class="col-md-12">
 <h4>Карта претензий</h4>
 <div class="btn-group">
     <? foreach ($cores as $core) { ?>

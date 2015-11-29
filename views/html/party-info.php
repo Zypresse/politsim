@@ -9,8 +9,8 @@
         app\models\ElectOrgLeaderRequest;
   
 ?>
-<div class="span2"><img src="<?=$party->image?>" alt="<?=$party->name?>" class="img-polaroid" style="max-width:100%"></div>
-<div class="span10">
+<div class="col-md-2"><img src="<?=$party->image?>" alt="<?=$party->name?>" class="img-polaroid" style="max-width:100%"></div>
+<div class="col-md-10">
 <h1><?=htmlspecialchars($party->name)?> <small>(<?=htmlspecialchars($party->short_name)?>)</small></h1>
 <h3>Партия государства &laquo;<a href="#" onclick="load_page('state-info',{'id':<?=$party->state_id?>})"><?=htmlspecialchars($party->state->name)?></a>&raquo;</h3>
 <p><strong>Идеология</strong>: <?=htmlspecialchars($party->ideologyInfo->name)?></p>
@@ -27,7 +27,7 @@
 <? } ?>
 </p>
 </div>
-<div class="span12">
+<div class="col-md-12">
 <strong>Список членов партии:</strong> <input type="button" class="btn" id="members_show" value="Показать">
 <ul id="members_list" >
 <? foreach ($party->members as $player) { ?>

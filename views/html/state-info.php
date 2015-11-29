@@ -18,10 +18,10 @@
     $show_create_party = isset($_GET['show_create_party']);
 
 ?>
-<div class="span2">
+<div class="col-md-2">
 <img src="<?=$state->flag?>" alt="Флаг" class="img-polaroid" style="max-width:100%">
 </div>
-<div class="span10">
+<div class="col-md-10">
 <h1><?=htmlspecialchars($state->name)?> <small>(<?=htmlspecialchars($state->short_name)?>)</small></h1>
 <p>
 <strong>Форма гос. устройства:</strong> <?=htmlspecialchars($state->structure->name)?><br>
@@ -31,7 +31,7 @@
 <br><strong>Наследник государства:</strong> <?=Html::img('/img/cores/'.$state->core->id.'.png');?> <?=$state->core->name?> (контроллирует <?=number_format($state->getCoreCountryState()->percents*100,0)?>% территорий)
 <? } ?>
 </p></div></div>
-<div class="span12">
+<div class="col-md-12">
 <h3>Правительство</h3>
 <p><strong><? if ($state->executiveOrg && $state->executiveOrg->leader) { ?><?=htmlspecialchars($state->executiveOrg->leader->name)?><? } else { ?>Лидер государства<? } ?></strong>:
 <? if ($state->executiveOrg && $state->executiveOrg->leader && $state->executiveOrg->leader->user) { ?>

@@ -1,4 +1,4 @@
-<div class="span12">
+<div class="col-md-12">
     <h4>Запасы ресурсов по регионам</h4>
     <p>
         <? foreach ($resurses as $i => $res) { ?>

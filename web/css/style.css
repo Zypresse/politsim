@@ -9,8 +9,8 @@ body {
     height:32px;
     left: 50%;
     top: 50%;
-    mergin-top:-16px;
-    mergin-left:-16px;
+    margin-top:-16px;
+    margin-left:-16px;
 }
 
 #row1 {
@@ -562,4 +562,10 @@ dd {
 
 .res-list li {
     list-style-type: none;
+}
+
+.footer {    
+    height: 30px;
+    font-size: 10pt;
+    padding-top: 5px;
 }

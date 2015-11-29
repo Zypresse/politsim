@@ -19,18 +19,20 @@ class AppAsset extends AssetBundle
     public $basePath = '@webroot';
     public $baseUrl = '@web';
     public $css = [
-        'css/plusstrap.min.css',
+//        '//fonts.googleapis.com/css?family=Roboto+Condensed:400italic,400,700&subset=cyrillic,latin',
+//        'css/plusstrap.min.css',
+        'https://fonts.googleapis.com/css?family=Open+Sans:400,600,800&subset=latin,cyrillic',
+        'css/application.css',
         'css/square.css',
         'css/snackbar.min.css',
-        '//fonts.googleapis.com/css?family=Roboto+Condensed:400italic,400,700&subset=cyrillic,latin',
+        'css/spectrum.css',
         'css/style.css',
-        'css/spectrum.css'
     ];
     public $js = [
-        'js/jquery.js',
+        'js/jquery-1.11.3.min.js',
         'js/bootstrap.min.js',
         'js/fullscreen.js',
-        'js/jqvectormap.js',
+        'js/jquery-jvectormap-2.0.3.min.js',
         'js/jqtablepagination.js',
         'js/icheck.js',
         'js/snackbar.min.js',

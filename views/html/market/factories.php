@@ -38,7 +38,7 @@ $unnps = [$user->unnp];
     </select>
 </div>
 <h3>Рынок недвижимости</h3>
-<div class="span12" style="margin-top: 10px" >
+<div class="col-md-12" style="margin-top: 10px" >
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
 //        'filterModel' => $searchModel,

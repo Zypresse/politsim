@@ -192,8 +192,9 @@ function request(pageUrl,postParams,requestType,callback,noError)
             } else {
                 callback(d);
             }
+            $("#spinner").fadeOut("fast");
         },
-        error: (noError) ? function(e) {console.log(e)} : show_error
+        error: (noError) ? function(e) {console.log(e);$("#spinner").fadeOut("fast");} : show_error
     });
 }
 
