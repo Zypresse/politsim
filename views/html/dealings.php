@@ -5,6 +5,9 @@ use yii\helpers\Html;
 
 ?>
 
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
 <h1>Ваши сделки</h1>
 
 <h3>Предложения сделок:</h3>
@@ -36,8 +39,8 @@ if (count($nadl)) { ?>
             } ?>
         </td>
         <td>
-            <button class="btn btn-success" onclick="accept_dealing(<?=$dealing->id?>)">Заключить</button>
-            <button class="btn btn-danger" onclick="decline_dealing(<?=$dealing->id?>)">Отказаться</button>
+            <button class="btn btn-green" onclick="accept_dealing(<?=$dealing->id?>)">Заключить</button>
+            <button class="btn btn-red" onclick="decline_dealing(<?=$dealing->id?>)">Отказаться</button>
         </td>
     </tr>
 <? } ?>
@@ -101,3 +104,6 @@ $mdl = $user->getMyDealingsList();
     </tr>
     <? } ?>
 </table>
+        </div>
+    </div>
+</div>

@@ -9,6 +9,9 @@ use app\components\MyHtmlHelper,
     app\models\Ideology;
 
 ?>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
 <h4>Вы не состоите ни в одной партии</h4>
 <?
 if ($user->state) {
@@ -17,7 +20,7 @@ if ($user->state) {
 <?
     if ($user->state->allow_register_parties) {
         ?>
-  <button class="btn btn-small dropdown-toggle btn-success" onclick="$('#create_party').modal();" >
+  <button class="btn btn-sm dropdown-toggle btn-green" onclick="$('#create_party').modal();" >
     Создать партию
   </button>
         <?
@@ -28,7 +31,7 @@ if ($user->state) {
     }
     ?>
 
-  <button class="btn btn-small dropdown-toggle btn-primary" onclick="load_page('chart-parties',{'state_id':<?=$user->state_id?>})" >
+  <button class="btn btn-sm dropdown-toggle btn-primary" onclick="load_page('chart-parties',{'state_id':<?=$user->state_id?>})" >
     Рейтинг партий
   </button>
 </div> 
@@ -75,13 +78,16 @@ if ($user->state) {
 	  <!--<label class="checkbox">
 	    <input type="checkbox"> Check me out
 	  </label>
-	  <button type="submit" class="btn">Submit</button>-->
+	  <button type="submit" class="btn btn-green">Submit</button>-->
 	</form>
   </div>
   <div class="modal-footer">
     <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true" onclick="create_party()">Создать</button>
-    <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+    <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
   </div>
+</div>
+        </div>
+    </div>
 </div>
 <script type="text/javascript">
     function create_party() {

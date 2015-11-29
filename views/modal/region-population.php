@@ -41,7 +41,7 @@ use app\components\MyHtmlHelper;
 </tr>
 <? } ?>
 </table>
-<h4>Все группы: <button class="btn" id="show_all_groups_population">Показать</button></h4>
+<h4>Все группы: <button class="btn btn-sm btn-default" id="show_all_groups_population">Показать</button></h4>
 <table class="table" id="all_groups_population" style="display: none">
 <tr>
     <th>Класс</th>

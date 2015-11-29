@@ -4,6 +4,10 @@ use app\components\MyHtmlHelper,
     app\models\bills\Bill,
     yii\helpers\Html;
 ?>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
 <h1><?=htmlspecialchars($org->name)?></h1>
 <p><? if ($org->isLegislature()) { ?>Законодательная власть<? } elseif ($org->isExecutive()) { ?>Исполнительная власть<? } else { ?>Организация<? } ?> государства &laquo;<a href="#" onclick="load_page('state-info',{'id':<?=$org->state_id?>});"><?=htmlspecialchars($org->state->name)?></a>&raquo;</p>
 <p><? switch ($org->dest) { 
@@ -79,16 +83,18 @@ if (count($org->speakerRequests)) {
 
 <? if ($org->can_vote_for_bills || $org->can_create_bills || $org->leader_can_vote_for_bills || $org->leader_can_create_bills) { ?>
 <h3>Законопроекты на голосовании</h3>
-<p>Список последних законопроектов <input type="button" class="btn" id="bills_show" value="Показать"></p>
+<p>Список последних законопроектов <button class="btn btn-sm btn-primary" id="bills_show">Показать</button></p>
 <?= BillListWidget::widget(['id'=>'bills_list', 'style'=>'display:none', 'showVoteButtons'=>false, 'bills'=>Bill::find()->where(['accepted'=>0,'state_id'=>$org->state_id])->all()]) ?>
 <script type="text/javascript">
- $('#bills_show').toggle(function() {
+$('#bills_show').click(function() {
+    if ($(this).val() === 'Показать') {
     	$(this).val('Скрыть');
     	$('#bills_list').slideDown();
-    },function() {
+    } else {
     	$(this).val('Показать');
     	$('#bills_list').slideUp();
-    })
+    }
+})
  </script>
 <? } ?>
 
@@ -115,3 +121,6 @@ if (count($org->speakerRequests)) {
     $('.org_member').popover({'placement':'top'});
   })
 </script>
+        </div>
+    </div>
+</div>

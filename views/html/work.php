@@ -8,6 +8,9 @@ use app\components\MyHtmlHelper,
 
 $gft = null;
 ?>
+
+<div class="container">
+    <div class="row">
 <div style="display:none;width: 800px;margin-left: -400px;" class="modal" id="naznach" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -17,8 +20,8 @@ $gft = null;
     <p>Загрузка…</p>
   </div>
   <div class="modal-footer">
-    <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
-    <!--<button class="btn btn-primary">Save changes</button>-->
+    <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+    <!--<button class="btn btn-green">Save changes</button>-->
   </div>
 </div>
 <h1>Личный кабинет</h1>
@@ -27,11 +30,11 @@ $gft = null;
 <? if ($user->post_id === $user->post->org->leader_post) { ?><p>Вы — лидер организации &laquo;<a href="#" onclick="load_page('org-info',{'id':<?=$user->post->org_id?>});"><?=htmlspecialchars($user->post->org->name)?></a>&raquo;<? if ($user->post->org->leader_can_create_posts) { ?> и можете создавать новые должности в ней<? } ?>.</p>
 <h3>Подчинённые</h3>
 <p>
-<strong>Список членов организации:</strong> <input type="button" class="btn" id="posts_show" value="Показать"></p>
+<strong>Список членов организации:</strong> <input type="button" class="btn btn-sm btn-default" id="posts_show" value="Показать"></p>
 <table id="posts_list" class="table" >
 <? foreach ($user->post->org->posts as $player) { ?>
 <tr><td><strong><?=htmlspecialchars($player->name)?></strong> <? if ($player->can_delete) { ?>
-<button class="btn btn-danger" onclick="delete_post(<?=$player->id?>)" style="float:right;">Удалить</button>
+<button class="btn btn-red" onclick="delete_post(<?=$player->id?>)" style="float:right;">Удалить</button>
 <script type="text/javascript">
 	function delete_post(id) {
 		if (confirm('Вы действительно хотите удалить эту должность?')) {
@@ -49,7 +52,7 @@ $gft = null;
 		<span class="chart_pie"><?=$player->user->chart_pie?> <?=MyHtmlHelper::icon('chart_pie')?></span>
 		
 <? if ($user->post->org->dest === 'dest_by_leader' && $player->id !== $user->post->org->leader_post) { ?>
-<button class="btn btn-warning" onclick="drop_from_post(<?=$player->id?>)">Сместить с поста</button>
+<button class="btn btn-red" onclick="drop_from_post(<?=$player->id?>)">Сместить с поста</button>
 <script type="text/javascript">
 	function drop_from_post(id) {
 		if (confirm('Вы действительно хотите сместить этого человека с поста?')) {
@@ -60,7 +63,7 @@ $gft = null;
 <? } ?>
 <? } else { ?>
 <? if ($user->post->org->dest === 'dest_by_leader') { ?>
-<button class="btn btn-success" onclick="naznach(<?=$player->id?>)">Назначить</button>
+<button class="btn btn-green" onclick="naznach(<?=$player->id?>)">Назначить</button>
 <? } else { ?>
 Не назначен
 <? } ?>
@@ -91,7 +94,7 @@ if (count($user->post->org->speakerRequests)) {
         <? if ($user->post->org->isAllreadySpeakerVoted($user->post_id)) { ?>
             
         <? } else { ?>
-            <button class="btn btn-small" onclick="json_request('vote-about-org-leader',{'request_id':<?=$request->id?>})">Проголосовать</button>
+            <button class="btn btn-sm btn-default" onclick="json_request('vote-about-org-leader',{'request_id':<?=$request->id?>})">Проголосовать</button>
         <? } ?>
         </dd>
     <?
@@ -139,7 +142,7 @@ if (count($user->post->org->speakerRequests)) {
 </script>
 <h3>Последние принятые законопроекты</h3>
 
-<p>Список последних законопроектов <input type="button" class="btn" id="bills_show" value="Показать"></p>
+<p>Список последних законопроектов <input type="button" class="btn btn-sm btn-default" id="bills_show" value="Показать"></p>
 <?= BillListWidget::widget(['id'=>'bills_list', 'style'=>'display:none', 'showVoteButtons'=>false, 'bills'=>Bill::find()->where(['and', 'state_id = '.$user->state_id, "accepted > 0"])->limit(10)->orderBy('id DESC')->all()]) ?>
 <script type="text/javascript">
  $('#bills_show').toggle(function() {
@@ -168,7 +171,7 @@ if (count($user->post->org->speakerRequests)) {
         <td><a href="#" onclick="load_page('holding-info',{'id':<?=$stock->holding_id?>})"><?=$stock->holding->name?></a></td>
         <td><?=MyHtmlHelper::formateNumberword($stock->count, "акций","акция","акции")?> (<?=round($stock->getPercents(),2)?>%)</td>
         <td>≈ <?=number_format($stock->getCost(),0,'',' ')?> <?=MyHtmlHelper::icon('money')?></td>
-        <td><?=Html::a("Управление","#",['class'=>'btn btn-primary', 'onclick'=>'load_page("holding-control",{"id":'.$stock->holding_id.'})'])?></td>
+        <td><?=Html::a("Управление","#",['class'=>'btn btn-green', 'onclick'=>'load_page("holding-control",{"id":'.$stock->holding_id.'})'])?></td>
     </tr>
 <? } ?>
     </tbody>
@@ -179,8 +182,8 @@ if (count($user->post->org->speakerRequests)) {
 
 <div class="btn-toolbar">
 <? if ($user->post->org->leader_post === $user->post_id) { ?>
-<div class="btn-group">
-  <button class="btn btn-small dropdown-toggle btn-main" data-toggle="dropdown">
+
+  <button class="btn dropdown-toggle btn-blue" data-toggle="dropdown">
     Управление организацией <span class="caret"></span>
   </button>
   <ul class="dropdown-menu">
@@ -188,7 +191,6 @@ if (count($user->post->org->speakerRequests)) {
     <? if ($user->post->org->leader_can_create_posts) { ?><li><a href="#" onclick="create_new_post(<?=$user->post->org_id?>)" >Создать новую должность</a></li><? } ?>
     <!--<li><a href="#" onclick="rename_org(<?=$user->post->org_id?>)" >Переименовать организацию</a></li>-->
   </ul>
-</div>
 <script type="text/javascript">
 	function rename_org(id) {
             name = prompt('Введите новое название для организации');
@@ -223,21 +225,17 @@ if (count($user->post->org->speakerRequests)) {
 <?
     if ($user->isStateLeader() && $user->state->leader_can_drop_legislature && $user->state->legislatureOrg) {        
 ?>
-<div class="btn-group">
-  <button class="btn btn-small btn-warning" onclick="if(confirm('Вы действительно хотите распустить организацию «<?=$user->state->legislatureOrg->name?>»?')) { json_request('drop-legislature'); }" >
+  <button class="btn btn-red" onclick="if(confirm('Вы действительно хотите распустить организацию «<?=$user->state->legislatureOrg->name?>»?')) { json_request('drop-legislature'); }" >
     Распустить парламент
   </button>
-</div>
     <? } ?>
 <? if ($user->post->canCreateBills()) { 
     $isDicktator = !!($user->isOrgLeader() && $user->post->org->leader_can_make_dicktator_bills);
     ?>
 
-<div class="btn-group">
-  <button class="btn btn-small btn-primary" onclick="new_zakon_modal()" >
+  <button class="btn btn-green" onclick="new_zakon_modal()" >
     Новый закон
   </button>
-</div>
 <div style="display:none;" class="modal" id="new_zakon_select_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel123" aria-hidden="true">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -260,8 +258,8 @@ if (count($user->post->org->speakerRequests)) {
     </select>
   </div>
   <div class="modal-footer">
-  	<button class="btn btn-primary" onclick="new_zakon_form_modal()">Выбрать</button>
-    <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+  	<button class="btn btn-green" onclick="new_zakon_form_modal()">Выбрать</button>
+    <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
   </div>
 </div>
 <div style="display:none;" class="modal" id="new_zakon_form_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel1234" aria-hidden="true">
@@ -273,8 +271,8 @@ if (count($user->post->org->speakerRequests)) {
     Загрузка...
   </div>
   <div class="modal-footer">
-  	<button class="btn btn-primary" id="send_new_zakon">Отправить</button>
-    <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+  	<button class="btn btn-green" id="send_new_zakon">Отправить</button>
+    <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
   </div>
 </div>
 <script>
@@ -308,14 +306,14 @@ $(function(){
 </script>
 <? }  ?>
 
-<div class="btn-group">
-  <button class="btn btn-small btn-danger" onclick="self_drop_from_post()" >
+  <button class="btn btn-red" onclick="self_drop_from_post()" >
     Уволиться
   </button>
-</div>
 <script type="text/javascript">
 	function self_drop_from_post() {
 		json_request('self-drop-from-post');
 	}	
 </script>
+</div>
+    </div>
 </div>

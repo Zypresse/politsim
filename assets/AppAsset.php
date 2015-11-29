@@ -26,6 +26,7 @@ class AppAsset extends AssetBundle
         'css/square.css',
         'css/snackbar.min.css',
         'css/spectrum.css',
+        'css/jquery-jvectormap-2.0.3.css',
         'css/style.css',
     ];
     public $js = [

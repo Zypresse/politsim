@@ -9,9 +9,12 @@ use yii\helpers\Html;
 
 /* @var $user app\models\User */
 ?>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
 <h1>Управление бизнесом</h1>
-<h3>Ваши акции: <button class="btn btn-mini" id="stock_list_button">скрыть/показать</button></h3>
-<table class="table" id="stocks_list" style="display: none">
+<h3>Ваши акции: <button class="btn btn-sm btn-default" id="stock_list_button">Скрыть</button></h3>
+<table class="table" id="stocks_list" >
     <thead>
         <tr>
             <th>Фирма</th>
@@ -36,8 +39,8 @@ use yii\helpers\Html;
     </tbody>
 </table>
 
-<h3>Управление: <button class="btn btn-mini" id="managefactories_list_button">скрыть/показать</button></h3>
-<table id="managefactories_list" class="table" style="display: none">
+<h3>Управление: <button class="btn btn-sm btn-default" id="managefactories_list_button">Скрыть</button></h3>
+<table id="managefactories_list" class="table">
     <thead>
         <tr>
             <th>Обьект</th>
@@ -69,13 +72,13 @@ use yii\helpers\Html;
 <? if ($user->region && $user->region->state && $user->state_id) { ?>
     <? if ($inHomeland) : ?>
         <? if ($user->state->allow_register_holdings): ?>
-            <p><button class="btn btn-success btn-small" onclick="$('#create_holding_dialog').modal()">Создать акционерное общество</button></p>
+            <p><button class="btn btn-green btn-sm" onclick="$('#create_holding_dialog').modal()">Создать акционерное общество</button></p>
         <? else: ?>
             <p>Регистрировать компании в вашей стране запрещено.</p>
         <? endif ?>
     <? else: ?>
         <? if ($user->region->state->allow_register_holdings_noncitizens): ?>
-            <p><button class="btn btn-success btn-small" onclick="$('#create_holding_dialog').modal()">Создать акционерное общество</button></p>
+            <p><button class="btn btn-green btn-sm" onclick="$('#create_holding_dialog').modal()">Создать акционерное общество</button></p>
         <? else: ?>
             <p>Иностранцам запрещено регистрировать компании в этой стране.</p>
         <? endif ?>
@@ -119,9 +122,11 @@ use yii\helpers\Html;
             </div>
             <div class="modal-footer">
                 <button type="submit" onclick="if ($('#holding_name').val() && $('#new_holding_capitalisation').val()) json_request('create-holding', {'name': $('#holding_name').val(),'capital':$('#new_holding_capitalisation').val()})" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Создать</button>
-                <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
             </div></form>
     </div>
+    </div>
+</div>
 <script type="text/javascript">
     
     var updateNewHoldingCost = function(){
@@ -149,15 +154,23 @@ use yii\helpers\Html;
 
 <script type="text/javascript">        
     $(function () {
-        $('#stock_list_button').toggle(function () {
-            $('#stocks_list').slideDown();
-        }, function () {
-            $('#stocks_list').slideUp();
+        $('#stock_list_button').click(function () {
+            if ($(this).val() === 'Показать') {
+                $(this).val('Скрыть');
+                $('#stocks_list').slideDown();
+            } else {
+                $(this).val('Показать');
+                $('#stocks_list').slideUp();
+            }
         });
-        $('#managefactories_list_button').toggle(function () {
-            $('#managefactories_list').slideDown();
-        }, function () {
-            $('#managefactories_list').slideUp();
+        $('#managefactories_list_button').click(function () {
+            if ($(this).val() === 'Показать') {
+                $(this).val('Скрыть');
+                $('#managefactories_list').slideDown();
+            } else {
+                $(this).val('Показать');
+                $('#managefactories_list').slideUp();
+            }
         });  
     });
 </script>

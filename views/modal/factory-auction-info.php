@@ -56,7 +56,7 @@ $maxBet = min([$auction->end_price ? $auction->end_price : INF,$master->getBalan
                         <?=MyHtmlHelper::moneyFormat($auction->end_price)?>
                     </td>
                     <td>
-                        <button class="btn btn-warning" id="make_end_bet" title="Купить лот не дожидаясь конца аукциона, заплатив стоп-цену" >
+                        <button class="btn btn-gold" id="make_end_bet" title="Купить лот не дожидаясь конца аукциона, заплатив стоп-цену" >
                             Выкупить лот
                         </button>
                     </td>

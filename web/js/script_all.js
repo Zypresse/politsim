@@ -246,11 +246,11 @@ function load_page(page, params, time) {
             if (i !== 'viewer_id' && i !== 'auth_key')
                 url += '/' + i + '/' + encodeURIComponent(params[i]);
         }
-        $('#row1').empty();
+        $('#page_content').empty();
         request('/html/'+page,params,'html',function(d){
             history.pushState({}, page, url);
 
-            $('#row1').html(d);
+            $('#page_content').html(d);
             prettyDates();
         })
     }

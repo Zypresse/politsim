@@ -9,6 +9,9 @@
         app\models\ElectOrgLeaderRequest;
   
 ?>
+
+<div class="container">
+    <div class="row">
 <div class="col-md-2"><img src="<?=$party->image?>" alt="<?=$party->name?>" class="img-polaroid" style="max-width:100%"></div>
 <div class="col-md-10">
 <h1><?=htmlspecialchars($party->name)?> <small>(<?=htmlspecialchars($party->short_name)?>)</small></h1>
@@ -28,7 +31,7 @@
 </p>
 </div>
 <div class="col-md-12">
-<strong>Список членов партии:</strong> <input type="button" class="btn" id="members_show" value="Показать">
+<strong>Список членов партии:</strong> <input type="button" class="btn btn-default btn-xs" id="members_show" value="Показать">
 <ul id="members_list" >
 <? foreach ($party->members as $player) { ?>
 <li>
@@ -42,13 +45,15 @@
 <? } ?>
 </ul>
 <script type="text/javascript">
- $('#members_show').toggle(function() {
-    	$(this).val('Скрыть');
-    	$('#members_list').slideDown();
-    },function() {
-    	$(this).val('Показать');
-    	$('#members_list').slideUp();
-    })
+$('#members_show').click(function() {
+    if ($(this).val() === 'Показать') {
+        $(this).val('Скрыть');
+        $('#members_list').slideDown();
+    } else {
+        $(this).val('Показать');
+        $('#members_list').slideUp();
+    }
+})
  </script>
 
 <h3>Действия</h3>
@@ -71,7 +76,7 @@
     if ($isNeedRequestForSpeaker) echo "<p style='color:red'>Необходимо подать заявку на пост {$user->state->legislatureOrg->leader->name}</p>";
     ?>
 <div class="btn-group">
-  <button class="btn btn-small dropdown-toggle btn-info" data-toggle="dropdown">
+  <button class="btn btn-small dropdown-toggle btn-lightblue" data-toggle="dropdown">
     Управление <span class="caret"></span>
   </button>
   <ul class="dropdown-menu">
@@ -114,7 +119,7 @@
   </div>
   <div class="modal-footer">
     <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true" onclick="party_reserve_post_set()">Назначить</button>
-    <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+    <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
   </div>
 </div>
 <? } ?>
@@ -141,7 +146,7 @@
   </div>
   <div class="modal-footer">
     <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true" onclick="party_elect_speaker_request()">Подать заявку</button>
-    <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+    <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
   </div>
 </div>
 <? } ?>
@@ -173,7 +178,7 @@
 <? if ($party->id === $user->party_id) { ?>
 
 <div class="btn-group">
-  <button class="btn btn-small dropdown-toggle btn-warning" onclick="if (confirm('Вы действительно хотите выйти из партии?')) { json_request('leave-party',{});  }">
+  <button class="btn btn-sm dropdown-toggle btn-red" onclick="if (confirm('Вы действительно хотите выйти из партии?')) { json_request('leave-party',{});  }">
     Выйти из партии
   </button>
 </div>
@@ -181,11 +186,13 @@
 <? } elseif (!$user->party_id && $user->state_id === $party->state_id) { ?>
 
 <div class="btn-group">
-  <button class="btn btn-small dropdown-info btn-info" onclick="json_request('join-party',{'party_id':<?=$party->id?>})">
+  <button class="btn btn-sm dropdown-info btn-green" onclick="json_request('join-party',{'party_id':<?=$party->id?>})">
     Вступить в партию
   </button>
 </div>
 	
 </div>
 <? } ?>
+</div>
+    </div>
 </div>

@@ -8,6 +8,10 @@
 use app\components\MyHtmlHelper;
 
 ?>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
 <table class="table">
 <?
 foreach ($user->notifications as $not) {
@@ -21,3 +25,6 @@ foreach ($user->notifications as $not) {
 }
 ?>
 </table>
+        </div>
+    </div>
+</div>

@@ -9,6 +9,10 @@
 use app\components\MyHtmlHelper;
 use yii\helpers\Html;
 ?>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
 <h1><?=htmlspecialchars($holding->name)?></h1>
 <p>Капитализация: <?=MyHtmlHelper::aboutNumber($holding->capital)?> <?=MyHtmlHelper::icon('money')?></p>
 <? if ($holding->state) { ?><p>Компания зарегистрирована в государстве: <?=Html::a($holding->state->name,'#',['onclick'=>"load_page('state-info',{'id':{$holding->state_id}})"])?></p><? } ?>
@@ -48,3 +52,6 @@ use yii\helpers\Html;
     <? } else { ?>
     <p>Компания не владеет объектами инфраструктуры</p>
 <? } ?>
+        </div>
+    </div>
+</div>

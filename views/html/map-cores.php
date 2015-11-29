@@ -6,11 +6,14 @@
     $cores = CoreCountry::find()->all();
     
 ?>
-<div class="col-md-12">
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
 <h4>Карта претензий</h4>
 <div class="btn-group">
     <? foreach ($cores as $core) { ?>
-  <button class="btn btn-small dropdown-toggle btn-default" onclick="show_cores<?=$core->id?>()" >
+  <button class="btn btn-sm dropdown-toggle btn-default" onclick="show_cores<?=$core->id?>()" >
       <?=Html::img('/img/cores/'.$core->id.'.png',['alt'=>$core->name,'title'=>$core->name]);?>
   </button>
     <? } ?>
@@ -18,6 +21,8 @@
 <br>
 <div id="mapdiv" style="width: 100%; height: 500px;background-color:#EEEEEE; "></div> </div>
 
+    </div>
+</div>
 <script>
 var region,map;
 $(function(){

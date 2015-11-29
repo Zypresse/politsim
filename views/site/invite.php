@@ -20,7 +20,7 @@ use yii\widgets\ActiveForm;
 
                 <?= $form->field($model, 'imageFile')->fileInput() ?>
 
-                <button class="btn btn-success">Загрузить</button>
+                <button class="btn btn-blue">Загрузить</button>
 
             <?php ActiveForm::end() ?>
         </div>

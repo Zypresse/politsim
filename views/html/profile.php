@@ -1,6 +1,9 @@
 <?php
 use app\components\MyHtmlHelper;
 ?>
+
+<div class="container">
+    <div class="row">
 <div class="col-md-3" style="position:relative">
 	<img src="<?=$user->photo_big?>" class="img-polaroid">
 
@@ -40,7 +43,7 @@ use app\components\MyHtmlHelper;
 <? if (!$is_own) { ?>
 <div class="btn-toolbar">
 	<div class="btn-group">
-  <button class="btn btn-small dropdown-toggle" data-toggle="dropdown">
+  <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
     Провести сделку <span class="caret"></span>
   </button>
   <ul class="dropdown-menu">
@@ -50,7 +53,7 @@ use app\components\MyHtmlHelper;
     <li><a href="#" onclick="sell_stocks()" >Продать акции</a></li>
   </ul>
 </div><div class="btn-group">
-  <button class="btn btn-small dropdown-toggle" data-toggle="dropdown">
+  <button class="btn btn-gray dropdown-toggle" data-toggle="dropdown">
     Сделать публичное заявление <span class="caret"></span>
   </button>
   <ul class="dropdown-menu">
@@ -59,14 +62,14 @@ use app\components\MyHtmlHelper;
     <li><a href="#" onclick="public_statement('affront')" >Публично оскорбить</a></li>
   </ul>
  </div><div class="btn-group">
-  <button class="btn btn-small dropdown-toggle" data-toggle="dropdown">
+  <button class="btn btn-gold dropdown-toggle" data-toggle="dropdown">
     Публикации <span class="caret"></span>
   </button>
   <ul class="dropdown-menu">
     <li><a href='#' onclick="load_page('twitter',{'uid':<?=$user->id?>})" >Микроблог</a></li>
   </ul>
  </div><!--<div class="btn-group">
-  <button class="btn btn-small dropdown-toggle" data-toggle="dropdown">
+  <button class="btn btn-sm btn-brown dropdown-toggle" data-toggle="dropdown">
     Подробная информация <span class="caret"></span>
   </button>
   <ul class="dropdown-menu">
@@ -103,7 +106,7 @@ use app\components\MyHtmlHelper;
   </div>
   <div class="modal-footer">
     <button onclick="send_money()" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Передать</button>
-    <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+    <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
   </div>
 </div>
 <div style="display:none" class="modal" id="transfer_stocks_dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -145,7 +148,7 @@ use app\components\MyHtmlHelper;
   </div>
   <div class="modal-footer">
     <button onclick="create_stocks_dealing()" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Создать</button>
-    <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+    <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
   </div>
 </div>
 <script type="text/javascript">
@@ -244,7 +247,8 @@ use app\components\MyHtmlHelper;
     <p>Загрузка…</p>
   </div>
   <div class="modal-footer">
-    <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+    <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
   </div>
 </div>
 </div>
+    </div></div>

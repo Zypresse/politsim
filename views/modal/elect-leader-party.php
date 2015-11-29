@@ -18,7 +18,7 @@ $(function(){
     increaseArea: '20%' // optional
   }).on('ifChecked', function(event){
   request_id = $(this).val();
-  $('#elect_vote .btn-primary').show();
+  $('#elect_vote .btn-green').show();
 });;
 });
 

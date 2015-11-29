@@ -12,6 +12,9 @@ use yii\grid\GridView,
 $unnps = [$user->unnp];
 
 ?>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
 <?=$this->render('_menu',['active' => 4])?>
 <div id="market-change-unnp" >
     <label for="#market-change-unnp-select" >Действовать от имени: </label>
@@ -95,7 +98,7 @@ $unnps = [$user->unnp];
                 'label' => 'Действия',
                 'content' => function($model) {
                     return Html::button('Ставка', [
-                        'class' => 'btn btn-small btn-primary btn-bet hide-on-unnp'.$model->factory->holding->unnp.($model->lastBet ? ' hide-on-unnp'.$model->lastBet->holding->unnp : ''),
+                        'class' => 'btn btn-sm btn-gold btn-bet hide-on-unnp'.$model->factory->holding->unnp.($model->lastBet ? ' hide-on-unnp'.$model->lastBet->holding->unnp : ''),
                         'onclick' => 'load_modal("factory-auction-info",{"id":'.$model->id.',"unnp":parseInt($("#market-change-unnp-select").val())},"factory_auction_info","factory_auction_info_body")'
                     ]);
                 }
@@ -114,8 +117,8 @@ $unnps = [$user->unnp];
     <p>Загрузка…</p>
   </div>
   <div class="modal-footer">
-    <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
-    <!--<button class="btn btn-primary">Save changes</button>-->
+    <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+    <!--<button class="btn btn-blue">Save changes</button>-->
   </div>
 </div>
 
@@ -128,11 +131,14 @@ $unnps = [$user->unnp];
     <p>Загрузка…</p>
   </div>
   <div class="modal-footer">
-    <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
-    <!--<button class="btn btn-primary">Save changes</button>-->
+    <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+    <!--<button class="btn btn-blue">Save changes</button>-->
   </div>
 </div>
 
+        </div>
+    </div>
+</div>
 <script type="text/javascript">
     function updateButtons() {
         var unnp = parseInt($('#market-change-unnp-select').val());

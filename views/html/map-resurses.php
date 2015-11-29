@@ -1,4 +1,7 @@
-<div class="col-md-12">
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
     <h4>Запасы ресурсов по регионам</h4>
     <p>
         <? foreach ($resurses as $i => $res) { ?>
@@ -15,10 +18,12 @@
         <p>Загрузка…</p>
     </div>
     <div class="modal-footer">
-        <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+        <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
         <!--<button class="btn btn-primary">Save changes</button>-->
     </div>
 </div>
+        </div>
+    </div>
 <script>
     var region, map;
     $(function () {

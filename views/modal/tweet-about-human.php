@@ -1,4 +1,4 @@
-<p><input type="text"  id="human_nickname" placeholder="Никнейм человека" ><button class="btn" id="check_nickname">Проверить</button></p>
+<p><input type="text"  id="human_nickname" placeholder="Никнейм человека" ><button class="btn btn-lightblue" id="check_nickname">Проверить</button></p>
 <div id="human_info"></div>
 <input type="hidden" id="human_uid">
 <p><select id="new_tweet_type">
@@ -10,7 +10,7 @@
 <p><textarea autofocus id="new_message_about_human" name="new_message"
       placeholder="Введите ваше сообщение" rows="5" class="socnet-textarea"></textarea>
       </p>
-      <h6 ><span id="symbols_count_about_human">140 символов осталось</span></h6>
+      <span id="symbols_count_about_human" class="pull-right" >140 символов осталось</span>
 
 <script>
 var check_nickname = function(callback){

@@ -21,6 +21,10 @@ use app\components\MyHtmlHelper,
 $userStock = $user->getShareholderStock($holding);
 $factoryCategories = FactoryProtoCategory::find()->all();
 ?>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+
 <h1>Управление «<?= $holding->name ?>»</h1>
 <p>Директор: <?=$holding->director?  MyHtmlHelper::a($holding->director->name,'load_page("profile",{"id":'.$holding->director_id.'})'):'<em>не назначен</em>'?></p>
 <p>Капитализация: <?= number_format($holding->capital, 0, '', ' ') ?> <?= MyHtmlHelper::icon('money') ?></p>
@@ -35,7 +39,7 @@ $factoryCategories = FactoryProtoCategory::find()->all();
 <? } ?>
 <h3>Лицензии:</h3>
 <? if (count($holding->licenses)) { ?>
-    <button class="btn btn-default" id="list_licenses_button" >Развернуть/свернуть список</button>
+    <button class="btn btn-default" id="list_licenses_button" >Свернуть список</button>
     <ul id="list_licenses" style="display: none" >
     <? foreach ($holding->licenses as $license) { ?>
             <li>
@@ -167,8 +171,8 @@ $factoryCategories = FactoryProtoCategory::find()->all();
                         echo "Вы уже проголосовали";
                     } else {
                         ?>
-                        <button class="btn btn-success" onclick="vote_for_decision(<?= $decision->id ?>, 1)">ЗА</button>
-                        <button class="btn btn-danger" onclick="vote_for_decision(<?= $decision->id ?>, 2)">ПРОТИВ</button>
+                        <button class="btn btn-green" onclick="vote_for_decision(<?= $decision->id ?>, 1)">ЗА</button>
+                        <button class="btn btn-red" onclick="vote_for_decision(<?= $decision->id ?>, 2)">ПРОТИВ</button>
                         <?
                     }
                     ?>
@@ -184,7 +188,7 @@ $factoryCategories = FactoryProtoCategory::find()->all();
 
 <div class="btn-toolbar">
     <div class="btn-group">
-        <button class="btn btn-small dropdown-toggle btn-primary" data-toggle="dropdown">
+        <button class="btn btn-sm dropdown-toggle btn-sea" data-toggle="dropdown">
             Общие предложения <span class="caret"></span>
         </button>
         <ul class="dropdown-menu">
@@ -195,7 +199,7 @@ $factoryCategories = FactoryProtoCategory::find()->all();
         </ul>
     </div>
     <div class="btn-group">
-        <button class="btn btn-small dropdown-toggle btn-success" data-toggle="dropdown">
+        <button class="btn btn-sm dropdown-toggle btn-green" data-toggle="dropdown">
             Управление счётом <span class="caret"></span>
         </button>
         <ul class="dropdown-menu">
@@ -204,7 +208,7 @@ $factoryCategories = FactoryProtoCategory::find()->all();
         </ul>
     </div>
     <div class="btn-group">
-        <button class="btn btn-small dropdown-toggle btn-success" data-toggle="dropdown">
+        <button class="btn btn-sm dropdown-toggle btn-gray" data-toggle="dropdown">
             Управление недвижимостью <span class="caret"></span>
         </button>
         <ul class="dropdown-menu">
@@ -217,7 +221,7 @@ $factoryCategories = FactoryProtoCategory::find()->all();
     </div>
 <? if ($holding->state) { ?>
         <div class="btn-group">
-            <button class="btn btn-small dropdown-toggle btn-success" data-toggle="dropdown">
+            <button class="btn btn-sm dropdown-toggle btn-brown" data-toggle="dropdown">
                 Управление лицензиями <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
@@ -294,7 +298,7 @@ $factoryCategories = FactoryProtoCategory::find()->all();
         </div>
         <div class="modal-footer">
             <button class="btn btn-primary" data-dismiss="modal"  onclick="get_new_license(<?= $holding->id ?>)">Получить</button>
-            <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+            <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
         </div>
     </div>
 <? } else { ?>
@@ -316,7 +320,7 @@ $factoryCategories = FactoryProtoCategory::find()->all();
     </div>
     <div class="modal-footer">
         <button class="btn btn-primary" data-dismiss="modal"  onclick="insert_money(<?= $holding->id ?>)">Внести</button>
-        <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+        <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
     </div>
 </div>
 <div style="display:none;" class="modal" id="stock_dividents_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel123" aria-hidden="true">
@@ -335,7 +339,7 @@ $factoryCategories = FactoryProtoCategory::find()->all();
     </div>
     <div class="modal-footer">
         <button class="btn btn-primary" data-dismiss="modal"  onclick="pay_dividents(<?= $holding->id ?>)">Выплатить</button>
-        <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+        <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
     </div>
 </div>
 <div style="display:none;" class="modal" id="set_manager_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel1432" aria-hidden="true">
@@ -377,7 +381,7 @@ $factoryCategories = FactoryProtoCategory::find()->all();
     </div>
     <div class="modal-footer">
         <button class="btn btn-primary" data-dismiss="modal"  onclick="json_request('new-holding-decision', {'holding_id':<?= $holding->id ?>, 'factory_id': $('#new_manager_factory').val(), 'uid': $('#new_manager_uid').val(), 'type': 6})">Назначить</button>
-        <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+        <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
     </div>
 </div>
 <div style="display:none;" class="modal" id="set_director_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabelsdm" aria-hidden="true">
@@ -411,7 +415,7 @@ $factoryCategories = FactoryProtoCategory::find()->all();
     </div>
     <div class="modal-footer">
         <button class="btn btn-primary" data-dismiss="modal"  onclick="json_request('new-holding-decision', {'holding_id':<?= $holding->id ?>, 'uid': $('#new_director_uid').val(), 'type': <?=HoldingDecision::DECISION_SETDIRECTOR?>})">Назначить</button>
-        <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+        <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
     </div>
 </div>
 <div style="display:none;" class="modal" id="rename_holding_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel123" aria-hidden="true">
@@ -429,7 +433,7 @@ $factoryCategories = FactoryProtoCategory::find()->all();
     </div>
     <div class="modal-footer">
         <button class="btn btn-primary" data-dismiss="modal"  onclick="rename_holding(<?= $holding->id ?>)">Переименовать</button>
-        <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+        <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
     </div>
 </div>
 
@@ -456,7 +460,7 @@ $factoryCategories = FactoryProtoCategory::find()->all();
     </div>
     <div class="modal-footer">
         <button class="btn btn-primary" data-dismiss="modal"  onclick="rename_factory()">Переименовать</button>
-        <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+        <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
     </div>
 </div>
 
@@ -487,7 +491,7 @@ $factoryCategories = FactoryProtoCategory::find()->all();
     </div>
     <div class="modal-footer">
         <button class="btn btn-primary" data-dismiss="modal"  onclick="sell_factory()">Выставить на продажу</button>
-        <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+        <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
     </div>
 </div>
 
@@ -514,7 +518,7 @@ $factoryCategories = FactoryProtoCategory::find()->all();
     </div>
     <div class="modal-footer">
         <button class="btn btn-primary" data-dismiss="modal"  onclick="set_main_office()">Установить</button>
-        <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+        <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
     </div>
 </div>
 
@@ -548,7 +552,7 @@ foreach ($regions as $i => $region) {
     <div class="modal-footer">
         <button class="btn btn-primary" id="build_fabric_page2" >Далее</button>
         <button style="display:none;" class="btn btn-primary" data-dismiss="modal" id="start_build" onclick="start_build()">Начать строительство</button>
-        <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+        <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
     </div>
 </div>
 
@@ -607,7 +611,10 @@ foreach ($regions as $i => $region) {
     </div>
     <div class="modal-footer">
         <button class="btn btn-primary" onclick="start_build_line()" >Начать строительство</button>
-        <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+        <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+    </div>
+</div>
+        </div>
     </div>
 </div>
 
@@ -734,10 +741,14 @@ foreach ($regions as $i => $region) {
             }
         });
 
-        $('#list_licenses_button').toggle(function () {
-            $('#list_licenses').slideDown();
-        }, function () {
-            $('#list_licenses').slideUp();
+        $('#list_licenses_button').click(function () {
+            if ($(this).val() === 'Развернуть список') {
+                $(this).val('Свернуть список');
+                $('#list_licenses').slideDown();
+            } else {
+                $(this).val('Развернуть список');
+                $('#list_licenses').slideUp();
+            }
         });
 
         $('#build_fabric_page2').click(function () {

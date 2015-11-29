@@ -3,6 +3,9 @@
 use app\components\MyHtmlHelper;
 
 ?>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
 <h3><?=$factory->proto->name?> &laquo;<?=htmlspecialchars($factory->name)?>&raquo;</h3>
 
 <p><strong>Местоположение:</strong> <?=MyHtmlHelper::a($factory->region->name, "show_region({$factory->region_id})")?></p>
@@ -52,6 +55,9 @@ use app\components\MyHtmlHelper;
 <br>Не нанято ни одного работника
 <? } ?>
 </p>
+        </div>
+    </div>
+</div>
 
 <div style="display:none" class="modal" id="region_info" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-header">
@@ -62,7 +68,7 @@ use app\components\MyHtmlHelper;
     <p>Загрузка…</p>
   </div>
   <div class="modal-footer">
-    <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+    <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
     <!--<button class="btn btn-primary">Save changes</button>-->
   </div>
 </div>

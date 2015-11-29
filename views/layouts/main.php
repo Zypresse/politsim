@@ -22,9 +22,9 @@ AppAsset::register($this);
 
         <?php $this->beginBody() ?>
         <img src="/img/ajax-loader.gif" id="spinner" style="display:none" />
-        
-        <?= $content ?>
-        
+        <div>
+            <?= $content ?>
+        </div>
         <footer class='footer'>
             <div class="container">
                 <div class="row">

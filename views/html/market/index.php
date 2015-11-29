@@ -4,11 +4,17 @@
     /* @var $this yii\web\View */
     /* @var $user app\models\User */
 ?>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
 <?=$this->render('_menu',['active' => 0])?>
 <h3>Мировой финансовый рынок</h3>
 <div id="world_gdp" class="col-md-6"></div>
 <div id="world_mining" class="col-md-6"></div>
 
+        </div>
+    </div>
+</div>
 <script type="text/javascript">
     $(function(){
         var worldGdpChart = new google.visualization.LineChart($('#world_gdp')[0]);

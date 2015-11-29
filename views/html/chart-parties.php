@@ -1,6 +1,9 @@
 <?php
 use app\components\MyHtmlHelper;
 ?>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
 <h1>Рейтинг партий</h1>
 <? if ($state) { ?>
 <h3>Партии государства &laquo;<a href="#" onclick="load_page('state-info',{'id':<?=$state->id?>})"><?=htmlspecialchars($state->name)?></a>&raquo;</h3>
@@ -27,6 +30,9 @@ use app\components\MyHtmlHelper;
 </tr>
 <? } ?>
 </table>
+        </div>
+    </div>
+</div>
 <script>
 $(function(){
 	$('#chart_parties').tablePagination({'rowsPerPage':10})

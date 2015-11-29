@@ -37,7 +37,7 @@
       </div>
       <label class="control-label" for="#factory_new_size">Размер</label>
       <div class="controls">
-          <button class="btn btn-mini" onclick="if ($('#factory_new_size').val()>1) $('#factory_new_size').val(parseInt($('#factory_new_size').val()) - 1); updateCost();">-</button><input class="btn btn-mini" type="range" id="factory_new_size" min="1" max="127" step="1" value="1"><button class="btn btn-mini" onclick="if ($('#factory_new_size').val() < 127) $('#factory_new_size').val(parseInt($('#factory_new_size').val()) + 1); updateCost()">+</button>
+          <button class="btn btn-sm btn-default" onclick="if ($('#factory_new_size').val()>1) $('#factory_new_size').val(parseInt($('#factory_new_size').val()) - 1); updateCost();">-</button><input class="btn btn-sm btn-default" type="range" id="factory_new_size" min="1" max="127" step="1" value="1"><button class="btn btn-sm btn-default" onclick="if ($('#factory_new_size').val() < 127) $('#factory_new_size').val(parseInt($('#factory_new_size').val()) + 1); updateCost()">+</button>
       </div>
       
       <p>Число работников: <span id="workers_size">0</span> <i class="icon-user"></i></p>

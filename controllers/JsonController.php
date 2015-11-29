@@ -483,7 +483,7 @@ class JsonController extends MyController {
             }
 
             $dealing = new Dealing([
-                'type_id' => 1, // частная сделка
+                'proto_id' => 1, // частная сделка
                 'from_unnp' => $sender->unnp,
                 'to_unnp' => $recipient->unnp,
                 'sum' => $count,
@@ -1133,7 +1133,7 @@ class JsonController extends MyController {
             }
 
             $dealing = new Dealing([
-                'type_id' => 1, // частная сделка
+                'proto_id' => 1, // частная сделка
                 'from_unnp' => $this->getUser()->unnp,
                 'to_unnp' => $accepter->unnp,
                 'sum' => -1 * $cost,

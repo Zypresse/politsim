@@ -1,6 +1,9 @@
 <?php
 use app\components\MyHtmlHelper;
 ?>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
 <h1>Рейтинг игроков</h1>
 <p>Вы на <strong><?=$place?></strong> месте!</p>
 <table id="chart_peoples" class="table table-striped">
@@ -21,6 +24,9 @@ use app\components\MyHtmlHelper;
 </tr>
   <? } ?>
 </table>
+        </div>
+    </div>
+</div>
 <script>
 $(function(){
 	$('#chart_peoples').tablePagination({'rowsPerPage':10})

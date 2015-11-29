@@ -3,6 +3,9 @@
 use app\components\MyHtmlHelper;
 
 ?>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
 <h2><?=$factory->proto->name?> &laquo;<?=htmlspecialchars($factory->name)?>&raquo;</h2>
 
 <p><strong>Местоположение:</strong> <?=MyHtmlHelper::a($factory->region->name, "show_region({$factory->region_id})")?></p>
@@ -83,9 +86,12 @@ use app\components\MyHtmlHelper;
 
 <h3>Действия</h3>
 <p>
-    <button class="btn btn-small btn-info" onclick="$('#salaries_manager').modal()">Зарплаты</button>
-<!--    <button class="btn btn-small btn-danger" onclick="if (confirm('Вы действительно хотите уволить всех рабочих и остановить работу?')) { json_request('manager-stop-work') }">Остановить работу</button>-->
+    <button class="btn btn-sm btn-lightblue" onclick="$('#salaries_manager').modal()">Зарплаты</button>
+<!--    <button class="btn btn-sm btn-red" onclick="if (confirm('Вы действительно хотите уволить всех рабочих и остановить работу?')) { json_request('manager-stop-work') }">Остановить работу</button>-->
 </p>
+        </div>
+    </div>
+</div>
 
 <div style="display:none" class="modal" id="salaries_manager" tabindex="-1" role="dialog" aria-labelledby="myModalLabel123213" aria-hidden="true">
   <div class="modal-header">
@@ -116,8 +122,8 @@ use app\components\MyHtmlHelper;
         </dl>
   </div>
   <div class="modal-footer">
-      <button class="btn btn-primary" onclick="save_salaries()">Сохранить</button>
-    <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+      <button class="btn btn-green" onclick="save_salaries()">Сохранить</button>
+    <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
   </div>
 </div>
 
@@ -130,8 +136,8 @@ use app\components\MyHtmlHelper;
     <p>Загрузка…</p>
   </div>
   <div class="modal-footer">
-    <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
-    <!--<button class="btn btn-primary">Save changes</button>-->
+    <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+    <!--<button class="btn btn-green">Save changes</button>-->
   </div>
 </div>
 <script>

@@ -18,6 +18,8 @@
     $show_create_party = isset($_GET['show_create_party']);
 
 ?>
+<div class="container">
+    <div class="row">
 <div class="col-md-2">
 <img src="<?=$state->flag?>" alt="Флаг" class="img-polaroid" style="max-width:100%">
 </div>
@@ -91,7 +93,7 @@
 </ul>
 
 <h3>Территория</h3>
-<strong>Список регионов:</strong> <input type="button" class="btn" id="regions_show" value="Показать">
+<strong>Список регионов:</strong> <input type="button" class="btn btn-sm btn-default" id="regions_show" value="Показать">
 <ul id="region_list" >
 <? foreach ($state->regions as $region) { ?>
 <li><a href="#" onclick="show_region('<?=$region->code?>')"><?=htmlspecialchars($region->name)?> (<?=MyHtmlHelper::formateNumberword($region->population,'h')?>)</a></li>
@@ -106,7 +108,7 @@
     <p>One fine body…</p>
   </div>
   <div class="modal-footer">
-    <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+    <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
     <!--<button class="btn btn-primary">Save changes</button>-->
   </div>
 </div>
@@ -115,7 +117,7 @@
 
 <div class="btn-toolbar">
 <div class="btn-group">
-  <button class="btn btn-small dropdown-toggle btn-info" data-toggle="dropdown">
+  <button class="btn btn-sm dropdown-toggle btn-lightblue" data-toggle="dropdown">
     Гражданство <span class="caret"></span>
   </button>
   <ul class="dropdown-menu">
@@ -130,7 +132,7 @@
 </div>
 
 	<div class="btn-group">
-  <button class="btn btn-small dropdown-toggle btn-primary" data-toggle="dropdown">
+  <button class="btn btn-sm dropdown-toggle btn-primary" data-toggle="dropdown">
     Политика <span class="caret"></span>
   </button>
   <ul class="dropdown-menu">
@@ -183,12 +185,12 @@
 	  <label class="checkbox">
 	    <input type="checkbox"> Check me out
 	  </label>
-	  <button type="submit" class="btn">Submit</button>-->
+	  <button type="submit" class="btn btn-green">Submit</button>-->
 	</form>
   </div>
   <div class="modal-footer">
     <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true" onclick="create_party()">Создать</button>
-    <? if (!$show_create_party) { ?><button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button><? } ?>
+    <? if (!$show_create_party) { ?><button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button><? } ?>
   </div>
 </div>
 <script type="text/javascript">
@@ -214,14 +216,17 @@ $(function(){
     <? } ?>
 
 
-    $('#regions_show').toggle(function() {
-    	$(this).val('Скрыть');
-    	$('#region_list').slideDown();
-    },function() {
-    	$(this).val('Показать');
-    	$('#region_list').slideUp();
+    $('#regions_show').click(function() {
+        if ($(this).val() === 'Показать') {
+            $(this).val('Скрыть');
+            $('#region_list').slideDown();
+        } else {
+            $(this).val('Показать');
+            $('#region_list').slideUp();
+        }
     })
 })
   
 </script>
+</div>
 </div>

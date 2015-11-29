@@ -22,7 +22,7 @@ $(function(){
   }).on('ifChecked', function(event){
   request_id = $(this).val();
   console.log(request_id);
-  $('#elect_vote .btn-primary').show();
+  $('#elect_vote .btn-green').show();
 });;
 });
 </script>

@@ -1,4 +1,7 @@
-<div class="col-md-12">
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
 <h4>Политическая карта</h4>
 <div id="mapdiv" style="width: 100%; height: 500px;background-color:#EEEEEE; "></div> </div>
 <div style="display:none" class="modal" id="region_info" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -10,8 +13,10 @@
     <p>Загрузка…</p>
   </div>
   <div class="modal-footer">
-    <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+    <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
   </div>
+</div>
+    </div>
 </div>
 <script>
 var region,map;

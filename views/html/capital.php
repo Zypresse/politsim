@@ -1,6 +1,9 @@
 <?php
 use app\components\MyHtmlHelper;
 ?>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
 <h3>Капитал пользователя по имени <?=htmlspecialchars($user->name)?></h3>
 <p>Наличные: <?=number_format($user->money,2,'.',' ')?> <?=MyHtmlHelper::icon('money')?></p>
 <h4>Акции:</h4>
@@ -30,3 +33,6 @@ use app\components\MyHtmlHelper;
 <? } ?>
 </tbody>
 </table>
+        </div>
+    </div>
+</div>

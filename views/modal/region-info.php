@@ -15,7 +15,7 @@ use app\components\MyHtmlHelper;
 <p><? if ($user->region_id == $region->id) { ?>Вы живёте здесь.<? } ?></p>
 <!--<div class="btn-toolbar">
 	<div class="btn-group">
-  <button class="btn btn-small dropdown-toggle btn-warning" data-toggle="dropdown">
+  <button class="btn btn-sm dropdown-toggle btn-red" data-toggle="dropdown">
     Экстремизм <span class="caret"></span>
   </button>
   <ul class="dropdown-menu">
@@ -28,7 +28,7 @@ use app\components\MyHtmlHelper;
 <p>В этом регионе царит анархия</p>
  <? if ($user->region_id === $region->id) { ?>
 <div class="btn-toolbar">
-  <button class="btn" <? if ($user->state_id) { ?> disabled="disabled" title="Вы не можете создать государство, имея гражданство другого государства" <? } ?> id="create_state_btn" >
+  <button class="btn btn-green" <? if ($user->state_id) { ?> disabled="disabled" title="Вы не можете создать государство, имея гражданство другого государства" <? } ?> id="create_state_btn" >
     Основать государство
   </button>
 
@@ -42,7 +42,7 @@ use app\components\MyHtmlHelper;
   </div>
   <div class="modal-footer">
     <button class="btn btn-primary" id="create_state_submit">Создать</button>
-    <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>   
+    <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>   
   </div>
 </div>
   <script type="text/javascript">
@@ -54,7 +54,7 @@ use app\components\MyHtmlHelper;
 <? }} ?>
  <? if ($user->region_id !== $region->id) { ?>
 <div class="btn-group">
-  <button class="btn btn-small" onclick="json_request('move-to',{'id':'<?=$region->id?>'},true); setTimeout(function(){load_page('profile')},200)">
+  <button class="btn btn-sm btn-blue" onclick="json_request('move-to',{'id':'<?=$region->id?>'},true); setTimeout(function(){load_page('profile')},200)">
     Переехать сюда
   </button>
 </div><? } ?>
