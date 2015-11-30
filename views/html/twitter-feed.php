@@ -21,7 +21,7 @@ use app\components\MyHtmlHelper;
                  <strong><a href="#" onclick="load_page('twitter',{'uid':<?=$tweet->uid?>})"><?=htmlspecialchars($tweet->user->name)?></a></strong> <span class="date prettyDate" data-unixtime="<?=$tweet->date?>"><?=date('d-M-Y H:i',$tweet->date)?></span>
                  <? if ($tweet->originalUser) { ?><p class="date">Репост от <a href="#" onclick="load_page('twitter',{'uid':<?=$tweet->original?>})"><?=htmlspecialchars($tweet->originalUser->name)?></a></p><? } ?>
                  <p><?=MyHtmlHelper::parseTwitterLinks($tweet->text)?></p>
-                 <p class="tweet-footer"><? if ($tweet->uid !== $viewer_id && $tweet->original !== $viewer_id) { ?><a href="#" class="btn btn-sm btn-default repost" data-id="<?=$tweet->id?>" title="Репост"><i class="icon-repeat"></i></a><? } else { ?><i class="icon-repeat"></i><? } ?> <?=MyHtmlHelper::formateNumberword($tweet->retweets,'репостов','репост','репоста')?> <? if ($tweet->uid === $viewer_id) { ?><button class="btn btn-red btn-sm delete delete_tweet" title="Удалить" data-id="<?=$tweet->id?>" >X</button><? } ?></p>
+                 <p class="tweet-footer"><? if ($tweet->uid !== $viewer_id && $tweet->original !== $viewer_id) { ?><a href="#" class="btn btn-xs btn-default repost" data-id="<?=$tweet->id?>" title="Репост"><i class="icon-repeat"></i></a><? } else { ?><i class="icon-repeat"></i><? } ?> <?=MyHtmlHelper::formateNumberword($tweet->retweets,'репостов','репост','репоста')?> <? if ($tweet->uid === $viewer_id) { ?><button class="btn btn-red btn-sm delete delete_tweet" title="Удалить" data-id="<?=$tweet->id?>" >X</button><? } ?></p>
                  </div>
                <? } ?>
                   <button class="btn btn-block btn-default" id="update_tag_feed" data-time="<?=$timeFeedGenerated?>" data-offset="3" data-tag="<?=$tag?>" >Далее</button>
@@ -33,7 +33,7 @@ use app\components\MyHtmlHelper;
                  <strong><a href="#" onclick="load_page('twitter',{'uid':<?=$tweet->uid?>})"><?=htmlspecialchars($tweet->user->name)?></a></strong> <span class="date prettyDate" data-unixtime="<?=$tweet->date?>"><?=date('d-M-Y H:i',$tweet->date)?></span>
                  <? if ($tweet->originalUser) { ?><p class="date">Репост от <a href="#" onclick="load_page('twitter',{'uid':<?=$tweet->original?>})"><?=htmlspecialchars($tweet->originalUser->name)?></a></p><? } ?>
                  <p><?=MyHtmlHelper::parseTwitterLinks($tweet->text)?></p>
-                 <p class="tweet-footer"><? if ($tweet->uid !== $viewer_id && $tweet->original !== $viewer_id) { ?><a href="#" class="btn btn-sm btn-default repost" title="Репост" data-id="<?=$tweet->id?>"><i class="icon-repeat"></i></a><? } else { ?><i class="icon-repeat"></i><? } ?> <?=MyHtmlHelper::formateNumberword($tweet->retweets,'репостов','репост','репоста')?></p>
+                 <p class="tweet-footer"><? if ($tweet->uid !== $viewer_id && $tweet->original !== $viewer_id) { ?><a href="#" class="btn btn-xs btn-default repost" title="Репост" data-id="<?=$tweet->id?>"><i class="icon-repeat"></i></a><? } else { ?><i class="icon-repeat"></i><? } ?> <?=MyHtmlHelper::formateNumberword($tweet->retweets,'репостов','репост','репоста')?></p>
                  </div>
                <? } ?>
                 <button class="btn btn-block btn-default" id="update_feed" data-time="<?=$timeFeedGenerated?>" data-offset="5" >Далее</button>

@@ -28,6 +28,8 @@ use app\components\MyHtmlHelper,
                 <? } ?>
             </p>
         </div>
+    </div>
+    <div class="row">
         <div class="col-md-12">
             <strong>Список членов партии:</strong> <input type="button" class="btn btn-default btn-xs" id="members_show" value="Показать">
             <ul id="members_list" >
