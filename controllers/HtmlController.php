@@ -16,7 +16,10 @@ use Yii,
     app\models\Holding,
     app\models\factories\Factory,
     app\models\factories\FactoryAuction,
-    app\models\factories\FactoryAuctionSearch;
+    app\models\factories\FactoryAuctionSearch,
+    app\models\resurses\Resurse,
+    app\models\resurses\ResurseCost,
+    app\models\resurses\ResurseCostSearch;
 
 class HtmlController extends MyController
 {
@@ -321,7 +324,6 @@ class HtmlController extends MyController
             if (is_null($factory)) {
                 return $this->_r("Factory not found");
             }
-            
             if ($factory->manager_uid === $this->viewer_id) {
                 $factory = Factory::find()
                                     ->with('proto')
@@ -360,6 +362,18 @@ class HtmlController extends MyController
         return $this->render('market/factories', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'user' => $this->getUser()
+        ]);
+    }
+    
+    public function actionMarketResurses()
+    {
+        $prototypes = ResurseProto::find()
+                    ->where(['<>','level',ResurseProto::LEVEL_NOTSTORED])
+                    ->all();
+        
+        return $this->render('market/resurses', [
+            'prototypes' => $prototypes,
             'user' => $this->getUser()
         ]);
     }

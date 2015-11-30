@@ -16,7 +16,6 @@ use app\models\Place;
 
 class MovableObject extends Object {
     
-    private $_place;
     public function getPlace()
     {
         return $this->hasOne(Place::className(), array('id' => 'place_id'))->one()->getObject();

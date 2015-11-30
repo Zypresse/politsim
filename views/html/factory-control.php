@@ -11,6 +11,7 @@ use app\components\MyHtmlHelper;
             <p><strong>Эффективность работы:</strong> <?= MyHtmlHelper::zeroOne2Stars($factory->eff_region * $factory->eff_workers) ?></p>
             <p><strong>Владелец:</strong> <?= MyHtmlHelper::a($factory->holding->name, "load_page('holding-info',{'id':{$factory->holding_id}})") ?></p>
             <p><strong>Управляющий:</strong> <?= $factory->manager ? MyHtmlHelper::a($factory->manager->name, "load_page('profile',{'uid':{$factory->manager_uid}})") : "не назначен" ?></p>
+            <p><strong>Рассчётный счёт:</strong> <?=MyHtmlHelper::moneyFormat($factory->balance)?></p>
             <p>
                 <strong>Статус:</strong> <?= $factory->statusName ?> 
                 <? if ($factory->status < 0) { ?>

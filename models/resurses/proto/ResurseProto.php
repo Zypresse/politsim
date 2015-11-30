@@ -2,7 +2,8 @@
 
 namespace app\models\resurses\proto;
 
-use app\components\MyModel;
+use app\components\MyModel,
+    app\components\MyHtmlHelper;
 
 /**
  * Тип ресурса. Таблица "resurses_prototypes".
@@ -76,6 +77,11 @@ class ResurseProto extends MyModel
     public function isStorable()
     {
         return $this->level !== static::LEVEL_NOTSTORED;
+    }
+    
+    public function getHtmlName()
+    {
+        return MyHtmlHelper::icon($this->class_name).' '.$this->name;
     }
 
 }

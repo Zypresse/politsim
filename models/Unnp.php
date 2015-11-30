@@ -49,7 +49,7 @@ class Unnp extends MyModel
             case static::TYPE_STATE:
                 return $this->hasOne('app\models\State', ['id' => 'p_id']);
             case static::TYPE_FACTORY:
-                return $this->hasOne('app\models\Factory', ['id' => 'p_id']);
+                return $this->hasOne('app\models\factories\Factory', ['id' => 'p_id']);
             case static::TYPE_ORG:
                 return $this->hasOne('app\models\Org', ['id' => 'p_id']);
             case static::TYPE_PARTY:
@@ -61,7 +61,7 @@ class Unnp extends MyModel
             case static::TYPE_REGION:
                 return $this->hasOne('app\models\Region', ['id' => 'p_id']);
             case static::TYPE_LINE:
-                return $this->hasOne('app\models\Line', ['id' => 'p_id']);
+                return $this->hasOne('app\models\factories\Line', ['id' => 'p_id']);
         }
     }
 

@@ -2,7 +2,8 @@
 
 namespace app\controllers;
 
-use app\components\MyController,
+use Yii,
+    app\components\MyController,
     app\components\MyHtmlHelper,
     yii\helpers\ArrayHelper,
     app\models\Region,
@@ -25,7 +26,10 @@ use app\components\MyController,
     app\models\factories\FactoryAuction,
     app\models\Unnp,
     app\models\Ideology,
-    app\models\factories\Factory;
+    app\models\factories\Factory,
+    app\models\resurses\Resurse,
+    app\models\resurses\ResurseCost,
+    app\models\resurses\proto\ResurseProto;
 
 class ModalController extends MyController {
 
@@ -549,6 +553,87 @@ class ModalController extends MyController {
         return $this->render('factory-set-resurse-selling',[
             'factory' => $factory,
             'resurse' => $resurse
+        ]);
+    }
+    
+    public function actionMarketResurses($resurse_proto_id, $unnp)
+    {
+        
+        if (intval($resurse_proto_id) <= 0) {
+            return $this->_r("Invalid resurse prototype ID");
+        }
+        if (intval($unnp) <= 0) {
+            return $this->_r("Invalid UNNP");
+        }
+        
+        $resProto = ResurseProto::findByPk($resurse_proto_id);
+        if (is_null($resProto)) {
+            return $this->_r("Resurse prototype not found");
+        }
+        
+        $viewerUnnp = Unnp::findByPk($unnp);
+        if (is_null($viewerUnnp)) {
+            return $this->_r("Unnp not found");
+        }
+        
+        $viewer = $viewerUnnp->master;
+        if (is_null($viewer)) {
+            return $this->_r("Unnp is invalid");
+        }
+        
+        if ($viewer->getUnnpType() !== Unnp::TYPE_FACTORY || $viewer->manager_uid !== $this->viewer_id) {
+            return $this->_r("Not allowed");
+        }
+        
+        $costs = ResurseCost::find()
+                ->join('LEFT JOIN', 'resurses', 'resurses.id = resurse_costs.resurse_id')
+                ->where(["resurses.proto_id"=>$resProto->id])
+                ->andWhere([">","resurses.count",0])
+                ->andWhere(['or',['holding_id'=>null],['holding_id'=>$viewer->holding_id]])
+                ->andWhere(['or',['state_id'=>null],['state_id'=>$viewer->getLocatedStateId()]])
+                ->with('resurse')
+                ->orderBy('cost')
+                ->groupBy('resurses.place_id')
+                ->all();
+                            
+        return $this->render('market-factories',[
+            'resProto' => $resProto,
+            'costs' => $costs
+        ]);
+        
+    }
+    
+    public function actionResurseCostInfo($id, $unnp)
+    {
+        if (intval($id) <= 0) {
+            return $this->_r("Invalid resurse cost ID");
+        }
+        if (intval($unnp) <= 0) {
+            return $this->_r("Invalid UNNP");
+        }
+        
+        $resCost = ResurseCost::findByPk($id);
+        if (is_null($resCost)) {
+            return $this->_r("Resurse cost not found");
+        }
+        
+        $viewerUnnp = Unnp::findByPk($unnp);
+        if (is_null($viewerUnnp)) {
+            return $this->_r("Unnp not found");
+        }
+        
+        $viewer = $viewerUnnp->master;
+        if (is_null($viewer)) {
+            return $this->_r("Unnp is invalid");
+        }
+        
+        if ($viewer->getUnnpType() !== Unnp::TYPE_FACTORY || $viewer->manager_uid !== $this->viewer_id) {
+            return $this->_r("Not allowed");
+        }
+        
+        return $this->render('resurse-cost-info',[
+            'resCost' => $resCost,
+            'viewer' => $viewer
         ]);
     }
 

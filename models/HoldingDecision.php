@@ -128,6 +128,11 @@ class HoldingDecision extends MyModel {
      * Строительство трубопровода/ЛЭП
      */
     const DECISION_BUILDLINE = 11;
+    
+    /**
+     * Перевод денег на счёт фабрики
+     */
+    const DECISION_TRANSFERMONEY = 12;
 
     /**
      * Принять решение
@@ -152,6 +157,17 @@ class HoldingDecision extends MyModel {
                         ]);
                         $dealing->accept();
                     }
+                }
+                break;
+            case self::DECISION_TRANSFERMONEY: // выплата дивидентов
+                if ($this->holding->balance >= $data->sum) {
+                    $dealing = new Dealing([
+                        'proto_id' => 5,
+                        'from_unnp' => $this->holding->unnp,
+                        'to_unnp' => $data->unnp,
+                        'sum' => $data->sum
+                    ]);
+                    $dealing->accept();
                 }
                 break;
             case self::DECISION_GIVELICENSE: // Получение лицензии

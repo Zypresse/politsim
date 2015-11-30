@@ -1253,6 +1253,13 @@ class JsonController extends MyController {
                             return $this->_r("Invalid sum");
                         }
                         break;
+                    case HoldingDecision::DECISION_TRANSFERMONEY:
+                        if (floatval($_REQUEST['sum']) > 0 && intval($_REQUEST['unnp']) > 0) {
+                            $decision->data = ['sum' => floatval($_REQUEST['sum']), 'unnp' => intval($_REQUEST['unnp'])];
+                        } else {
+                            return $this->_r("Invalid sum");
+                        }
+                        break;
                     case HoldingDecision::DECISION_GIVELICENSE: // Получение новой лицензии
                         if (intval($_REQUEST['license_id']) > 0 && intval($_REQUEST['state_id']) > 0) {
                             $decision->data = [
@@ -1837,5 +1844,72 @@ class JsonController extends MyController {
         }
         
     }
+    
+    public function actionNewDealingResurseSelling($resurse_cost_id, $count, $unnp)
+    {
+        if (intval($resurse_cost_id) <= 0) {
+            return $this->_r("Invalid resurse cost ID");
+        }
+        if (intval($unnp) <= 0) {
+            return $this->_r("Invalid UNNP");
+        }
+        
+        $resCost = ResurseCost::findByPk($resurse_cost_id);
+        if (is_null($resCost)) {
+            return $this->_r("Resurse cost not found");
+        }
+        
+        $viewerUnnp = Unnp::findByPk($unnp);
+        if (is_null($viewerUnnp)) {
+            return $this->_r("Unnp not found");
+        }
+        
+        $viewer = $viewerUnnp->master;
+        if (is_null($viewer)) {
+            return $this->_r("Unnp is invalid");
+        }
+        
+        if ($viewer->getUnnpType() !== Unnp::TYPE_FACTORY || $viewer->manager_uid !== $this->viewer_id) {
+            return $this->_r("Not allowed");
+        }
+        
+        if (!is_null($resCost->holding_id) && $resCost->holding_id !== $viewer->holding_id) {
+            return $this->_r("Not allowed 2");
+        }
+        
+        if (!is_null($resCost->state_id) && $resCost->state_id !== $viewer->getLocatedStateId()) {
+            return $this->_r("Not allowed 3");
+        }
+        
+        $count = floatval($count);
+        if ($count <= 0 || $count > $resCost->resurse->count) {
+            return $this->_r("Вы не можете купить меньше 1 и больше {$resCost->resurse->count}");
+        }
+        
+        $sum = $count * $resCost->cost;        
+        $transferCost = round($resCost->resurse->place->region->calcDist($viewer->region)*10);
+        $sum += $transferCost;
+        
+        if ($sum > $viewer->getBalance()) {
+            return $this->_r("На счету {$viewer->getHtmlName()} недостаточно денег!");
+        }
+        
+        $dealing = new Dealing([
+            'proto_id' => 4,
+            'from_unnp' => $resCost->resurse->place->unnp,
+            'to_unnp' => $viewer->unnp,
+            'sum' => -1*$sum,
+            'items' => json_encode([[
+                'type' => 'resurse',
+                'count' => $count,
+                'proto_id' => $resCost->resurse->proto_id
+            ]])
+        ]);
+        $dealing->accept();
+        
+        return $this->_rOk();
+        
+    }
+            
 
 }

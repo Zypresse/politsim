@@ -11,11 +11,11 @@ use app\components\MyHtmlHelper,
     app\models\factories\proto\FactoryProto,
     app\models\factories\Factory,
     app\models\factories\proto\LineProto,
-    app\models\resurses\proto\ResurseProto,
     app\models\licenses\proto\LicenseProto,
     app\models\User,
     app\models\State,
-    app\models\Region;
+    app\models\Region,
+    app\models\Unnp;
 
 /* @var $user \app\models\User */
 $userStock = $user->getShareholderStock($holding);
@@ -144,6 +144,10 @@ $factoryCategories = FactoryProtoCategory::find()->all();
                                         $region2 = Region::findByPk($data->region2_id);
                                         echo "Строительство объекта «{$lineProto->name}» между регионами {$region1->name} и {$region2->name}";
                                         break;
+                                    case HoldingDecision::DECISION_TRANSFERMONEY:
+                                        $to = Unnp::findByPk($data->unnp)->master;
+                                        echo 'Перевод ' . $data->sum . ' ' . MyHtmlHelper::icon('money') . ' для '. $to->getHtmlName();
+                                        break;
                                 }
                                 ?></td><td>
                                 <?
@@ -205,6 +209,7 @@ $factoryCategories = FactoryProtoCategory::find()->all();
                     <ul class="dropdown-menu">
                         <li><a href="#" onclick="$('#stock_dividents_modal').modal();" >Выплатить дивиденты</a></li>
                         <li><a href="#" onclick="$('#insert_money_modal').modal();" >Внести деньги на счёт</a></li>
+                        <li><a href="#" onclick="$('#transfer_money_inner_modal').modal();" >Перевести деньги на счёт предприятия</a></li>
                     </ul>
                 </div>
                 <div class="btn-group">
@@ -348,6 +353,38 @@ $factoryCategories = FactoryProtoCategory::find()->all();
                         </div>
                         <div class="modal-footer">
                             <button class="btn btn-primary" data-dismiss="modal"  onclick="pay_dividents(<?= $holding->id ?>)">Выплатить</button>
+                            <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+                        </div>
+                    </div></div>
+            </div>
+            <div style="display:none;" class="modal fade" id="transfer_money_inner_modal" tabindex="-1" role="dialog" aria-labelledby="transfer_money_inner_modal_label" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                            <h3 id="transfer_money_inner_modal_label">Перевод денег на внутренний счёт</h3>
+                        </div>
+                        <div id="transfer_money_inner_modal_body" class="modal-body">
+                            <div class="control-group">
+                                <label class="control-label" for="#transfer_inner_factory_unnp">Предприятие</label>
+                                <div class="controls">
+                                    <select id="transfer_inner_factory_unnp">
+                                    <? foreach ($holding->factories as $factory): ?>
+                                        <option value="<?=$factory->unnp?>"><?=$factory->name?> (<?=$factory->region->name?>)</option>
+                                    <? endforeach ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label" for="#transfer_inner_sum">Сумма для перевода</label>
+                                <div class="controls">
+                                    <input type="number" id="transfer_inner_sum" value="0"> <?= MyHtmlHelper::icon('money') ?>
+                                </div>
+                            </div>
+                            <p>Деньги будут выплачены со счёта компании.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-primary" data-dismiss="modal"  onclick="transfer_money_inner(<?=$holding->id?>)">Перевести</button>
                             <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
                         </div>
                     </div></div>
@@ -684,6 +721,12 @@ $factoryCategories = FactoryProtoCategory::find()->all();
     function pay_dividents(id) {
         if ($('#dividents_sum').val()) {
             json_request('new-holding-decision', {'holding_id': id, 'type': 2, 'sum': $('#dividents_sum').val()});
+        }
+    }
+    
+    function transfer_money_inner(id) {
+        if ($('#transfer_inner_sum').val()) {
+            json_request('new-holding-decision', {'holding_id': id, 'type': 12, 'unnp': $('#transfer_inner_factory_unnp').val(), 'sum': $('#transfer_inner_sum').val()});
         }
     }
 

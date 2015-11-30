@@ -2,10 +2,11 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <h4>Запасы ресурсов по регионам</h4>
+            <h4>Эффективность добычи ресурсов по регионам</h4>
             <p>
+                Выберите ресурс:
                 <? foreach ($resurses as $i => $res) { ?>
-                    <button type="button" class="btn btn-default <? if ($i === 0) { ?>active<? } ?> economic_map_btn" data-id="<?= $res->id ?>" ><img src="/img/<?= $res->class_name ?>.png" alt="<?= $res->name ?>" title="<?= $res->name ?>"></button>
+                    <button class="btn btn-xs btn-default <? if ($i === 0) { ?>btn-lightblue<? } ?> economic_map_btn" data-id="<?= $res->id ?>" ><img src="/img/<?= $res->class_name ?>.png" alt="<?= $res->name ?>" title="<?= $res->name ?>"></button>
                 <? } ?>
             </p>
             <div id="mapdiv" style="width: 100%; height: 500px;background-color:#EEEEEE; "></div>
@@ -19,8 +20,8 @@
         load_resurses_map(1);
 
         $('.economic_map_btn').click(function () {
-            $('.economic_map_btn').removeClass('active');
-            $(this).addClass('active');
+            $('.economic_map_btn').removeClass('btn-lightblue');
+            $(this).addClass('btn-lightblue');
             load_resurses_map($(this).data('id'));
         })
 

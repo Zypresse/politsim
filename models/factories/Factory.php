@@ -28,6 +28,7 @@ use app\components\MyMathHelper,
  * @property integer $manager_uid
  * @property double $eff_region
  * @property double $eff_workers
+ * @property double $balance
  * 
  * @property integer $IAmPlace
  * 
@@ -259,7 +260,6 @@ class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
         ]);
         if ($store->count+$count <= $this->storageSize($proto_id)) {
             $store->count += $count;
-        
             return $store->save();
         } else {
             return false;
@@ -282,7 +282,7 @@ class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
                 return $store->save();
             }
         } else {
-            return false;;
+            return false;
         }
     }
 
@@ -356,12 +356,13 @@ class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
 
     public function changeBalance($delta)
     {
-        
+        $this->balance += $delta;
+        $this->save();
     }
 
     public function getBalance()
     {
-        return 0;
+        return $this->balance;
     }
 
     public function getHtmlName()
