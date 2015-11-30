@@ -8,7 +8,7 @@ use yii\grid\GridView,
 /* @var $prototypes app\models\resurses\proto\ResurseProto[] */
 /* @var $user app\models\User */
 
-$unnps = [$user->unnp];
+$unnps = [];
 ?>
 <div class="container">
     <div class="row">
@@ -18,19 +18,19 @@ $unnps = [$user->unnp];
                 <label for="#market-change-unnp-select" >Действовать от имени: </label>
                 <select id="market-change-unnp-select" >
                     <option disabled value="<?= $user->unnp ?>">Физическое лицо</option>
-                    <? if ($user->post && $user->post->org && $user->post->org->isExecutive()): $unnps[] = $user->post->unnp; ?>
+                    <? if ($user->post && $user->post->org && $user->post->org->isExecutive()): ?>
                         <option disabled value="<?= $user->post->unnp ?>"><?= $user->post->ministry_name ? $user->post->ministry_name : $user->post->name . ' (' . $user->post->org->name . ')' ?></option>
                     <? endif ?>
-                    <? if ($user->isOrgLeader()): $unnps[] = $user->post->org->unnp; ?>
+                    <? if ($user->isOrgLeader()): ?>
                         <option disabled value="<?= $user->post->org->unnp ?>"><?= $user->post->org->name ?></option>
                     <? endif ?>
-                    <? if ($user->isStateLeader()): $unnps[] = $user->state->unnp; ?>
+                    <? if ($user->isStateLeader()): ?>
                         <option disabled value="<?= $user->state->unnp ?>"><?= $user->state->name ?></option>
                     <? endif ?>
                     <? /* if ($user->isRegionLeader()): ?>
                       <option disabled value="<?=$user->region->unnp?>"><?=$user->region->name?></option>
                       <? endif */ ?>
-                    <? foreach ($user->holdings as $holding): $unnps[] = $holding->unnp; ?>
+                    <? foreach ($user->holdings as $holding): ?>
                         <option disabled value="<?= $holding->unnp ?>"><?= $holding->name ?></option>
                     <? endforeach ?>
                     <? foreach ($user->factories as $factory): $unnps[] = $factory->unnp; ?>

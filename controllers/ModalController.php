@@ -556,14 +556,11 @@ class ModalController extends MyController {
         ]);
     }
     
-    public function actionMarketResurses($resurse_proto_id, $unnp)
+    public function actionMarketResurses($resurse_proto_id, $unnp = false)
     {
         
         if (intval($resurse_proto_id) <= 0) {
             return $this->_r("Invalid resurse prototype ID");
-        }
-        if (intval($unnp) <= 0) {
-            return $this->_r("Invalid UNNP");
         }
         
         $resProto = ResurseProto::findByPk($resurse_proto_id);
@@ -571,34 +568,41 @@ class ModalController extends MyController {
             return $this->_r("Resurse prototype not found");
         }
         
-        $viewerUnnp = Unnp::findByPk($unnp);
-        if (is_null($viewerUnnp)) {
-            return $this->_r("Unnp not found");
+        if (intval($unnp) > 0) {
+            $viewerUnnp = Unnp::findByPk($unnp);
+            if (is_null($viewerUnnp)) {
+                return $this->_r("Unnp not found");
+            }
+
+            $viewer = $viewerUnnp->master;
+            if (is_null($viewer)) {
+                return $this->_r("Unnp is invalid");
+            }
+
+            if ($viewer->getUnnpType() !== Unnp::TYPE_FACTORY || $viewer->manager_uid !== $this->viewer_id) {
+                return $this->_r("Not allowed");
+            }
         }
         
-        $viewer = $viewerUnnp->master;
-        if (is_null($viewer)) {
-            return $this->_r("Unnp is invalid");
-        }
-        
-        if ($viewer->getUnnpType() !== Unnp::TYPE_FACTORY || $viewer->manager_uid !== $this->viewer_id) {
-            return $this->_r("Not allowed");
-        }
-        
-        $costs = ResurseCost::find()
+        $query = ResurseCost::find()
                 ->join('LEFT JOIN', 'resurses', 'resurses.id = resurse_costs.resurse_id')
                 ->where(["resurses.proto_id"=>$resProto->id])
-                ->andWhere([">","resurses.count",0])
-                ->andWhere(['or',['holding_id'=>null],['holding_id'=>$viewer->holding_id]])
-                ->andWhere(['or',['state_id'=>null],['state_id'=>$viewer->getLocatedStateId()]])
-                ->with('resurse')
+                ->andWhere([">","resurses.count",0]);
+        
+        if (intval($unnp) > 0) {            
+            $query = $query->andWhere(['or',['holding_id'=>null],['holding_id'=>$viewer->holding_id]])
+                ->andWhere(['or',['state_id'=>null],['state_id'=>$viewer->getLocatedStateId()]]);
+        }
+        
+        $costs = $query->with('resurse')
                 ->orderBy('cost')
                 ->groupBy('resurses.place_id')
                 ->all();
                             
-        return $this->render('market-factories',[
+        return $this->render('market-resurses',[
             'resProto' => $resProto,
-            'costs' => $costs
+            'costs' => $costs,
+            'readOnly' => !(intval($unnp) > 0)
         ]);
         
     }

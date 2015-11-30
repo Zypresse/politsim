@@ -1,6 +1,7 @@
 <?php
 /* @var $costs app\models\resurses\ResurseCost[] */
 /* @var $resProto app\models\resurses\proto\ResurseProto */
+/* @var $readOnly boolean */
 
 use app\components\MyHtmlHelper,
     app\models\Place;
@@ -23,7 +24,7 @@ use app\components\MyHtmlHelper,
                         <td style="min-width: 250px">Регион</td>
                         <td>Доступно</td>
                         <td style="min-width: 70px">Цена</td>
-                        <td>Действия</td>
+                        <? if (!$readOnly): ?><td>Действия</td><? endif ?>
                     </tr>
                 </thead>
                 <tbody>
@@ -42,9 +43,11 @@ use app\components\MyHtmlHelper,
                                 <?= number_format($cost->resurse->count, 0, '', ' ') ?> <?= MyHtmlHelper::icon($resProto->class_name) ?>
                             </td>
                             <td><?= MyHtmlHelper::moneyFormat($cost->cost, 2) ?></td>
+                            <? if (!$readOnly): ?>
                             <td>
                                 <button onclick="load_modal('resurse-cost-info',{'id':<?=$cost->id?>,'unnp':$('#market-change-unnp-select').val()},'resurse_cost_info','resurse_cost_info_body')" class="btn btn-blue btn-xs">Покупка</button>
                             </td>
+                            <? endif ?>
                         </tr>
                     <? endforeach ?>
                 </tbody>
@@ -52,6 +55,7 @@ use app\components\MyHtmlHelper,
         </div>
     </div>
 </div>
+<? if (!$readOnly): ?>
 <div style="display:none" class="modal fade" id="resurse_cost_info" tabindex="-1" role="dialog" aria-labelledby="resurse_cost_info_label" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -69,3 +73,4 @@ use app\components\MyHtmlHelper,
         </div>
     </div>
 </div>
+<? endif ?>
