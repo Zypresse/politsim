@@ -4,12 +4,15 @@ namespace app\models\factories;
 
 use app\components\MyMathHelper,
     app\components\MyHtmlHelper,
-    app\components\NalogPayer,
+    app\components\TaxPayer,
     app\models\Unnp,
     app\models\factories\proto\FactoryProto,
     app\models\factories\proto\FactoryProtoKit,
     app\models\resurses\Resurse,
-    app\models\objects\UnmovableObject;
+    app\models\objects\UnmovableObject,
+    app\models\objects\canCollectObjects,
+    app\models\Place,
+    app\models\resurses\ResurseCost;
 
 /**
  * Фабрика/завод/сх-предприятие. Таблица "factories".
@@ -26,6 +29,8 @@ use app\components\MyMathHelper,
  * @property double $eff_region
  * @property double $eff_workers
  * 
+ * @property integer $IAmPlace
+ * 
  * @property proto\FactoryProto $proto Тип фабрики
  * @property \app\models\Holding $holding Компания-владелец
  * @property \app\models\Region $region Регион, в котором она находится
@@ -36,8 +41,9 @@ use app\components\MyMathHelper,
  * @property \app\models\Vacancy[] $vacancies 
  * @property \app\models\Vacansy[] $vacansiesWithSalaryAndCount Актуальнаые вакансии
  * @property \app\models\Vacansy[] $vacansiesWithSalary Потенцальные вакансии
+ * @property ResurseCost[] $resurseCosts
  */
-class Factory extends UnmovableObject implements NalogPayer
+class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
 {
         
     /**
@@ -184,6 +190,19 @@ class Factory extends UnmovableObject implements NalogPayer
         return $this->hasMany('app\models\Vacansy', array('factory_id' => 'id'))->where('salary > 0')->orderBy("salary DESC");
     }
     
+    public function getResurseCosts()
+    {
+        $costs = [];
+        foreach ($this->content as $resurse) {
+            foreach ($resurse->costs as $resCost) {
+                $costs[] = $resCost;
+            }
+        }
+        return $costs;
+//        return $this->hasMany(ResurseCost::className(), array('resurse_id' => 'id'))
+//                ->viaTable('resurses',['id' => 'IAmPlace']);
+    }
+    
     public function getStatusName()
     {
         $names = [
@@ -214,10 +233,26 @@ class Factory extends UnmovableObject implements NalogPayer
         }
     }
     
+    /**
+     * 
+     * @param integer $proto_id
+     * @return Resurse
+     */
+    public function getStorage($proto_id)
+    {
+        return Resurse::find()
+                ->with('proto')
+                ->where([
+                    'place_id' => $this->IAmPlace,
+                    'proto_id' => $proto_id
+                ])
+                ->one();
+    }
+    
     public function pushToStorage($proto_id, $count) 
     {
         $store = Resurse::findOrCreate([
-            'place_id' => $this->id,
+            'place_id' => $this->IAmPlace,
             'proto_id' => $proto_id
         ], false, [
             'count' => 0
@@ -234,7 +269,7 @@ class Factory extends UnmovableObject implements NalogPayer
     public function delFromStorage($proto_id, $count) 
     {
         $store = Resurse::findOrCreate([
-            'place_id' => $this->id,
+            'place_id' => $this->IAmPlace,
             'proto_id' => $proto_id
         ], false, [
             'count' => 0
@@ -362,6 +397,44 @@ class Factory extends UnmovableObject implements NalogPayer
                 return $salary->salary;
             }
         }
+    }
+
+    public function getTaxStateId() {
+        return $this->region ? $this->region->state_id : 0;
+    }
+
+    public function isTaxedInState($stateId) {
+        if (is_null($this->region)) {
+            return false;
+        }
+        
+        return $this->region->state_id === (int)$stateId;
+    }
+
+    public function getContent() {
+        return $this->hasMany(Resurse::className(), ['place_id' => 'IAmPlace']);
+    }
+
+    private $_iAmPlace;
+    public function getIAmPlace() {
+        if (is_null($this->_iAmPlace)) {
+            $u = Place::findOrCreate(['object_id' => $this->id, 'type' => $this->getPlaceType()], true);
+            $this->_iAmPlace = ($u) ? $u->id : 0;
+        } 
+        return $this->_iAmPlace;
+    }
+
+    public function getId() {
+        return $this->id;
+    }
+
+    public function getPlaceType() {
+        return Place::TYPE_FACTORY;
+    }
+    
+    public function getLocatedStateId()
+    {
+        return $this->region->state_id;
     }
 
 }

@@ -2,7 +2,7 @@
 
 namespace app\models;
 
-use app\components\NalogPayer,
+use app\components\TaxPayer,
     app\components\MyModel,
     app\components\MyHtmlHelper,
     app\models\Unnp;
@@ -22,7 +22,7 @@ use app\components\NalogPayer,
  * @property \app\models\Party $partyReserve Партия, которой принадлежит этот пост
  * @property \app\models\User $user Игрок, занимающий этот пост
  */
-class Post extends MyModel implements NalogPayer
+class Post extends MyModel implements TaxPayer
 {
 
     public function getUnnpType()
@@ -196,6 +196,16 @@ class Post extends MyModel implements NalogPayer
     public function getHtmlName()
     {
         return $this->name." организации «".MyHtmlHelper::a($this->org->name, "load_page('org-info',{'id':{$this->id}})")."»";
+    }
+
+    public function getTaxStateId()
+    {
+        return $this->org->state_id;
+    }
+
+    public function isTaxedInState($stateId)
+    {
+        return false;
     }
 
 }

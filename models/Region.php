@@ -2,7 +2,7 @@
 
 namespace app\models;
 
-use app\components\NalogPayer,
+use app\components\TaxPayer,
     app\components\MyModel,
     app\components\MyHtmlHelper,
     app\models\Unnp;
@@ -33,7 +33,7 @@ use app\components\NalogPayer,
  * @property Vacansy[] $vacansiesWithSalary Потенцальные вакансии
  * @property RegionDiggingEff[] $diggingEffs
  */
-class Region extends MyModel implements NalogPayer
+class Region extends MyModel implements TaxPayer
 {
 
     public function getUnnpType()
@@ -321,6 +321,16 @@ class Region extends MyModel implements NalogPayer
     public function getHtmlName()
     {
         return $this->name.($this->state?" (".MyHtmlHelper::a($this->state->short_name, "load_page('state-info',{'id':{$this->state_id}})").")":"");
+    }
+
+    public function getTaxStateId()
+    {
+        return $this->state_id;
+    }
+
+    public function isTaxedInState($stateId)
+    {
+        return false;
     }
 
 }

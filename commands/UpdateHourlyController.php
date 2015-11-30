@@ -263,7 +263,7 @@ class UpdateHourlyController extends Controller
         $regions = Region::find()->all();
         foreach ($regions as $region) {
             foreach ($region->vacansiesWithSalaryAndCount as $vacansy) {
-                var_dump($vacansy->factory_id . ': ' . $vacansy->salary);
+//                var_dump($vacansy->factory_id . ': ' . $vacansy->salary);
                 $setted = 0;
                 foreach ($region->populationGroupsWithoutFactory as $popGroup) {
                     if ($popGroup->class == $vacansy->pop_class_id && !($popGroup->factory_id)) {

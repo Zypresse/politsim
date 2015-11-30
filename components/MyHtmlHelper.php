@@ -51,7 +51,7 @@ class MyHtmlHelper {
             'Meat' => 'Мясо и молочная продукция',
             'Wool' => 'Шерсть и кожа',
             'Sand' => 'Стройматериалы (добываемые)',
-            'money' => 'долларов',
+            'money' => 'у.е.',
             'lg-icons/business' => 'Бизнес',
             'lg-icons/goverment' => 'Правительство',
             'lg-icons/map' => 'Карта',

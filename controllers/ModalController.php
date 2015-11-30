@@ -24,7 +24,8 @@ use app\components\MyController,
     app\models\factories\proto\FactoryProtoCategory,
     app\models\factories\FactoryAuction,
     app\models\Unnp,
-    app\models\Ideology;
+    app\models\Ideology,
+    app\models\factories\Factory;
 
 class ModalController extends MyController {
 
@@ -519,6 +520,35 @@ class ModalController extends MyController {
         return $this->render('change-ideology',[
             'ideologies' => $ideologies,
             'user' => $this->user
+        ]);
+    }
+    
+    public function actionManagerFactorySetResurseSelling($factory_id, $resurse_proto_id)
+    {        
+        if (intval($factory_id) <= 0) {
+            return $this->_r("Invalid factory ID");
+        }
+        if (intval($resurse_proto_id) <= 0) {
+            return $this->_r("Invalid resurse prototype ID");
+        }
+        
+        $factory = Factory::findByPk($factory_id);
+        if (is_null($factory)) {
+            return $this->_r("Factory not found");
+        }
+        
+        if ($factory->manager_uid !== $this->viewer_id) {
+            return $this->_r("Not allowed");
+        }
+        
+        $resurse = $factory->getStorage($resurse_proto_id);
+        if (is_null($resurse)) {
+            return $this->_r("Resurse not found");
+        }
+        
+        return $this->render('factory-set-resurse-selling',[
+            'factory' => $factory,
+            'resurse' => $resurse
         ]);
     }
 

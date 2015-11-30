@@ -82,16 +82,102 @@ use app\components\MyHtmlHelper;
         </div>
     </div>
     <div class="row">
-        <div class="col-md-12">
-
-            <h3>Управление</h3>
-            <p>
-                <button class="btn btn-sm btn-lightblue" onclick="$('#salaries_manager').modal()">Зарплаты</button>
-                <button class="btn btn-sm btn-green" onclick="$('#resurses_selling_first').modal()">Продажа ресурсов</button>
-                <button class="btn btn-sm btn-red" onclick="if (confirm('Вы действительно хотите уволить всех рабочих и остановить работу?')) {json_request('manager-factory-stop-work',{'id':<?=$factory->id?>})}">Остановить работу</button>
-            </p>
+        <div class="col-md-6 col-md-offset-6">
+            <div class="box">
+                <div class="box-header">
+                    <span class="title"><i class="icon-home"></i> Цены на продажу</span>
+                </div>
+                <div class="box-content">
+                    <table class="table table-normal">
+                        <thead>
+                            <tr>
+                              <td style="width:40%"></td>
+                              <td>Доступно</td>
+                              <td>Цена</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <? foreach ($factory->resurseCosts as $cost): if ($cost->resurse->count > 0): ?>
+                            <tr>
+                                <td><?= MyHtmlHelper::icon($cost->resurse->proto->class_name) ?> <?= $cost->resurse->proto->name ?> <?= $cost->getHtmlType()?></td>
+                                <td><?= number_format($cost->resurse->count, 0, '', ' ') ?> <?= MyHtmlHelper::icon($cost->resurse->proto->class_name) ?></td>
+                                <td><?= number_format($cost->cost, 2, '.', ' ') ?> <?= MyHtmlHelper::icon("money") ?></td>
+                            </tr>
+                        <? endif;
+                        endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-12">
+            <h3>Управление</h3>
+            <div class="btn-toolbar">
+                <div class="btn-group">
+                    <button class="btn dropdown-toggle btn-lightblue" data-toggle="dropdown">
+                        Персонал <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <!--<li class="divider"></li>-->
+                        <li><a href="#" onclick="$('#salaries_manager').modal();" >Зарплаты</a></li>
+                    </ul>
+                </div>
+                <div class="btn-group">
+                    <button class="btn dropdown-toggle btn-green" data-toggle="dropdown">
+                        Торговля <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <!--<li class="divider"></li>-->
+                        <li><a href="#" onclick="$('#resurses_selling_first').modal();" >Продажа ресурсов</a></li>
+                    </ul>
+                </div>
+                <button class="btn btn-red" onclick="if (confirm('Вы действительно хотите уволить всех рабочих и остановить работу?')) {json_request('manager-factory-stop-work',{'id':<?=$factory->id?>})}">Остановить работу</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div style="display:none" class="modal fade" id="resurses_selling_first" tabindex="-1" role="dialog" aria-labelledby="resurses_selling_first_label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="resurses_selling_first_label">Выставить на продажу</h3>
+            </div>
+            <div id="resurses_selling_first_body" class="modal-body">
+                <h3>Ресурсы:</h3>
+                <select id="resurse_proto_id_for_selling">
+                <? foreach ($factory->content as $store): if ($store->proto->isStorable()): ?>
+                    <option value="<?=$store->proto_id?>"><?= $store->proto->name ?></option>
+                <? endif; endforeach; ?>
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-green" onclick="load_modal('manager-factory-set-resurse-selling',{'factory_id':<?=$factory->id?>,'resurse_proto_id':$('#resurse_proto_id_for_selling').val()},'resurses_selling_second','resurses_selling_second_body')">Продолжить</button>
+                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+            </div>
+        </div></div>
+</div>
+
+<div style="display:none" class="modal fade" id="resurses_selling_second" tabindex="-1" role="dialog" aria-labelledby="resurses_selling_second_label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="resurses_selling_second_label">Выставить на продажу</h3>
+            </div>
+            <div id="resurses_selling_second_body" class="modal-body">
+                
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-green" onclick="json_request('save-resurse-cost',{'resurse_id':$('#resurse_for_selling_id').val(),'cost':$('#resurse_for_selling_cost').val(),'type':$('#form_resurse_selling_cost input[name=resurse_for_selling_type]:checked').val()})">Сохранить</button>
+                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+            </div>
+        </div></div>
 </div>
 
 <div style="display:none" class="modal fade" id="salaries_manager" tabindex="-1" role="dialog" aria-labelledby="myModalLabel123213" aria-hidden="true">

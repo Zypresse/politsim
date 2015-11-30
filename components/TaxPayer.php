@@ -9,7 +9,7 @@ namespace app\components;
  * 
  * @property int $unnp ИНН
  */
-interface NalogPayer {
+interface TaxPayer {
     
     public function getUnnp();
     
@@ -27,5 +27,9 @@ interface NalogPayer {
     public function getHtmlName();
     
     public function getUnnpType();
+    
+    public function getTaxStateId();
+    
+    public function isTaxedInState($stateId);
     
 }

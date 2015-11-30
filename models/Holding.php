@@ -2,7 +2,7 @@
 
 namespace app\models;
 
-use app\components\NalogPayer,
+use app\components\TaxPayer,
     app\components\MyModel,
     app\components\MyHtmlHelper,
     app\models\Unnp;
@@ -25,7 +25,7 @@ use app\components\NalogPayer,
  * @property factories\Line[] $lines
  * @property User $director
  */
-class Holding extends MyModel implements NalogPayer
+class Holding extends MyModel implements TaxPayer
 {
 
     public function getUnnpType()
@@ -217,6 +217,16 @@ class Holding extends MyModel implements NalogPayer
     public function getHtmlName()
     {
         return MyHtmlHelper::a($this->name, "load_page('holding-info',{'id':{$this->id}})");
+    }
+
+    public function getTaxStateId()
+    {
+        return $this->state_id;
+    }
+
+    public function isTaxedInState($stateId)
+    {
+        return ($this->state_id === (int)$stateId);
     }
 
 }

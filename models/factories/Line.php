@@ -2,8 +2,7 @@
 
 namespace app\models\factories;
 
-use app\components\NalogPayer,
-    app\components\MyHtmlHelper,
+use app\components\TaxPayer,
     app\models\objects\UnmovableObject,
     app\models\Holding,
     app\models\Region,
@@ -23,7 +22,7 @@ use app\components\NalogPayer,
  * @property Holding $holding
  * @property proto\LineProto $proto
  */
-class Line extends UnmovableObject implements NalogPayer
+class Line extends UnmovableObject implements TaxPayer
 {
     
     private $_unnp;
@@ -116,6 +115,20 @@ class Line extends UnmovableObject implements NalogPayer
     public function getHtmlName()
     {
         return $this->proto->name;
+    }
+
+    public function getTaxStateId()
+    {
+        return $this->region1 ? $this->region1->state_id : 0;
+    }
+
+    public function isTaxedInState($stateId)
+    {
+        if (is_null($this->region1)) {
+            return false;
+        }
+        
+        return $this->region1->state_id === (int)$stateId;
     }
 
 }

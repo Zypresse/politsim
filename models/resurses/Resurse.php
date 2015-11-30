@@ -2,7 +2,9 @@
 
 namespace app\models\resurses;
 
-use app\models\objects\MovableObject;
+use app\models\objects\MovableObject,
+    app\models\resurses\ResurseCost,
+    app\models\resurses\proto\ResurseProto;
 
 /**
  * This is the model class for table "resurses".
@@ -13,7 +15,7 @@ use app\models\objects\MovableObject;
  * @property double $count
  *
  * @property proto\ResurseProto $proto
- * @property \app\models\factories\Factory $factory
+ * @property ResurseCost[] $costs
  */
 class Resurse extends MovableObject
 {
@@ -52,7 +54,16 @@ class Resurse extends MovableObject
     
     public function getProto()
     {
-        return $this->hasOne('app\models\resurses\proto\ResurseProto', array('id' => 'proto_id'));
+        return $this->hasOne(ResurseProto::className(), array('id' => 'proto_id'));
+    }
+    
+    public function getCosts()
+    {
+        return $this->hasMany(ResurseCost::className(), array('resurse_id' => 'id'));
+    }
+    
+    public function getLocatedStateId() {
+        return $this->place->getLocatedStateId();
     }
 
 }

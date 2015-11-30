@@ -3,8 +3,7 @@
 namespace app\models\objects;
 
 use app\components\MyModel,
-    app\models\objects\proto\ObjectProto,
-    app\models\resurses\Resurse;
+    app\models\objects\proto\ObjectProto;
 
 /**
  * 
@@ -15,15 +14,14 @@ use app\components\MyModel,
  * @author ilya
  */
 class Object extends MyModel {
-    
-    public function getContent()
-    {
-        return $this->hasMany(Resurse::className(),['place_id' => 'id']);
-    }
-    
+        
     public function getProto()
     {
         return $this->hasOne(ObjectProto::className(), array('id' => 'proto_id'));
     }
-    
+        
+    public function getLocatedStateId()
+    {
+        throw new \yii\base\Exception("not redefined");
+    }
 }

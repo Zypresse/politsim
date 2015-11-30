@@ -27,6 +27,9 @@ use Yii,
     app\models\Notification,
     app\models\ElectOrgLeaderRequest,
     app\models\ElectOrgLeaderVote,
+    app\models\Place,
+    app\models\resurses\Resurse,
+    app\models\resurses\ResurseCost,
     app\models\articles\proto\ArticleProto,
     app\models\resurses\proto\ResurseProto,
     app\models\bills\Bill,
@@ -1784,6 +1787,55 @@ class JsonController extends MyController {
         $factory->save();
         
         return $this->_rOk();
+    }
+    
+    public function actionSaveResurseCost($resurse_id, $cost, $type)
+    {
+        if (intval($resurse_id) <= 0) {
+            return $this->_r("Invalid resurse ID");
+        }
+        
+        if (floatval($cost) <= 0) {
+            return $this->_r("Неправильно указана цена");
+        }
+        
+        if (!in_array(intval($type),[1,2,3])) {
+            return $this->_r("Invalid type");
+        }
+        
+        $resurse = Resurse::findByPk($resurse_id);
+        if (is_null($resurse)) {
+            return $this->_r("Resurse not found");
+        }
+        
+        if ($resurse->place->getPlaceType() !== Place::TYPE_FACTORY || $resurse->place->manager_uid !== $this->viewer_id) {
+            return $this->_r("Not allowed");
+        }
+        
+        $params = [
+            'resurse_id' => $resurse->id,
+            'holding_id' => null,
+            'state_id' => null
+        ];
+        switch (intval($type)) {
+            case 2:
+                $params['state_id'] = $resurse->getLocatedStateId();
+                break;
+            case 3:
+                $params['holding_id'] = $resurse->place->holding_id;
+                break;
+        }
+        
+        $newparams = ['cost' => $cost];
+        
+        $resCost = ResurseCost::findOrCreate($params, true, $newparams, $newparams);
+        
+        if ($resCost && $resCost->id) {
+            return $this->_rOk();
+        } else {
+            return $this->_r($resCost->getErrors());
+        }
+        
     }
 
 }

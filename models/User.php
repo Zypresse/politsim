@@ -4,7 +4,7 @@ namespace app\models;
 
 use Yii,
     yii\web\IdentityInterface,
-    app\components\NalogPayer,
+    app\components\TaxPayer,
     app\components\MyModel,
     app\components\MyHtmlHelper,
     yii\helpers\Html,
@@ -51,7 +51,7 @@ use Yii,
  * @property \app\models\Holding[] $holdings Компании, директором которых является
  * @property app\models\Ideology $ideology Идеология
  */
-class User extends MyModel implements NalogPayer, IdentityInterface {
+class User extends MyModel implements TaxPayer, IdentityInterface {
 
     public function getUnnpType()
     {
@@ -416,6 +416,16 @@ class User extends MyModel implements NalogPayer, IdentityInterface {
     public function getHtmlName()
     {
         return MyHtmlHelper::a(Html::img($this->photo,['style'=>'width:20px']), "load_page('profile',{'id':{$this->id}})")." ".MyHtmlHelper::a($this->name, "load_page('profile',{'id':{$this->id}})");
+    }
+
+    public function getTaxStateId()
+    {
+        return $this->state_id;
+    }
+
+    public function isTaxedInState($stateId)
+    {
+        return $this->state_id === $stateId;
     }
 
 }

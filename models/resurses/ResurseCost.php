@@ -3,7 +3,9 @@
 namespace app\models\resurses;
 
 use app\components\MyModel,
-    app\models\resurses\Resurse;
+    app\models\resurses\Resurse,
+    app\models\Holding,
+    app\models\State;
 
 /**
  * Ценники на ресурсы. Таблица "resurse_costs".
@@ -15,6 +17,8 @@ use app\components\MyModel,
  * @property integer $state_id если установленно то продаётся только налогоплательщикам этой страны
  * 
  * @property Resurse $resurse
+ * @property State $state
+ * @property Holding $holding
  */
 class ResurseCost extends MyModel
 {
@@ -55,5 +59,28 @@ class ResurseCost extends MyModel
     public function getResurse()
     {
         return $this->hasOne(Resurse::className(), array('id' => 'resurse_id'));
+    }
+    
+    public function getHolding()
+    {
+        return $this->hasOne(Holding::className(), array('id' => 'holding_id'));
+    }
+    
+    public function getState()
+    {
+        return $this->hasOne(State::className(), array('id' => 'state_id'));
+    }
+    
+    public function getHtmlType()
+    {
+        if ($this->state_id) {
+            return "(для предприятий {$this->state->short_name})";
+        }
+        
+        if ($this->holding_id) {
+            return "(для предприятий ".$this->holding->getHtmlName().")";
+        }
+        
+        return "";
     }
 }

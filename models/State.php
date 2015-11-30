@@ -2,7 +2,7 @@
 
 namespace app\models;
 
-use app\components\NalogPayer,
+use app\components\TaxPayer,
     app\components\MyModel,
     app\components\MyHtmlHelper,
     app\models\Unnp,
@@ -52,7 +52,7 @@ use app\components\NalogPayer,
  * @property \app\models\User[] $users Список игроков
  * @property CoreCountryState[] $coreCountryStates Список привязок к корневым странам
  */
-class State extends MyModel implements NalogPayer
+class State extends MyModel implements TaxPayer
 {
 
     public function getUnnpType()
@@ -286,6 +286,16 @@ class State extends MyModel implements NalogPayer
     public function getHtmlName()
     {
         return MyHtmlHelper::a($this->name, "load_page('state-info',{'id':{$this->id}})");
+    }
+
+    public function getTaxStateId()
+    {
+        return 0;
+    }
+
+    public function isTaxedInState($stateId)
+    {
+        return false;
     }
 
 }

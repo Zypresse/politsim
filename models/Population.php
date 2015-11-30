@@ -2,7 +2,7 @@
 
 namespace app\models;
 
-use app\components\NalogPayer,
+use app\components\TaxPayer,
     app\components\MyModel,
     app\components\MyHtmlHelper,
     app\models\Unnp;
@@ -29,7 +29,7 @@ use app\components\NalogPayer,
  * @property Ideology $ideologyinfo Идеология
  * @property Religion $religioninfo Религия
  */
-class Population extends MyModel implements NalogPayer {
+class Population extends MyModel implements TaxPayer {
 
     public function getUnnpType()
     {
@@ -305,6 +305,20 @@ class Population extends MyModel implements NalogPayer {
     public function getHtmlName()
     {
         return "население";
+    }
+
+    public function getTaxStateId()
+    {
+        return $this->region ? $this->region->state_id : 0;
+    }
+
+    public function isTaxedInState($stateId)
+    {
+        if (is_null($this->region)) {
+            return false;
+        }
+        
+        return $this->region->state_id === (int)$stateId;
     }
 
 }

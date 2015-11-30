@@ -2,7 +2,7 @@
 
 namespace app\models;
 
-use app\components\NalogPayer,
+use app\components\TaxPayer,
     app\components\MyModel,
     app\components\MyHtmlHelper,
     app\models\Post,
@@ -39,7 +39,7 @@ use app\components\NalogPayer,
  * @property \app\models\ElectRequest[] $lrequests Заявки на выборы лидера
  * @property \app\models\ElectOrgLeaderRequest[] $speakerRequests Заявки на выборы лидера по голосованию организации
  */
-class Org extends MyModel implements NalogPayer {
+class Org extends MyModel implements TaxPayer {
 
     public function getUnnpType()
     {
@@ -342,6 +342,16 @@ class Org extends MyModel implements NalogPayer {
     public function getHtmlName()
     {
         return MyHtmlHelper::a($this->name, "load_page('org-info',{'id':{$this->id}})");
+    }
+
+    public function getTaxStateId()
+    {
+        return $this->state_id;
+    }
+
+    public function isTaxedInState($stateId)
+    {
+        return false;
     }
 
 }
