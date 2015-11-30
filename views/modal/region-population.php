@@ -74,11 +74,11 @@ use app\components\MyHtmlHelper;
 $(function(){
 
     $('#show_all_groups_population').click(function() {
-        if ($(this).val() === 'Показать') {
-            $(this).val('Скрыть');
+        if ($(this).text() === 'Показать') {
+            $(this).text('Скрыть');
             $('#all_groups_population').slideDown();
         } else {
-            $(this).val('Показать');
+            $(this).text('Показать');
             $('#all_groups_population').slideUp();
         }
     })
