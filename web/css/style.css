@@ -248,7 +248,7 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
 */
 
 h1,h2,h3,h4,h5,h6  {
-    font-family: 'Roboto Condensed', sans-serif; 
+    line-height: 30px;
 }
 h4 {
     font-size: 20px;
@@ -256,12 +256,6 @@ h4 {
 }
 h4 small {
     font-size: 16px;
-}
-
-body {
-    font-family: 'Roboto Condensed', Verdana, sans-serif;
-    font-size: 100%;
-    /*letter-spacing: 0.5px;*/
 }
 
 .pull-right {

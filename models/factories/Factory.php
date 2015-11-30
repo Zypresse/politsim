@@ -333,5 +333,35 @@ class Factory extends UnmovableObject implements NalogPayer
     {
         return MyHtmlHelper::a("{$this->proto->name} «{$this->name}»", "load_page('factory-info',{'id':{$this->id}})");
     }
+    
+    public function getNeedWorkersCountByClass($popClassId)
+    {
+        foreach ($this->proto->workers as $tWorker) {
+            if ($tWorker->pop_class_id === $popClassId) {
+                return $tWorker->count * $this->size;
+            }
+        }
+        return 0;
+    }
+    
+    public function getWorkersCountByClass($popClassId)
+    {
+        $sum = 0;
+        foreach ($this->workers as $worker) {
+            if ($worker->class === $popClassId) {
+                $sum += $worker->count;
+            }
+        }
+        return $sum;
+    }
+    
+    public function getSalaryByClass($popClassId)
+    {
+        foreach ($this->salaries as $salary) {
+            if ($salary->pop_class_id === $popClassId) {
+                return $salary->salary;
+            }
+        }
+    }
 
 }

@@ -322,7 +322,14 @@ class HtmlController extends MyController
                 return $this->_r("Factory not found");
             }
             
-            if ($factory->manager_uid == $this->viewer_id) {
+            if ($factory->manager_uid === $this->viewer_id) {
+                $factory = Factory::find()
+                                    ->with('proto')
+                                    ->with('workers')
+                                    ->with('proto.workers')
+                                    ->with('proto.workers.popClass')
+                                    ->with('salaries')
+                                    ->where(['id' => $id])->one();
                 return $this->render("factory-control", ['factory' => $factory]);
             } else {
                 return $this->render("factory-info", ['factory' => $factory]);
