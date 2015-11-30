@@ -187,15 +187,15 @@ class Factory extends UnmovableObject implements NalogPayer
     public function getStatusName()
     {
         $names = [
-            -2 => 'Строительство прекращено',
-            -1 => 'Идёт строительство',
-            0 => 'Неизвестен',
-            1 => 'Работает',
-            2 => 'Работа остановлена',
-            3 => 'Работа остановлена по причине нехватки ресурсов',
-            4 => 'Работа остановлена автоматически',
-            5 => 'Работа остановлена по причине нехватки работников',
-            6 => 'Работа остановлена по причине отстутствия необходимой лицензии'
+            -2 => '<span class="status-error"><i class="icon-stop"></i> Строительство прекращено</span>',
+            -1 => '<span class="status-info"><i class="icon-spinner"></i> Идёт строительство</span>',
+            0 => '<span class="status-pending"><i class="icon-question-sign"></i> Неизвестен</span>',
+            1 => '<span class="status-success"><i class="icon-play"></i> Работает</span>',
+            2 => '<span class="status-error"><i class="icon-stop"></i> Работа остановлена</span>',
+            3 => '<span class="status-error"><i class="icon-warning-sign"></i> Работа остановлена по причине нехватки ресурсов</span>',
+            4 => '<span class="status-error"><i class="icon-pause"></i> Работа остановлена автоматически</span>',
+            5 => '<span class="status-error"><i class="icon-warning-sign"></i> Работа остановлена по причине нехватки работников</span>',
+            6 => '<span class="status-error"><i class="icon-warning-sign"></i> Работа остановлена по причине отстутствия необходимой лицензии</span>'
         ];
         
         return $names[$this->status];

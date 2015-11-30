@@ -2,7 +2,8 @@
 
 namespace app\controllers;
 
-use yii\helpers\ArrayHelper,
+use Yii,
+    yii\helpers\ArrayHelper,
     app\components\MyController,
     app\components\MyHtmlHelper,
     app\models\User,
@@ -20,6 +21,7 @@ use yii\helpers\ArrayHelper,
     app\models\Vacansy,
     app\models\Unnp,
     app\models\Ideology,
+    app\models\Population,
     app\models\HoldingDecision,
     app\models\HoldingDecisionVote,
     app\models\Notification,
@@ -1753,6 +1755,33 @@ class JsonController extends MyController {
         
         $this->user->ideology_id = $ideology->id;
         $this->user->save();
+        
+        return $this->_rOk();
+    }
+    
+    public function actionManagerFactoryStopWork($id)
+    {
+        if (intval($id) <= 0) {
+            return $this->_r("Invalid factory ID");
+        }
+        
+        $factory = Factory::findByPk($id);
+        if (is_null($factory)) {
+            return $this->_r("Factory not found");
+        }
+        
+        if ($factory->manager_uid !== $this->viewer_id) {
+            return $this->_r("Not allowed");
+        }
+        
+        Yii::$app->db->createCommand()
+                ->update(Population::tableName(),
+                    ['factory_id' => 0], 
+                    ['factory_id' => $id]
+                )
+                ->execute();
+        $factory->status = Factory::STATUS_STOPPED;
+        $factory->save();
         
         return $this->_rOk();
     }

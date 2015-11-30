@@ -39,7 +39,7 @@ $factoryCategories = FactoryProtoCategory::find()->all();
             <? } ?>
             <h3>Лицензии:</h3>
             <? if (count($holding->licenses)) { ?>
-                <button class="btn btn-default" id="list_licenses_button" >Свернуть список</button>
+                <button class="btn btn-xs btn-default" id="list_licenses_button" >Развернуть список</button>
                 <ul id="list_licenses" style="display: none" >
                     <? foreach ($holding->licenses as $license) { ?>
                         <li>
@@ -779,11 +779,11 @@ $factoryCategories = FactoryProtoCategory::find()->all();
         });
 
         $('#list_licenses_button').click(function () {
-            if ($(this).val() === 'Развернуть список') {
-                $(this).val('Свернуть список');
+            if ($(this).text() === "Развернуть список") {
+                $(this).text('Свернуть список');
                 $('#list_licenses').slideDown();
             } else {
-                $(this).val('Развернуть список');
+                $(this).text("Развернуть список");
                 $('#list_licenses').slideUp();
             }
         });

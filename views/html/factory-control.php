@@ -88,9 +88,7 @@ use app\components\MyHtmlHelper;
             <p>
                 <button class="btn btn-sm btn-lightblue" onclick="$('#salaries_manager').modal()">Зарплаты</button>
                 <button class="btn btn-sm btn-green" onclick="$('#resurses_selling_first').modal()">Продажа ресурсов</button>
-                <button class="btn btn-sm btn-red" onclick="if (confirm('Вы действительно хотите уволить всех рабочих и остановить работу?')) {
-                json_request('manager-stop-work')
-            }">Остановить работу</button>
+                <button class="btn btn-sm btn-red" onclick="if (confirm('Вы действительно хотите уволить всех рабочих и остановить работу?')) {json_request('manager-factory-stop-work',{'id':<?=$factory->id?>})}">Остановить работу</button>
             </p>
         </div>
     </div>
@@ -140,9 +138,9 @@ use app\components\MyHtmlHelper;
         var data = {
             'factory_id': <?= $factory->id ?>
         }
-<? foreach ($factory->proto->workers as $tWorker) { ?>
+        <? foreach ($factory->proto->workers as $tWorker) { ?>
             data.salary_<?= $tWorker->pop_class_id ?> = $('#salary_<?= $tWorker->pop_class_id ?>').val();
-<? } ?>
+        <? } ?>
         json_request('factory-manager-salaries-save', data);
     }
 
