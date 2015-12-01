@@ -5,14 +5,14 @@ namespace app\models\bills\proto;
 use app\components\MyHtmlHelper;
 
 /**
- * Сменить флаг государства
+ * Сменить гимн государства
  *
  * @author ilya
  */
-class ChangeFlag extends BillProto {
+class ChangeAnthem extends BillProto {
     
-    public static $id = 6;
-    public static $name = "Сменить флаг государства";
+    public static $id = 16;
+    public static $name = "Сменить гимн государства";
     
     public static function accept($bill)
     {
@@ -22,10 +22,11 @@ class ChangeFlag extends BillProto {
         
         $data = json_decode($bill->data);
         
-        if (MyHtmlHelper::isImageLink($data->new_flag)) {
-            $bill->state->flag = $data->new_flag;
+        if (MyHtmlHelper::isSoundCloudLink($data->new_anthem)) {
+        
+            $bill->state->anthem = $data->new_anthem;
             $bill->state->save();
-
+        
             return parent::accept($bill);
         } else {
             return $bill->delete();

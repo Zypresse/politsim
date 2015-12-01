@@ -18,19 +18,38 @@ $show_create_party = isset($_GET['show_create_party']);
 ?>
 <div class="container">
     <div class="row">
-        <div class="col-md-2">
-            <img src="<?= $state->flag ?>" alt="Флаг" class="img-polaroid" style="max-width:100%">
+        <div class="col-md-4">
+            <div class="box" style="margin-top: 10px">
+                <div class="box-content">
+                    <img src="<?= $state->flag ?>" alt="Флаг" class="img-polaroid" style="width:100%">
+                </div>
+                <div class="box-footer">
+                    <em>Национальный флаг</em>
+                </div>
+            </div>
+            <? if($state->anthem && MyHtmlHelper::isSoundCloudLink($state->anthem)): ?>
+            <div class="box" style="margin-top: 10px">
+                <div class="box-content">
+                    <iframe id="sc-widget" src="https://w.soundcloud.com/player/?url=<?=$state->anthem?>" width="100%" height="100" scrolling="no" frameborder="no"></iframe>
+                </div>
+                <div class="box-footer">
+                    <em>Национальный гимн</em>
+                </div>
+            </div>
+            <? endif ?>
         </div>
-        <div class="col-md-10">
+        <div class="col-md-8">
             <h1><?= htmlspecialchars($state->name) ?> <small>(<?= htmlspecialchars($state->short_name) ?>)</small></h1>
             <p>
                 <strong>Форма гос. устройства:</strong> <?= htmlspecialchars($state->structure->name) ?><br>
                 <strong>Столица:</strong> <a href="#" onclick="show_region('<?= $state->capital ?>')"><?= htmlspecialchars($state->capitalRegion->city) ?></a><br>
                 <strong>Население:</strong> <?= MyHtmlHelper::formateNumberword($state->population, 'h') ?>
-<? if ($state->core) { ?>
+                <? if ($state->core) { ?>
                     <br><strong>Наследник государства:</strong> <?= Html::img('/img/cores/' . $state->core->id . '.png'); ?> <?= $state->core->name ?> (контроллирует <?= number_format($state->getCoreCountryState()->percents * 100, 0) ?>% территорий)
                 <? } ?>
-            </p></div></div>
+            </p>
+        </div>
+    </div>
     <div class="col-md-12">
         <h3>Правительство</h3>
         <p><strong><? if ($state->executiveOrg && $state->executiveOrg->leader) { ?><?= htmlspecialchars($state->executiveOrg->leader->name) ?><? } else { ?>Лидер государства<? } ?></strong>:

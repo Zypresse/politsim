@@ -5,7 +5,8 @@ use app\models\articles\proto\ArticleProto,
     app\models\Region,
     app\models\Org,
     app\models\CoreCountry,
-    app\components\MyHtmlHelper;
+    app\components\MyHtmlHelper,
+    yii\helpers\Html;
 ?>
 <dl id="<?= $id ?>" style="<?= $style ?>" >
     <? foreach ($bills as $bill) { ?>
@@ -50,7 +51,10 @@ use app\models\articles\proto\ArticleProto,
                                 $value = (in_array($field->type, ['cities_all', 'cities'])) ? $region->city : $region->name;
                                 break;
                             case 'new_flag':
-                                $value = "<img src='{$value}' alt='New flag' style='width:50px'>";
+                                $value = Html::a($value, $value);
+                                break;
+                            case 'new_anthem':
+                                $value = Html::a($value, $value);
                                 break;
                             case 'new_color':
                                 $value = "<span style=\"background-color:{$value}\"> &nbsp; </span>";

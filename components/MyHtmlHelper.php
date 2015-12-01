@@ -271,6 +271,11 @@ class MyHtmlHelper {
         return number_format($money, $decimals, '.', ' ') . ' ' . static::icon('money');
     }
 
+    /**
+     * 
+     * @param string $link
+     * @return boolean
+     */
     public static function isImageLink($link)
     {
         $ar = explode('.', trim($link));
@@ -278,6 +283,18 @@ class MyHtmlHelper {
         return (is_array($ar) && count($ar)>1 && in_array(end($ar),['jpg','png','gif','jpeg']));
     }
     
+    /**
+     * 
+     * @param string $link
+     * @return boolean
+     */
+    public static function isSoundCloudLink($link)
+    {
+        $re = "/https:\\/\\/soundcloud\\.com\\/[A-z\\d\\-]*\\/[A-z\\d\\-]*/i"; 
+        return !!preg_match($re, $link);
+    }
+
+
     public static function timeFormatFuture($time)
     {
         $current = time();
