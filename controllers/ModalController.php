@@ -594,6 +594,9 @@ class ModalController extends MyController {
         if (intval($unnp) > 0) {            
             $query = $query->andWhere(['or',['holding_id'=>null],['holding_id'=>$viewer->holding_id]])
                 ->andWhere(['or',['state_id'=>null],['state_id'=>$viewer->getLocatedStateId()]]);
+        } else {
+            $query = $query->andWhere(['holding_id'=>null])
+                    ->andWhere(['state_id'=>null]);
         }
         
         $costs = $query->with('resurse')
