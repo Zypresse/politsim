@@ -588,7 +588,8 @@ class ModalController extends MyController {
         $query = ResurseCost::find()
                 ->join('LEFT JOIN', 'resurses', 'resurses.id = resurse_costs.resurse_id')
                 ->where(["resurses.proto_id"=>$resProto->id])
-                ->andWhere([">","resurses.count",0]);
+//                ->andWhere([">","resurses.count",0])
+                ;
         
         if (intval($unnp) > 0) {            
             $query = $query->andWhere(['or',['holding_id'=>null],['holding_id'=>$viewer->holding_id]])

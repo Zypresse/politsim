@@ -368,9 +368,7 @@ class HtmlController extends MyController
     
     public function actionMarketResurses()
     {
-        $prototypes = ResurseProto::find()
-                    ->where(['<>','level',ResurseProto::LEVEL_NOTSTORED])
-                    ->all();
+        $prototypes = ResurseProto::find()->all();
         
         return $this->render('market/resurses', [
             'prototypes' => $prototypes,

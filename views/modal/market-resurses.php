@@ -22,10 +22,10 @@ use app\components\MyHtmlHelper,
                     <tr>
                         <td>Продавец</td>
                         <td style="min-width: 250px">Регион</td>
-                        <td>Доступно</td>
-                        <td style="min-width: 70px">Качество</td>
+                        <? if ($resProto->isStorable()):?><td>Доступно</td>
+                        <td style="min-width: 70px">Качество</td><? endif ?>
                         <td style="min-width: 70px">Цена</td>
-                        <? if (!$readOnly): ?><td>Действия</td><? endif ?>
+                        <? if (!$readOnly && $resProto->isStorable()): ?><td>Действия</td><? endif ?>
                     </tr>
                 </thead>
                 <tbody>
@@ -40,12 +40,14 @@ use app\components\MyHtmlHelper,
                                 <?= ($cost->resurse->place->getPlaceType() === Place::TYPE_FACTORY) ? $cost->resurse->place->region->getHtmlName() : ''
                                 ?>
                             </td>
-                            <td>
+                            <? if ($resProto->isStorable()):?><td>
                                 <?= number_format($cost->resurse->count, 0, '', ' ') ?> <?= MyHtmlHelper::icon($resProto->class_name) ?>
                             </td>
-                            <td><?= MyHtmlHelper::oneTen2Stars($cost->resurse->quality) ?></td>
+                            <td>
+                                <?= MyHtmlHelper::oneTen2Stars($cost->resurse->quality) ?>
+                            </td><? endif ?>
                             <td><?= MyHtmlHelper::moneyFormat($cost->cost, 2) ?></td>
-                            <? if (!$readOnly): ?>
+                            <? if (!$readOnly && $resProto->isStorable()): ?>
                             <td>
                                 <button onclick="load_modal('resurse-cost-info',{'id':<?=$cost->id?>,'unnp':$('#market-change-unnp-select').val()},'resurse_cost_info','resurse_cost_info_body')" class="btn btn-blue btn-xs">Покупка</button>
                             </td>
