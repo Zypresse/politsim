@@ -14,7 +14,9 @@ use Yii,
     app\models\Population,
     app\models\User,
     app\models\resurses\Resurse,
-    app\models\resurses\proto\ResurseProto;
+    app\models\resurses\proto\ResurseProto,
+    app\models\statistics\StatisticsMining,
+    app\models\statistics\StatisticsCosts;
 
 /**
  * Update hourly
@@ -91,6 +93,10 @@ class UpdateHourlyController extends Controller
             $time = microtime(true);
             $this->updateNonstorableResurses();
             if ($debug) printf("Updated nonstorable resurses: %f s.".PHP_EOL, microtime(true)-$time);
+            
+            $time = microtime(true);
+            $this->updateResursesCostsStatistics();
+            if ($debug) printf("Updated resurses costs statistics: %f s.".PHP_EOL, microtime(true)-$time);
         }
     }
 
@@ -203,9 +209,9 @@ class UpdateHourlyController extends Controller
             // пока цена на акции 1 монета
             $capital += 1* $holding->getSumStocks();
             
-            // стоимость зданий как стоимость их постройки
+            // стоимость зданий как стоимость их постройки + деньги на счету
             foreach ($holding->factories as $factory) {
-                $capital += $factory->size * $factory->proto->build_cost;
+                $capital += $factory->size * $factory->proto->build_cost + $factory->getBalance();
             }
             
             $capital += $holding->balance;
@@ -445,9 +451,29 @@ class UpdateHourlyController extends Controller
     private function updateFactoryProduction()
     {
         $factories = Factory::findNoPowerplants()->andWhere(['or',['status'=>Factory::STATUS_ACTIVE],['status'=>Factory::STATUS_NOT_ENOUGHT_RESURSES]])->all();
-
+        
+        $miningResursePrototypeIDs = [1,2];//array_map('intval', ResurseProto::find()->select('id')->where(['level' => ResurseProto::LEVEL_ZERO])->column());
+        $worldStatistics = [];
+        foreach ($miningResursePrototypeIDs as $id) {
+            $worldStatistics[$id] = new StatisticsMining([
+                'resurse_proto_id' => $id,
+                'value' => 0
+            ]);
+        }
+        
         foreach ($factories as $factory) {
-            $factory->work();
+            $res = $factory->work();
+            if (is_array($res)) {
+                foreach ($res as $resurse_proto_id => $count) {
+                    if (in_array($resurse_proto_id, $miningResursePrototypeIDs)) {
+                        $worldStatistics[$resurse_proto_id]->value += $count;
+                    }
+                }
+            }
+        }
+        
+        foreach ($worldStatistics as $i => $s) {
+            $s->save();
         }
     }
     
@@ -459,6 +485,19 @@ class UpdateHourlyController extends Controller
                     . "SELECT id FROM `".ResurseProto::tableName()."` "
                     . "WHERE level = ".ResurseProto::LEVEL_NOTSTORED
                 . ")")->execute();
+    }
+    
+    private function updateResursesCostsStatistics()
+    {        
+        $resursePrototypeIDs = [1,2];//array_map('intval', ResurseProto::find()->select('id')->column());
+        $worldStatistics = [];
+        foreach ($resursePrototypeIDs as $id) {
+            $worldStatistics[$id] = new StatisticsCosts([
+                'resurse_proto_id' => $id
+            ]);
+            $worldStatistics[$id]->updateValue();
+            $worldStatistics[$id]->save();
+        }
     }
     
 }

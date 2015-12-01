@@ -380,7 +380,6 @@ class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
                 foreach ($costs as $cost) {
                     /* @var $cost ResurseCost */
                     
-                    echo "Осталось закупить {$toBuyLeft}".PHP_EOL;
                     if ($settings->state_id && $cost->resurse->place->getLocatedStateId() !== $settings->state_id) {
                         continue;
                     }
@@ -465,12 +464,16 @@ class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
         }
 
         $quality = ($countResUsedForWork) ? round($sumQualityResUsedForWork / $countResUsedForWork) : 10;
-
+        $result = [];
+        
         foreach ($this->proto->export as $kit) {
             $count = floor($kit->count * $this->size * $this->eff_workers * $this->eff_region);
 
             $this->pushToStorage($kit->resurse_proto_id, $count, $quality);
+            $result[$kit->resurse_proto_id] = $count;
         }
+        
+        return $result;
     }
     
     private $_unnp;

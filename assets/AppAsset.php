@@ -37,7 +37,6 @@ class AppAsset extends AssetBundle
         'js/jquery-jvectormap-2.0.3.min.js',
         'js/jqtablepagination.js',
         'js/icheck.js',
-        'js/snackbar.min.js',
         'js/jquery.peity.min.js',
         'js/jquery-dateFormat.min.js',
         '//vk.com/js/api/xd_connection.js',

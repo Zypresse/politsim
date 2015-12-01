@@ -17,9 +17,8 @@ use Yii,
     app\models\factories\Factory,
     app\models\factories\FactoryAuction,
     app\models\factories\FactoryAuctionSearch,
-    app\models\resurses\Resurse,
-    app\models\resurses\ResurseCost,
-    app\models\resurses\ResurseCostSearch;
+    app\models\statistics\StatisticsMining,
+    app\models\statistics\StatisticsCosts;
 
 class HtmlController extends MyController
 {
@@ -344,7 +343,40 @@ class HtmlController extends MyController
     
     public function actionMarket()
     {
-        return $this->render("market/index");
+        $statisticsOilWorldMining = StatisticsMining::find()->where([
+            'resurse_proto_id' => 1,
+            'holding_id' => null,
+            'state_id' => null,
+            'region_id' => null,
+        ])->orderBy('timestamp DESC')->limit(5)->all();
+        
+        $statisticsNaturalGasWorldMining = StatisticsMining::find()->where([
+            'resurse_proto_id' => 2,
+            'holding_id' => null,
+            'state_id' => null,
+            'region_id' => null,
+        ])->orderBy('timestamp DESC')->limit(5)->all();
+        
+        $statisticsOilWorldCosts = StatisticsCosts::find()->where([
+            'resurse_proto_id' => 1,
+            'state_id' => null,
+        ])->orderBy('timestamp DESC')->limit(5)->all();
+        
+        $statisticsNaturalGasWorldCosts = StatisticsCosts::find()->where([
+            'resurse_proto_id' => 2,
+            'state_id' => null,
+        ])->orderBy('timestamp DESC')->limit(5)->all();
+        
+        return $this->render("market/index",[
+            'statisticsWorldMining' => [
+                'Oil' => array_reverse($statisticsOilWorldMining),
+                'NaturalGas' => array_reverse($statisticsNaturalGasWorldMining)
+            ],
+            'statisticsWorldCosts' => [
+                'Oil' => array_reverse($statisticsOilWorldCosts),
+                'NaturalGas' => array_reverse($statisticsNaturalGasWorldCosts)
+            ],
+        ]);
     }
 
     public function actionMarketFactories()

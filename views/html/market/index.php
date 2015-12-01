@@ -1,49 +1,65 @@
 <?php
-    use app\components\MyHtmlHelper;
-    
-    /* @var $this yii\web\View */
-    /* @var $user app\models\User */
+
+use app\components\MyHtmlHelper;
+
+/* @var $this yii\web\View */
+/* @var $user app\models\User */
 ?>
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-<?=$this->render('_menu',['active' => 0])?>
-<h3>Мировой финансовый рынок</h3>
-<div id="world_gdp" class="col-md-6"></div>
-<div id="world_mining" class="col-md-6"></div>
-
+            <?= $this->render('_menu', ['active' => 0]) ?>
+            <h3>Мировой финансовый рынок</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="box">
+                <div class="box-header">
+                    <span class="title"><i class="icon-bar-chart"></i> Мировая добыча полезных ископаемых</span>
+                </div>
+                <div class="box-content">
+                    <div id="world_mining" style="height:200px"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="box">
+                <div class="box-header">
+                    <span class="title"><i class="icon-bar-chart"></i> Динамика цен на полезные ископаемые</span>
+                </div>
+                <div class="box-content">
+                    <div id="world_prices" style="height:200px"></div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 <script type="text/javascript">
-    $(function(){
-        var worldGdpChart = new google.visualization.LineChart($('#world_gdp')[0]);
-        var worldMiningChart = new google.visualization.LineChart($('#world_mining')[0]);
+    $(function () {
+        var worldMiningChart = new google.visualization.ColumnChart($('#world_mining')[0]);
 
-        worldGdpChart.draw(google.visualization.arrayToDataTable([
-          ['День', 'Мировой ВВП'],
-          ['14.10.2015',  0],
-          ['15.10.2015',  0],
-          ['16.10.2015',  0],
-          ['17.10.2015',  0],
-        ]), {
-          title: 'Мировая экономика',
-          curveType: 'function',
-          legend: { position: 'bottom' }
-        });
-        
         worldMiningChart.draw(google.visualization.arrayToDataTable([
-          ['День', 'Нефть', 'Газ'],
-          ['14.10.2015',  0, 0],
-          ['15.10.2015',  0, 0],
-          ['16.10.2015',  0, 0],
-          ['17.10.2015',  0, 0],
-        ]), {
-          title: 'Добыча нефти и газа',
-          curveType: 'function',
-          legend: { position: 'bottom' }
+            ['Время', 'Нефть', 'Газ'],
+            <? foreach ($statisticsWorldMining['Oil'] as $i => $oilStat): $gasStat = $statisticsWorldMining['NaturalGas'][$i];?>
+                <?=$i?',':''?>["<?=date("H:i",$oilStat->timestamp)?>", <?=$oilStat->value?>, <?=$gasStat->value?>]
+            <? endforeach ?>
+        ]), {            
+            colors: [Theme.colors.red, Theme.colors.blue],
+            legend: {position: 'top'}
         });
         
-    });   
-    
+        var worldPricesChart = new google.visualization.LineChart($('#world_prices')[0]);
+
+        worldPricesChart.draw(google.visualization.arrayToDataTable([
+            ['Время', 'Нефть', 'Газ'],
+            <? foreach ($statisticsWorldCosts['Oil'] as $i => $oilStat): $gasStat = $statisticsWorldCosts['NaturalGas'][$i];?>
+                <?=$i?',':''?>["<?=date("H:i",$oilStat->timestamp)?>", <?=$oilStat->value?>, <?=$gasStat->value?>]
+            <? endforeach ?>
+        ]), {            
+            colors: [Theme.colors.red, Theme.colors.blue],
+            legend: {position: 'top'}
+        });
+    });
+
 </script>
