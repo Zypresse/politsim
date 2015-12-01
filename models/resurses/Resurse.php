@@ -13,6 +13,7 @@ use app\models\objects\MovableObject,
  * @property integer $proto_id
  * @property integer $place_id
  * @property double $count
+ * @property double $quality
  *
  * @property proto\ResurseProto $proto
  * @property ResurseCost[] $costs
