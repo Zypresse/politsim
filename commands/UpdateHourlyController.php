@@ -12,7 +12,9 @@ use Yii,
     app\models\Holding,
     app\models\factories\Factory,
     app\models\Population,
-    app\models\User;
+    app\models\User,
+    app\models\resurses\Resurse,
+    app\models\resurses\proto\ResurseProto;
 
 /**
  * Update hourly
@@ -71,12 +73,24 @@ class UpdateHourlyController extends Controller
             if ($debug) printf("Updated factories: %f s.".PHP_EOL, microtime(true)-$time);
 
             $time = microtime(true);
+            $this->updatePowerplantAutobuy();
+            if ($debug) printf("Updated powerplants autobuy: %f s.".PHP_EOL, microtime(true)-$time);
+
+            $time = microtime(true);
             $this->updatePowerplantProduction();
             if ($debug) printf("Updated powerplants production: %f s.".PHP_EOL, microtime(true)-$time);
 
             $time = microtime(true);
+            $this->updateFactoryAutobuy();
+            if ($debug) printf("Updated factories autobuy: %f s.".PHP_EOL, microtime(true)-$time);
+
+            $time = microtime(true);
             $this->updateFactoryProduction();
             if ($debug) printf("Updated factories production: %f s.".PHP_EOL, microtime(true)-$time);
+            
+            $time = microtime(true);
+            $this->updateNonstorableResurses();
+            if ($debug) printf("Updated nonstorable resurses: %f s.".PHP_EOL, microtime(true)-$time);
         }
     }
 
@@ -394,15 +408,34 @@ class UpdateHourlyController extends Controller
         }
     }
     
+    
+    private function updatePowerplantAutobuy()
+    {
+        $powerplants = Factory::findPowerplants()->andWhere(['or',['status'=>Factory::STATUS_ACTIVE],['status'=>Factory::STATUS_NOT_ENOUGHT_RESURSES]])->all();
+        
+        foreach ($powerplants as $powerplant) {
+            $powerplant->autobuy();
+        }
+    }
+    
     /**
      * Производство электричества
      */
     private function updatePowerplantProduction()
     {
-        $powerplants = Factory::findPowerplants()->andWhere(['status'=>Factory::STATUS_ACTIVE])->all();
+        $powerplants = Factory::findPowerplants()->andWhere(['or',['status'=>Factory::STATUS_ACTIVE],['status'=>Factory::STATUS_NOT_ENOUGHT_RESURSES]])->all();
         
         foreach ($powerplants as $powerplant) {
             $powerplant->work();
+        }
+    }
+    
+    private function updateFactoryAutoBuy()
+    {
+        $factories = Factory::findNoPowerplants()->andWhere(['or',['status'=>Factory::STATUS_ACTIVE],['status'=>Factory::STATUS_NOT_ENOUGHT_RESURSES]])->all();
+
+        foreach ($factories as $factory) {
+            $factory->autobuy();
         }
     }
     
@@ -411,11 +444,21 @@ class UpdateHourlyController extends Controller
      */
     private function updateFactoryProduction()
     {
-        $factories = Factory::findNoPowerplants()->andWhere(['status'=>Factory::STATUS_ACTIVE])->all();
+        $factories = Factory::findNoPowerplants()->andWhere(['or',['status'=>Factory::STATUS_ACTIVE],['status'=>Factory::STATUS_NOT_ENOUGHT_RESURSES]])->all();
 
         foreach ($factories as $factory) {
             $factory->work();
         }
+    }
+    
+    private function updateNonstorableResurses()
+    {
+        Yii::$app->db->createCommand("UPDATE `".Resurse::tableName()."` "
+                . "SET count = 0 "
+                . "WHERE proto_id IN ("
+                    . "SELECT id FROM `".ResurseProto::tableName()."` "
+                    . "WHERE level = ".ResurseProto::LEVEL_NOTSTORED
+                . ")")->execute();
     }
     
 }

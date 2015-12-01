@@ -141,13 +141,12 @@ use app\components\MyHtmlHelper;
                             </tr>
                         </thead>
                         <tbody>
-                        <? foreach ($factory->resurseCosts as $cost): if ($cost->resurse->count > 0): ?>
+                        <? foreach ($factory->resurseCosts as $cost): ?>
                             <tr>
                                 <td><?= MyHtmlHelper::icon($cost->resurse->proto->class_name) ?> <?= $cost->resurse->proto->name ?> <?= $cost->getHtmlType()?></td>
                                 <td><?= number_format($cost->cost, 2, '.', ' ') ?> <?= MyHtmlHelper::icon("money") ?></td>
                             </tr>
-                        <? endif;
-                        endforeach;
+                        <? endforeach;
                         else:?>
                         <tbody>
                             <tr>

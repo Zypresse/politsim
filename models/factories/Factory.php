@@ -12,7 +12,8 @@ use app\components\MyMathHelper,
     app\models\objects\UnmovableObject,
     app\models\objects\canCollectObjects,
     app\models\Place,
-    app\models\resurses\ResurseCost;
+    app\models\resurses\ResurseCost,
+    app\models\Dealing;
 
 /**
  * Фабрика/завод/сх-предприятие. Таблица "factories".
@@ -355,56 +356,119 @@ class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
         $this->calcRegionEff();
     }
     
-    public function work()
+    public function autobuy()
     {
-        if ($this->status == static::STATUS_ACTIVE) {
+        if (count($this->autobuySettings)) {
             
-            $countResUsedForWork = 0;
-            $sumQualityResUsedForWork = 0;
-            
-            // тут проверка на наличие ресурсов для производства            
-            foreach ($this->proto->import as $kit) {
-                $count = floor($kit->count * $this->size);                
-                $storages = $this->getStorages($kit->resurse_proto_id);
+            foreach ($this->autobuySettings as $settings) {
                 
-                $sum = 0;
-                foreach ($storages as $store) {
-                    $sum += $store->count;
-                }
+                $costs = ResurseCost::find()
+                        ->join('LEFT JOIN', 'resurses', 'resurses.id = resurse_costs.resurse_id')
+                        ->where(["resurses.proto_id"=>$settings->resurse_proto_id])
+                        ->andWhere([">","resurses.count",0])
+                        ->andWhere([">=","resurses.quality",$settings->min_quality])
+                        ->andWhere(["<=","cost",$settings->max_cost])
+                        ->andWhere(['or',['holding_id'=>null],['holding_id'=>$this->holding_id]])
+                        ->andWhere(['or',['state_id'=>null],['state_id'=>$this->getLocatedStateId()]])
+                        ->with('resurse')
+                        ->orderBy('cost ASC, resurses.quality DESC')
+                        ->groupBy('resurses.place_id')
+                        ->all();
+                $toBuyLeft = $settings->count;
                 
-                if ($sum < $count) {
-                    // ресурса недостаточно
-                    $this->status = static::STATUS_NOT_ENOUGHT_RESURSES;
-                    $this->save();
-                    return;
-                }
-            }
-            // Теперь точно ресурсов хватает            
-            foreach ($this->proto->import as $kit) {
-                $count = floor($kit->count * $this->size);                
-                $storages = $this->getStorages($kit->resurse_proto_id);
-                
-                $deleted = 0;
-                foreach ($storages as $store) {
-                    $del = min([$store->count,$count-$deleted]);
-                    $this->delFromStorage($kit->resurse_proto_id, $del, $store->quality);
+                foreach ($costs as $cost) {
+                    /* @var $cost ResurseCost */
                     
-                    $deleted += $del;                    
-                    $sumQualityResUsedForWork += $del*$store->quality;
-                    if ($deleted === $count)  {
+                    echo "Осталось закупить {$toBuyLeft}".PHP_EOL;
+                    if ($settings->state_id && $cost->resurse->place->getLocatedStateId() !== $settings->state_id) {
+                        continue;
+                    }
+                    if ($settings->holding_id && ($cost->resurse->place->getPlaceType() !== Place::TYPE_FACTORY || $cost->resurse->place->holding_id !== $settings->state_id)) {
+                        continue;
+                    }
+
+                    $toBuy = min([$toBuyLeft,$cost->resurse->count]);                
+                    $sum = $toBuy * $cost->cost;        
+                    $transferCost = round($cost->resurse->place->region->calcDist($this->region)*10);
+                    $sum += $transferCost;  
+
+                    if ($sum > $this->getBalance()) {
+                        continue;
+                    }
+                    
+                    $dealing = new Dealing([
+                        'proto_id' => 4,
+                        'from_unnp' => $cost->resurse->place->unnp,
+                        'to_unnp' => $this->unnp,
+                        'sum' => -1*$sum,
+                        'items' => json_encode([[
+                            'type' => 'resurse',
+                            'count' => $toBuy,
+                            'quality' => $cost->resurse->quality,
+                            'proto_id' => $cost->resurse->proto_id
+                        ]])
+                    ]);
+                    $dealing->accept();
+                    
+                    $toBuyLeft -= $toBuy;
+                    if ($toBuyLeft <= 0) {
                         break;
                     }
                 }
-                $countResUsedForWork += $count;
+                        
             }
-            
-            $quality = ($countResUsedForWork) ? round($sumQualityResUsedForWork / $countResUsedForWork) : 10;
-            
-            foreach ($this->proto->export as $kit) {
-                $count = floor($kit->count * $this->size * $this->eff_workers * $this->eff_region);
-                
-                $this->pushToStorage($kit->resurse_proto_id, $count, $quality);
+        }
+    }
+    
+    public function work()
+    {
+        $countResUsedForWork = 0;
+        $sumQualityResUsedForWork = 0;
+
+        // тут проверка на наличие ресурсов для производства            
+        foreach ($this->proto->import as $kit) {
+            $count = floor($kit->count * $this->size);                
+            $storages = $this->getStorages($kit->resurse_proto_id);
+
+            $sum = 0;
+            foreach ($storages as $store) {
+                $sum += $store->count;
             }
+
+            if ($sum < $count) {
+                // ресурса недостаточно
+                $this->status = static::STATUS_NOT_ENOUGHT_RESURSES;
+                $this->save();
+                return;
+            }
+        }
+        $this->status = static::STATUS_ACTIVE;
+        $this->save();
+        // Теперь точно ресурсов хватает            
+        foreach ($this->proto->import as $kit) {
+            $count = floor($kit->count * $this->size);                
+            $storages = $this->getStorages($kit->resurse_proto_id);
+
+            $deleted = 0;
+            foreach ($storages as $store) {
+                $del = min([$store->count,$count-$deleted]);
+                $this->delFromStorage($kit->resurse_proto_id, $del, $store->quality);
+
+                $deleted += $del;                    
+                $sumQualityResUsedForWork += $del*$store->quality;
+                if ($deleted === $count)  {
+                    break;
+                }
+            }
+            $countResUsedForWork += $count;
+        }
+
+        $quality = ($countResUsedForWork) ? round($sumQualityResUsedForWork / $countResUsedForWork) : 10;
+
+        foreach ($this->proto->export as $kit) {
+            $count = floor($kit->count * $this->size * $this->eff_workers * $this->eff_region);
+
+            $this->pushToStorage($kit->resurse_proto_id, $count, $quality);
         }
     }
     
