@@ -29,7 +29,8 @@ use Yii,
     app\models\factories\Factory,
     app\models\resurses\Resurse,
     app\models\resurses\ResurseCost,
-    app\models\resurses\proto\ResurseProto;
+    app\models\resurses\proto\ResurseProto,
+    app\models\factories\FactoryAutobuySettings;
 
 class ModalController extends MyController {
 
@@ -638,6 +639,40 @@ class ModalController extends MyController {
         return $this->render('resurse-cost-info',[
             'resCost' => $resCost,
             'viewer' => $viewer
+        ]);
+    }
+        
+    public function actionManagerFactorySetResurseAutobuy($factory_id, $resurse_proto_id)
+    {        
+        if (intval($factory_id) <= 0) {
+            return $this->_r("Invalid factory ID");
+        }
+        if (intval($resurse_proto_id) <= 0) {
+            return $this->_r("Invalid resurse prototype ID");
+        }
+        
+        $factory = Factory::findByPk($factory_id);
+        if (is_null($factory)) {
+            return $this->_r("Factory not found");
+        }
+        
+        if ($factory->manager_uid !== $this->viewer_id) {
+            return $this->_r("Not allowed");
+        }
+        
+        $resurse = $factory->getStorage($resurse_proto_id);
+        if (is_null($resurse)) {
+            return $this->_r("Resurse not found");
+        }
+        
+        $settings = FactoryAutobuySettings::findOrCreate([
+            'factory_id' => $factory_id,
+            'resurse_proto_id' => $resurse_proto_id
+        ]);
+        return $this->render('factory-set-resurse-autobuy',[
+            'factory' => $factory,
+            'resurse' => $resurse,
+            'settings' => $settings
         ]);
     }
 

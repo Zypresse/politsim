@@ -220,18 +220,23 @@ class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
         
         return $names[$this->status];
     }
-
-    public function storageSize($resurse_proto_id)
+    
+    public function kitSize($resurse_proto_id)
     {
         $kit = FactoryProtoKit::find()->where([
             'resurse_proto_id' => $resurse_proto_id,
             'factory_proto_id' => $this->proto_id
         ])->one();
         if ($kit) {
-            return $this->size*24*$kit->count;
+            return $this->size*$kit->count;
         } else {
             return 0;
         }
+    }
+
+    public function storageSize($resurse_proto_id)
+    {
+        return $this->kitSize($resurse_proto_id)*24;
     }
     
     /**
@@ -241,13 +246,10 @@ class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
      */
     public function getStorage($proto_id)
     {
-        return Resurse::find()
-                ->with('proto')
-                ->where([
+        return Resurse::findOrCreate([
                     'place_id' => $this->IAmPlace,
                     'proto_id' => $proto_id
-                ])
-                ->one();
+                ],true);
     }
     
     public function pushToStorage($proto_id, $count) 

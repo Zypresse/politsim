@@ -34,7 +34,7 @@ class Resurse extends MovableObject
     public function rules()
     {
         return [
-            [['place_id', 'proto_id', 'count'], 'required'],
+            [['place_id', 'proto_id'], 'required'],
             [['place_id', 'proto_id'], 'integer'],
             [['count', 'quality'], 'number']
         ];

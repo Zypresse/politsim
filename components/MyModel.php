@@ -63,6 +63,9 @@ abstract class MyModel extends ActiveRecord
         if (is_null($m)) {
             $m = new static(array_merge($params,$paramsToCreate));
         } else {
+            if ($paramsToLoad === false) {
+                $paramsToLoad = $paramsToCreate;
+            }
             $m->load($paramsToLoad, '');
         }
         if ($save) {

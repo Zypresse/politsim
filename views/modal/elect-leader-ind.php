@@ -15,8 +15,8 @@ $(function(){
     radioClass: 'iradio_square',
     increaseArea: '20%' // optional
   }).on('ifChecked', function(event){
-  request_id = $(this).val();
-  $('#elect_vote .btn-green').show();
-});;
+    request_id = $(this).val();
+    $('#elect_vote .btn-green').show();
+  });
 });
 </script>

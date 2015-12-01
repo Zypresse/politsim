@@ -40,6 +40,7 @@ use Yii,
     app\models\factories\FactoryWorkersSalary,
     app\models\factories\FactoryAuction,
     app\models\factories\FactoryAuctionBet,
+    app\models\factories\FactoryAutobuySettings,
     app\models\factories\Line,
     app\models\factories\proto\FactoryProto,
     app\models\factories\proto\LineProto;
@@ -1910,6 +1911,60 @@ class JsonController extends MyController {
         return $this->_rOk();
         
     }
-            
+
+    public function actionSaveAutobuySettings($resurse_id, $autobuy, $cost, $type)
+    {
+        if (intval($resurse_id) <= 0) {
+            return $this->_r("Invalid resurse ID");
+        }
+        
+        $autobuy = !!$autobuy;
+        
+        if ($autobuy) {
+        
+            if (floatval($cost) <= 0) {
+                return $this->_r("Неправильно указана цена");
+            }
+
+            if (!in_array(intval($type),[1,2,3])) {
+                return $this->_r("Invalid type");
+            }
+        }
+        
+        $resurse = Resurse::findByPk($resurse_id);
+        if (is_null($resurse)) {
+            return $this->_r("Resurse not found");
+        }
+
+        if ($resurse->place->getPlaceType() !== Place::TYPE_FACTORY || $resurse->place->manager_uid !== $this->viewer_id) {
+            return $this->_r("Not allowed");
+        }
+        
+        $settings = FactoryAutobuySettings::findOrCreate([
+            'factory_id' => $resurse->place->id,
+            'resurse_proto_id' => $resurse->proto_id                
+        ],false,[
+            'max_cost' => $cost,
+            'count' => $resurse->place->kitSize($resurse->proto_id),
+            'holding_id' => null,
+            'state_id' => null
+        ]);
+        
+        if ($autobuy) {
+            switch (intval($type)) {
+                case 2:
+                    $settings->state_id = $resurse->getLocatedStateId();
+                    break;
+                case 3:
+                    $settings->holding_id = $resurse->place->holding_id;
+                    break;
+            }
+            $settings->save();
+        } else {
+            $settings->delete();
+        }
+        
+        return $this->_rOk();
+    }
 
 }

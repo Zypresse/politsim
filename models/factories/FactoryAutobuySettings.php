@@ -4,7 +4,9 @@ namespace app\models\factories;
 
 use app\components\MyModel,
     app\models\factories\Factory,
-    app\models\resurses\proto\ResurseProto;
+    app\models\resurses\proto\ResurseProto,
+    app\models\Holding,
+    app\models\State;
 
 /**
  * This is the model class for table "factory_autobuy_settings".
@@ -12,12 +14,15 @@ use app\components\MyModel,
  * @property integer $id
  * @property integer $factory_id
  * @property integer $resurse_proto_id
- * @property integer $type
  * @property double $max_cost
  * @property double $count
+ * @property integer $holding_id
+ * @property integer $state_id
  * 
  * @property Factory $factory
  * @property ResurseProto $resurseProto
+ * @property Holding $holding
+ * @property State $state
  */
 class FactoryAutobuySettings extends MyModel
 {
@@ -36,7 +41,7 @@ class FactoryAutobuySettings extends MyModel
     {
         return [
             [['factory_id', 'resurse_proto_id', 'count'], 'required'],
-            [['factory_id', 'resurse_proto_id', 'type'], 'integer'],
+            [['factory_id', 'resurse_proto_id', 'holding_id', 'state_id'], 'integer'],
             [['max_cost', 'count'], 'number']
         ];
     }
@@ -50,9 +55,10 @@ class FactoryAutobuySettings extends MyModel
             'id' => 'ID',
             'factory_id' => 'Factory ID',
             'resurse_proto_id' => 'Resurse Proto ID',
-            'type' => 'Type',
             'max_cost' => 'Max Cost',
             'count' => 'Count',
+            'holding_id' => 'Holding ID',
+            'state_id' => 'State ID',
         ];
     }
     
@@ -64,5 +70,15 @@ class FactoryAutobuySettings extends MyModel
     public function getFactory()
     {
         return $this->hasOne(Factory::className(), array('id' => 'factory_id'));
+    }
+    
+    public function getHolding()
+    {
+        return $this->hasOne(Holding::className(), array('id' => 'holding_id'));
+    }
+    
+    public function getState()
+    {
+        return $this->hasOne(State::className(), array('id' => 'state_id'));
     }
 }

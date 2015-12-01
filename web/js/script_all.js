@@ -232,8 +232,9 @@ function load_page(page, params, time) {
             load_page(page, params, 0);
         }, time);
     } else {
-        $('.modal-backdrop').hide();
         $('.modal').modal('hide');
+        $('.modal-backdrop').remove();
+        $('body').removeClass('modal-open');
 
         current_page = page;
         current_page_params = params;

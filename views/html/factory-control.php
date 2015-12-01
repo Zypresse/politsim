@@ -119,7 +119,6 @@ use app\components\MyHtmlHelper;
                         Персонал <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu">
-                        <!--<li class="divider"></li>-->
                         <li><a href="#" onclick="$('#salaries_manager').modal();" >Зарплаты</a></li>
                     </ul>
                 </div>
@@ -128,8 +127,8 @@ use app\components\MyHtmlHelper;
                         Торговля <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu">
-                        <!--<li class="divider"></li>-->
                         <li><a href="#" onclick="$('#resurses_selling_first').modal();" >Продажа ресурсов</a></li>
+                        <li><a href="#" onclick="$('#resurses_autobuy_first').modal();" >Автозакупка ресурсов</a></li>
                     </ul>
                 </div>
                 <button class="btn btn-red" onclick="if (confirm('Вы действительно хотите уволить всех рабочих и остановить работу?')) {json_request('manager-factory-stop-work',{'id':<?=$factory->id?>})}">Остановить работу</button>
@@ -174,6 +173,45 @@ use app\components\MyHtmlHelper;
             </div>
             <div class="modal-footer">
                 <button class="btn btn-green" onclick="json_request('save-resurse-cost',{'resurse_id':$('#resurse_for_selling_id').val(),'cost':$('#resurse_for_selling_cost').val(),'type':$('#form_resurse_selling_cost input[name=resurse_for_selling_type]:checked').val()})">Сохранить</button>
+                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+            </div>
+        </div></div>
+</div>
+
+<div style="display:none" class="modal fade" id="resurses_autobuy_first" tabindex="-1" role="dialog" aria-labelledby="resurses_autobuy_first_label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="resurses_autobuy_first_label">Установка автозакупки</h3>
+            </div>
+            <div id="resurses_autobuy_first_body" class="modal-body">
+                <h3>Ресурсы:</h3>
+                <select id="resurse_proto_id_for_autobuy">
+                <? foreach ($factory->proto->import as $kit): ?>
+                    <option value="<?=$kit->resurse_proto_id?>"><?= $kit->resurseProto->name ?></option>
+                <? endforeach ?>
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-green" onclick="load_modal('manager-factory-set-resurse-autobuy',{'factory_id':<?=$factory->id?>,'resurse_proto_id':$('#resurse_proto_id_for_autobuy').val()},'resurses_autobuy_second','resurses_autobuy_second_body')">Продолжить</button>
+                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+            </div>
+        </div></div>
+</div>
+
+<div style="display:none" class="modal fade" id="resurses_autobuy_second" tabindex="-1" role="dialog" aria-labelledby="resurses_autobuy_second_label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="resurses_autobuy_second_label">Установка автозакупки</h3>
+            </div>
+            <div id="resurses_autobuy_second_body" class="modal-body">
+                
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-green" onclick="json_request('save-autobuy-settings',{'resurse_id':$('#resurse_for_autobuy_id').val(),'autobuy':$('#resurse_autobuy_on').is(':checked')?1:0,'cost':$('#resurse_for_autobuy_cost').val(),'type':$('#form_resurse_autobuy_settings input[name=resurse_for_autobuy_type]:checked').val()})">Сохранить</button>
                 <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
             </div>
         </div></div>
