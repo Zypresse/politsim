@@ -95,6 +95,13 @@ $this->title = 'Political Simulator';
         <div class="primary-sidebar-background"></div>
     </div>
     <div class="primary-sidebar show_on_load">
+        <div class="sparkline-box side">
+            <div class="sparkline-row">
+                <h4 class="dark-green"><span>Счёт</span>  <strong id="head_money"></strong> <?=MyHtmlHelper::icon('money')?></h4> 
+            </div>
+
+            <hr class="divider">
+        </div>
         <ul class="nav navbar-collapse collapse navbar-collapse-primary" id="topmenu" style="float: none;display:inline-block">
             <li class="dark-nav profile_page capital_page dealings_page ">
                 <span class="glow"></span>
