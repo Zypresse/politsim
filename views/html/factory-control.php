@@ -1,17 +1,18 @@
 <?php
 /* @var $factory app\models\factories\Factory */
-use app\components\MyHtmlHelper;
+use app\components\MyHtmlHelper,
+    app\models\resurses\proto\ResurseProto;
 ?>
 <div class="container">
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-8">
             <h2><?= $factory->proto->name ?> &laquo;<?= htmlspecialchars($factory->name) ?>&raquo;</h2>
 
             <p><strong>Местоположение:</strong> <?= MyHtmlHelper::a($factory->region->name, "show_region({$factory->region_id})") ?></p>
-            <p><strong>Эффективность работы:</strong> <?= MyHtmlHelper::zeroOne2Stars($factory->eff_region * $factory->eff_workers) ?></p>
             <p><strong>Владелец:</strong> <?= MyHtmlHelper::a($factory->holding->name, "load_page('holding-info',{'id':{$factory->holding_id}})") ?></p>
             <p><strong>Управляющий:</strong> <?= $factory->manager ? MyHtmlHelper::a($factory->manager->name, "load_page('profile',{'uid':{$factory->manager_uid}})") : "не назначен" ?></p>
-            <p><strong>Рассчётный счёт:</strong> <?=MyHtmlHelper::moneyFormat($factory->balance)?></p>
+            <p><strong>Эффективность работы:</strong> <?= MyHtmlHelper::zeroOne2Stars($factory->eff_region * $factory->eff_workers) ?> (регион: <?=MyHtmlHelper::zeroOne2Stars($factory->eff_region)?>; рабочие: <?=MyHtmlHelper::zeroOne2Stars($factory->eff_workers)?>)</p>
+            <p><strong>Лицевой счёт:</strong> <?=MyHtmlHelper::moneyFormat($factory->balance)?></p>
             <p>
                 <strong>Статус:</strong> <?= $factory->statusName ?> 
                 <? if ($factory->status < 0) { ?>
@@ -21,6 +22,43 @@ use app\components\MyHtmlHelper;
                     </span>)
                 <? } ?>
             </p>
+        </div>
+        <div class="col-md-4">
+            <div class="box" style="margin-top: 10px">
+                <div class="box-header">
+                    <span class="title"><i class="icon-money"></i> Финансы</span>
+                </div>
+                <div class="box-content">    
+                    <table class="table table-normal">
+                        <tbody>
+                        <? foreach ($factory->getDealings(5) as $dealing): ?>
+                            <? $d = $dealing->getMyBalanceDelta($factory->unnp) ?>
+                            <? $isSender = $dealing->isSender($factory->unnp) ?>
+                            <? $items = json_decode($dealing->items) ?>
+                            <tr>
+                                <td>
+                                    <? if (count($items)): ?>
+                                    <?=$isSender?"Продано":"Куплено"?>
+                                    <? foreach ($items as $item): ?>
+                                    <? if ($item->type === 'resurse'): ?>
+                                    <?=$item->count?> <?=MyHtmlHelper::icon(ResurseProto::findByPk($item->proto_id)->class_name)?>
+                                    <? endif ?>
+                                    <? endforeach ?>
+                                    <? else: ?>
+                                    
+                                    <? endif ?>
+                                </td>
+                            <? if ($d > 0): ?>
+                                <td class="status-success"><i class="icon-arrow-up"></i> <?=MyHtmlHelper::moneyFormat($d)?></td>
+                            <? else: ?>
+                                <td class="status-error"><i class="icon-arrow-down"></i> <?=MyHtmlHelper::moneyFormat($d)?></td>
+                            <? endif ?>
+                            </tr>
+                        <? endforeach ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
     <div class="row">

@@ -98,6 +98,30 @@ class Dealing extends MyModel
         }
         return $dealings;
     }
+    
+    public static function findByUnnp($unnp, $limit)
+    {
+        return static::find()
+                ->where(['or',['to_unnp'=>$unnp],['from_unnp'=>$unnp]])
+                ->andWhere(['is_secret'=>0])
+                ->orderBy('time DESC')
+                ->limit($limit)
+                ->all();
+    }
+    
+    public function getMyBalanceDelta($unnp)
+    {
+        if ($this->to_unnp === $unnp) {
+            return $this->sum;
+        } else {
+            return -1*$this->sum;
+        }
+    }
+    
+    public function isSender($unnp)
+    {
+        return $this->from_unnp === $unnp;
+    }
 
     /**
      * 

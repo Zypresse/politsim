@@ -184,6 +184,11 @@ class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
         return $this->hasMany('app\models\factories\FactoryWorkersSalary', array('factory_id' => 'id'));
     }
     
+    public function getDealings($limit)
+    {
+        return Dealing::findByUnnp($this->unnp, $limit);
+    }
+    
     public function getVacansies()
     {
         return $this->hasMany('app\models\Vacansy', array('factory_id' => 'id'));
