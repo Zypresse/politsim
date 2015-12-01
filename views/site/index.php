@@ -208,7 +208,7 @@ $this->title = 'Political Simulator';
                     <li><a onclick="load_page('tv')" href="#">Телевиденье</a></li>-->
                 </ul>
             </li>
-            <li class="dark-nav holding-info_page my-buisness_page market_page market-factories_page market-forex_page market-stocks_page market-resurses_page holding-control_page">
+            <li class="dark-nav holding-info_page my-buisness_page market_page market-factories_page market-forex_page market-stocks_page market-resurses_page holding-control_page factory-info_page factory-control_page">
                 <span class="glow"></span>
                 <a href="#aaasq2sdad" class="accordion-toggle" data-toggle="collapse">
                     <?= MyHtmlHelper::icon('lg-icons/business') ?>

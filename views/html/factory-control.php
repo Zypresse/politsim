@@ -92,16 +92,14 @@ use app\components\MyHtmlHelper;
                     <table class="table table-normal">
                         <thead>
                             <tr>
-                              <td style="width:40%"></td>
-                              <td>Доступно</td>
-                              <td>Цена</td>
+                              <td></td>
+                              <td style="min-width:80px">Цена</td>
                             </tr>
                         </thead>
                         <tbody>
                         <? foreach ($factory->resurseCosts as $cost): if ($cost->resurse->count > 0): ?>
                             <tr>
                                 <td><?= MyHtmlHelper::icon($cost->resurse->proto->class_name) ?> <?= $cost->resurse->proto->name ?> <?= $cost->getHtmlType()?></td>
-                                <td><?= number_format($cost->resurse->count, 0, '', ' ') ?> <?= MyHtmlHelper::icon($cost->resurse->proto->class_name) ?></td>
                                 <td><?= number_format($cost->cost, 2, '.', ' ') ?> <?= MyHtmlHelper::icon("money") ?></td>
                             </tr>
                         <? endif;
@@ -152,9 +150,9 @@ use app\components\MyHtmlHelper;
             <div id="resurses_selling_first_body" class="modal-body">
                 <h3>Ресурсы:</h3>
                 <select id="resurse_proto_id_for_selling">
-                <? foreach ($factory->content as $store): if ($store->proto->isStorable()): ?>
-                    <option value="<?=$store->proto_id?>"><?= $store->proto->name ?></option>
-                <? endif; endforeach; ?>
+                <? foreach ($factory->proto->export as $kit): ?>
+                    <option value="<?=$kit->resurse_proto_id?>"><?= $kit->resurseProto->name ?></option>
+                <? endforeach ?>
                 </select>
             </div>
             <div class="modal-footer">

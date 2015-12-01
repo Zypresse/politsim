@@ -36,7 +36,7 @@ class Resurse extends MovableObject
         return [
             [['place_id', 'proto_id', 'count'], 'required'],
             [['place_id', 'proto_id'], 'integer'],
-            [['count'], 'number']
+            [['count', 'quality'], 'number']
         ];
     }
 
@@ -50,6 +50,7 @@ class Resurse extends MovableObject
             'place_id' => 'Place ID',
             'proto_id' => 'Proto ID',
             'count' => 'Count',
+            'quality' => 'Quality'
         ];
     }
     

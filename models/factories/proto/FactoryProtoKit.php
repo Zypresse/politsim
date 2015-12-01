@@ -13,7 +13,7 @@ use app\components\MyModel;
  * @property integer $direction Направление: 1 - потребляемые, 2 - производимые, 3 - блокируемые
  * @property integer $factory_proto_id
  * 
- * @property \app\models\resurses\Resurse $resurse
+ * @property \app\models\resurses\proto\ResurseProto $resurseProto
  * @property FactoryProto $proto
  */
 class FactoryProtoKit extends MyModel
@@ -52,9 +52,9 @@ class FactoryProtoKit extends MyModel
         ];
     }
 
-    public function getResurse()
+    public function getResurseProto()
     {
-        return $this->hasOne('app\models\resurses\Resurse', array('id' => 'resurse_proto_id'));
+        return $this->hasOne('app\models\resurses\proto\ResurseProto', array('id' => 'resurse_proto_id'));
     }
 
     public function getProto()
