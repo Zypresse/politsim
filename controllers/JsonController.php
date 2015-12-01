@@ -1944,7 +1944,6 @@ class JsonController extends MyController {
         if ($resurse->place->getPlaceType() !== Place::TYPE_FACTORY || $resurse->place->manager_uid !== $this->viewer_id) {
             return $this->_r("Not allowed");
         }
-        
         $settings = FactoryAutobuySettings::findOrCreate([
             'factory_id' => $resurse->place->id,
             'resurse_proto_id' => $resurse->proto_id                
@@ -1954,7 +1953,7 @@ class JsonController extends MyController {
             'count' => $resurse->place->kitSize($resurse->proto_id),
             'holding_id' => null,
             'state_id' => null
-        ]);
+        ],false);
         
         if ($autobuy) {
             switch (intval($type)) {
