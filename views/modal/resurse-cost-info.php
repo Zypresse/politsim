@@ -3,9 +3,10 @@
 /* @var $resCost app\models\resurses\ResurseCost */
 /* @var $viewer app\models\factories\Factory */
 
-use app\components\MyHtmlHelper;
+use app\components\MyHtmlHelper,
+    app\models\Region;
 
-$transferCost = round($resCost->resurse->place->region->calcDist($viewer->region)*10);
+$transferCost = round($resCost->resurse->place->region->calcDist($viewer->region)*Region::TRANSFER_COST);
 
 ?>
 <input type="hidden" id="resurse_selling_dealing_cost_id" value="<?=$resCost->id?>">

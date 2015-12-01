@@ -1888,7 +1888,7 @@ class JsonController extends MyController {
         }
         
         $sum = $count * $resCost->cost;        
-        $transferCost = round($resCost->resurse->place->region->calcDist($viewer->region)*10);
+        $transferCost = round($resCost->resurse->place->region->calcDist($viewer->region)*Region::TRANSFER_COST);
         $sum += $transferCost;
         
         if ($sum > $viewer->getBalance()) {

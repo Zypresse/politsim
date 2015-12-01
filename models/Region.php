@@ -185,6 +185,11 @@ class Region extends MyModel implements TaxPayer
     }
     
     /**
+     * Стоимость телепортации ресурсов за км.
+     */
+    const TRANSFER_COST = 0.1;
+    
+    /**
      * Дистанция от этого региона до переданного в км.
      * @param Region $to
      */

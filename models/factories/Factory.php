@@ -13,7 +13,8 @@ use app\components\MyMathHelper,
     app\models\objects\canCollectObjects,
     app\models\Place,
     app\models\resurses\ResurseCost,
-    app\models\Dealing;
+    app\models\Dealing,
+    app\models\Region;
 
 /**
  * Фабрика/завод/сх-предприятие. Таблица "factories".
@@ -389,7 +390,7 @@ class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
 
                     $toBuy = min([$toBuyLeft,$cost->resurse->count]);                
                     $sum = $toBuy * $cost->cost;        
-                    $transferCost = round($cost->resurse->place->region->calcDist($this->region)*10);
+                    $transferCost = round($cost->resurse->place->region->calcDist($this->region)*Region::TRANSFER_COST);
                     $sum += $transferCost;  
 
                     if ($sum > $this->getBalance()) {
