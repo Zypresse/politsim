@@ -270,7 +270,7 @@ class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
         return Resurse::find()->where([
                     'place_id' => $this->IAmPlace,
                     'proto_id' => $proto_id
-                ])->all();
+                ])->orderBy('quality DESC')->all();
     }
     
     public function pushToStorage($proto_id, $count, $quality = 10) 
@@ -358,14 +358,52 @@ class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
     public function work()
     {
         if ($this->status == static::STATUS_ACTIVE) {
-            // var_dump($this->getWorkersEff());
-            // тут проверка на наличие ресурсов для производства и их уничтожение
-            // Автозакупка электричества
+            
+            $countResUsedForWork = 0;
+            $sumQualityResUsedForWork = 0;
+            
+            // тут проверка на наличие ресурсов для производства            
+            foreach ($this->proto->import as $kit) {
+                $count = floor($kit->count * $this->size);                
+                $storages = $this->getStorages($kit->resurse_proto_id);
+                
+                $sum = 0;
+                foreach ($storages as $store) {
+                    $sum += $store->count;
+                }
+                
+                if ($sum < $count) {
+                    // ресурса недостаточно
+                    $this->status = static::STATUS_NOT_ENOUGHT_RESURSES;
+                    $this->save();
+                    return;
+                }
+            }
+            // Теперь точно ресурсов хватает            
+            foreach ($this->proto->import as $kit) {
+                $count = floor($kit->count * $this->size);                
+                $storages = $this->getStorages($kit->resurse_proto_id);
+                
+                $deleted = 0;
+                foreach ($storages as $store) {
+                    $del = min([$store->count,$count-$deleted]);
+                    $this->delFromStorage($kit->resurse_proto_id, $del, $store->quality);
+                    
+                    $deleted += $del;                    
+                    $sumQualityResUsedForWork += $del*$store->quality;
+                    if ($deleted === $count)  {
+                        break;
+                    }
+                }
+                $countResUsedForWork += $count;
+            }
+            
+            $quality = ($countResUsedForWork) ? round($sumQualityResUsedForWork / $countResUsedForWork) : 10;
             
             foreach ($this->proto->export as $kit) {
                 $count = floor($kit->count * $this->size * $this->eff_workers * $this->eff_region);
                 
-                $this->pushToStorage($kit->resurse_proto_id, $count, 10);
+                $this->pushToStorage($kit->resurse_proto_id, $count, $quality);
             }
         }
     }
