@@ -98,6 +98,25 @@ class MyHtmlHelper {
             return 'высочайший уровень';
         }
     }
+    
+    public static function oneTen2Human($n)
+    {
+        if ($n === 0) {
+            return 'ужасное качество';
+        } else if ($n < 3) {
+            return 'крайне низкое качество';
+        } else if ($n < 5) {
+            return 'низкое качество';
+        } else if ($n < 7) {
+            return 'среднее качество';
+        } else if ($n < 9) {
+            return 'качество выше среднего';
+        } else if ($n < 10) {
+            return 'высокое качество';
+        } else {
+            return 'высочайшее';
+        }
+    }
 
     public static function zeroOne2Stars($n)
     {
@@ -115,6 +134,25 @@ class MyHtmlHelper {
             return '<span style="color:#238619" title="высокий уровень" >★★★★★</span>';
         } else {
             return '<span style="color:gold" title="высочайший уровень" >★★★★★★</span>';
+        }
+    }
+    
+    public static function oneTen2Stars($n)
+    {
+        if ($n === 0) {
+            return '';
+        } else if ($n < 3) {
+            return '<span style="color:red" title="крайне низкое качество" >★</span>';
+        } else if ($n < 5) {
+            return '<span style="color:#ED8931" title="низкое качество" >★★</span>';
+        } else if ($n < 7) {
+            return '<span style="color:#1470DF" title="среднее качество" >★★★</span>';
+        } else if ($n < 9) {
+            return '<span style="color:#89891B" title="качество выше среднего" >★★★★</span>';
+        } else if ($n < 10) {
+            return '<span style="color:#238619" title="высокое качество" >★★★★★</span>';
+        } else {
+            return '<span style="color:gold" title="высочайшее качество" >★★★★★★</span>';
         }
     }
 

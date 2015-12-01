@@ -13,7 +13,7 @@ use app\models\objects\MovableObject,
  * @property integer $proto_id
  * @property integer $place_id
  * @property double $count
- * @property double $quality
+ * @property integer $quality from 1 to 10
  *
  * @property proto\ResurseProto $proto
  * @property ResurseCost[] $costs
@@ -35,8 +35,8 @@ class Resurse extends MovableObject
     {
         return [
             [['place_id', 'proto_id'], 'required'],
-            [['place_id', 'proto_id'], 'integer'],
-            [['count', 'quality'], 'number']
+            [['place_id', 'proto_id', 'quality'], 'integer'],
+            [['count'], 'number']
         ];
     }
 
