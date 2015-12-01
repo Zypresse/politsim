@@ -43,6 +43,7 @@ use app\components\MyMathHelper,
  * @property \app\models\Vacansy[] $vacansiesWithSalaryAndCount Актуальнаые вакансии
  * @property \app\models\Vacansy[] $vacansiesWithSalary Потенцальные вакансии
  * @property ResurseCost[] $resurseCosts
+ * @property FactoryAutobuySettings[] $autobuySettings
  */
 class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
 {
@@ -159,6 +160,11 @@ class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
     public function getManager()
     {
         return $this->hasOne('app\models\User', array('id' => 'manager_uid'));
+    }
+    
+    public function getAutobuySettings()
+    {
+        return $this->hasMany('app\models\factories\FactoryAutobuySettings', array('factory_id' => 'id'));
     }
     
     public function getWorkers()

@@ -83,13 +83,55 @@ use app\components\MyHtmlHelper;
         </div>
     </div>
     <div class="row">
-        <div class="col-md-6 col-md-offset-6">
+        <div class="col-md-4">
             <div class="box">
                 <div class="box-header">
-                    <span class="title"><i class="icon-home"></i> Цены на продажу</span>
+                    <span class="title"><i class="icon-cog"></i> Производство и потребление</span>
                 </div>
                 <div class="box-content">
                     <table class="table table-normal">
+                        <? if (count($factory->proto->import)): ?>
+                        <thead>
+                            <tr>
+                                <td colspan="2">Расход (в час)</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <? foreach ($factory->proto->import as $kit): ?>
+                            <tr>
+                                <td><?= $kit->resurseProto->name ?> </td>
+                                <td><?= number_format($kit->count*$factory->size, 0, '', ' ') ?> <?= MyHtmlHelper::icon($kit->resurseProto->class_name) ?></td>
+                            </tr>
+                        <? endforeach ?>
+                        </tbody>
+                        <? endif ?>
+                        <? if (count($factory->proto->export)): ?>
+                        <thead>
+                            <tr>
+                                <td colspan="2">Производство (в час)</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <? foreach ($factory->proto->export as $kit): ?>
+                            <tr>
+                                <td><?= $kit->resurseProto->name ?> </td>
+                                <td><?= number_format($kit->count*$factory->size, 0, '', ' ') ?> <?= MyHtmlHelper::icon($kit->resurseProto->class_name) ?></td>
+                            </tr>
+                        <? endforeach ?>
+                        </tbody>
+                        <? endif ?>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="box">
+                <div class="box-header">
+                    <span class="title"><i class="icon-money"></i> Продажа</span>
+                </div>
+                <div class="box-content">
+                    <table class="table table-normal">
+                        <? if (count($factory->resurseCosts)): ?>
                         <thead>
                             <tr>
                               <td></td>
@@ -103,9 +145,39 @@ use app\components\MyHtmlHelper;
                                 <td><?= number_format($cost->cost, 2, '.', ' ') ?> <?= MyHtmlHelper::icon("money") ?></td>
                             </tr>
                         <? endif;
-                        endforeach; ?>
+                        endforeach;
+                        else:?>
+                        <tbody>
+                            <tr>
+                                <td colspan="2" style="text-align:center">Цены не установлены</td>
+                            </tr>
+                        <? endif ?>
                         </tbody>
                     </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="box">
+                <div class="box-header">
+                    <span class="title"><i class="icon-money"></i> Автозакупка</span>
+                </div>
+                <div class="box-content padded">
+                <? if (count($factory->autobuySettings)): ?>
+                <? foreach ($factory->autobuySettings as $settings): ?>
+                    <p>
+                        Закупка <?=number_format($settings->count,0,'',' ')?> <?=MyHtmlHelper::icon($settings->resurseProto->class_name)?> в час по цене не выше <?=  MyHtmlHelper::moneyFormat($settings->max_cost)?>
+                        <? if ($settings->state_id): ?>
+                            только у налогоплательщиков страны <?=$settings->state->getHtmlName()?>
+                        <? endif ?>
+                        <? if ($settings->holding_id): ?>
+                            только у предприятий компании <?=$settings->holding->getHtmlName()?>
+                        <? endif ?>
+                    </p>
+                <? endforeach ?>
+                <? else: ?>
+                    <p>Автозакупка отключена</p>
+                <? endif ?>
                 </div>
             </div>
         </div>
