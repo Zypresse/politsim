@@ -31,6 +31,7 @@ class AppAsset extends AssetBundle
     ];
     public $js = [
         'js/jquery-1.11.3.min.js',
+        'js/jquery-ui.min.js',
         'js/bootstrap.min.js',
         'js/fullscreen.js',
         'js/jquery-jvectormap-2.0.3.min.js',

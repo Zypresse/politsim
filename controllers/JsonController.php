@@ -1903,6 +1903,7 @@ class JsonController extends MyController {
             'items' => json_encode([[
                 'type' => 'resurse',
                 'count' => $count,
+                'quality' => $resCost->resurse->quality,
                 'proto_id' => $resCost->resurse->proto_id
             ]])
         ]);
@@ -1912,7 +1913,7 @@ class JsonController extends MyController {
         
     }
 
-    public function actionSaveAutobuySettings($resurse_id, $autobuy, $cost, $type)
+    public function actionSaveAutobuySettings($resurse_id, $autobuy, $cost, $quality, $type)
     {
         if (intval($resurse_id) <= 0) {
             return $this->_r("Invalid resurse ID");
@@ -1924,6 +1925,10 @@ class JsonController extends MyController {
         
             if (floatval($cost) <= 0) {
                 return $this->_r("Неправильно указана цена");
+            }
+            
+            if (intval($quality) < 0 || intval($quality) > 10) {
+                return $this->_r("Неправильно указано качество");
             }
 
             if (!in_array(intval($type),[1,2,3])) {
@@ -1945,6 +1950,7 @@ class JsonController extends MyController {
             'resurse_proto_id' => $resurse->proto_id                
         ],false,[
             'max_cost' => $cost,
+            'min_quality' => $quality,
             'count' => $resurse->place->kitSize($resurse->proto_id),
             'holding_id' => null,
             'state_id' => null

@@ -23,6 +23,7 @@ use app\components\MyHtmlHelper,
                         <td>Продавец</td>
                         <td style="min-width: 250px">Регион</td>
                         <td>Доступно</td>
+                        <td style="min-width: 70px">Качество</td>
                         <td style="min-width: 70px">Цена</td>
                         <? if (!$readOnly): ?><td>Действия</td><? endif ?>
                     </tr>
@@ -42,6 +43,7 @@ use app\components\MyHtmlHelper,
                             <td>
                                 <?= number_format($cost->resurse->count, 0, '', ' ') ?> <?= MyHtmlHelper::icon($resProto->class_name) ?>
                             </td>
+                            <td><?= MyHtmlHelper::oneTen2Stars($cost->resurse->quality) ?></td>
                             <td><?= MyHtmlHelper::moneyFormat($cost->cost, 2) ?></td>
                             <? if (!$readOnly): ?>
                             <td>

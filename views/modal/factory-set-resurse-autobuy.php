@@ -16,7 +16,13 @@ use app\components\MyHtmlHelper;
     </p>
     <div id="hide_if_autobuy_off" <?=$settings->id?'':'style="display: none"'?>>
         <form id="form_resurse_autobuy_settings">
-            <p>Максимальная цена для закупки: <input type="number" value="<?=$settings->max_cost?$settings->max_cost:1?>" id="resurse_for_autobuy_cost" > <?=MyHtmlHelper::icon('money')?></p>
+            <p>Максимальная допустимая цена: <input type="number" value="<?=$settings->max_cost?$settings->max_cost:1?>" id="resurse_for_autobuy_cost" > <?=MyHtmlHelper::icon('money')?></p>
+            <p>
+                Минимальное допустимое качество: &nbsp; <span id="resurse_for_autobuy_quality_stars"></span>
+                <input id="resurse_for_autobuy_quality" type="hidden" value="<?=intval($settings->min_quality)?>" >
+            </p> 
+            <div id="resurse_for_autobuy_quality_slider"></div>
+            <br>
             <p>
                 <input <?=!$settings->holding_id&&!$settings->state_id?'checked="checked"':''?> id="resurse_for_autobuy_type1" class="elect_vote_radio" type="radio" name="resurse_for_autobuy_type" value="1">
                 <label for="resurse_for_autobuy_type1">Закупать у кого угодно</label>
@@ -46,5 +52,29 @@ use app\components\MyHtmlHelper;
                 $('#hide_if_autobuy_off').slideUp();
             }
         });
+        
+        $( "#resurse_for_autobuy_quality_slider").slider({
+            range: "max",
+            min: 0,
+            max: 10,
+            value: <?=intval($settings->min_quality)?>,
+            slide: function( event, ui ) {
+                $("#resurse_for_autobuy_quality").val( ui.value );
+                updateQualityStars(ui.value);
+            }
+        });
+        
+        updateQualityStars(<?=intval($settings->min_quality)?>);
     });
+    
+    function updateQualityStars(quality) {
+        var texts = [
+        <? for ($i = 0; $i <= 10; $i++): ?>
+            <?=($i?',':'')?>
+            '<?=MyHtmlHelper::oneTen2Stars($i)?>'
+        <? endfor ?>
+        ];
+        
+        $('#resurse_for_autobuy_quality_stars').html(texts[quality]);
+    }
 </script>

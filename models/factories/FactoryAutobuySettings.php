@@ -15,6 +15,7 @@ use app\components\MyModel,
  * @property integer $factory_id
  * @property integer $resurse_proto_id
  * @property double $max_cost
+ * @property integer $min_quality
  * @property double $count
  * @property integer $holding_id
  * @property integer $state_id
@@ -41,7 +42,7 @@ class FactoryAutobuySettings extends MyModel
     {
         return [
             [['factory_id', 'resurse_proto_id', 'count'], 'required'],
-            [['factory_id', 'resurse_proto_id', 'holding_id', 'state_id'], 'integer'],
+            [['factory_id', 'resurse_proto_id', 'holding_id', 'state_id', 'min_quality'], 'integer'],
             [['max_cost', 'count'], 'number']
         ];
     }
@@ -56,6 +57,7 @@ class FactoryAutobuySettings extends MyModel
             'factory_id' => 'Factory ID',
             'resurse_proto_id' => 'Resurse Proto ID',
             'max_cost' => 'Max Cost',
+            'min_quality' => 'Min Quality',
             'count' => 'Count',
             'holding_id' => 'Holding ID',
             'state_id' => 'State ID',

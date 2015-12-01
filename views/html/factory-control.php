@@ -63,14 +63,16 @@ use app\components\MyHtmlHelper;
                         <thead>
                             <tr>
                               <td style="width:40%"></td>
-                              <td>На складе</td>
-                              <td>Размер склада</td>
+                              <td style="min-width: 80px;">Качество</td>
+                              <td style="min-width: 80px;">На складе</td>
+                              <td style="min-width: 80px;">Максимум</td>
                             </tr>
                         </thead>
                         <tbody>
                         <? foreach ($factory->content as $store): if ($store->proto->isStorable()): ?>
                             <tr>
                                 <td><?= MyHtmlHelper::icon($store->proto->class_name) ?> <?= $store->proto->name ?></td>
+                                <td><?= MyHtmlHelper::oneTen2Stars($store->quality) ?></td>
                                 <td><?= number_format($store->count, 0, '', ' ') ?> <?= MyHtmlHelper::icon($store->proto->class_name) ?></td>
                                 <td><?= number_format($factory->storageSize($store->proto_id), 0, '', ' ') ?> <?= MyHtmlHelper::icon($store->proto->class_name) ?></td>
                             </tr>
@@ -166,7 +168,9 @@ use app\components\MyHtmlHelper;
                 <? if (count($factory->autobuySettings)): ?>
                 <? foreach ($factory->autobuySettings as $settings): ?>
                     <p>
-                        Закупка <?=number_format($settings->count,0,'',' ')?> <?=MyHtmlHelper::icon($settings->resurseProto->class_name)?> в час по цене не выше <?=  MyHtmlHelper::moneyFormat($settings->max_cost)?>
+                        Закупка <?=number_format($settings->count,0,'',' ')?> <?=MyHtmlHelper::icon($settings->resurseProto->class_name)?> в час
+                        по цене не выше <?=MyHtmlHelper::moneyFormat($settings->max_cost)?>
+                        качества не ниже <?=MyHtmlHelper::oneTen2Stars($settings->min_quality)?>
                         <? if ($settings->state_id): ?>
                             только у налогоплательщиков страны <?=$settings->state->getHtmlName()?>
                         <? endif ?>
@@ -283,7 +287,7 @@ use app\components\MyHtmlHelper;
                 
             </div>
             <div class="modal-footer">
-                <button class="btn btn-green" onclick="json_request('save-autobuy-settings',{'resurse_id':$('#resurse_for_autobuy_id').val(),'autobuy':$('#resurse_autobuy_on').is(':checked')?1:0,'cost':$('#resurse_for_autobuy_cost').val(),'type':$('#form_resurse_autobuy_settings input[name=resurse_for_autobuy_type]:checked').val()})">Сохранить</button>
+                <button class="btn btn-green" onclick="json_request('save-autobuy-settings',{'resurse_id':$('#resurse_for_autobuy_id').val(),'autobuy':$('#resurse_autobuy_on').is(':checked')?1:0,'cost':$('#resurse_for_autobuy_cost').val(),'quality':$('#resurse_for_autobuy_quality').val(),'type':$('#form_resurse_autobuy_settings input[name=resurse_for_autobuy_type]:checked').val()})">Сохранить</button>
                 <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
             </div>
         </div></div>

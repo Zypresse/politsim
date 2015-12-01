@@ -248,21 +248,37 @@ class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
     /**
      * 
      * @param integer $proto_id
+     * @param integer $quality
      * @return Resurse
      */
-    public function getStorage($proto_id)
+    public function getStorage($proto_id, $quality = 10)
     {
         return Resurse::findOrCreate([
                     'place_id' => $this->IAmPlace,
-                    'proto_id' => $proto_id
+                    'proto_id' => $proto_id,
+                    'quality' => $quality
                 ],true);
     }
     
-    public function pushToStorage($proto_id, $count) 
+    /**
+     * 
+     * @param integer $proto_id
+     * @return Resurse[]
+     */
+    public function getStorages($proto_id)
+    {
+        return Resurse::find()->where([
+                    'place_id' => $this->IAmPlace,
+                    'proto_id' => $proto_id
+                ])->all();
+    }
+    
+    public function pushToStorage($proto_id, $count, $quality = 10) 
     {
         $store = Resurse::findOrCreate([
             'place_id' => $this->IAmPlace,
-            'proto_id' => $proto_id
+            'proto_id' => $proto_id,
+            'quality' => $quality
         ], false, [
             'count' => 0
         ]);
@@ -274,11 +290,12 @@ class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
         }
     }
     
-    public function delFromStorage($proto_id, $count) 
+    public function delFromStorage($proto_id, $count, $quality = 10) 
     {
         $store = Resurse::findOrCreate([
             'place_id' => $this->IAmPlace,
-            'proto_id' => $proto_id
+            'proto_id' => $proto_id,
+            'quality' => $quality
         ], false, [
             'count' => 0
         ]);
@@ -348,7 +365,7 @@ class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
             foreach ($this->proto->export as $kit) {
                 $count = floor($kit->count * $this->size * $this->eff_workers * $this->eff_region);
                 
-                $this->pushToStorage($kit->resurse_proto_id, $count);
+                $this->pushToStorage($kit->resurse_proto_id, $count, 10);
             }
         }
     }

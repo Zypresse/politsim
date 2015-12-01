@@ -140,8 +140,8 @@ class Dealing extends MyModel
                         }
                         break;
                     case "resurse":
-                        $this->sender->delFromStorage($item['proto_id'],$item['count']);
-                        $this->recipient->pushToStorage($item['proto_id'],$item['count']);
+                        $this->sender->delFromStorage($item['proto_id'],$item['count'],$item['quality']);
+                        $this->recipient->pushToStorage($item['proto_id'],$item['count'],$item['quality']);
                         break;
                 }
             }

@@ -596,7 +596,7 @@ class ModalController extends MyController {
         }
         
         $costs = $query->with('resurse')
-                ->orderBy('cost')
+                ->orderBy('cost ASC, resurses.quality DESC')
                 ->groupBy('resurses.place_id')
                 ->all();
                             
