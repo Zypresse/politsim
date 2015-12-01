@@ -679,5 +679,23 @@ class ModalController extends MyController {
             'settings' => $settings
         ]);
     }
+    
+    public function actionFactoryDealings($id)
+    {
+        if (intval($id) <= 0) {
+            return $this->_r("Invalid factory ID");
+        }
+        
+        $factory = Factory::findByPk($id);
+        if (is_null($factory)) {
+            return $this->_r("Factory not found");
+        }
+        
+        if ($factory->manager_uid !== $this->viewer_id) {
+            return $this->_r("Not allowed");
+        }
+        
+        return $this->render('factory-dealings',['factory'=>$factory]);
+    }
 
 }

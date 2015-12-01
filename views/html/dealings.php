@@ -95,6 +95,14 @@ $mdl = $user->getMyDealingsList();
                         $holding = app\models\Holding::findByPk($item['holding_id']);
                         echo MyHtmlHelper::formateNumberword($item['count'], "акций", "акция", "акции")." компании «".$holding->name."»";
                     break;
+                    case 'factory':
+                        $factory = app\models\factories\Factory::findByPk($item['factory_id']);
+                        echo $factory->getHtmlName();
+                    break;
+                    case 'resurse':
+                        $resProto = app\models\resurses\proto\ResurseProto::findByPk($item['proto_id']);
+                        echo $item['count'].' '.MyHtmlHelper::icon($resProto->class_name);
+                    break;
                 }
                 echo "</li>";
             }

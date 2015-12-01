@@ -135,6 +135,9 @@ function prettyDates() {
     $('.formatDate').each(function (idx, elem) {
         $(elem).text($.format.date(new Date($(elem).data('unixtime') * 1000), 'HH:mm dd-MM-yyyy'));
     })
+    $('.formatDateCustom').each(function (idx, elem) {
+        $(elem).text($.format.date(new Date($(elem).data('unixtime') * 1000), $(elem).data('timeformat')));
+    })
 }
 
 function show_error(e) {
@@ -332,7 +335,8 @@ function load_modal(page,params,modalId,bodyId) {
     $('#'+bodyId).html('<br><br><br>Загрузка...<br><br><br><br><br>');
     get_html(page,params,function(d){
         $('#'+bodyId).html(d);
-        $('#'+modalId).modal();
+        $('#'+modalId).modal();        
+        prettyDates();
     })
 }
 

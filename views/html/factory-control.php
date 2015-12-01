@@ -27,6 +27,10 @@ use app\components\MyHtmlHelper,
             <div class="box" style="margin-top: 10px">
                 <div class="box-header">
                     <span class="title"><i class="icon-money"></i> Финансы</span>
+
+                    <ul class="box-toolbar">
+                        <li><button class="btn btn-xs btn-lightblue" onclick="load_modal('factory-dealings',{'id':<?=$factory->id?>},'factory_dealings','factory_dealings_body')">Все сделки</button></li>
+                    </ul>
                 </div>
                 <div class="box-content">    
                     <table class="table table-normal">
@@ -36,9 +40,10 @@ use app\components\MyHtmlHelper,
                             <? $isSender = $dealing->isSender($factory->unnp) ?>
                             <? $items = json_decode($dealing->items) ?>
                             <tr>
+                                <td><i class="icon-time"></i> <span class="formatDateCustom" data-timeformat="HH:mm" data-unixtime="<?=$dealing->time?>"><?=date("H:i",$dealing->time)?></span></td>
                                 <td>
                                     <? if (count($items)): ?>
-                                    <?=$isSender?"Продано":"Куплено"?>
+                                    <i class="icon-<?=$isSender?"minus":"plus"?>"></i>
                                     <? foreach ($items as $item): ?>
                                     <? if ($item->type === 'resurse'): ?>
                                     <?=$item->count?> <?=MyHtmlHelper::icon(ResurseProto::findByPk($item->proto_id)->class_name)?>
@@ -363,6 +368,22 @@ use app\components\MyHtmlHelper,
             </div>
             <div class="modal-footer">
                 <button class="btn btn-green" onclick="save_salaries()">Сохранить</button>
+                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+            </div>
+        </div></div>
+</div>
+
+<div style="display:none" class="modal fade" id="factory_dealings" tabindex="-1" role="dialog" aria-labelledby="factory_dealings_label" aria-hidden="true">
+    <div class="modal-dialog" style="width:800px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="factory_dealings_label">Последние сделки предприятия</h3>
+            </div>
+            <div id="factory_dealings_body" class="modal-body">
+                
+            </div>
+            <div class="modal-footer">
                 <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
             </div>
         </div></div>
