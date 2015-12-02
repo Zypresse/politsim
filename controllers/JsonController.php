@@ -80,11 +80,19 @@ class JsonController extends MyController {
         }
 
         $this->result = ($uid == $this->viewer_id) ? $user->attributes : $user->getPublicAttributes();
-
-        $dealingsCount = $user->getNotAcceptedDealingsCount();
-        if ($dealingsCount) {
-            $this->result['new_dealings_count'] = $dealingsCount;
-        }
+        return $this->_r();
+    }
+    
+    public function actionHeaderInfoUpdates()
+    {
+        $this->result = [
+            'money' => $this->user->money,
+            'star' => $this->user->star,
+            'heart' => $this->user->heart,
+            'chart_pie' => $this->user->chart_pie
+        ];        
+        
+        $this->result['new_dealings_count'] = $this->user->getNotAcceptedDealingsCount();
 
         return $this->_r();
     }

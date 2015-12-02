@@ -219,22 +219,24 @@ function request(pageUrl,postParams,requestType,callback,noError)
 }
 
 function update_header() {
-    get_json('userinfo',{},function(d){
-        d = d.result;
+    get_json('header-info-updates',{},function(d){
+        var d = d.result;
 
         $('#head_star').text(d.star);
         $('#head_heart').text(d.heart);
         $('#head_chart_pie').text(d.chart_pie);
         $('#head_money').text(number_format(d.money, 0, '', ' '));
-        if (d.new_dealings_count) {
-            $('#new_dealings_count_value').text(d.new_dealings_count);
+        
+        var new_dealings_count = d.new_dealings_count ? parseInt(d.new_dealings_count) : 0
+        if (new_dealings_count) {
+            $('#new_dealings_count').text(new_dealings_count);
             $('#new_dealings_count').show();
         } else {
             $('#new_dealings_count').hide();
         }
-        var profile_badge = d.new_dealings_count;
+        var profile_badge = new_dealings_count;
         if (profile_badge) {
-            $('#profile_badge_value').text(profile_badge);
+            $('#profile_badge').text(profile_badge);
             $('#profile_badge').show();
         } else {
             $('#profile_badge').hide();

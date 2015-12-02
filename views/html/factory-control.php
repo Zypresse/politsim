@@ -5,7 +5,7 @@ use app\components\MyHtmlHelper,
 ?>
 <div class="container">
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-7">
             <h2><?= $factory->proto->name ?> &laquo;<?= htmlspecialchars($factory->name) ?>&raquo;</h2>
 
             <p><strong>Местоположение:</strong> <?= MyHtmlHelper::a($factory->region->name, "show_region({$factory->region_id})") ?></p>
@@ -23,7 +23,7 @@ use app\components\MyHtmlHelper,
                 <? } ?>
             </p>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-5">
             <div class="box" style="margin-top: 10px">
                 <div class="box-header">
                     <span class="title"><i class="icon-money"></i> Финансы</span>
@@ -43,14 +43,14 @@ use app\components\MyHtmlHelper,
                                 <td><i class="icon-time"></i> <span class="formatDateCustom" data-timeformat="HH:mm" data-unixtime="<?=$dealing->time?>"><?=date("H:i",$dealing->time)?></span></td>
                                 <td>
                                     <? if (count($items)): ?>
-                                    <i class="icon-<?=$isSender?"minus":"plus"?>"></i>
-                                    <? foreach ($items as $item): ?>
-                                    <? if ($item->type === 'resurse'): ?>
-                                    <?=$item->count?> <?=MyHtmlHelper::icon(ResurseProto::findByPk($item->proto_id)->class_name)?>
-                                    <? endif ?>
-                                    <? endforeach ?>
+                                        <i class="icon-<?=$isSender?"minus":"plus"?>"></i>
+                                        <? foreach ($items as $item): ?>
+                                        <? if ($item->type === 'resurse'): ?>
+                                        <?=$item->count?> <?=MyHtmlHelper::icon(ResurseProto::findByPk($item->proto_id)->class_name)?>
+                                        <? endif ?>
+                                        <? endforeach ?>
                                     <? else: ?>
-                                    
+                                        <?=$isSender?$dealing->recipient->getHtmlName():$dealing->sender->getHtmlName()?>
                                     <? endif ?>
                                 </td>
                             <? if ($d > 0): ?>
@@ -67,7 +67,7 @@ use app\components\MyHtmlHelper,
         </div>
     </div>
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-5">
             <div class="box">
                 <div class="box-header">
                     <span class="title"><i class="icon-group"></i> Работники</span>
@@ -76,7 +76,7 @@ use app\components\MyHtmlHelper,
                     <table class="table table-normal">
                         <thead>
                             <tr>
-                              <td style="width:40%"></td>
+                              <td style="width:40%">Класс</td>
                               <td>Нанято</td>
                               <td>Нужно</td>
                               <td>Зарплата</td>
@@ -84,11 +84,12 @@ use app\components\MyHtmlHelper,
                         </thead>
                         <tbody>
                         <? foreach ($factory->proto->workers as $tWorker) { ?>
+                            <? $salary = $factory->getSalaryByClass($tWorker->pop_class_id) ?>
                             <tr>
                                 <td><?=$tWorker->popClass->name ?></td>
                                 <td style="text-align: center;"><?=$factory->getWorkersCountByClass($tWorker->pop_class_id)?></td>
                                 <td style="text-align: center;"><?=$factory->getNeedWorkersCountByClass($tWorker->pop_class_id)?></td>
-                                <td style="text-align: center;"><?=$factory->getSalaryByClass($tWorker->pop_class_id)?> <?=MyHtmlHelper::icon('money')?></td>
+                                <td style="text-align: center;"><?=$salary ? $salary : '—'?> <?=MyHtmlHelper::icon('money')?></td>
                             </tr>
                         <? } ?>
                         </tbody>
@@ -96,28 +97,52 @@ use app\components\MyHtmlHelper,
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-3">
             <div class="box">
                 <div class="box-header">
-                    <span class="title"><i class="icon-home"></i> Склады предприятия</span>
+                    <span class="title"><i class="icon-home"></i> Размеры складов</span>
                 </div>
                 <div class="box-content">
                     <table class="table table-normal">
                         <thead>
                             <tr>
-                              <td style="width:40%"></td>
-                              <td style="min-width: 80px;">Качество</td>
-                              <td style="min-width: 80px;">На складе</td>
-                              <td style="min-width: 80px;">Максимум</td>
+                              <td>Ресурс</td>
+                              <td>Размер</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <? foreach ($factory->proto->resurses as $rpk): if ($rpk->resurseProto->isStorable()): ?>
+                            <tr>
+                                <td><?= MyHtmlHelper::icon($rpk->resurseProto->class_name) ?> <?= $rpk->resurseProto->name ?></td>
+                                <td><?= number_format($factory->storageSize($rpk->resurseProto->id), 0, '', ' ') ?> <?= MyHtmlHelper::icon($rpk->resurseProto->class_name) ?></td>
+                            </tr>
+                        <? endif;
+                        endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="box">
+                <div class="box-header">
+                    <span class="title"><i class="icon-home"></i> Ресурсы на складах</span>
+                </div>
+                <div class="box-content">
+                    <table class="table table-normal">
+                        <thead>
+                            <tr>
+                              <td style="">Ресурс</td>
+                              <td style="min-width: 60px;">Количество</td>
+                              <td style="min-width: 50px;">Качество</td>
                             </tr>
                         </thead>
                         <tbody>
                         <? foreach ($factory->content as $store): if ($store->proto->isStorable()): ?>
                             <tr>
                                 <td><?= MyHtmlHelper::icon($store->proto->class_name) ?> <?= $store->proto->name ?></td>
-                                <td><?= MyHtmlHelper::oneTen2Stars($store->quality) ?></td>
                                 <td><?= number_format($store->count, 0, '', ' ') ?> <?= MyHtmlHelper::icon($store->proto->class_name) ?></td>
-                                <td><?= number_format($factory->storageSize($store->proto_id), 0, '', ' ') ?> <?= MyHtmlHelper::icon($store->proto->class_name) ?></td>
+                                <td><?= $store->count ? MyHtmlHelper::oneTen2Stars($store->quality) : '' ?></td>
                             </tr>
                         <? endif;
                         endforeach; ?>

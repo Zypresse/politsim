@@ -107,18 +107,22 @@ $this->title = 'Political Simulator';
                 <span class="glow"></span>
                 <a href="#uLKT7nwqBc" class="accordion-toggle " data-toggle="collapse">
                     <?=MyHtmlHelper::icon('lg-icons/profile')?>
-                    <span>Профиль</span>
+                    <span>
+                        Профиль
+                        <span id="profile_badge" class="badge badge-green"></span>                        
+                    </span>
                     <i class="icon-caret-down"></i>
                 </a>
                 <ul id="uLKT7nwqBc" class="collapse ">
                     <li>
                         <a onclick="load_page('profile', {'uid':<?= Yii::$app->user->identity->uid ?>})" href="#">
-                            <i class="icon-user"></i>Мой профиль
+                            <i class="icon-user"></i> Мой профиль
                         </a>
                     </li>
                     <li>
                         <a href="#" onclick="load_page('dealings')">
                             <i class="icon-briefcase"></i> Мои сделки
+                            <span id="new_dealings_count" class="badge badge-green"></span>
                         </a>
                     </li>
                     <li>

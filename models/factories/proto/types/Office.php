@@ -10,10 +10,5 @@ use app\models\factories\proto\FactoryProto;
  * @author ilya
  */
 class Office extends FactoryProto {
-    
-    public function getLicenses()
-    {
-        return [];
-    }
-    
+        
 }
