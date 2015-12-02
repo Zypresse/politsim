@@ -64,7 +64,7 @@ $factoryCategories = FactoryProtoCategory::find()->all();
             <? } else { ?>
                 <p>Компания не владеет недвижимостью</p>
             <? } ?>
-            <h3>Инфраструктура</h3>
+            <?/*<h3>Инфраструктура</h3>
             <? if (count($holding->lines)) { ?>
                 <ul>
                     <? foreach ($holding->lines as $line) { ?>
@@ -75,7 +75,7 @@ $factoryCategories = FactoryProtoCategory::find()->all();
                 </ul>
             <? } else { ?>
                 <p>Компания не владеет объектами инфраструктуры</p>
-            <? } ?>
+            <? } */?>
             <h3>Список акционеров:</h3>
             <ul>
                 <? foreach ($holding->stocks as $stock) { ?>
@@ -146,7 +146,7 @@ $factoryCategories = FactoryProtoCategory::find()->all();
                                         break;
                                     case HoldingDecision::DECISION_TRANSFERMONEY:
                                         $to = Unnp::findByPk($data->unnp)->master;
-                                        echo 'Перевод ' . $data->sum . ' ' . MyHtmlHelper::icon('money') . ' для '. $to->getHtmlName();
+                                        echo 'Перевод ' . $data->sum . ' ' . MyHtmlHelper::icon('money') . ' для ' . $to->getHtmlName();
                                         break;
                                 }
                                 ?></td><td>
@@ -217,9 +217,8 @@ $factoryCategories = FactoryProtoCategory::find()->all();
                         Управление недвижимостью <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu">
-                        <li><a href="#" onclick="$('#new_factory_modal').modal();" >Построить новое предприятие</a></li>
-                        <li><a href="#" onclick="$('#new_line_modal').modal();
-                    recalc_build_line_variants();" >Построить новый объект инфраструктуры</a></li>
+                        <li><a href="#" onclick="load_modal('build-factory-select-region',{'unnp':<?=$holding->unnp?>},'new_factory_modal','new_factory_modal_body'); /*show_build_factory_modal()*/" >Построить новое предприятие</a></li>
+                        <?/*<li><a href="#" onclick="$('#new_line_modal').modal();recalc_build_line_variants();" >Построить новый объект инфраструктуры</a></li>*/?>
                         <li><a href="#" onclick="$('#rename_factory_modal').modal();" >Переименовать обьект</a></li>
                         <li><a href="#" onclick="$('#sell_factory_modal').modal();" >Выставить предприятие на продажу</a></li>
                         <li><a href="#" onclick="$('#set_manager_modal').modal();" >Назначить управляющего</a></li>
@@ -297,7 +296,7 @@ $factoryCategories = FactoryProtoCategory::find()->all();
                                                 }
                                                 ?>
                                                 <option id="license_option<?= $license->id ?>" value="<?= $license->id ?>" data-text="<?= $text ?>"><?= $license->name ?></option>      
-                                                <? }
+                                            <? }
                                             ?>
                                         </select>
                                     </div>
@@ -369,9 +368,9 @@ $factoryCategories = FactoryProtoCategory::find()->all();
                                 <label class="control-label" for="#transfer_inner_factory_unnp">Предприятие</label>
                                 <div class="controls">
                                     <select id="transfer_inner_factory_unnp">
-                                    <? foreach ($holding->factories as $factory): ?>
-                                        <option value="<?=$factory->unnp?>"><?=$factory->name?> (<?=$factory->region->name?>)</option>
-                                    <? endforeach ?>
+                                        <? foreach ($holding->factories as $factory): ?>
+                                            <option value="<?= $factory->unnp ?>"><?= $factory->name ?> (<?= $factory->region->name ?>)</option>
+                                        <? endforeach ?>
                                     </select>
                                 </div>
                             </div>
@@ -384,7 +383,7 @@ $factoryCategories = FactoryProtoCategory::find()->all();
                             <p>Деньги будут выплачены со счёта компании.</p>
                         </div>
                         <div class="modal-footer">
-                            <button class="btn btn-primary" data-dismiss="modal"  onclick="transfer_money_inner(<?=$holding->id?>)">Перевести</button>
+                            <button class="btn btn-primary" data-dismiss="modal"  onclick="transfer_money_inner(<?= $holding->id ?>)">Перевести</button>
                             <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
                         </div>
                     </div></div>
@@ -574,7 +573,7 @@ $factoryCategories = FactoryProtoCategory::find()->all();
                                             if ($factory->proto_id == 4) {
                                                 ?>
                                                 <option value="<?= $factory->id ?>"><?= $factory->name ?> (<?= $factory->region->name ?>)</option>
-                                            <?
+                                                <?
                                             }
                                         }
                                         ?>
@@ -598,25 +597,6 @@ $factoryCategories = FactoryProtoCategory::find()->all();
                         </div>
                         <div id="new_factory_modal_body" class="modal-body">
 
-                            <div class="control-group" >
-
-                                <label class="control-label" for="#factory_new_region">Место строительства</label>
-                                <div class="controls">
-                                    <select id="factory_new_region">
-                                        <?
-                                        $regions = Region::find()->with('state')->orderBy('state_id')->all();
-                                        foreach ($regions as $i => $region) {
-                                            ?>
-                                                <? if ($i == 0 || $regions[$i - 1]->state_id != $region->state_id) { ?>
-                                                    <?= ($i) ? '</optgroup>' : '' ?><optgroup label="<?= ($region->state) ? $region->state->name : 'Ничейные регионы' ?>">
-                                                <? } ?>
-                                                <option value="<?= $region->id ?>" <?= ($region->id == $holding->region_id) ? "selected='selected'" : '' ?>><?= $region->name ?></option>
-<? } ?>
-                                    </select>
-                                </div>
-                            </div>
-
-
                         </div>
                         <div class="modal-footer">
                             <button class="btn btn-primary" id="build_fabric_page2" >Далее</button>
@@ -626,7 +606,7 @@ $factoryCategories = FactoryProtoCategory::find()->all();
                     </div></div>
             </div>
 
-            <div style="display:none;" class="modal fade" id="new_line_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabelnew_line_modal" aria-hidden="true">
+            <?/*<div style="display:none;" class="modal fade" id="new_line_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabelnew_line_modal" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -640,11 +620,12 @@ $factoryCategories = FactoryProtoCategory::find()->all();
                                 <label class="control-label" for="#line_new_proto_id">Тип</label>
                                 <div class="controls">
                                     <select id="line_new_proto_id">
-                                        <? $protos = LineProto::find()->all();
+                                        <?
+                                        $protos = LineProto::find()->all();
                                         foreach ($protos as $proto):
                                             ?>
                                             <option data-cost="<?= $proto->build_cost ?>" value="<?= $proto->id ?>"><?= $proto->name ?></option>
-<? endforeach ?>
+                                        <? endforeach ?>
                                     </select>
                                 </div>
                             </div>
@@ -657,11 +638,11 @@ $factoryCategories = FactoryProtoCategory::find()->all();
                                         <?
                                         foreach ($regions as $i => $region) {
                                             ?>
-                                                <? if ($i == 0 || $regions[$i - 1]->state_id != $region->state_id) { ?>
-                                                    <?= ($i) ? '</optgroup>' : '' ?><optgroup label="<?= ($region->state) ? $region->state->name : 'Ничейные регионы' ?>">
-    <? } ?>
+                                            <? if ($i == 0 || $regions[$i - 1]->state_id != $region->state_id) { ?>
+                                                <?= ($i) ? '</optgroup>' : '' ?><optgroup label="<?= ($region->state) ? $region->state->name : 'Ничейные регионы' ?>">
+                                                <? } ?>
                                                 <option value="<?= $region->id ?>" <?= ($region->id == $holding->region_id) ? "selected='selected'" : '' ?>><?= $region->name ?></option>
-<? } ?>
+                                            <? } ?>
                                     </select>
                                 </div>
                             </div>
@@ -686,8 +667,9 @@ $factoryCategories = FactoryProtoCategory::find()->all();
                             <button class="btn btn-primary" onclick="start_build_line()" >Начать строительство</button>
                             <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
                         </div>
-                    </div></div>
-            </div>
+                    </div>
+                </div>
+            </div>*/?>
         </div>
     </div>
 </div>
@@ -723,7 +705,7 @@ $factoryCategories = FactoryProtoCategory::find()->all();
             json_request('new-holding-decision', {'holding_id': id, 'type': 2, 'sum': $('#dividents_sum').val()});
         }
     }
-    
+
     function transfer_money_inner(id) {
         if ($('#transfer_inner_sum').val()) {
             json_request('new-holding-decision', {'holding_id': id, 'type': 12, 'unnp': $('#transfer_inner_factory_unnp').val(), 'sum': $('#transfer_inner_sum').val()});

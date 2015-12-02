@@ -697,5 +697,29 @@ class ModalController extends MyController {
         
         return $this->render('factory-dealings',['factory'=>$factory]);
     }
+    
+    public function actionBuildFactorySelectRegion($unnp)
+    {
+        if (intval($unnp) <= 0) {
+            return $this->_r("Invalid UNNP");
+        }
+        
+        $unnpModel = Unnp::findByPk($unnp);
+        if (is_null($unnpModel)) {
+            return $this->_r("UNNP not found");
+        }
+        
+        $viewer = $unnpModel->master;
+        if ($viewer->getUnnpType() !== Unnp::TYPE_HOLDING) {
+            return $this->_r("Not allowed");
+        }
+        
+        $regions = Region::find()->with('state')->with('state.articles')->orderBy('state_id')->all();
+        
+        return $this->render('build-factory-select-region', [
+            'viewer' => $viewer,
+            'regions' => $regions
+        ]);
+    }
 
 }

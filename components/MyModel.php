@@ -18,7 +18,7 @@ abstract class MyModel extends ActiveRecord
      * Поиск по ID
      * 
      * @var integer $id
-     * @return self
+     * @return static
      */
     public static function findByPk($id)
     {
