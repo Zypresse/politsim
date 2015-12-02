@@ -15,33 +15,20 @@ use app\components\MyHtmlHelper;
                     <span class="chart_pie"><?= $user->chart_pie ?> <?= MyHtmlHelper::icon('chart_pie') ?></span>
                 </div>
             </div>
-<? if ($is_own): ?>
-            <button onclick="load_modal('change-ideology', {}, 'change_ideology_modal', 'change_ideology_modal_body')" class="btn btn-lightblue btn-block"><? if ($user->ideology) { ?>Сменить<? } else { ?>Выбрать<? } ?> идеологию</button>
-
-            <div style="display:none" class="modal fade" id="change_ideology_modal" tabindex="-1" role="dialog" aria-labelledby="change_ideology_modal_label" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                            <h3 id="change_ideology_modal_label">Выбор идеологии</h3>
-                        </div>
-                        <div id="change_ideology_modal_body" class="modal-body">
-
-                        </div>
-                        <div class="modal-footer">
-                            <button onclick="json_request('change-ideology', {'id': $('#new_ideology_id').val()})" class="btn btn-green" data-dismiss="modal" aria-hidden="true">Сохранить</button>
-                            <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-<? endif ?>
         </div>
         <div class="col-md-9">
             <h1><?= htmlspecialchars($user->name) ?> <? if ($is_own) { ?><small>(это вы)</small><? } ?></h1>
-            <? if ($user->ideology) { ?>
-                <p><i class="icon-flag"></i> Придерживается идеологии «<?= $user->ideology->name ?>»</p>
-            <? } ?>
+            <? if ($user->ideology || $is_own):  ?>
+                <p>
+                    <i class="icon-flag"></i>
+                <? if ($user->ideology) : ?>
+                    Придерживается идеологии «<?= $user->ideology->name ?>»
+                <? endif ?>
+                <? if ($is_own): ?>
+                    <button onclick="load_modal('change-ideology', {}, 'change_ideology_modal', 'change_ideology_modal_body')" class="btn btn-<? if ($user->ideology) { ?>default<? } else { ?>lightblue<? } ?> btn-xs"><? if ($user->ideology) { ?>Сменить<? } else { ?>Выбрать<? } ?> идеологию</button>
+                <? endif ?>
+                </p>
+            <? endif ?>
             <p><i class="icon-group"></i> <? if ($user->party) { ?>
                     Состоит в партии <a href="#" onclick="load_page('party-info', {'id':<?= $user->party_id ?>})"><?= htmlspecialchars($user->party->name) ?></a>
                 <? } else { ?>
@@ -277,4 +264,24 @@ use app\components\MyHtmlHelper;
                 </script>
 <? } ?>
         </div>
-    </div></div>
+    </div>
+</div>
+<? if ($is_own): ?>
+<div style="display:none" class="modal fade" id="change_ideology_modal" tabindex="-1" role="dialog" aria-labelledby="change_ideology_modal_label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="change_ideology_modal_label">Выбор идеологии</h3>
+            </div>
+            <div id="change_ideology_modal_body" class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button onclick="json_request('change-ideology', {'id': $('#new_ideology_id').val()})" class="btn btn-green" data-dismiss="modal" aria-hidden="true">Сохранить</button>
+                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+<? endif ?>
