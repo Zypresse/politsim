@@ -67,37 +67,69 @@ use app\components\MyHtmlHelper,
         </div>
     </div>
     <div class="row">
-        <div class="col-md-5">
+        <div class="col-md-7">
             <div class="box">
                 <div class="box-header">
-                    <span class="title"><i class="icon-group"></i> Работники</span>
+                    <span class="title"><i class="icon-money"></i> Настройки продажи</span>
                 </div>
-                <div class="box-content">    
+                <div class="box-content">
                     <table class="table table-normal">
+                        <? if (count($factory->resurseCosts)): ?>
                         <thead>
                             <tr>
-                              <td style="width:40%">Класс</td>
-                              <td>Нанято</td>
-                              <td>Нужно</td>
-                              <td>Зарплата</td>
+                              <td>Ресурс</td>
+                              <td>Кому доступна цена</td>
+                              <td style="min-width:80px">Цена</td>
                             </tr>
                         </thead>
                         <tbody>
-                        <? foreach ($factory->proto->workers as $tWorker) { ?>
-                            <? $salary = $factory->getSalaryByClass($tWorker->pop_class_id) ?>
+                        <? foreach ($factory->resurseCosts as $cost): ?>
                             <tr>
-                                <td><?=$tWorker->popClass->name ?></td>
-                                <td style="text-align: center;"><?=$factory->getWorkersCountByClass($tWorker->pop_class_id)?></td>
-                                <td style="text-align: center;"><?=$factory->getNeedWorkersCountByClass($tWorker->pop_class_id)?></td>
-                                <td style="text-align: center;"><?=$salary ? $salary : '—'?> <?=MyHtmlHelper::icon('money')?></td>
+                                <td><?= MyHtmlHelper::icon($cost->resurse->proto->class_name) ?> <?= $cost->resurse->proto->name ?></td>
+                                <td><?= $cost->getHtmlType()?></td>
+                                <td><?= number_format($cost->cost, 2, '.', ' ') ?> <?= MyHtmlHelper::icon("money") ?></td>
                             </tr>
-                        <? } ?>
+                        <? endforeach;
+                        else:?>
+                        <tbody>
+                            <tr>
+                                <td colspan="2" style="text-align:center">Цены не установлены</td>
+                            </tr>
+                        <? endif ?>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-5">
+            <div class="box">
+                <div class="box-header">
+                    <span class="title"><i class="icon-money"></i> Автозакупка</span>
+                </div>
+                <div class="box-content padded">
+                <? if (count($factory->autobuySettings)): ?>
+                <? foreach ($factory->autobuySettings as $settings): ?>
+                    <p>
+                        Закупка <?=number_format($settings->count,0,'',' ')?> <?=MyHtmlHelper::icon($settings->resurseProto->class_name)?> в час
+                        по цене не выше <?=MyHtmlHelper::moneyFormat($settings->max_cost)?>
+                        качества не ниже <?=MyHtmlHelper::oneTen2Stars($settings->min_quality)?>
+                        <? if ($settings->state_id): ?>
+                            только у налогоплательщиков страны <?=$settings->state->getHtmlName()?>
+                        <? endif ?>
+                        <? if ($settings->holding_id): ?>
+                            только у предприятий компании <?=$settings->holding->getHtmlName()?>
+                        <? endif ?>
+                    </p>
+                <? endforeach ?>
+                <? else: ?>
+                    <p>Автозакупка отключена</p>
+                <? endif ?>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
             <div class="box">
                 <div class="box-header">
                     <span class="title"><i class="icon-home"></i> Размеры складов</span>
@@ -123,7 +155,7 @@ use app\components\MyHtmlHelper,
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-5">
             <div class="box">
                 <div class="box-header">
                     <span class="title"><i class="icon-home"></i> Ресурсы на складах</span>
@@ -151,19 +183,17 @@ use app\components\MyHtmlHelper,
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="box">
                 <div class="box-header">
-                    <span class="title"><i class="icon-cog"></i> Производство и потребление</span>
+                    <span class="title"><i class="icon-cog"></i> Производство (в час)</span>
                 </div>
                 <div class="box-content">
                     <table class="table table-normal">
                         <? if (count($factory->proto->import)): ?>
                         <thead>
                             <tr>
-                                <td colspan="2">Расход (в час)</td>
+                                <td colspan="2">Расход ресурсов</td>
                             </tr>
                         </thead>
                         <tbody>
@@ -178,9 +208,9 @@ use app\components\MyHtmlHelper,
                         <? if (count($factory->proto->export)): ?>
                         <thead>
                             <tr>
-                                <td colspan="2">Производство (в час)</td>
+                                <td colspan="2">Производство ресурсов</td>
                             </tr>
-                        </thead>
+                        </thead>                        
                         <tbody>
                         <? foreach ($factory->proto->export as $kit): ?>
                             <tr>
@@ -194,61 +224,35 @@ use app\components\MyHtmlHelper,
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+    </div>
+    <div class="row">
+        <div class="col-md-12">
             <div class="box">
                 <div class="box-header">
-                    <span class="title"><i class="icon-money"></i> Продажа</span>
+                    <span class="title"><i class="icon-group"></i> Работники</span>
                 </div>
                 <div class="box-content">
                     <table class="table table-normal">
-                        <? if (count($factory->resurseCosts)): ?>
                         <thead>
                             <tr>
-                              <td></td>
-                              <td style="min-width:80px">Цена</td>
+                                <td style="width:40%">Класс</td>
+                                <td>Нанято</td>
+                                <td>Нужно</td>
+                                <td>Зарплата</td>
                             </tr>
                         </thead>
                         <tbody>
-                        <? foreach ($factory->resurseCosts as $cost): ?>
+                        <? foreach ($factory->proto->workers as $tWorker): ?>
+                            <? $salary = $factory->getSalaryByClass($tWorker->pop_class_id) ?>
                             <tr>
-                                <td><?= MyHtmlHelper::icon($cost->resurse->proto->class_name) ?> <?= $cost->resurse->proto->name ?> <?= $cost->getHtmlType()?></td>
-                                <td><?= number_format($cost->cost, 2, '.', ' ') ?> <?= MyHtmlHelper::icon("money") ?></td>
+                                <td><?=$tWorker->popClass->name ?></td>
+                                <td style="text-align: center;"><?=$factory->getWorkersCountByClass($tWorker->pop_class_id)?></td>
+                                <td style="text-align: center;"><?=$factory->getNeedWorkersCountByClass($tWorker->pop_class_id)?></td>
+                                <td style="text-align: center;"><?=$salary ? $salary.' '.MyHtmlHelper::icon('money') : '—'?></td>
                             </tr>
-                        <? endforeach;
-                        else:?>
-                        <tbody>
-                            <tr>
-                                <td colspan="2" style="text-align:center">Цены не установлены</td>
-                            </tr>
-                        <? endif ?>
+                        <? endforeach ?>
                         </tbody>
                     </table>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="box">
-                <div class="box-header">
-                    <span class="title"><i class="icon-money"></i> Автозакупка</span>
-                </div>
-                <div class="box-content padded">
-                <? if (count($factory->autobuySettings)): ?>
-                <? foreach ($factory->autobuySettings as $settings): ?>
-                    <p>
-                        Закупка <?=number_format($settings->count,0,'',' ')?> <?=MyHtmlHelper::icon($settings->resurseProto->class_name)?> в час
-                        по цене не выше <?=MyHtmlHelper::moneyFormat($settings->max_cost)?>
-                        качества не ниже <?=MyHtmlHelper::oneTen2Stars($settings->min_quality)?>
-                        <? if ($settings->state_id): ?>
-                            только у налогоплательщиков страны <?=$settings->state->getHtmlName()?>
-                        <? endif ?>
-                        <? if ($settings->holding_id): ?>
-                            только у предприятий компании <?=$settings->holding->getHtmlName()?>
-                        <? endif ?>
-                    </p>
-                <? endforeach ?>
-                <? else: ?>
-                    <p>Автозакупка отключена</p>
-                <? endif ?>
                 </div>
             </div>
         </div>
