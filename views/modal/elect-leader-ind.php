@@ -16,7 +16,7 @@ $(function(){
     increaseArea: '20%' // optional
   }).on('ifChecked', function(event){
     request_id = $(this).val();
-    $('#elect_vote .btn-green').show();
+    $('#vote_button').show();
   });
 });
 </script>
