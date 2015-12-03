@@ -302,7 +302,7 @@ class User extends MyModel implements TaxPayer, IdentityInterface {
     public function isShareholder(Holding $holding)
     {
         foreach ($holding->stocks as $stock) {
-            if ($stock->unnp === $this->unnp || ($this->post && $stock->unnp === $this->post->unnp)) {
+            if ($stock->master->isUserController($this->id)) {
                 return true;
             }
         }
