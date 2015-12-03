@@ -386,12 +386,12 @@ class ModalController extends MyController {
     {
         $holding = Holding::findByPk($holding_id);
         $state = State::findByPk($state_id);
-        $licenses = HoldingLicenseType::find()->all();
+        $licenses = LicenseProto::find()->all();
 
-        foreach ($licenses as $license) {
+        foreach ($licenses as $licenseProto) {
             $allowed = true;
             foreach ($holding->licenses as $hl) {
-                if ($license->id === $hl->license_id && $hl->state_id === $state->id) {
+                if ($licenseProto->id === $hl->proto_id && $hl->state_id === $state->id) {
                     $allowed = false;
                     $break;
                 }
@@ -401,7 +401,7 @@ class ModalController extends MyController {
 
             $stateLicense = null;
             foreach ($state->licenses as $sl) {
-                if ($sl->license_id === $license->id) {
+                if ($sl->proto_id === $licenseProto->id) {
                     $stateLicense = $sl;
                     break;
                 }
@@ -430,7 +430,7 @@ class ModalController extends MyController {
                 }
             }
             ?>
-            <option id="license_option<?= $license->id ?>" value="<?= $license->id ?>" data-text="<?= $text ?>" ><?= $license->name ?></option>      
+            <option id="license_option<?= $licenseProto->id ?>" value="<?= $licenseProto->id ?>" data-text="<?= $text ?>" ><?= $licenseProto->name ?></option>      
             <?
         }
     }
