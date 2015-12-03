@@ -11,6 +11,7 @@ use app\components\MyHtmlHelper;
     <div class="row">
         <div class="col-md-12">
             <h1><?=htmlspecialchars($holding->name)?></h1>
+            <p>Директор: <?= $holding->director ? $holding->director->getHtmlName() : '<em>не назначен</em>' ?></p>
             <p>Примерная капитализация: <span class="status-success"><?=MyHtmlHelper::aboutNumber($holding->capital)?> <?=MyHtmlHelper::icon('money')?></span></p>
             <? if ($holding->state) { ?><p>Компания зарегистрирована в государстве <?=$holding->state->getHtmlName()?></p><? } ?>
             <? if ($holding->region) { ?><p>Компания имеет головной офис в городе <?=$holding->region->getCityHtmlName()?></p><? } ?>

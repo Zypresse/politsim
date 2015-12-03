@@ -1,8 +1,4 @@
 <?php
-/*
- * Copyleft license
- * I dont care how you use it
- */
 
 use app\components\MyHtmlHelper,
     yii\helpers\Html,
@@ -17,73 +13,151 @@ use app\components\MyHtmlHelper,
     app\models\Region,
     app\models\Unnp;
 
-/* @var $user \app\models\User */
+/* @var $user app\models\User */
+/* @var $holding app\models\Holding */
+/* @var $licenses app\models\licenses\License[] */
+/* @var $factories app\models\factories\Factory[] */
+
 $userStock = $user->getShareholderStock($holding);
 $factoryCategories = FactoryProtoCategory::find()->all();
 ?>
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-
-            <h1>Управление «<?= $holding->name ?>»</h1>
-            <p>Директор: <?= $holding->director ? MyHtmlHelper::a($holding->director->name, 'load_page("profile",{"id":' . $holding->director_id . '})') : '<em>не назначен</em>' ?></p>
-            <p>Капитализация: <?= number_format($holding->capital, 0, '', ' ') ?> <?= MyHtmlHelper::icon('money') ?></p>
-            <p>Баланс: <?= number_format($holding->balance, 0, '', ' ') ?> <?= MyHtmlHelper::icon('money') ?></p>
-            <? if ($holding->state) { ?>
-                <p>Компания зарегистрирована в государстве: <?= Html::a($holding->state->name, '#', ['onclick' => "load_page('state-info',{'id':{$holding->state_id}})"]) ?></p>
-            <? } ?>
-            <? if ($holding->region) { ?>
-                <p>Компания имеет штаб-квартиру в регионе: <?= $holding->region->name ?></p>
-            <? } else { ?>
-                <p>Компания не имеет штаб-квартиры</p>
-            <? } ?>
-            <h3>Лицензии:</h3>
-            <? if (count($holding->licenses)) { ?>
-                <button class="btn btn-xs btn-default" id="list_licenses_button" >Развернуть список</button>
-                <ul id="list_licenses" style="display: none" >
-                    <? foreach ($holding->licenses as $license) { ?>
+            <h1><?= htmlspecialchars($holding->name) ?></h1>
+            <p>Директор: <?= $holding->director ? $holding->director->getHtmlName() : '<em>не назначен</em>' ?></p>
+            <p>Капитализация: <?= MyHtmlHelper::moneyFormat($holding->capital) ?></p>
+            <p>Баланс лицевого счёта: <?= MyHtmlHelper::moneyFormat($holding->balance) ?></p>
+            <? if ($holding->state) { ?><p>Компания зарегистрирована в государстве <?=$holding->state->getHtmlName()?></p><? } ?>
+            <? if ($holding->region) { ?><p>Компания имеет головной офис в городе <?=$holding->region->getCityHtmlName()?></p><? } ?>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="box">
+                <div class="box-header">
+                    <span class="title">
+                        <i class="icon-group"></i> Акционеры
+                    </span>
+                </div>
+                <div class="box-content">    
+                    <table class="table table-normal">
+                        <thead>
+                            <tr>
+                                <td>Владелец</td>
+                                <td>Пакет акций</td>
+                            </tr>
+                        </thead>
+                        <? foreach ($holding->stocks as $stock): ?>
+                            <tr>
+                                <td><?= $stock->master->getHtmlName() ?></td>
+                                <td style="text-align:center"><?= MyHtmlHelper::formateNumberword($stock->count,'акций','акция','акции') ?> (<?= round($stock->getPercents(), 2) ?>%)</td>
+                            </tr>
+                        <? endforeach ?>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="box">
+                <div class="box-header">
+                    <span class="title">
+                        <i class="icon-legal"></i> Лицензии
+                    </span>
+                    <ul class="box-toolbar">
                         <li>
-                            <?= $license->proto->name ?> (<?= $license->state->name ?>)
+                            <button onclick="$('#new_license_modal').modal();" class="btn btn-xs dropdown-toggle btn-green">
+                                Получить лицензию
+                            </button>
                         </li>
-                    <? } ?>
-                </ul>
-            <? } else { ?>
-                <p>Компания не обладает лицензией ни на один вид деятельности</p>
-            <? } ?>
-            <h3>Недвижимость</h3>
-            <? if (count($holding->factories)) { ?>
-                <ul>
-                    <? foreach ($holding->factories as $factory) { ?>
+                    </ul>
+                </div>
+                <div class="box-content">    
+                    <table class="table table-normal">
+                    <? if (count($licenses)): ?>
+                        <thead>
+                            <tr>
+                                <td>Вид деятельности</td>
+                                <td>Государство</td>
+                            </tr>
+                        </thead>
+                        <? foreach ($licenses as $license): ?>
+                            <tr>
+                                <td><?= $license->proto->name ?></td>
+                                <td><?= $license->state->getHtmlName() ?></td>
+                            </tr>
+                        <? endforeach ?>
+                    <? else: ?>
+                            <tr>
+                                <td>Компания не обладает лицензией ни на один вид деятельности</td>
+                            </tr>
+                    <? endif ?>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box">
+                <div class="box-header">
+                    <span class="title">
+                        <i class="icon-building"></i> Недвижимость
+                    </span>
+                    <ul class="box-toolbar">
                         <li>
-                            <?= Html::a($factory->name, '#', ['onclick' => "load_page('factory-info',{'id':{$factory->id}})"]) ?> 
-                            <? if ($factory->status < 0) { ?><span style="color:red;">(не достроено, запланированная дата окончания строительства: <span class="formatDate" data-unixtime="<?= $factory->builded ?>"><?= date('d-M-Y H:i', $factory->builded) ?></span>)</span><? } ?>
-                            <? if ($factory->status > 1) { ?><span style="color:red;">(не работает)</span><? } ?>
+                            <button class="btn btn-xs btn-green" onclick="load_modal('build-factory-select-region',{'unnp':<?=$holding->unnp?>},'new_factory_modal','new_factory_modal_body'); /*show_build_factory_modal()*/" >
+                                Построить новое предприятие
+                            </button>
                         </li>
-                    <? } ?>
-                </ul>
-            <? } else { ?>
-                <p>Компания не владеет недвижимостью</p>
-            <? } ?>
-            <?/*<h3>Инфраструктура</h3>
-            <? if (count($holding->lines)) { ?>
-                <ul>
-                    <? foreach ($holding->lines as $line) { ?>
-                        <li>
-                            <?= $line->proto->name ?> <?= $line->region1->name ?> — <?= $line->region2->name ?>
-                        </li>
-                    <? } ?>
-                </ul>
-            <? } else { ?>
-                <p>Компания не владеет объектами инфраструктуры</p>
-            <? } */?>
-            <h3>Список акционеров:</h3>
-            <ul>
-                <? foreach ($holding->stocks as $stock) { ?>
-                    <li>
-                        <?= $stock->master->getHtmlName() ?> <?= round($stock->getPercents(), 2) ?>%
-                    </li>
-                <? } ?>
-            </ul>
+                    </ul>
+                </div>
+                <div class="box-content">    
+                    <table class="table table-normal">
+                    <? if (count($factories)): ?>
+                        <thead>
+                            <tr>
+                                <td>Предприятие</td>
+                                <td style="min-width:150px">Регион</td>
+                                <td style="min-width:100px">Лицевой счёт</td>
+                                <td>Статус</td>
+                                <td style="min-width:100px">Действия</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <? foreach ($factories as $factory): ?>
+                            <tr>
+                                <td><?=$factory->getHtmlName()?></td>
+                                <td><?=$factory->region->getHtmlName()?></td>
+                                <td><?=MyHtmlHelper::moneyFormat($factory->balance)?></td>
+                                <td style="text-align: center"><?=$factory->getStatusShortName()?></td>
+                                <td>
+                                    <button title="Переименовать" class="btn btn-xs btn-lightblue" onclick="$('#rename_factory_modal').modal();" >
+                                        <i class="icon-edit"></i>
+                                    </button>
+                                    <button title="Выставить на продажу" class="btn btn-xs btn-gold" onclick="$('#sell_factory_modal').modal();" >
+                                        <i class="icon-money"></i>
+                                    </button>
+                                    <button title="Назначить управляющего" class="btn btn-xs btn-gray" onclick="$('#set_manager_modal').modal();" >
+                                        <i class="icon-user"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <? endforeach ?>
+                    <? else: ?>
+                        <tbody>
+                            <tr>
+                                <td>Компания не владеет недвижимостью</td>
+                            </tr>
+                    <? endif ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
             <h3>Решения на голосовании:</h3>
             <? if (count($holding->decisions)) { ?>
                 <table class="table">
@@ -92,7 +166,6 @@ $factoryCategories = FactoryProtoCategory::find()->all();
                         $data = json_decode($decision->data);
                         ?>
                         <tr>
-                            <td><?= date('d-m-Y', $decision->created) ?></td>
                             <td><?
                                 switch ($decision->decision_type) {
                                     case HoldingDecision::DECISION_CHANGENAME:
@@ -149,7 +222,9 @@ $factoryCategories = FactoryProtoCategory::find()->all();
                                         echo 'Перевод ' . $data->sum . ' ' . MyHtmlHelper::icon('money') . ' для ' . $to->getHtmlName();
                                         break;
                                 }
-                                ?></td><td>
+                                ?>
+                            </td>
+                            <td style="width:250px">
                                 <?
                                 $za = 0;
                                 $protiv = 0;
@@ -161,9 +236,9 @@ $factoryCategories = FactoryProtoCategory::find()->all();
                                     }
                                 }
                                 ?>
-                                <span style="color:green"><?= round($za, 2) ?>% акций ЗА</span>, <span style="color:red"><?= round($protiv, 2) ?>% акций ПРОТИВ</span>
+                                <span class="status-success"><?= round($za, 2) ?>% акций ЗА</span>, <span class="status-error"><?= round($protiv, 2) ?>% акций ПРОТИВ</span>
                             </td>
-                            <td>
+                            <td style="width:200px">
                                 <?
                                 $allreadyVoted = false;
                                 foreach ($decision->votes as $vote) {
@@ -172,7 +247,7 @@ $factoryCategories = FactoryProtoCategory::find()->all();
                                     }
                                 }
                                 if ($allreadyVoted) {
-                                    echo "Вы уже проголосовали";
+                                    echo "<span class='status-success'>Вы уже проголосовали</span>";
                                 } else {
                                     ?>
                                     <button class="btn btn-green" onclick="vote_for_decision(<?= $decision->id ?>, 1)">ЗА</button>
@@ -212,28 +287,7 @@ $factoryCategories = FactoryProtoCategory::find()->all();
                         <li><a href="#" onclick="$('#transfer_money_inner_modal').modal();" >Перевести деньги на счёт предприятия</a></li>
                     </ul>
                 </div>
-                <div class="btn-group">
-                    <button class="btn btn-sm dropdown-toggle btn-gray" data-toggle="dropdown">
-                        Управление недвижимостью <span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li><a href="#" onclick="load_modal('build-factory-select-region',{'unnp':<?=$holding->unnp?>},'new_factory_modal','new_factory_modal_body'); /*show_build_factory_modal()*/" >Построить новое предприятие</a></li>
-                        <?/*<li><a href="#" onclick="$('#new_line_modal').modal();recalc_build_line_variants();" >Построить новый объект инфраструктуры</a></li>*/?>
-                        <li><a href="#" onclick="$('#rename_factory_modal').modal();" >Переименовать обьект</a></li>
-                        <li><a href="#" onclick="$('#sell_factory_modal').modal();" >Выставить предприятие на продажу</a></li>
-                        <li><a href="#" onclick="$('#set_manager_modal').modal();" >Назначить управляющего</a></li>
-                    </ul>
-                </div>
-                <? if ($holding->state) { ?>
-                    <div class="btn-group">
-                        <button class="btn btn-sm dropdown-toggle btn-brown" data-toggle="dropdown">
-                            Управление лицензиями <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu">
-                            <!--<li class="divider"></li>-->
-                            <li><a href="#" onclick="$('#new_license_modal').modal();" >Получить лицензию на новый вид деятельности</a></li>
-                        </ul>
-                    </div>
+                    
                 </div>
 
                 <div style="display:none;" class="modal fade" id="new_license_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel123" aria-hidden="true">
@@ -309,6 +363,7 @@ $factoryCategories = FactoryProtoCategory::find()->all();
                             </div>
                         </div></div>
                 </div>
+            <? if ($holding->state) { ?>
             <? } else { ?>
                 <p style="color:red;">Компания зарегистрирована в несущесвующем ныне государстве!</p>
             <? } ?>
@@ -800,16 +855,6 @@ $factoryCategories = FactoryProtoCategory::find()->all();
             }
             if ($(this).val() ><?= $holding->balance ?>) {
                 $(this).val(<?= $holding->balance ?>);
-            }
-        });
-
-        $('#list_licenses_button').click(function () {
-            if ($(this).text() === "Развернуть список") {
-                $(this).text('Свернуть список');
-                $('#list_licenses').slideDown();
-            } else {
-                $(this).text("Развернуть список");
-                $('#list_licenses').slideUp();
             }
         });
 

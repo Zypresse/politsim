@@ -238,6 +238,23 @@ class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
         return $names[$this->status];
     }
     
+    public function getStatusShortName()
+    {
+        $names = [
+            -2 => '<span class="status-error"><i class="icon-stop" title="Строительство прекращено"></i></span>',
+            -1 => '<span class="status-info"><i class="icon-spinner" title="Идёт строительство"></i></span>',
+            0 => '<span class="status-pending"><i class="icon-question-sign" title="Неизвестен"></i></span>',
+            1 => '<span class="status-success"><i class="icon-play" title="Работает"></i></span>',
+            2 => '<span class="status-error"><i class="icon-stop" title="Работа остановлена"></i></span>',
+            3 => '<span class="status-error"><i class="icon-warning-sign" title="Работа остановлена по причине нехватки ресурсов"></i></span>',
+            4 => '<span class="status-error"><i class="icon-pause" title="Работа остановлена автоматически"></i></span>',
+            5 => '<span class="status-error"><i class="icon-warning-sign" title="Работа остановлена по причине нехватки работников"></i></span>',
+            6 => '<span class="status-error"><i class="icon-warning-sign" title="Работа остановлена по причине отстутствия необходимой лицензии"></i></span>'
+        ];
+        
+        return $names[$this->status];
+    }
+    
     public function kitSize($resurse_proto_id)
     {
         $kit = FactoryProtoKit::find()->where([

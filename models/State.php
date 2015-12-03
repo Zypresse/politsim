@@ -287,7 +287,7 @@ class State extends MyModel implements TaxPayer
 
     public function getHtmlName()
     {
-        return MyHtmlHelper::a($this->name, "load_page('state-info',{'id':{$this->id}})");
+        return '<img src="'.$this->flag.'" alt="" style="max-height:12px; max-width:16px"> '.MyHtmlHelper::a($this->name, "load_page('state-info',{'id':{$this->id}})");
     }
 
     public function getTaxStateId()
