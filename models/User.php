@@ -428,4 +428,14 @@ class User extends MyModel implements TaxPayer, IdentityInterface {
         return $this->state_id === $stateId;
     }
 
+    public function getUserControllerId()
+    {
+        return $this->id;
+    }
+
+    public function isUserController($userId)
+    {
+        return $this->id === $userId;
+    }
+
 }

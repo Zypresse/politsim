@@ -300,4 +300,14 @@ class State extends MyModel implements TaxPayer
         return false;
     }
 
+    public function getUserControllerId()
+    {
+        return $this->executiveOrg->leader->user->id;
+    }
+
+    public function isUserController($userId)
+    {
+        return $this->executiveOrg->leader->user->id === $userId;        
+    }
+
 }

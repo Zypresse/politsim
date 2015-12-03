@@ -354,4 +354,14 @@ class Org extends MyModel implements TaxPayer {
         return false;
     }
 
+    public function getUserControllerId()
+    {
+        return $this->leader->user->id;
+    }
+
+    public function isUserController($userId)
+    {
+        return $this->leader->user->id === $userId;
+    }
+
 }

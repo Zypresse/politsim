@@ -580,4 +580,14 @@ class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
         return $this->region->state_id;
     }
 
+    public function getUserControllerId()
+    {
+        return $this->manager_uid;
+    }
+
+    public function isUserController($userId)
+    {
+        return $this->manager_uid === $userId;
+    }
+
 }

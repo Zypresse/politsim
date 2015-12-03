@@ -208,4 +208,14 @@ class Post extends MyModel implements TaxPayer
         return false;
     }
 
+    public function getUserControllerId()
+    {
+        return $this->user->id;
+    }
+
+    public function isUserController($userId)
+    {
+        return $this->user->id === $userId;
+    }
+
 }

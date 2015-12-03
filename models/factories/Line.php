@@ -131,4 +131,14 @@ class Line extends UnmovableObject implements TaxPayer
         return $this->region1->state_id === (int)$stateId;
     }
 
+    public function getUserControllerId()
+    {
+        return 0;
+    }
+
+    public function isUserController($userId)
+    {
+        return false;
+    }
+
 }

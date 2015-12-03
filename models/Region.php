@@ -338,4 +338,14 @@ class Region extends MyModel implements TaxPayer
         return false;
     }
 
+    public function getUserControllerId()
+    {
+        return 0;
+    }
+
+    public function isUserController($userId)
+    {
+        return false;
+    }
+
 }

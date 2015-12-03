@@ -229,4 +229,24 @@ class Holding extends MyModel implements TaxPayer
         return ($this->state_id === (int)$stateId);
     }
 
+    public function getUserControllerId()
+    {
+        return $this->director_id;
+    }
+
+    public function isUserController($userId)
+    {
+        if ($this->director_id === $userId) {
+            return true;
+        }
+        
+        foreach ($this->stocks as $stock) {
+            if ($stock->master->isUserController($userId)) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
 }
