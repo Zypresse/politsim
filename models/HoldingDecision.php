@@ -10,7 +10,12 @@ use app\components\MyModel,
     app\models\factories\proto\LineProto,
     app\models\licenses\License,
     app\models\licenses\LicenseRule,
-    app\models\Dealing;
+    app\models\licenses\proto\LicenseProto,
+    app\models\State,
+    app\models\Region,
+    app\models\Dealing,
+    app\models\User,
+    app\components\MyHtmlHelper;
 
 /**
  * Решение по управлению АО. Таблица "holding_decisions".
@@ -133,6 +138,51 @@ class HoldingDecision extends MyModel {
      * Перевод денег на счёт фабрики
      */
     const DECISION_TRANSFERMONEY = 12;
+    
+    public function getHtml()
+    {
+        $data = json_decode($this->data);
+        switch ($this->decision_type) {
+            case HoldingDecision::DECISION_CHANGENAME:
+                return 'Переименование компании в «' . $data->new_name . '»';
+            case HoldingDecision::DECISION_PAYDIVIDENTS:
+                return 'Выплата дивидентов акционерам в размере ' . MyHtmlHelper::moneyFormat($data->sum);
+            case HoldingDecision::DECISION_GIVELICENSE:
+                $license = LicenseProto::findByPk($data->license_id);
+                $state = State::findByPk($data->state_id);
+                return 'Получение лицензии на вид деятельности «' . $license->name . '» в государстве ' . $state->getHtmlName();
+            case HoldingDecision::DECISION_BUILDFABRIC:
+                $fType = FactoryProto::findByPk($data->factory_type);
+                $region = Region::findByPk($data->region_id);
+                return "Строительство нового обьекта: {$fType->name}, размера {$data->size}, под названием «{$data->name}» в регионе {$region->getHtmlName()}";
+            case HoldingDecision::DECISION_SETMANAGER:
+                $user = User::findByPk($data->uid);
+                $factory = Factory::findByPk($data->factory_id);
+                return "Назначение человека по имени {$user->getHtmlName()} на должность управляющего обьектом {$factory->getHtmlName()} ({$factory->region->getHtmlName()})";
+            case HoldingDecision::DECISION_SETMAINOFFICE:
+                $factory = Factory::findByPk($data->factory_id);
+                return "Назначение объекта {$factory->getHtmlName()} ({$factory->region->getHtmlName()}) главным офисом компании";
+            case HoldingDecision::DECISION_RENAMEFABRIC:
+                $factory = Factory::findByPk($data->factory_id);
+                return "Переименование объекта {$factory->getHtmlName()} ({$factory->region->getHtmlName()}) в «{$data->new_name}»";
+            case HoldingDecision::DECISION_SELLFACTORY:
+                $factory = Factory::findByPk($data->factory_id);
+                $startPrice = MyHtmlHelper::moneyFormat($data->start_price);
+                $endPrice = ($data->end_price) ? " и стоп-ценой " . MyHtmlHelper::moneyFormat($data->end_price) : '';
+                return "Продажа объекта {$factory->getHtmlName()} ({$factory->region->getHtmlName()}) с начальной ценой " . $startPrice . $endPrice;
+            case HoldingDecision::DECISION_SETDIRECTOR:
+                $user = User::findByPk($data->uid);
+                return "Назначение человека по имени {$user->getHtmlName()} на должность генерального директора компании";
+            case HoldingDecision::DECISION_BUILDLINE:
+                $lineProto = LineProto::findByPk($data->proto_id);
+                $region1 = Region::findByPk($data->region1_id);
+                $region2 = Region::findByPk($data->region2_id);
+                return "Строительство объекта «{$lineProto->name}» между регионами {$region1->getHtmlName()} и {$region2->getHtmlName()}";
+            case HoldingDecision::DECISION_TRANSFERMONEY:
+                $to = Unnp::findByPk($data->unnp)->master;
+                return 'Перевод ' . MyHtmlHelper::moneyFormat($data->sum) . ' для ' . $to->getHtmlName();
+        }
+    }
 
     /**
      * Принять решение

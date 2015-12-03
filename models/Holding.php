@@ -5,7 +5,8 @@ namespace app\models;
 use app\components\TaxPayer,
     app\components\MyModel,
     app\components\MyHtmlHelper,
-    app\models\Unnp;
+    app\models\Unnp,
+    app\models\HoldingDecision;
 
 /**
  * Акционерное общество. Таблица "holdings".
@@ -26,6 +27,7 @@ use app\components\TaxPayer,
  * @property User $director
  * @property State $state
  * @property Region $region
+ * @property HoldingDecision[] $decisions
  */
 class Holding extends MyModel implements TaxPayer
 {
