@@ -78,7 +78,7 @@ $factoryCategories = FactoryProtoCategory::find()->all();
                     </span>
                     <ul class="box-toolbar">
                         <li>
-                            <button onclick="$('#new_license_modal').modal();" class="btn btn-xs dropdown-toggle btn-green">
+                            <button onclick="load_modal('holding-new-license',{'holding_id':<?=$holding->id?>},'new_license_modal','new_license_modal_body')" class="btn btn-xs dropdown-toggle btn-green">
                                 Получить лицензию
                             </button>
                         </li>
@@ -130,10 +130,10 @@ $factoryCategories = FactoryProtoCategory::find()->all();
                             <thead>
                                 <tr>
                                     <td>Предприятие</td>
-                                    <td style="min-width:150px">Регион</td>
-                                    <td style="min-width:100px">Лицевой счёт</td>
+                                    <td style="min-width:200px">Регион</td>
+                                    <td style="min-width:102px">Лицевой счёт</td>
                                     <td>Статус</td>
-                                    <td style="min-width:100px">Действия</td>
+                                    <td style="min-width:116px">Действия</td>
                                 </tr>
                             </thead>
                             <tbody>
@@ -144,18 +144,22 @@ $factoryCategories = FactoryProtoCategory::find()->all();
                                         <td><?= MyHtmlHelper::moneyFormat($factory->balance) ?></td>
                                         <td style="text-align: center"><?= $factory->getStatusShortName() ?></td>
                                         <td style="text-align: center">
-                                            <button title="Переименовать" class="btn btn-xs btn-lightblue" onclick="$('#factory_id_for_rename').val(<?=$factory->id?>);$('#rename_factory_modal').modal();" >
-                                                <i class="icon-edit"></i>
-                                            </button>
-                                            <button title="Выставить на продажу" class="btn btn-xs btn-gold" onclick="$('#factory_id_for_sell').val(<?=$factory->id?>); $('#sell_factory_modal').modal();" >
-                                                <i class="icon-money"></i>
-                                            </button>
-                                            <button title="Назначить управляющего" class="btn btn-xs btn-gray" onclick="$('#new_manager_factory').val(<?=$factory->id?>);$('#set_manager_modal').modal();" >
-                                                <i class="icon-user"></i>
-                                            </button>
-                                            <button title="Внести деньги на сяёт" class="btn btn-xs btn-brown" onclick="$('#transfer_inner_factory_unnp').val(<?=$factory->unnp?>); $('#transfer_money_inner_modal').modal();" >
-                                                <i class="icon-money"></i>
-                                            </button>
+                                            <div class="btn-toolbar">
+                                                <div class="btn-group">
+                                                    <button title="Переименовать" class="btn btn-xs btn-lightblue" onclick="$('#factory_id_for_rename').val(<?=$factory->id?>);$('#rename_factory_modal').modal();" >
+                                                        <i class="icon-edit"></i>
+                                                    </button>
+                                                    <button title="Выставить на продажу" class="btn btn-xs btn-gold" onclick="$('#factory_id_for_sell').val(<?=$factory->id?>); $('#sell_factory_modal').modal();" >
+                                                        <i class="icon-money"></i>
+                                                    </button>
+                                                    <button title="Назначить управляющего" class="btn btn-xs btn-gray" onclick="$('#new_manager_factory').val(<?=$factory->id?>);$('#set_manager_modal').modal();" >
+                                                        <i class="icon-user"></i>
+                                                    </button>
+                                                    <button title="Внести деньги на сяёт" class="btn btn-xs btn-brown" onclick="$('#transfer_inner_factory_unnp').val(<?=$factory->unnp?>); $('#transfer_money_inner_modal').modal();" >
+                                                        <i class="icon-money"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
                                         </td>
                                     </tr>
                                 <? endforeach ?>
@@ -254,64 +258,7 @@ $factoryCategories = FactoryProtoCategory::find()->all();
                 <h3 id="myModalLabel1231">Получение лицензии</h3>
             </div>
             <div id="new_license_modal_body" class="modal-body">
-                <div class="control-group">
-                    <label class="control-label" for="#new_license_state_id">Государство</label>
-                    <div class="controls">            
-                        <select id="new_license_state_id">
-                            <?
-                            $states = State::find()->all();
-                            foreach ($states as $state):
-                                ?>
-                                <option <? if ($state->id === $holding->state_id): ?> selected="selected" <? endif ?> id="state_option<?= $state->id ?>" value="<?= $state->id ?>" ><?= $state->name ?></option>       
-                            <? endforeach ?>
-                        </select>
-                    </div>
-                    <label class="control-label" for="#new_license_id">Лицензия</label>
-                    <div class="controls">
-                        <select id="new_license_id">
-                            <?
-                            $licenses = LicenseProto::find()->all();
-
-                            foreach ($licenses as $license) {
-                                $stateLicense = null;
-                                $allowed = true;
-                                foreach ($holding->licenses as $hl) {
-                                    if ($license->id === $hl->proto_id) {
-                                        $allowed = false;
-                                        $break;
-                                    }
-                                }
-                                if (!$allowed)
-                                    continue;
-
-                                foreach ($holding->state->licenses as $sl) {
-                                    if ($license->id === $sl->proto_id) {
-                                        $stateLicense = $sl;
-                                        break;
-                                    }
-                                }
-                                $text = "Получение лицензии бесплатно";
-                                if (!(is_null($stateLicense))) {
-                                    if ($stateLicense->is_only_goverment) {
-                                        if (!$userStock->master->isGoverment($holding->state)) {
-                                            continue;
-                                        }
-                                    }
-                                    if ($stateLicense->cost) {
-                                        $text = number_format($stateLicense->cost, 0, '', ' ') . ' ' . MyHtmlHelper::icon('money');
-                                    }
-                                    if ($stateLicense->is_need_confirm) {
-                                        $text .= "<br>Необходимо подтверждение министра";
-                                    }
-                                }
-                                ?>
-                                <option id="license_option<?= $license->id ?>" value="<?= $license->id ?>" data-text="<?= $text ?>"><?= $license->name ?></option>      
-                            <? }
-                            ?>
-                        </select>
-                    </div>
-                    <p id="license_info"></p>
-                </div>
+                
             </div>
             <div class="modal-footer">
                 <button class="btn btn-primary" data-dismiss="modal"  onclick="get_new_license(<?= $holding->id ?>)">Получить</button>
@@ -425,21 +372,11 @@ $factoryCategories = FactoryProtoCategory::find()->all();
                     <label class="control-label" for="#new_director_uid">Новый директор:</label>
                     <div class="controls">
                         <select id="new_director_uid">
-                            <? foreach ($holding->stocks as $stock) { ?>
-                                <?
-                                switch (get_class($stock->master)) {
-                                    case 'app\models\User':
-                                        echo "<option value='{$stock->master->id}'>" . Html::a(Html::img($stock->master->photo, ['style' => 'width:20px']) . ' ' . $stock->master->name, "#", ['onclick' => "load_page('profile',{'uid':{$stock->master->id}})"]) . "</option>";
-                                        break;
-                                    case 'app\models\Post':
-                                        echo "<option value='{$stock->master->user->id}'>" . Html::a(Html::img($stock->master->user->photo, ['style' => 'width:20px']) . ' ' . $stock->master->user->name, "#", ['onclick' => "load_page('profile',{'uid':{$stock->master->user->id}})"]) . "</option>";
-                                        break;
-                                    case 'app\models\Holding':
-
-                                        break;
-                                }
-                                ?>
-                            <? } ?>
+                            <? foreach ($holding->stocks as $stock): ?>
+                            <? if ($stock->master->getUnnpType() === Unnp::TYPE_USER): ?>
+                                <option value='<?=$stock->master->id?>'><?=$stock->master->name?></option>
+                            <? endif ?>
+                            <? endforeach ?>
                         </select>
                     </div>
                 </div>
@@ -554,33 +491,62 @@ $factoryCategories = FactoryProtoCategory::find()->all();
             </div>
         </div></div>
 </div>
-
-<div style="display:none;" class="modal fade" id="new_factory_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabelnew_factory_modal" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h3>Строительство</h3>
-            </div>
-            <div id="new_factory_modal_body" class="modal-body">
-
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-primary" id="build_fabric_page2" >Далее</button>
-                <button style="display:none;" class="btn btn-primary" data-dismiss="modal" id="start_build" onclick="start_build()">Начать строительство</button>
-                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
-            </div>
-        </div></div>
+<!--
+<div class="wizard" id="build-factory-wizard" data-title="Постройка предприятия">
+    <div class="wizard-card" data-cardname="region-select">
+        <h3>Выбор региона</h3>
+        
+    </div>
+    <div class="wizard-card" data-cardname="factory-proto">
+        <h3>Выбор типа предприятия</h3>
+        Some content
+    </div>
+    <div class="wizard-card" data-cardname="factory-settings">
+        <h3>Размер предприятия</h3>
+        Some content
+    </div>
+    
+<div class="wizard-success">
+  <div class="alert alert-success">
+    <span class="create-server-name"></span>
+    was created <strong>successfully.</strong>
+  </div>
 </div>
+
+<div class="wizard-failure">
+  <div class="alert alert-error">
+    <strong>There was a problem</strong> submitting the form.
+    Please try again in a minute.
+  </div>
+</div>
+    
+<div class="wizard-error">
+  <div class="alert alert-error">
+    <strong>There was a problem</strong> with your submission.
+    Please correct the errors and re-submit.
+  </div>
+</div>
+
+</div>-->
 <script>
-
-    function recalc_build_line_cost() {
-        var cost = parseFloat($('#line_new_proto_id').find(':selected').data('cost')),
-                dist = parseFloat($('#line_new_region2').find(':selected').data('distance'));
-
-        $('#line_new_cost_sum').text(number_format(cost * dist, 0, '.', ' '));
-    }
-
+    /*
+    $(function(){
+        $("#build-factory-wizard").wizard({
+            progressBarCurrent: true,
+            buttons: {
+                'cancelText': "Отмена",
+                'nextText': "Далее",
+                'backText': "Назад",
+                'submitText': "Отправить",
+                'submittingText': "Отправка..."
+            }
+        }).on('submit', function(){
+            this.submitSuccess();
+        })//.show();
+        
+        $('.wizard-back').addClass('btn-default');
+    });
+*/
     function rename_holding(id) {
         if ($('#holding_new_name').val()) {
             json_request('new-holding-decision', {'holding_id': id, 'type': 1, 'new_name': $('#holding_new_name').val()});
@@ -613,10 +579,6 @@ $factoryCategories = FactoryProtoCategory::find()->all();
 
     function get_new_license(id) {
         json_request('new-holding-decision', {'holding_id': id, 'type': 3, 'license_id': $('#new_license_id').val(), 'state_id': $('#new_license_state_id').val()});
-    }
-
-    function updateLicenseInfo() {
-        $('#license_info').html($("#license_option" + $('#new_license_id').val()).data('text'));
     }
 
     function rename_factory() {
@@ -657,16 +619,6 @@ $factoryCategories = FactoryProtoCategory::find()->all();
     }
 
     $(function () {
-        updateLicenseInfo();
-        $('#new_license_id').change(updateLicenseInfo);
-        $('#new_license_state_id').change(function () {
-            $('#new_license_id').attr('disabled', 'disabled');
-            get_html('licenses-options', {'state_id': $(this).val(), 'holding_id':<?= $holding->id ?>}, function (data) {
-                $('#new_license_id').html(data);
-                $('#new_license_id').removeAttr('disabled');
-                updateLicenseInfo();
-            });
-        })
 
         $('#dividents_sum').change(function () {
             if ($(this).val() <=<?= count($holding->stocks) ?>) {

@@ -722,4 +722,25 @@ class ModalController extends MyController {
         ]);
     }
 
+    public function actionHoldingNewLicense($holding_id)
+    {
+        if (intval($holding_id) <= 0) {
+            return $this->_r("Invalid holding id");
+        }
+        
+        $holding = Holding::findByPk($holding_id);
+        if (is_null($holding)) {
+            return $this->_r("Holding not found");
+        }
+        
+        $states = State::find()->with('licenses')->all();
+        $licenses = LicenseProto::find()->all();
+        
+        return $this->render('holding-new-license',[
+            'states' => $states,
+            'licenses' => $licenses,
+            'holding' => $holding
+        ]);
+    }
+    
 }

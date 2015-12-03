@@ -22,11 +22,12 @@ class AppAsset extends AssetBundle
 //        '//fonts.googleapis.com/css?family=Roboto+Condensed:400italic,400,700&subset=cyrillic,latin',
 //        'css/plusstrap.min.css',
         'https://fonts.googleapis.com/css?family=Open+Sans:400,600,800&subset=latin,cyrillic',
-        'css/application.css',
         'css/square.css',
         'css/snackbar.min.css',
         'css/spectrum.css',
         'css/jquery-jvectormap-2.0.3.css',
+        'css/bootstrap-wizard.css',
+        'css/application.css',
         'css/style.css',
     ];
     public $js = [

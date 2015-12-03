@@ -167,12 +167,13 @@ class Holding extends MyModel implements TaxPayer
     {
         if (is_null($this->_isGosHolding)) {
             $this->_isGosHolding = false;
+            $sumPercents = 0;
             foreach ($this->stocks as $stock) {
-                if ($stock->isGos($stateId) && $stock->getPercents() > 50) {
-                    $this->_isGosHolding = true;
-                    break;
+                if ($stock->isGos($stateId)) {
+                    $sumPercents += $stock->getPercents();
                 }
             }
+            $this->_isGosHolding = $sumPercents > 50.0;
         }
         return $this->_isGosHolding;
     }
