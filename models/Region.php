@@ -323,6 +323,11 @@ class Region extends MyModel implements TaxPayer
         return 0;
     }
 
+    public function getCityHtmlName()
+    {
+        return $this->city." (".$this->name.($this->state?", ".MyHtmlHelper::a($this->state->short_name, "load_page('state-info',{'id':{$this->state_id}})").")":")");
+    }
+    
     public function getHtmlName()
     {
         return $this->name.($this->state?" (".MyHtmlHelper::a($this->state->short_name, "load_page('state-info',{'id':{$this->state_id}})").")":"");

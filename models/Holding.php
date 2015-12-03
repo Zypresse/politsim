@@ -24,6 +24,8 @@ use app\components\TaxPayer,
  * @property factories\Factory[] $factories Фабрики
  * @property factories\Line[] $lines
  * @property User $director
+ * @property State $state
+ * @property Region $region
  */
 class Holding extends MyModel implements TaxPayer
 {

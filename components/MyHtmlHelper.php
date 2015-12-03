@@ -244,25 +244,25 @@ class MyHtmlHelper {
             case $n < 1000:
                 return '< 1 000';
             case $n < 10000:
-                return round($n / 1000) . 'K';
+                return round($n / 1000) . ' тыс.';
             case $n < 100000:
-                return round($n / 10000) . '0K';
+                return round($n / 10000) . '0 тыс.';
             case $n < 1000000:
-                return round($n / 100000) . '00K';
+                return round($n / 100000) . '00 тыс.';
             case $n < 10000000:
-                return round($n / 1000000) . 'KK';
+                return round($n / 1000000) . ' млн.';
             case $n < 100000000:
-                return round($n / 10000000) . '0KK';
+                return round($n / 10000000) . '0 млн.';
             case $n < 1000000000:
-                return round($n / 100000000) . '00KK';
+                return round($n / 100000000) . '00 млн.';
             case $n < 10000000000:
-                return round($n / 1000000000) . 'KKK';
+                return round($n / 1000000000) . ' млрд.';
             case $n < 100000000000:
-                return round($n / 10000000000) . '0KKK';
+                return round($n / 10000000000) . '0 млрд.';
             case $n < 1000000000000:
-                return round($n / 100000000000) . '00KKK';
+                return round($n / 100000000000) . '00 млрд.';
             default:
-                return 'KKKK';
+                return rount ($n / 1000000000000) . ' трлн.';
         }
     }
 

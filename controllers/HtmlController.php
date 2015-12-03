@@ -280,16 +280,23 @@ class HtmlController extends MyController
     public function actionHoldingInfo($id)
     {
         $id = intval($id);
-        if ($id) {
+        if ($id > 0) {
             $holding = Holding::findByPk($id);
             if (is_null($holding)) {
                 return $this->_r("Holding not found");
             }
+            
+            $factories = Factory::find()->where([
+                    'holding_id' => $id
+                ])->with('region')
+                    ->with('region.state')
+                    ->with('proto')
+                    ->all();
 
             if ($this->getUser()->isShareholder($holding)) {
                 return $this->render("holding-control", ['holding' => $holding, 'user' => $this->getUser()]);
             } else {
-                return $this->render("holding-info", ['holding' => $holding]);
+                return $this->render("holding-info", ['holding' => $holding, 'factories' => $factories]);
             }
         } else {
             return $this->_r("Invalid holding ID");
