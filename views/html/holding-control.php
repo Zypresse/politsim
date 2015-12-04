@@ -1,16 +1,7 @@
 <?php
 
 use app\components\MyHtmlHelper,
-    yii\helpers\Html,
     app\models\HoldingDecision,
-    app\models\factories\proto\FactoryProtoCategory,
-    app\models\factories\proto\FactoryProto,
-    app\models\factories\Factory,
-    app\models\factories\proto\LineProto,
-    app\models\licenses\proto\LicenseProto,
-    app\models\User,
-    app\models\State,
-    app\models\Region,
     app\models\Unnp;
 
 /* @var $user app\models\User */
@@ -19,7 +10,6 @@ use app\components\MyHtmlHelper,
 /* @var $factories app\models\factories\Factory[] */
 
 $userStock = $user->getShareholderStock($holding);
-$factoryCategories = FactoryProtoCategory::find()->all();
 ?>
 <div class="container">
     <div class="row">
@@ -118,7 +108,7 @@ $factoryCategories = FactoryProtoCategory::find()->all();
                     </span>
                     <ul class="box-toolbar">
                         <li>
-                            <button class="btn btn-xs btn-green" onclick="load_modal('build-factory-select-region', {'unnp':<?= $holding->unnp ?>}, 'new_factory_modal', 'new_factory_modal_body'); /*show_build_factory_modal()*/" >
+                            <button class="btn btn-xs btn-green" onclick="load_modal('build-factory-select-region',{'holding_id':<?=$holding->id?>},'build-factory-modal','build-factory-modal-body')" >
                                 Построить новое предприятие
                             </button>
                         </li>
@@ -489,64 +479,29 @@ $factoryCategories = FactoryProtoCategory::find()->all();
                 <button class="btn btn-primary" data-dismiss="modal"  onclick="set_main_office()">Установить</button>
                 <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
             </div>
-        </div></div>
-</div>
-<!--
-<div class="wizard" id="build-factory-wizard" data-title="Постройка предприятия">
-    <div class="wizard-card" data-cardname="region-select">
-        <h3>Выбор региона</h3>
-        
+        </div>
     </div>
-    <div class="wizard-card" data-cardname="factory-proto">
-        <h3>Выбор типа предприятия</h3>
-        Some content
-    </div>
-    <div class="wizard-card" data-cardname="factory-settings">
-        <h3>Размер предприятия</h3>
-        Some content
-    </div>
-    
-<div class="wizard-success">
-  <div class="alert alert-success">
-    <span class="create-server-name"></span>
-    was created <strong>successfully.</strong>
-  </div>
 </div>
 
-<div class="wizard-failure">
-  <div class="alert alert-error">
-    <strong>There was a problem</strong> submitting the form.
-    Please try again in a minute.
-  </div>
+<div style="display:none;" class="modal fade" id="build-factory-modal" tabindex="-1" role="dialog" aria-labelledby="build-factory-modal-label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="build-factory-modal-label">Постройка предприятия</h3>
+            </div>
+            <div id="build-factory-modal-body" class="modal-body">
+                
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" data-dismiss="modal"  onclick="">Установить</button>
+                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+            </div>
+        </div>
+    </div>
 </div>
-    
-<div class="wizard-error">
-  <div class="alert alert-error">
-    <strong>There was a problem</strong> with your submission.
-    Please correct the errors and re-submit.
-  </div>
-</div>
-
-</div>-->
 <script>
-    /*
-    $(function(){
-        $("#build-factory-wizard").wizard({
-            progressBarCurrent: true,
-            buttons: {
-                'cancelText': "Отмена",
-                'nextText': "Далее",
-                'backText': "Назад",
-                'submitText': "Отправить",
-                'submittingText': "Отправка..."
-            }
-        }).on('submit', function(){
-            this.submitSuccess();
-        })//.show();
-        
-        $('.wizard-back').addClass('btn-default');
-    });
-*/
+    
     function rename_holding(id) {
         if ($('#holding_new_name').val()) {
             json_request('new-holding-decision', {'holding_id': id, 'type': 1, 'new_name': $('#holding_new_name').val()});
@@ -617,7 +572,7 @@ $factoryCategories = FactoryProtoCategory::find()->all();
             });
         }
     }
-
+    
     $(function () {
 
         $('#dividents_sum').change(function () {
@@ -628,14 +583,6 @@ $factoryCategories = FactoryProtoCategory::find()->all();
                 $(this).val(<?= $holding->balance ?>);
             }
         });
-
-        $('#build_fabric_page2').click(function () {
-            $(this).remove();
-            load_modal('build-fabric', {
-                'region_id': $('#factory_new_region').val(),
-                'holding_id':<?= $holding->id ?>
-            }, 'new_factory_modal', 'new_factory_modal_body');
-        });
-
+        
     });
 </script>

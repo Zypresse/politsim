@@ -26,7 +26,6 @@ class AppAsset extends AssetBundle
         'css/snackbar.min.css',
         'css/spectrum.css',
         'css/jquery-jvectormap-2.0.3.css',
-        'css/bootstrap-wizard.css',
         'css/application.css',
         'css/style.css',
     ];
@@ -40,7 +39,7 @@ class AppAsset extends AssetBundle
         'js/icheck.js',
         'js/jquery.peity.min.js',
         'js/jquery-dateFormat.min.js',
-        'js/bootstrap-wizard.min.js',
+        'js/jquery.steps.min.js',
         '//vk.com/js/api/xd_connection.js',
         '//www.google.com/jsapi?autoload={\'modules\':[{\'name\':\'visualization\',\'version\':\'1\',\'packages\':[\'corechart\']}]}',
         'js/script_all.js',         

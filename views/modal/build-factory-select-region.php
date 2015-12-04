@@ -1,6 +1,6 @@
 <?php
 
-/* @var $viewer app\models\Holding */
+/* @var $holding app\models\Holding */
 /* @var $regions app\models\Region[] */
 
 ?>
@@ -13,7 +13,7 @@
             <? if ($i == 0 || $regions[$i - 1]->state_id != $region->state_id): ?>
                 <?= ($i) ? '</optgroup>' : '' ?><optgroup label="<?= ($region->state) ? $region->state->name : 'Ничейные регионы' ?>">
             <? endif ?>
-            <option value="<?= $region->id ?>" <?= ((!$viewer->region_id && $region->state_id === $viewer->state_id && $region->isCapital()) || $region->id === $viewer->region_id) ? "selected='selected'" : '' ?>><?= $region->name ?></option>
+            <option value="<?= $region->id ?>" <?= ((!$holding->region_id && $region->state_id === $holding->state_id && $region->isCapital()) || $region->id === $holding->region_id) ? "selected='selected'" : '' ?>><?= $region->name ?></option>
         <? endforeach ?>
         </select>
     </div>
