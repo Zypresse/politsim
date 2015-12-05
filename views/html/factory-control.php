@@ -8,9 +8,9 @@ use app\components\MyHtmlHelper,
         <div class="col-md-7">
             <h2><?= $factory->proto->name ?> &laquo;<?= htmlspecialchars($factory->name) ?>&raquo;</h2>
 
-            <p><strong>Местоположение:</strong> <?= MyHtmlHelper::a($factory->region->name, "show_region({$factory->region_id})") ?></p>
-            <p><strong>Владелец:</strong> <?= MyHtmlHelper::a($factory->holding->name, "load_page('holding-info',{'id':{$factory->holding_id}})") ?></p>
-            <p><strong>Управляющий:</strong> <?= $factory->manager ? MyHtmlHelper::a($factory->manager->name, "load_page('profile',{'uid':{$factory->manager_uid}})") : "не назначен" ?></p>
+            <p><strong>Местоположение:</strong> <?= $factory->region->getHtmlName() ?></p>
+            <p><strong>Владелец:</strong> <?= $factory->holding->getHtmlName() ?></p>
+            <p><strong>Управляющий:</strong> <?= $factory->manager ? $factory->manager->getHtmlName() : "не назначен" ?></p>
             <p><strong>Эффективность работы:</strong> <?= MyHtmlHelper::zeroOne2Stars($factory->eff_region * $factory->eff_workers) ?> (регион: <?=MyHtmlHelper::zeroOne2Stars($factory->eff_region)?>; рабочие: <?=MyHtmlHelper::zeroOne2Stars($factory->eff_workers)?>)</p>
             <p><strong>Лицевой счёт:</strong> <?=MyHtmlHelper::moneyFormat($factory->balance)?></p>
             <p>

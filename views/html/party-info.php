@@ -13,13 +13,11 @@ use app\components\MyHtmlHelper,
         <div class="col-md-2"><img src="<?= $party->image ?>" alt="<?= $party->name ?>" class="img-polaroid" style="max-width:100%"></div>
         <div class="col-md-10">
             <h1><?= htmlspecialchars($party->name) ?> <small>(<?= htmlspecialchars($party->short_name) ?>)</small></h1>
-            <h3>Партия государства &laquo;<a href="#" onclick="load_page('state-info', {'id':<?= $party->state_id ?>})"><?= htmlspecialchars($party->state->name) ?></a>&raquo;</h3>
+            <p>Партия зарегистрирована в государстве <?=$party->state->getHtmlName()?></p>
             <p><strong>Идеология</strong>: <?= htmlspecialchars($party->ideologyInfo->name) ?></p>
             <p><strong>Лидер партии</strong>:
                 <? if ($party->leaderInfo) { ?>
-                    <a href="#" onclick="load_page('profile', {'uid':<?= $party->leader ?>})"><img src="<?= htmlspecialchars($party->leaderInfo->photo) ?>" alt="" style="width:32px;height:32px;"></a>
-                    <a href="#" onclick="load_page('profile', {'uid':<?= $party->leader ?>})"><?= htmlspecialchars($party->leaderInfo->name) ?></a>
-
+                    <?=$party->leaderInfo->getHtmlName()?>
                     <span class="star"><?= $party->leaderInfo->star ?> <?= MyHtmlHelper::icon('star') ?></span>
                     <span class="heart"><?= $party->leaderInfo->heart ?> <?= MyHtmlHelper::icon('heart') ?></span>
                     <span class="chart_pie"><?= $party->leaderInfo->chart_pie ?> <?= MyHtmlHelper::icon('chart_pie') ?></span>
@@ -35,9 +33,7 @@ use app\components\MyHtmlHelper,
             <ul id="members_list" >
                 <? foreach ($party->members as $player) { ?>
                     <li>
-                        <a href="#" onclick="load_page('profile', {'uid':<?= $player->id ?>})"><img src="<?= htmlspecialchars($player->photo) ?>" alt="" style="width:32px;height:32px;"></a>
-                        <a href="#" onclick="load_page('profile', {'uid':<?= $player->id ?>})"><?= htmlspecialchars($player->name) ?></a>
-
+                        <?=$player->getHtmlName()?>
                         <span class="star"><?= $player->star ?> <?= MyHtmlHelper::icon('star') ?></span>
                         <span class="heart"><?= $player->heart ?> <?= MyHtmlHelper::icon('heart') ?></span>
                         <span class="chart_pie"><?= $player->chart_pie ?> <?= MyHtmlHelper::icon('chart_pie') ?></span>

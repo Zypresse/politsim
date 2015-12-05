@@ -30,17 +30,17 @@ use app\components\MyHtmlHelper;
                 </p>
             <? endif ?>
             <p><i class="icon-group"></i> <? if ($user->party) { ?>
-                    Состоит в партии <a href="#" onclick="load_page('party-info', {'id':<?= $user->party_id ?>})"><?= htmlspecialchars($user->party->name) ?></a>
+                    Состоит в партии <?=$user->party->getHtmlName()?>
                 <? } else { ?>
                     <? if ($user->sex === 1) { ?>Беспартийная<? } else { ?>Беспартийный<? } ?>
                 <? } ?></p>
             <p><i class="icon-globe"></i> <? if ($user->state) { ?>
-                    <? if ($user->sex === 1) { ?>Гражданка<? } else { ?>Гражданин<? } ?> государства <a href="#" onclick="load_page('state-info', {'id':<?= $user->state_id ?>})"><?= htmlspecialchars($user->state->name) ?></a>
+                    <? if ($user->sex === 1) { ?>Гражданка<? } else { ?>Гражданин<? } ?> государства <?=$user->state->getHtmlName()?>
                 <? } else { ?>
                     <? if ($user->sex === 1) { ?>Гражданка<? } else { ?>Гражданин<? } ?> мира
                 <? } ?></p>
-            <? if ($user->region) { ?><p><i class="icon-map-marker"></i> Живет в регионе «<a href="#" onclick="show_region(<?= $user->region->id ?>)"><?= htmlspecialchars($user->region->name) ?></a>»</p><? } ?>
-            <? if ($user->post) { ?><p><i class="icon-briefcase"></i> Занимает пост &laquo;<?= htmlspecialchars($user->post->name) ?>&raquo;<? if ($user->post->org) { ?> в организации &laquo;<a href="#" onclick="load_page('org-info', {'id':<?= $user->post->org_id ?>});"><?= htmlspecialchars($user->post->org->name) ?></a>&raquo;</p><? } ?><? } ?>
+            <? if ($user->region) { ?><p><i class="icon-map-marker"></i> Живет в регионе <?=$user->region->getHtmlName()?></p><? } ?>
+            <? if ($user->post) { ?><p><i class="icon-briefcase"></i> Занимает пост &laquo;<?= htmlspecialchars($user->post->name) ?>&raquo;<? if ($user->post->org) { ?> в организации <?=$user->post->org->getHtmlName()?></p><? } ?><? } ?>
             <? if (count($user->medales)) { ?><p>
                 <h4>Значки:</h4>
                 <? foreach ($user->medales as $medale) { ?>

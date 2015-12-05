@@ -7,9 +7,9 @@ use app\components\MyHtmlHelper;
         <div class="col-md-12">
             <h3><?= $factory->proto->name ?> &laquo;<?= htmlspecialchars($factory->name) ?>&raquo;</h3>
 
-            <p><strong>Местоположение:</strong> <?= MyHtmlHelper::a($factory->region->name, "show_region({$factory->region_id})") ?></p>
-            <p><strong>Владелец:</strong> <?= MyHtmlHelper::a($factory->holding->name, "load_page('holding-info',{'id':{$factory->holding_id}})") ?></p>
-            <p><strong>Управляющий:</strong> <?= $factory->manager ? MyHtmlHelper::a($factory->manager->name, "load_page('profile',{'uid':{$factory->manager_uid}})") : "не назначен" ?></p>
+            <p><strong>Местоположение:</strong> <?= $factory->region->getHtmlName() ?></p>
+            <p><strong>Владелец:</strong> <?= $factory->holding->getHtmlName() ?></p>
+            <p><strong>Управляющий:</strong> <?= $factory->manager ? $factory->manager->getHtmlName() : "не назначен" ?></p>
             <p>
                 <strong>Статус:</strong> <?= $factory->statusName ?> 
                 <? if ($factory->status < 0) { ?>

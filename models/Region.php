@@ -325,7 +325,7 @@ class Region extends MyModel implements TaxPayer
 
     public function getHtmlName()
     {
-        return $this->name.($this->state?" (".MyHtmlHelper::a($this->state->short_name, "load_page('state-info',{'id':{$this->state_id}})").")":"");
+        return MyHtmlHelper::a($this->name,"show_region({$this->id})").($this->state?" (".$this->state->getHtmlShortName().")":"");
     }
 
     public function getTaxStateId()

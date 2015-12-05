@@ -1,5 +1,8 @@
 <?php
 use app\components\MyHtmlHelper;
+
+/* @var $parties app\models\Party[] */
+
 ?>
 <div class="container">
     <div class="row">
@@ -16,10 +19,10 @@ use app\components\MyHtmlHelper;
 <img src="<?=$party->image?>" alt="<?=$party->name?>" style="width:50px">
 </td>
 <td>
-<a href="#" onclick="load_page('party-info',{'id':<?=$party->id?>})"><?=htmlspecialchars($party->name)?></a>
+<?= $party->getHtmlName() ?>
 </td>
 <td>
-<a href="#" onclick="load_page('state-info',{'id':<?=$party->state_id?>})"><?=htmlspecialchars($party->state->short_name)?></a>
+<?= $party->state ? $party->state->getHtmlShortName() : '' ?>
 </td>
 <td><?=$party->getMembersCount()?></td>
 <td>
