@@ -270,6 +270,12 @@ $this->title = 'Political Simulator';
                 </ul>
             </li>
         </ul>
+		<!-- politsim resp -->
+		<ins class="adsbygoogle"
+		     style="display:block"
+		     data-ad-client="ca-pub-7725940874180553"
+		     data-ad-slot="9864631062"
+		     data-ad-format="auto"></ins>
 <!--        <div class="hidden-sm hidden-xs">
             <div class="sparkline-box side">
                     <div class="sparkline-row">

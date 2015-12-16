@@ -49,6 +49,11 @@ AppAsset::register($this);
             endif;
         ?>
 <?php $this->endBody() ?>
+        <script>
+        $(function(){
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        })
+        </script>
     </body>
 </html>
 <?php $this->endPage() ?>
