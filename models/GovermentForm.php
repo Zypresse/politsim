@@ -11,7 +11,6 @@ use app\components\MyModel;
  *
  * @property integer $id
  * @property string $name
- * @property integer $allow_register_parties
  */
 class GovermentForm extends MyModel
 {
@@ -31,7 +30,6 @@ class GovermentForm extends MyModel
     {
         return [
             [['name'], 'required'],
-            [['allow_register_parties'], 'integer'],
             [['name'], 'string', 'max' => 100]
         ];
     }
@@ -44,7 +42,6 @@ class GovermentForm extends MyModel
         return [
             'id'                     => 'ID',
             'name'                   => 'Name',
-            'allow_register_parties' => 'Allow Register Parties',
         ];
     }
 

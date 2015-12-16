@@ -2,10 +2,11 @@
 
 namespace app\models;
 
-use app\components\MyModel;
+use app\components\MyModel,
+    app\models\User;
 
 /**
- * Твит. Таблица "twitter".
+ * Твит. Таблица "tweets".
  *
  * @property integer $id
  * @property integer $uid ID юзера
@@ -14,8 +15,8 @@ use app\components\MyModel;
  * @property integer $date Дата публикации
  * @property integer $original Если является ретвитом, то здесь ID юзера, запостившего оригинал
  * 
- * @property \app\models\User $user Автор твита
- * @property \app\models\User $user Автор оригинального твита (если это ретвит)
+ * @property User $user Автор твита
+ * @property User $user Автор оригинального твита (если это ретвит)
  */
 class Twitter extends MyModel
 {
@@ -25,7 +26,7 @@ class Twitter extends MyModel
      */
     public static function tableName()
     {
-        return 'twitter';
+        return 'tweets';
     }
 
     /**
@@ -57,12 +58,12 @@ class Twitter extends MyModel
 
     public function getUser()
     {
-        return $this->hasOne('app\models\User', array('id' => 'uid'));
+        return $this->hasOne(User::className(), array('id' => 'uid'));
     }
 
     public function getOriginalUser()
     {
-        return $this->hasOne('app\models\User', array('id' => 'original'));
+        return $this->hasOne(User::className(), array('id' => 'original'));
     }
 
 }

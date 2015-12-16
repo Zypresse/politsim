@@ -8,7 +8,7 @@ use app\components\MyModel,
     app\models\State;
 
 /**
- * Ценники на ресурсы. Таблица "resurse_costs".
+ * Ценники на ресурсы. Таблица "resurses_costs".
  *
  * @property integer $id
  * @property integer $resurse_id (не путать с resurse_proto_id)
@@ -27,7 +27,7 @@ class ResurseCost extends MyModel
      */
     public static function tableName()
     {
-        return 'resurse_costs';
+        return 'resurses_costs';
     }
 
     /**
@@ -74,11 +74,11 @@ class ResurseCost extends MyModel
     public function getHtmlType()
     {
         if ($this->state_id) {
-            return "Налогоплательщики {$this->state->short_name}";
+            return "Налогоплательщики {$this->state->getHtmlShortName()}";
         }
         
         if ($this->holding_id) {
-            return "Предприятия ".$this->holding->getHtmlName();
+            return "Предприятия {$this->holding->getHtmlName()}";
         }
         
         return "Любые покупатели";

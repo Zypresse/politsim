@@ -5,7 +5,7 @@ namespace app\models;
 use app\components\MyModel;
 
 /**
- * Голос на выборах лидера организации голосованием членов. Таблица "elect_orgleader_votes".
+ * Голос на выборах лидера организации голосованием членов. Таблица "elects_orgleader_votes".
  *
  * @property integer $id
  * @property integer $request_id
@@ -18,7 +18,7 @@ class ElectOrgLeaderVote extends MyModel
      */
     public static function tableName()
     {
-        return 'elect_orgleader_votes';
+        return 'elects_orgleader_votes';
     }
 
     /**

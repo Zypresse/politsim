@@ -2,7 +2,11 @@
 
 namespace app\models\bills;
 
-use app\components\MyModel;
+use app\components\MyModel,
+    app\models\bills\BillVote,
+    app\models\bills\proto\BillProto,
+    app\models\State,
+    app\models\User;
 
 /**
  * Законопроект. Таблица "bills".
@@ -17,10 +21,10 @@ use app\components\MyModel;
  * @property integer $state_id
  * @property string $data
  * 
- * @property \app\models\BillVote[] $votes Голоса
- * @property proto\BillProto $proto Тип законопроекта
- * @property \app\models\State $state Государство
- * @property \app\models\User $user Автор законопроекта
+ * @property BillVote[] $votes Голоса
+ * @property BillProto $proto Тип законопроекта
+ * @property State $state Государство
+ * @property User $user Автор законопроекта
  */
 class Bill extends MyModel
 {
@@ -52,7 +56,7 @@ class Bill extends MyModel
     {
         return [
             'id'         => 'ID',
-            'proto_id'  => 'Bill Type',
+            'proto_id'   => 'Bill Type',
             'creator'    => 'Creator',
             'created'    => 'Created',
             'vote_ended' => 'Vote Ended',
@@ -65,22 +69,22 @@ class Bill extends MyModel
 
     public function getVotes()
     {
-        return $this->hasMany('app\models\bills\BillVote', array('bill_id' => 'id'));
+        return $this->hasMany(BillVote::className(), array('bill_id' => 'id'));
     }
 
     public function getProto()
     {
-        return proto\BillProto::findByPk($this->proto_id);
+        return BillProto::findByPk($this->proto_id);
     }
 
     public function getState()
     {
-        return $this->hasOne('app\models\State', array('id' => 'state_id'));
+        return $this->hasOne(State::className(), array('id' => 'state_id'));
     }
 
     public function getCreatorUser()
     {
-        return $this->hasOne('app\models\User', array('id' => 'creator'));
+        return $this->hasOne(User::className(), array('id' => 'creator'));
     }
 
     /**

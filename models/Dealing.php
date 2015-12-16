@@ -4,7 +4,9 @@ namespace app\models;
 
 use app\components\MyModel,
     app\models\Stock,
-    app\models\factories\Factory;
+    app\models\factories\Factory,
+    app\models\DealingProto,
+    app\components\TaxPayer;
 
 /**
  * Сделка между игроками. Таблица "dealings".
@@ -19,8 +21,8 @@ use app\components\MyModel,
  * @property integer $is_secret Является ли сделка тайной
  * @property integer $time Время совершения сделки (-1 для непринятой)
  * 
- * @property \app\components\NalogPayer $sender Отправитель
- * @property \app\components\NalogPayer $recipient Получатель
+ * @property TaxPayer $sender Отправитель
+ * @property TaxPayer $recipient Получатель
  * @property DealingProto $proto Тип сделки
  */
 class Dealing extends MyModel
@@ -72,6 +74,11 @@ class Dealing extends MyModel
     public function getRecipient()
     {
         return Unnp::findByPk($this->to_unnp)->getMaster();
+    }
+    
+    public function getProto()
+    {
+        return $this->hasOne(State::className(), array('id' => 'proto_id'));
     }
 
     /**

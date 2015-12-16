@@ -8,13 +8,20 @@ use app\components\MyMathHelper,
     app\models\Unnp,
     app\models\factories\proto\FactoryProto,
     app\models\factories\proto\FactoryProtoKit,
+    app\models\factories\FactoryWorkersSalary as WorkersSalary,
+    app\models\factories\FactoryAutobuySettings as AutobuySettings,
     app\models\resurses\Resurse,
+    app\models\resurses\ResurseCost,
     app\models\objects\UnmovableObject,
     app\models\objects\canCollectObjects,
     app\models\Place,
     app\models\resurses\ResurseCost,
     app\models\Dealing,
-    app\models\Region;
+    app\models\Region,
+    app\models\Holding,
+    app\models\User,
+    app\models\Population,
+    app\models\Vacansy;
 
 /**
  * Фабрика/завод/сх-предприятие. Таблица "factories".
@@ -34,18 +41,18 @@ use app\components\MyMathHelper,
  * 
  * @property integer $IAmPlace
  * 
- * @property proto\FactoryProto $proto Тип фабрики
- * @property \app\models\Holding $holding Компания-владелец
- * @property \app\models\Region $region Регион, в котором она находится
- * @property \app\models\User $manager Управляющий
- * @property \app\models\Population[] $workers Рабочие
- * @property FactoryWorkersSalary[] $salaries Установленные зарплаты рабочих
- * @property \app\models\resurses\Resurse[] $storages Ресурсы на складе
- * @property \app\models\Vacancy[] $vacancies 
- * @property \app\models\Vacansy[] $vacansiesWithSalaryAndCount Актуальнаые вакансии
- * @property \app\models\Vacansy[] $vacansiesWithSalary Потенцальные вакансии
+ * @property FactoryProto $proto Тип фабрики
+ * @property Holding $holding Компания-владелец
+ * @property Region $region Регион, в котором она находится
+ * @property User $manager Управляющий
+ * @property Population[] $workers Рабочие
+ * @property WorkersSalary[] $salaries Установленные зарплаты рабочих
+ * @property Resurse[] $storages Ресурсы на складе
+ * @property Vacancy[] $vacancies 
+ * @property Vacansy[] $vacansiesWithSalaryAndCount Актуальнаые вакансии
+ * @property Vacansy[] $vacansiesWithSalary Потенцальные вакансии
  * @property ResurseCost[] $resurseCosts
- * @property FactoryAutobuySettings[] $autobuySettings
+ * @property AutobuySettings[] $autobuySettings
  */
 class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
 {
@@ -146,42 +153,42 @@ class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
 
     public function getProto()
     {
-        return $this->hasOne('app\models\factories\proto\FactoryProto', array('id' => 'proto_id'));
+        return $this->hasOne(FactoryProto::className(), array('id' => 'proto_id'));
     }
 
     public function getHolding()
     {
-        return $this->hasOne('app\models\Holding', array('id' => 'holding_id'));
+        return $this->hasOne(Holding::className(), array('id' => 'holding_id'));
     }
 
     public function getRegion()
     {
-        return $this->hasOne('app\models\Region', array('id' => 'region_id'));
+        return $this->hasOne(Region::className(), array('id' => 'region_id'));
     }
 
     public function getManager()
     {
-        return $this->hasOne('app\models\User', array('id' => 'manager_uid'));
+        return $this->hasOne(User::className(), array('id' => 'manager_uid'));
     }
     
     public function getAutobuySettings()
     {
-        return $this->hasMany('app\models\factories\FactoryAutobuySettings', array('factory_id' => 'id'));
+        return $this->hasMany(AutobuySettings::className(), array('factory_id' => 'id'));
     }
     
     public function getWorkers()
     {
-        return $this->hasMany('app\models\Population', array('factory_id' => 'id'));
+        return $this->hasMany(Population::className(), array('factory_id' => 'id'));
     }
     
     public function getWorkersCount()
     {
-        return intval($this->hasMany('app\models\Population', array('factory_id' => 'id'))->sum("count"));
+        return intval($this->getWorkers()->sum("count"));
     }
     
     public function getSalaries()
     {
-        return $this->hasMany('app\models\factories\FactoryWorkersSalary', array('factory_id' => 'id'));
+        return $this->hasMany(WorkersSalary::className(), array('factory_id' => 'id'));
     }
     /**
      * 
@@ -195,17 +202,17 @@ class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
     
     public function getVacansies()
     {
-        return $this->hasMany('app\models\Vacansy', array('factory_id' => 'id'));
+        return $this->hasMany(Vacansy::className(), array('factory_id' => 'id'));
     }
 
     public function getVacansiesWithSalaryAndCount()
     {
-        return $this->hasMany('app\models\Vacansy', array('factory_id' => 'id'))->where('salary > 0 AND count_need > 0')->orderBy("salary DESC");
+        return $this->hasMany(Vacansy::className(), array('factory_id' => 'id'))->where('salary > 0 AND count_need > 0')->orderBy("salary DESC");
     }
 
     public function getVacansiesWithSalary()
     {
-        return $this->hasMany('app\models\Vacansy', array('factory_id' => 'id'))->where('salary > 0')->orderBy("salary DESC");
+        return $this->hasMany(Vacansy::className(), array('factory_id' => 'id'))->where('salary > 0')->orderBy("salary DESC");
     }
     
     public function getResurseCosts()

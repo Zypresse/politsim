@@ -6,7 +6,10 @@ use app\components\TaxPayer,
     app\components\MyModel,
     app\components\MyHtmlHelper,
     app\models\Post,
-    app\models\Unnp;
+    app\models\State,
+    app\models\Unnp,
+    app\models\ElectOrgLeaderRequest,
+    app\models\ElectRequest;
 
 /**
  * Организация. Таблица "orgs".
@@ -32,12 +35,12 @@ use app\components\TaxPayer,
  * @property integer $leader_can_create_bills
  * @property integer $leader_can_veto_bills
  * 
- * @property \app\models\Post $leader Лидер организации
- * @property \app\models\State $state Государство
- * @property \app\models\Post[] $posts Посты
- * @property \app\models\ElectRequest[] $requests Заявки на выборы членов
- * @property \app\models\ElectRequest[] $lrequests Заявки на выборы лидера
- * @property \app\models\ElectOrgLeaderRequest[] $speakerRequests Заявки на выборы лидера по голосованию организации
+ * @property Post $leader Лидер организации
+ * @property State $state Государство
+ * @property Post[] $posts Посты
+ * @property ElectRequest[] $requests Заявки на выборы членов
+ * @property ElectRequest[] $lrequests Заявки на выборы лидера
+ * @property ElectOrgLeaderRequest[] $speakerRequests Заявки на выборы лидера по голосованию организации
  */
 class Org extends MyModel implements TaxPayer {
 
@@ -48,7 +51,7 @@ class Org extends MyModel implements TaxPayer {
 
     public function getStocks()
     {
-        return $this->hasMany('app\models\Stock', array('unnp' => 'unnp'));
+        return $this->hasMany(Stock::className(), array('unnp' => 'unnp'));
     }
     
     private $_unnp;
@@ -170,37 +173,37 @@ class Org extends MyModel implements TaxPayer {
      */
     public function getPostsCount()
     {
-        return intval($this->hasMany('app\models\Post', array('org_id' => 'id'))->count());
+        return intval($this->getPosts()->count());
     }
 
     public function getLeader()
     {
-        return $this->hasOne('app\models\Post', array('id' => 'leader_post'));
+        return $this->hasOne(Post::className(), array('id' => 'leader_post'));
     }
 
     public function getState()
     {
-        return $this->hasOne('app\models\State', array('id' => 'state_id'));
+        return $this->hasOne(State::className(), array('id' => 'state_id'));
     }
 
     public function getPosts()
     {
-        return $this->hasMany('app\models\Post', array('org_id' => 'id'));
+        return $this->hasMany(Post::className(), array('org_id' => 'id'));
     }
 
     public function getRequests()
     {
-        return $this->hasMany('app\models\ElectRequest', array('org_id' => 'id'))->where(['leader' => 0]);
+        return $this->hasMany(ElectRequest::className(), array('org_id' => 'id'))->where(['leader' => 0]);
     }
 
     public function getLrequests()
     {
-        return $this->hasMany('app\models\ElectRequest', array('org_id' => 'id'))->where(['leader' => 1]);
+        return $this->hasMany(ElectRequest::className(), array('org_id' => 'id'))->where(['leader' => 1]);
     }
 
     public function getSpeakerRequests()
     {
-        return $this->hasMany('app\models\ElectOrgLeaderRequest', array('org_id' => 'id'));
+        return $this->hasMany(ElectOrgLeaderRequest::className(), array('org_id' => 'id'));
     }
 
     public function isAllreadySpeakerVoted($post_id)
@@ -240,12 +243,12 @@ class Org extends MyModel implements TaxPayer {
 
     /**
      * Генерация организации по одному из типов выше
-     * @param \app\models\State $state
+     * @param State $state
      * @param int $type
-     * @return \app\models\Org
+     * @return Org
      */
 
-    public static function generate(\app\models\State $state, $type)
+    public static function generate(State $state, $type)
     {
         $org = new Org();
         $org->state_id = $state->id;

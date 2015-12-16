@@ -6,7 +6,7 @@ use app\models\objects\proto\UnmovableObjectProto,
     app\models\resurses\Resurse;
 
 /**
- * This is the model class for table "line_prototypes".
+ * This is the model class for table "lines_prototypes".
  *
  * @property integer $id
  * @property integer $resurse_proto_id
@@ -42,7 +42,7 @@ class LineProto extends UnmovableObjectProto
      */
     public static function tableName()
     {
-        return 'line_prototypes';
+        return 'lines_prototypes';
     }
 
     /**

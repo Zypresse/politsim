@@ -2,10 +2,12 @@
 
 namespace app\models\factories\proto;
 
-use app\components\MyModel;
+use app\components\MyModel,
+    app\models\factories\proto\FactoryProto,
+    app\models\resurses\proto\ResurseProto;
 
 /**
- * Набор ресурсов для работы завода. Таблица "factory_prototypes_kits".
+ * Набор ресурсов для работы завода. Таблица "factories_prototypes_kits".
  *
  * @property integer $id
  * @property integer $resurse_proto_id
@@ -13,7 +15,7 @@ use app\components\MyModel;
  * @property integer $direction Направление: 1 - потребляемые, 2 - производимые, 3 - блокируемые
  * @property integer $factory_proto_id
  * 
- * @property \app\models\resurses\proto\ResurseProto $resurseProto
+ * @property ResurseProto $resurseProto
  * @property FactoryProto $proto
  */
 class FactoryProtoKit extends MyModel
@@ -24,7 +26,7 @@ class FactoryProtoKit extends MyModel
      */
     public static function tableName()
     {
-        return 'factory_prototypes_kits';
+        return 'factories_prototypes_kits';
     }
 
     /**
@@ -54,12 +56,12 @@ class FactoryProtoKit extends MyModel
 
     public function getResurseProto()
     {
-        return $this->hasOne('app\models\resurses\proto\ResurseProto', array('id' => 'resurse_proto_id'));
+        return $this->hasOne(ResurseProto::className(), array('id' => 'resurse_proto_id'));
     }
 
     public function getProto()
     {
-        return $this->hasOne('app\models\factories\proto\FactoryProto', array('id' => 'factory_proto_id'));
+        return $this->hasOne(FactoryProto::className(), array('id' => 'factory_proto_id'));
     }
 
 }

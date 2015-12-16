@@ -5,7 +5,7 @@ namespace app\models\factories\proto;
 use app\components\MyModel;
 
 /**
- * This is the model class for table "factory_prototypes_licenses".
+ * This is the model class for table "factories_prototypes_licenses".
  *
  * @property integer $id
  * @property integer $factory_proto_id
@@ -18,7 +18,7 @@ class FactoryProtoLicense extends MyModel
      */
     public static function tableName()
     {
-        return 'factory_prototypes_licenses';
+        return 'factories_prototypes_licenses';
     }
 
     /**

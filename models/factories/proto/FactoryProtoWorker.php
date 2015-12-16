@@ -2,10 +2,12 @@
 
 namespace app\models\factories\proto;
 
-use app\components\MyModel;
+use app\components\MyModel,
+    app\models\factories\proto\FactoryProto,
+    app\models\PopClass;
 
 /**
- * Необходимый класс и число рабочих для типа фабрики. Таблица "factory_prototypes_workers".
+ * Необходимый класс и число рабочих для типа фабрики. Таблица "factories_prototypes_workers".
  *
  * @property integer $id
  * @property integer $proto_id
@@ -13,7 +15,7 @@ use app\components\MyModel;
  * @property integer $count
  * 
  * @property FactoryProto $proto Тип фабрики
- * @property \app\models\PopClass $popClass Класс населения
+ * @property PopClass $popClass Класс населения
  */
 class FactoryProtoWorker extends MyModel
 {
@@ -22,7 +24,7 @@ class FactoryProtoWorker extends MyModel
      */
     public static function tableName()
     {
-        return 'factory_prototypes_workers';
+        return 'factories_prototypes_workers';
     }
 
     /**
@@ -52,11 +54,11 @@ class FactoryProtoWorker extends MyModel
     
     public function getType()
     {
-        return $this->hasOne('app\models\factories\proto\FactoryProto', array('id' => 'proto_id'));
+        return $this->hasOne(FactoryProto::className(), array('id' => 'proto_id'));
     }    
     
     public function getPopClass()
     {
-        return $this->hasOne('app\models\PopClass', array('id' => 'pop_class_id'));
+        return $this->hasOne(PopClass::className(), array('id' => 'pop_class_id'));
     }
 }

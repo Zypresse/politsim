@@ -6,7 +6,11 @@ use app\components\TaxPayer,
     app\components\MyModel,
     app\components\MyHtmlHelper,
     app\models\User,
-    app\models\Unnp;
+    app\models\Unnp,
+    app\models\ElectRequest,
+    app\models\State,
+    app\models\Post,
+    app\models\Ideology;
 
 /**
  * Партия. Таблица "parties".
@@ -22,13 +26,13 @@ use app\components\TaxPayer,
  * @property integer $heart Доверие
  * @property integer $chart_pie Успешность
  * 
- * @property \app\models\User[] $members Члены партии
- * @property \app\models\ElectRequest[] $requests Заявки на выборы участников организаций
- * @property \app\models\ElectRequest[] $lrequests Заявки на выборы лидеров организаций
- * @property \app\models\User $leaderInfo Лидер
- * @property \app\models\State $state Государство
- * @property \app\models\Ideology $ideologyInfo Идеология
- * @property \app\models\Post[] $postsReserved 
+ * @property User[] $members Члены партии
+ * @property ElectRequest[] $requests Заявки на выборы участников организаций
+ * @property ElectRequest[] $lrequests Заявки на выборы лидеров организаций
+ * @property User $leaderInfo Лидер
+ * @property State $state Государство
+ * @property Ideology $ideologyInfo Идеология
+ * @property Post[] $postsReserved 
  */
 class Party extends MyModel implements TaxPayer
 {
@@ -95,37 +99,37 @@ class Party extends MyModel implements TaxPayer
 
     public function getMembers()
     {
-        return $this->hasMany('app\models\User', array('party_id' => 'id'))->orderBy('`star` + `heart`/10 + `chart_pie`/100 DESC');
+        return $this->hasMany(User::className(), array('party_id' => 'id'))->orderBy('`star` + `heart`/10 + `chart_pie`/100 DESC');
     }
 
     public function getLeaderInfo()
     {
-        return $this->hasOne('app\models\User', array('id' => 'leader'));
+        return $this->hasOne(User::className(), array('id' => 'leader'));
     }
 
     public function getRequests()
     {
-        return $this->hasMany('app\models\ElectRequest', array('party_id' => 'id'))->where(['leader' => 0]);
+        return $this->hasMany(ElectRequest::className(), array('party_id' => 'id'))->where(['leader' => 0]);
     }
 
     public function getLrequests()
     {
-        return $this->hasMany('app\models\ElectRequest', array('party_id' => 'id'))->where(['leader' => 1]);
+        return $this->hasMany(ElectRequest::className(), array('party_id' => 'id'))->where(['leader' => 1]);
     }
 
     public function getState()
     {
-        return $this->hasOne('app\models\State', array('id' => 'state_id'));
+        return $this->hasOne(State::className(), array('id' => 'state_id'));
     }
 
     public function getIdeologyInfo()
     {
-        return $this->hasOne('app\models\Ideology', array('id' => 'ideology'));
+        return $this->hasOne(Ideology::className(), array('id' => 'ideology'));
     }
     
     public function getPostsReserved()
     {
-        return $this->hasMany('app\models\Post', array('party_reserve' => 'id'));
+        return $this->hasMany(Post::className(), array('party_reserve' => 'id'));
     }
 
     /**

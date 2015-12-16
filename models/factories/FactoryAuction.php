@@ -7,10 +7,11 @@ use Yii,
     app\models\factories\Factory,
     app\models\factories\FactoryAuctionBet,
     app\models\Unnp,
-    app\models\Dealing;
+    app\models\Dealing,
+    app\components\TaxPayer;
 
 /**
- * This is the model class for table "factory_auctions".
+ * This is the model class for table "factories_auctions".
  *
  * @property integer $id
  * @property integer $factory_id
@@ -25,7 +26,7 @@ use Yii,
  * @property string $factoryName
  * @property string $holdingName
  * @property string $regionName
- * @property \app\components\NalogPayer $winner
+ * @property TaxPayer $winner
  * @property FactoryAuctionBet[] $bets
  * @property FactoryAuctionBet $lastBet
  */
@@ -36,7 +37,7 @@ class FactoryAuction extends MyModel
      */
     public static function tableName()
     {
-        return 'factory_auctions';
+        return 'factories_auctions';
     }
 
     /**

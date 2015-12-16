@@ -2,7 +2,9 @@
 
 namespace app\models\licenses;
 
-use app\components\MyModel;
+use app\components\MyModel,
+    app\models\State,
+    app\models\licenses\proto\LicenseProto as Proto;
 
 /**
  * Пункты «экономической конституции» государств. Партия "licenses_rules".
@@ -16,8 +18,8 @@ use app\components\MyModel;
  * @property integer $is_need_confirm_noncitizens Для иностранных компаний л. требуется подтверждение министра
  * @property double $cost_noncitizens Цена л. для иностранных компаний
  * 
- * @property \app\models\licenses\proto\LicenseProto $proto Тип лицензии
- * @property \app\models\State $state Государство
+ * @property Proto $proto Тип лицензии
+ * @property State $state Государство
  */
 class LicenseRule extends MyModel {
 
@@ -58,12 +60,12 @@ class LicenseRule extends MyModel {
 
     public function getProto()
     {
-        return $this->hasOne('app\models\licenses\proto\LicenseProto', array('id' => 'proto_id'));
+        return $this->hasOne(Proto::className(), array('id' => 'proto_id'));
     }
 
     public function getState()
     {
-        return $this->hasOne('app\models\State', array('id' => 'state_id'));
+        return $this->hasOne(State::className(), array('id' => 'state_id'));
     }
 
 }

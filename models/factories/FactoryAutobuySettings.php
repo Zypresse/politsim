@@ -9,7 +9,7 @@ use app\components\MyModel,
     app\models\State;
 
 /**
- * This is the model class for table "factory_autobuy_settings".
+ * This is the model class for table "factories_autobuy_settings".
  *
  * @property integer $id
  * @property integer $factory_id
@@ -32,7 +32,7 @@ class FactoryAutobuySettings extends MyModel
      */
     public static function tableName()
     {
-        return 'factory_autobuy_settings';
+        return 'factories_autobuy_settings';
     }
 
     /**

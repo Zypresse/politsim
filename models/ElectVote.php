@@ -2,14 +2,19 @@
 
 namespace app\models;
 
-use app\components\MyModel;
+use app\components\MyModel,
+    app\models\User,
+    app\models\ElectRequest;
 
 /**
- * Голос на выборах. Таблица "elect_votes".
+ * Голос на выборах. Таблица "elects_votes".
  *
  * @property integer $id
  * @property integer $uid
  * @property integer $request_id
+ * 
+ * @property User $user
+ * @property ElectRequest $request
  */
 class ElectVote extends MyModel
 {
@@ -19,7 +24,7 @@ class ElectVote extends MyModel
      */
     public static function tableName()
     {
-        return 'elect_votes';
+        return 'elects_votes';
     }
 
     /**
@@ -48,12 +53,12 @@ class ElectVote extends MyModel
 
     public function getUser()
     {
-        return $this->hasOne('app\models\User', array('id' => 'uid'));
+        return $this->hasOne(User::className(), array('id' => 'uid'));
     }
 
     public function getRequest()
     {
-        return $this->hasOne('app\models\ElectRequest', array('id' => 'request_id'));
+        return $this->hasOne(ElectRequest::className(), array('id' => 'request_id'));
     }
 
 }

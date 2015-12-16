@@ -3,7 +3,8 @@
 namespace app\models;
 
 use Yii,
-    app\components\MyModel;
+    app\components\MyModel,
+    app\models\User;
 
 /*
  * 
@@ -39,6 +40,8 @@ use Yii,
  * @property integer $user_id
  * @property string $source
  * @property string $source_id
+ * 
+ * @property User $user
  */
 class Auth extends MyModel
 {
@@ -77,14 +80,14 @@ class Auth extends MyModel
     
     public function getUser()
     {
-        return $this->hasOne('app\models\User', array('id' => 'user_id'));
+        return $this->hasOne(User::className(), array('id' => 'user_id'));
     }
     
     /**
      * 
      * @param string $source
      * @param array $attributes
-     * @return \app\models\Auth|\app\models\User
+     * @return Auth|User
      */
     public static function signUp($source, $attributes)
     {

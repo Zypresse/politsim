@@ -15,10 +15,12 @@ use app\components\MyModel,
     app\models\Region,
     app\models\Dealing,
     app\models\User,
+    app\models\Holding,
+    app\models\HoldingDecisionVote,
     app\components\MyHtmlHelper;
 
 /**
- * Решение по управлению АО. Таблица "holding_decisions".
+ * Решение по управлению АО. Таблица "holdings_decisions".
  *
  * @property integer $id
  * @property integer $decision_type
@@ -37,7 +39,7 @@ class HoldingDecision extends MyModel {
      */
     public static function tableName()
     {
-        return 'holding_decisions';
+        return 'holdings_decisions';
     }
 
     /**
@@ -69,12 +71,12 @@ class HoldingDecision extends MyModel {
 
     public function getVotes()
     {
-        return $this->hasMany('app\models\HoldingDecisionVote', array('decision_id' => 'id'));
+        return $this->hasMany(HoldingDecisionVote::className(), array('decision_id' => 'id'));
     }
 
     public function getHolding()
     {
-        return $this->hasOne('app\models\Holding', array('id' => 'holding_id'));
+        return $this->hasOne(Holding::className(), array('id' => 'holding_id'));
     }
 
     public function afterDelete()

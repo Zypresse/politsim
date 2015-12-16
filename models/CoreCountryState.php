@@ -2,7 +2,9 @@
 
 namespace app\models;
 
-use app\components\MyModel;
+use app\components\MyModel,
+    app\models\CoreCountry,
+    app\models\State;
 
 /**
  * Привязка государств к коренным странам
@@ -12,8 +14,8 @@ use app\components\MyModel;
  * @property integer $state_id
  * @property double $percents
  * 
- * @property app\models\CoreCountry $core
- * @property app\models\State $state
+ * @property CoreCountry $core
+ * @property State $state
  */
 class CoreCountryState extends MyModel
 {
@@ -54,11 +56,11 @@ class CoreCountryState extends MyModel
     
     public function getCore()
     {
-        return $this->hasOne('app\models\CoreCountry', array('id' => 'core_id'));
+        return $this->hasOne(CoreCountry::className(), array('id' => 'core_id'));
     }
     
     public function getState()
     {
-        return $this->hasOne('app\models\State', array('id' => 'state_id'));
+        return $this->hasOne(State::className(), array('id' => 'state_id'));
     }
 }

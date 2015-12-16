@@ -5,7 +5,7 @@ namespace app\models;
 use app\components\MyModel;
 
 /**
- * Типы сделок. Таблица "dealing_prototypes".
+ * Типы сделок. Таблица "dealings_prototypes".
  *
  * @property integer $id
  * @property string $name
@@ -17,7 +17,7 @@ class DealingProto extends MyModel
      */
     public static function tableName()
     {
-        return 'dealing_prototypes';
+        return 'dealings_prototypes';
     }
 
     /**

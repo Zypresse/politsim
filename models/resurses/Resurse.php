@@ -15,7 +15,7 @@ use app\models\objects\MovableObject,
  * @property double $count
  * @property integer $quality from 1 to 10
  *
- * @property proto\ResurseProto $proto
+ * @property ResurseProto $proto
  * @property ResurseCost[] $costs
  */
 class Resurse extends MovableObject

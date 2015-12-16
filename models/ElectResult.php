@@ -2,16 +2,19 @@
 
 namespace app\models;
 
-use app\components\MyModel;
+use app\components\MyModel,
+    app\models\Org;
 
 /**
- * Результат выборов. Таблица "elect_results".
+ * Результат выборов. Таблица "elects_results".
  *
  * @property integer $id
  * @property integer $org_id
  * @property integer $leader
  * @property integer $date
  * @property string $data Данные в JSON
+ * 
+ * @property Org $org
  */
 class ElectResult extends MyModel
 {
@@ -21,7 +24,7 @@ class ElectResult extends MyModel
      */
     public static function tableName()
     {
-        return 'elect_results';
+        return 'elects_results';
     }
 
     /**
@@ -52,7 +55,7 @@ class ElectResult extends MyModel
 
     public function getOrg()
     {
-        return $this->hasOne('app\models\Org', array('id' => 'org_id'));
+        return $this->hasOne(Org::className(), array('id' => 'org_id'));
     }
 
 }

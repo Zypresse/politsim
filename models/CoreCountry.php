@@ -2,7 +2,9 @@
 
 namespace app\models;
 
-use app\components\MyModel;
+use app\components\MyModel,
+    app\models\Region,
+    app\models\State;
 
 /**
  * Историческая страна, имеющая щитки. Таблица "cores_countries".

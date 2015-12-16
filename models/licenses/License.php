@@ -2,7 +2,10 @@
 
 namespace app\models\licenses;
 
-use app\components\MyModel;
+use app\components\MyModel,
+    app\models\Holding,
+    app\models\State,
+    app\models\licenses\proto\LicenseProto as Proto;
 
 /**
  * Привязка холдингов к лицензиям. Таблица "licenses".
@@ -12,9 +15,9 @@ use app\components\MyModel;
  * @property integer $proto_id
  * @property integer $state_id
  * 
- * @property \app\models\Holding $holding Акционерное общество
- * @property proto\LicenseProto $proto Тип лицензии
- * @property \app\models\State $state Государство, выдавшее лицензию
+ * @property Holding $holding Акционерное общество
+ * @property Proto $proto Тип лицензии
+ * @property State $state Государство, выдавшее лицензию
  */
 class License extends MyModel
 {
@@ -54,17 +57,17 @@ class License extends MyModel
 
     public function getHolding()
     {
-        return $this->hasOne('app\models\Holding', array('id' => 'holding_id'));
+        return $this->hasOne(Holding::className(), array('id' => 'holding_id'));
     }
 
     public function getProto()
     {
-        return $this->hasOne('app\models\licenses\proto\LicenseProto', array('id' => 'proto_id'));
+        return $this->hasOne(Proto::className(), array('id' => 'proto_id'));
     }
 
     public function getState()
     {
-        return $this->hasOne('app\models\State', array('id' => 'state_id'));
+        return $this->hasOne(State::className(), array('id' => 'state_id'));
     }
 
 }

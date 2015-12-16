@@ -7,7 +7,7 @@ use app\components\MyModel,
     app\models\Holding;
 
 /**
- * This is the model class for table "factory_auction_bets".
+ * This is the model class for table "factories_auction_bets".
  *
  * @property integer $id
  * @property integer $auction_id
@@ -25,7 +25,7 @@ class FactoryAuctionBet extends MyModel
      */
     public static function tableName()
     {
-        return 'factory_auction_bets';
+        return 'factories_auction_bets';
     }
 
     /**

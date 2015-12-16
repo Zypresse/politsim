@@ -2,10 +2,14 @@
 
 namespace app\models;
 
-use app\components\MyModel;
+use app\components\MyModel,
+    app\models\Org,
+    app\models\User,
+    app\models\Party,
+    app\models\ElectOrgLeaderVote;
 
 /**
- * This is the model class for table "elect_orgleader_requests".
+ * This is the model class for table "elects_orgleader_requests".
  *
  * @property integer $id
  * @property integer $org_id Организация, лидер которой избирается
@@ -24,7 +28,7 @@ class ElectOrgLeaderRequest extends MyModel
      */
     public static function tableName()
     {
-        return 'elect_orgleader_requests';
+        return 'elects_orgleader_requests';
     }
 
     /**
@@ -54,27 +58,27 @@ class ElectOrgLeaderRequest extends MyModel
     
     public function getOrg()
     {
-        return $this->hasOne('app\models\Org', array('id' => 'org_id'));
+        return $this->hasOne(Org::className(), array('id' => 'org_id'));
     }
     
     public function getCandidat()
     {
-        return $this->hasOne('app\models\User', array('id' => 'uid'));
+        return $this->hasOne(User::className(), array('id' => 'uid'));
     }
     
     public function getParty()
     {
-        return $this->hasOne('app\models\Party', array('id' => 'party_id'));
+        return $this->hasOne(Party::className(), array('id' => 'party_id'));
     }
     
     public function getVotes()
     {
-        return $this->hasMany('app\models\ElectOrgLeaderVote', array('request_id' => 'id'));
+        return $this->hasMany(ElectOrgLeaderVote::className(), array('request_id' => 'id'));
     }
 
     public function getVotesCount()
     {
-        return intval($this->hasMany('app\models\ElectOrgLeaderVote', array('request_id' => 'id'))->count());
+        return intval($this->getVotes()->count());
     }
 
     public function afterDelete()

@@ -2,15 +2,20 @@
 
 namespace app\models;
 
-use app\components\MyModel;
+use app\components\MyModel,
+    app\models\HoldingDecision as Decision,
+    app\models\Stock;
 
 /**
- * Голос по решениюв управлении АО. Таблица "holding_decisions_votes".
+ * Голос по решениюв управлении АО. Таблица "holdings_decisions_votes".
  *
  * @property integer $id
  * @property integer $decision_id
  * @property integer $variant
  * @property integer $stock_id
+ * 
+ * @property Decision $decision
+ * @property Stock $stock
  */
 class HoldingDecisionVote extends MyModel
 {
@@ -20,7 +25,7 @@ class HoldingDecisionVote extends MyModel
      */
     public static function tableName()
     {
-        return 'holding_decisions_votes';
+        return 'holdings_decisions_votes';
     }
 
     /**
@@ -49,12 +54,12 @@ class HoldingDecisionVote extends MyModel
 
     public function getDecision()
     {
-        return $this->hasOne('app\models\HoldingDecision', array('id' => 'decision_id'));
+        return $this->hasOne(Decision::className(), array('id' => 'decision_id'));
     }
 
     public function getStock()
     {
-        return $this->hasOne('app\models\Stock', array('id' => 'stock_id'));
+        return $this->hasOne(Stock::className(), array('id' => 'stock_id'));
     }
 
 }

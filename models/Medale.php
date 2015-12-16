@@ -2,7 +2,8 @@
 
 namespace app\models;
 
-use app\components\MyModel;
+use app\components\MyModel,
+    app\models\MedaleProto;
 
 /**
  * Значки. Таблица "medales".
@@ -12,7 +13,7 @@ use app\components\MyModel;
  * @property integer $uid_vk
  * @property integer $type
  * 
- * @property \app\models\MedaleProto $proto Тип значка
+ * @property MedaleProto $proto Тип значка
  */
 class Medale extends MyModel
 {
@@ -51,7 +52,7 @@ class Medale extends MyModel
 
     public function getProto()
     {
-        return $this->hasOne('app\models\MedaleProto', array('id' => 'type'));
+        return $this->hasOne(MedaleProto::className(), array('id' => 'type'));
     }
 
 }

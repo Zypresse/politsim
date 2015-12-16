@@ -2,10 +2,12 @@
 
 namespace app\models\bills;
 
-use app\components\MyModel;
+use app\components\MyModel,
+    app\models\bills\Bill,
+    app\models\Post;
 
 /**
- * Голос по законопроекту. Таблица "bill_votes".
+ * Голос по законопроекту. Таблица "bills_votes".
  *
  * @property integer $id
  * @property integer $bill_id
@@ -23,7 +25,7 @@ class BillVote extends MyModel
      */
     public static function tableName()
     {
-        return 'bill_votes';
+        return 'bills_votes';
     }
 
     /**
@@ -52,12 +54,12 @@ class BillVote extends MyModel
 
     public function getBill()
     {
-        return $this->hasOne('app\models\Bill', array('id' => 'bill_id'));
+        return $this->hasOne(Bill::className(), array('id' => 'bill_id'));
     }
 
     public function getPost()
     {
-        return $this->hasOne('app\models\Post', array('id' => 'post_id'));
+        return $this->hasOne(Post::className(), array('id' => 'post_id'));
     }
 
 }

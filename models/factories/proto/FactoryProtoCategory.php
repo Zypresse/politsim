@@ -2,10 +2,11 @@
 
 namespace app\models\factories\proto;
 
-use app\components\MyModel;
+use app\components\MyModel,
+    app\models\factories\proto\FactoryProto;
 
 /**
- * Категория фабрик. Таблица "factory_prototypes_categories".
+ * Категория фабрик. Таблица "factories_prototypes_categories".
  *
  * @property integer $id
  * @property string $name
@@ -20,7 +21,7 @@ class FactoryProtoCategory extends MyModel
      */
     public static function tableName()
     {
-        return 'factory_prototypes_categories';
+        return 'factories_prototypes_categories';
     }
 
     /**
@@ -47,7 +48,7 @@ class FactoryProtoCategory extends MyModel
     
     public function getProtos()
     {
-        return $this->hasMany('app\models\factories\proto\FactoryProto', array('category_id' => 'id'));
+        return $this->hasMany(FactoryProto::className(), array('category_id' => 'id'));
     }
 
 }

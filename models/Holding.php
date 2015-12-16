@@ -6,6 +6,12 @@ use app\components\TaxPayer,
     app\components\MyModel,
     app\components\MyHtmlHelper,
     app\models\Unnp,
+    app\models\State,
+    app\models\Region,
+    app\models\User,
+    app\models\licenses\License,
+    app\models\factories\Factory,
+    app\models\factories\Line,
     app\models\HoldingDecision;
 
 /**
@@ -21,9 +27,9 @@ use app\components\TaxPayer,
  * @property double $balance
  * 
  * @property Stock[] $stocks Акции
- * @property licenses\License[] $licenses Лицензии
- * @property factories\Factory[] $factories Фабрики
- * @property factories\Line[] $lines
+ * @property License[] $licenses Лицензии
+ * @property Factory[] $factories Фабрики
+ * @property Line[] $lines
  * @property User $director
  * @property State $state
  * @property Region $region
@@ -90,37 +96,37 @@ class Holding extends MyModel implements TaxPayer
 
     public function getState()
     {
-        return $this->hasOne('app\models\State', array('id' => 'state_id'));
+        return $this->hasOne(State::className(), array('id' => 'state_id'));
     }
 
     public function getRegion()
     {
-        return $this->hasOne('app\models\Region', array('id' => 'region_id'));
+        return $this->hasOne(Region::className(), array('id' => 'region_id'));
     }
 
     public function getDirector()
     {
-        return $this->hasOne('app\models\User', array('id' => 'director_id'));
+        return $this->hasOne(User::className(), array('id' => 'director_id'));
     }
 
     public function getStocks()
     {
-        return $this->hasMany('app\models\Stock', array('holding_id' => 'id'))->orderBy('count DESC');
+        return $this->hasMany(Stock::className(), array('holding_id' => 'id'))->orderBy('count DESC');
     }
     
     public function getStocksHaved()
     {
-        return $this->hasMany('app\models\Stock', array('unnp' => 'unnp'));
+        return $this->hasMany(Stock::className(), array('unnp' => 'unnp'));
     }
 
     public function getDecisions()
     {
-        return $this->hasMany('app\models\HoldingDecision', array('holding_id' => 'id'))->orderBy('accepted ASC, created DESC');
+        return $this->hasMany(HoldingDecision::className(), array('holding_id' => 'id'))->orderBy('accepted ASC, created DESC');
     }
 
     public function getLicenses()
     {
-        return $this->hasMany('app\models\licenses\License', array('holding_id' => 'id'));
+        return $this->hasMany(License::className(), array('holding_id' => 'id'));
     }
     
     public function getLicensesByState($stateID)
@@ -130,12 +136,12 @@ class Holding extends MyModel implements TaxPayer
 
     public function getFactories()
     {
-        return $this->hasMany('app\models\factories\Factory', array('holding_id' => 'id'));
+        return $this->hasMany(Factory::className(), array('holding_id' => 'id'));
     }
 
     public function getLines()
     {
-        return $this->hasMany('app\models\factories\Line', array('holding_id' => 'id'));
+        return $this->hasMany(Line::className(), array('holding_id' => 'id'));
     }
 
     private $_sumStocks = null;

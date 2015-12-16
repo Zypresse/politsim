@@ -2,16 +2,25 @@
 
 namespace app\models;
 
-use app\components\MyModel;
+use app\components\MyModel,
+    app\models\Org,
+    app\models\Party,
+    app\models\User,
+    app\models\ElectVote;
 
 /**
- * Заявка на выборы. Таблица "elect_requests".
+ * Заявка на выборы. Таблица "elects_requests".
  *
  * @property integer $id
  * @property integer $org_id
  * @property integer $party_id
  * @property integer $candidat
  * @property integer $leader Выборы лидера - 1, выборы участников - 2
+ * 
+ * @property Org $org
+ * @property Party $party
+ * @property User $user
+ * @property ElectVote[] $votes
  */
 class ElectRequest extends MyModel
 {
@@ -21,7 +30,7 @@ class ElectRequest extends MyModel
      */
     public static function tableName()
     {
-        return 'elect_requests';
+        return 'elects_requests';
     }
 
     /**
@@ -51,22 +60,22 @@ class ElectRequest extends MyModel
 
     public function getOrg()
     {
-        return $this->hasOne('app\models\Org', array('id' => 'org_id'));
+        return $this->hasOne(Org::className(), array('id' => 'org_id'));
     }
 
     public function getParty()
     {
-        return $this->hasOne('app\models\Party', array('id' => 'party_id'));
+        return $this->hasOne(Party::className(), array('id' => 'party_id'));
     }
 
     public function getUser()
     {
-        return $this->hasOne('app\models\User', array('id' => 'candidat'));
+        return $this->hasOne(User::className(), array('id' => 'candidat'));
     }
 
     public function getVotes()
     {
-        return $this->hasMany('app\models\ElectVote', array('request_id' => 'id'));
+        return $this->hasMany(ElectVote::className(), array('request_id' => 'id'));
     }
 
 }

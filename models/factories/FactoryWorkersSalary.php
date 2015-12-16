@@ -2,10 +2,12 @@
 
 namespace app\models\factories;
 
-use app\components\MyModel;
+use app\components\MyModel,
+    app\models\factories\Factory,
+    app\models\PopClass;
 
 /**
- * Установленные зарплаты для рабочих. Таблица "factory_workers_salary".
+ * Установленные зарплаты для рабочих. Таблица "factories_workers_salary".
  *
  * @property integer $id
  * @property integer $factory_id
@@ -22,7 +24,7 @@ class FactoryWorkersSalary extends MyModel
      */
     public static function tableName()
     {
-        return 'factory_workers_salary';
+        return 'factories_workers_salary';
     }
 
     /**
@@ -40,12 +42,12 @@ class FactoryWorkersSalary extends MyModel
     
     public function getFactory()
     {
-        return $this->hasOne('app\models\Factory', array('id' => 'factory_id'));
+        return $this->hasOne(Factory::className(), array('id' => 'factory_id'));
     }
     
     public function getPopClass()
     {
-        return $this->hasOne('app\models\PopClass', array('id' => 'pop_class_id'));
+        return $this->hasOne(PopClass::className(), array('id' => 'pop_class_id'));
     }
 
     /**

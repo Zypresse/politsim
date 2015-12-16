@@ -2,8 +2,9 @@
 
 namespace app\models;
 
-use app\components\MyModel;
-use app\components\vkapi\VkNotification;
+use app\components\MyModel,
+    app\components\vkapi\VkNotification,
+    app\models\User;
 
 /**
  * Уведомления. В будущем будет типа системы важных сообщений. Таблица "notifications".
@@ -12,10 +13,9 @@ use app\components\vkapi\VkNotification;
  * @property integer $uid
  * @property string $text
  * 
- * @property \app\models\User $user Пользователь
+ * @property User $user Пользователь
  */
-class Notification extends MyModel
-{
+class Notification extends MyModel {
 
     /**
      * @inheritdoc
@@ -43,15 +43,15 @@ class Notification extends MyModel
     public function attributeLabels()
     {
         return [
-            'id'   => 'ID',
-            'uid'  => 'Uid',
+            'id' => 'ID',
+            'uid' => 'Uid',
             'text' => 'Text',
         ];
     }
 
     public function getUser()
     {
-        return $this->hasOne('app\models\User', array('id' => 'uid'));
+        return $this->hasOne(User::className(), array('id' => 'uid'));
     }
 
     /**
@@ -78,9 +78,9 @@ class Notification extends MyModel
      */
     public static function send($uid, $text)
     {
-        $notification       = new Notification();
+        $notification = new Notification();
         $notification->text = $text;
-        $notification->uid  = $uid;
+        $notification->uid = $uid;
         return $notification->save();
     }
 

@@ -5,7 +5,7 @@ namespace app\models\bills\proto;
 use app\components\MyModel;
 
 /**
- * Поле типа законопроекта. Таблица "bill_prototypes_fields".
+ * Поле типа законопроекта. Таблица "bills_prototypes_fields".
  *
  * @property integer $proto_id
  * @property string $name
@@ -20,7 +20,7 @@ class BillProtoField extends MyModel
      */
     public static function tableName()
     {
-        return 'bill_prototypes_fields';
+        return 'bills_prototypes_fields';
     }
 
     /**

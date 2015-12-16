@@ -2,10 +2,17 @@
 
 namespace app\models\factories\proto;
 
-use app\models\objects\proto\UnmovableObjectProto;
+use app\models\objects\proto\UnmovableObjectProto,
+    app\models\factories\proto\FactoryProtoCategory as Category,
+    app\models\factories\proto\FactoryProtoKit as Kit,
+    app\models\factories\proto\FactoryProtoWorker as Worker,
+    app\models\factories\proto\FactoryProtoLicense as License,
+    app\models\factories\Factory,
+    app\models\Region,
+    app\models\Holding;
 
 /**
- * Тип фабрики. Таблица "factory_prototypes".
+ * Тип фабрики. Таблица "factories_prototypes".
  *
  * @property integer $id
  * @property string $name
@@ -16,22 +23,16 @@ use app\models\objects\proto\UnmovableObjectProto;
  * @property double $build_cost
  * @property string $class_name
  * 
- * @property FactoryProtoCategory $category Категория фабрик
- * @property FactoryProtoKit[] $resurses Набор всех ресурсов
- * @property FactoryProtoKit[] $export Производимый набор ресурсов
- * @property FactoryProtoKit[] $import Потребляемый набор ресурсов
- * @property FactoryProtoKit[] $used Используемый набор ресурсов
- * @property FactoryProtoWorker[] $workers Используемые наборы рабочих
- * @property FactoryProtoLicenses[] $licenses Необходимые лицензии
+ * @property Category $category Категория фабрик
+ * @property Kit[] $resurses Набор всех ресурсов
+ * @property Kit[] $export Производимый набор ресурсов
+ * @property Kit[] $import Потребляемый набор ресурсов
+ * @property Kit[] $used Используемый набор ресурсов
+ * @property Worker[] $workers Используемые наборы рабочих
+ * @property License[] $licenses Необходимые лицензии
  */
 class FactoryProto extends UnmovableObjectProto
 {
-    /*
-    public static function find()
-    {
-        return new ObjectProtoQuery(static::class, ['class_name' => static::class]);
-    }
-     */
 
     public static function instantiate($row)
     {
@@ -44,7 +45,7 @@ class FactoryProto extends UnmovableObjectProto
      */
     public static function tableName()
     {
-        return 'factory_prototypes';
+        return 'factories_prototypes';
     }
 
     /**
@@ -81,42 +82,42 @@ class FactoryProto extends UnmovableObjectProto
 
     public function getCategory()
     {
-        return $this->hasOne('app\models\factories\proto\FactoryProtoCategory', array('id' => 'category_id'));
+        return $this->hasOne(Category::className(), array('id' => 'category_id'));
     }
 
     public function getResurses()
     {
-        return $this->hasMany('app\models\factories\proto\FactoryProtoKit', array('factory_proto_id' => 'id'));
+        return $this->hasMany(Kit::className(), array('factory_proto_id' => 'id'));
     }
 
     public function getExport()
     {
-        return $this->hasMany('app\models\factories\proto\FactoryProtoKit', array('factory_proto_id' => 'id'))->where(['direction' => 2]);
+        return $this->hasMany(Kit::className(), array('factory_proto_id' => 'id'))->where(['direction' => 2]);
     }
 
     public function getImport()
     {
-        return $this->hasMany('app\models\factories\proto\FactoryProtoKit', array('factory_proto_id' => 'id'))->where(['direction' => 1]);
+        return $this->hasMany(Kit::className(), array('factory_proto_id' => 'id'))->where(['direction' => 1]);
     }
 
     public function getUsed()
     {
-        return $this->hasMany('app\models\factories\proto\FactoryProtoKit', array('factory_proto_id' => 'id'))->where(['direction' => 3]);
+        return $this->hasMany(Kit::className(), array('factory_proto_id' => 'id'))->where(['direction' => 3]);
     }
 
     public function getWorkers()
     {
-        return $this->hasMany('app\models\factories\proto\FactoryProtoWorker', array('proto_id' => 'id'));
+        return $this->hasMany(Worker::className(), array('proto_id' => 'id'));
     }    
 
     public function getSumNeedWorkers()
     {
-        return intval($this->hasMany('app\models\factories\proto\FactoryProtoWorker', array('proto_id' => 'id'))->sum("count"));
+        return intval($this->hasMany(Worker::className(), array('proto_id' => 'id'))->sum("count"));
     }    
     
     public function getLicenses()
     {
-        return $this->hasMany('app\models\factories\proto\FactoryProtoLicense', ['id' => 'license_proto_id'])
+        return $this->hasMany(License::className(), ['id' => 'license_proto_id'])
                 ->viaTable('factory_prototypes_licenses', ['factory_proto_id' => 'id']);
     }
     
@@ -176,9 +177,9 @@ class FactoryProto extends UnmovableObjectProto
      * @param string $name
      * @param integer $size
      * 
-     * @return \app\models\factories\Factory 
+     * @return Factory 
      */
-    public function startBuild(\app\models\Region $region, \app\models\Holding $holding, $name, $size = 1)
+    public function startBuild(Region $region, Holding $holding, $name, $size = 1)
     {
         if ($size < 1) {
             $size = 1;

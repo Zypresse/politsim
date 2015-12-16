@@ -2,7 +2,9 @@
 
 namespace app\models\articles;
 
-use app\components\MyModel;
+use app\components\MyModel,
+    app\models\articles\proto\ArticleProto,
+    app\models\State;
 
 /**
  * Пункт конституции. Таблица "articles".
@@ -12,7 +14,7 @@ use app\components\MyModel;
  * @property integer $state_id
  * @property string $value
  * 
- * @property proto\ArticleProto $proto
+ * @property ArticleProto $proto
  * @property State $state
  */
 class Article extends MyModel
@@ -53,12 +55,12 @@ class Article extends MyModel
 
     public function getProto()
     {
-        return $this->hasOne('app\models\articles\proto\ArticleProto', array('id' => 'proto_id'));
+        return $this->hasOne(ArticleProto::className(), array('id' => 'proto_id'));
     }
 
     public function getState()
     {
-        return $this->hasOne('app\models\State', array('id' => 'state_id'));
+        return $this->hasOne(State::className(), array('id' => 'state_id'));
     }
     
     public function afterSave($insert, $changedAttributes)
