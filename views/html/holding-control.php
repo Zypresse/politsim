@@ -494,7 +494,7 @@ $userStock = $user->getShareholderStock($holding);
                 
             </div>
             <div class="modal-footer">
-                <button class="btn btn-primary" data-dismiss="modal"  onclick="">Установить</button>
+                <button id="build-factory-modal-main-btn" class="btn btn-primary" data-dismiss="modal" >Установить</button>
                 <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
             </div>
         </div>

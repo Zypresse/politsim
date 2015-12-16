@@ -76,17 +76,22 @@ function start_build() {
 
 $(function(){
     
-    
+    $('#build-factory-modal-main-btn').off('click');
+    $('#build-factory-modal-main-btn').attr('disabled','disabled');
+        
     $('.elect_vote_radio').iCheck({
         checkboxClass: 'icheckbox_square',
         radioClass: 'iradio_square',
         increaseArea: '20%' // optional
     }).on('ifChecked', function(event){
       
-      new_factory_type = $(this).val();
-      $('#new_factory_add_info').show();
-      $('#start_build').show();
-      updateCost();
+        new_factory_type = $(this).val();
+        $('#new_factory_add_info').show();
+        $('#start_build').show();
+        updateCost();
+
+        $('#build-factory-modal-main-btn').removeAttr('disabled');
+        $('#build-factory-modal-main-btn').click(start_build);
     });;
     
     $('#factory_new_size').change(updateCost);

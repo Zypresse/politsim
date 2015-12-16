@@ -368,7 +368,7 @@ class ModalController extends MyController {
         return $this->render("account-settings", ['user' => $this->getUser()]);
     }
 
-    public function actionBuildFabric($region_id, $holding_id)
+    public function actionBuildFactory($region_id, $holding_id)
     {
         $region = Region::findByPk($region_id);
         $holding = Holding::findByPk($holding_id);
