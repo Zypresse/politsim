@@ -323,9 +323,14 @@ class Region extends MyModel implements TaxPayer
         return 0;
     }
 
+    public function getCityHtmlName()
+    {
+        return $this->city." (".$this->name.($this->state?", ".MyHtmlHelper::a($this->state->short_name, "load_page('state-info',{'id':{$this->state_id}})").")":")");
+    }
+    
     public function getHtmlName()
     {
-        return $this->name.($this->state?" (".MyHtmlHelper::a($this->state->short_name, "load_page('state-info',{'id':{$this->state_id}})").")":"");
+        return MyHtmlHelper::a($this->name,"show_region({$this->id})").($this->state?" (".$this->state->getHtmlShortName().")":"");
     }
 
     public function getTaxStateId()
@@ -334,6 +339,16 @@ class Region extends MyModel implements TaxPayer
     }
 
     public function isTaxedInState($stateId)
+    {
+        return false;
+    }
+
+    public function getUserControllerId()
+    {
+        return 0;
+    }
+
+    public function isUserController($userId)
     {
         return false;
     }

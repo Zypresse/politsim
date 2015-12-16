@@ -10,7 +10,7 @@ use app\components\MyHtmlHelper,
     <div class="row">
         <div class="col-md-12">
             <h1><?= htmlspecialchars($org->name) ?></h1>
-            <p><? if ($org->isLegislature()) { ?>Законодательная власть<? } elseif ($org->isExecutive()) { ?>Исполнительная власть<? } else { ?>Организация<? } ?> государства &laquo;<a href="#" onclick="load_page('state-info', {'id':<?= $org->state_id ?>});"><?= htmlspecialchars($org->state->name) ?></a>&raquo;</p>
+            <p><? if ($org->isLegislature()) { ?>Законодательная власть<? } elseif ($org->isExecutive()) { ?>Исполнительная власть<? } else { ?>Организация<? } ?> государства <?=$org->state->getHtmlName()?></p>
             <p><?
                 switch ($org->dest) {
                     case 'dest_by_leader':
@@ -52,7 +52,7 @@ use app\components\MyHtmlHelper,
                     <? break;
                 case 'unlimited':
                     ?>
-                        Лидер организации занимает этот пост пожизненно.
+                        Лидер организации назначается предшественником.
                     <? break;
                 default:
                     ?>
@@ -60,7 +60,7 @@ use app\components\MyHtmlHelper,
         <? break;
 }
 ?></p>
-<? if ($org->can_vote_for_bills) { ?>
+            <? if ($org->can_vote_for_bills) { ?>
                 <p>Члены организации могут предлагать законопроекты</p>
             <? } ?>
             <? if ($org->can_create_bills) { ?>
@@ -92,7 +92,7 @@ use app\components\MyHtmlHelper,
             echo "<p>Ни одна партия ещё не подала заявок</p>";
         }
         ?>
-                    <p>Выборы спикера продлятся до <span class="formatDate" data-unixtime="<?= $org->next_elect - $org->elect_period * 24 * 60 * 60 + 24 * 60 * 60 ?>"><?= date('d-M-Y H:i', $org->next_elect - $org->elect_period * 24 * 60 * 60 + 24 * 60 * 60) ?></span></p>
+                    <p>Выборы лидера организации продлятся до <span class="formatDate" data-unixtime="<?= $org->next_elect - $org->elect_period * 24 * 60 * 60 + 24 * 60 * 60 ?>"><?= date('d-M-Y H:i', $org->next_elect - $org->elect_period * 24 * 60 * 60 + 24 * 60 * 60) ?></span></p>
     <? } ?><? } ?>
 
             <? if ($org->can_vote_for_bills || $org->can_create_bills || $org->leader_can_vote_for_bills || $org->leader_can_create_bills) { ?>

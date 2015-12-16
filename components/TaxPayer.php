@@ -32,4 +32,8 @@ interface TaxPayer {
     
     public function isTaxedInState($stateId);
     
+    public function getUserControllerId();
+    
+    public function isUserController($userId);
+    
 }

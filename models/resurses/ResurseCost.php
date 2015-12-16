@@ -74,13 +74,13 @@ class ResurseCost extends MyModel
     public function getHtmlType()
     {
         if ($this->state_id) {
-            return "(для предприятий {$this->state->short_name})";
+            return "Налогоплательщики {$this->state->short_name}";
         }
         
         if ($this->holding_id) {
-            return "(для предприятий ".$this->holding->getHtmlName().")";
+            return "Предприятия ".$this->holding->getHtmlName();
         }
         
-        return "";
+        return "Любые покупатели";
     }
 }

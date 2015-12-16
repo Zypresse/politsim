@@ -1,89 +1,172 @@
 <?php
-/*
- * Copyleft license
- * I dont care how you use it
- */
 
 use app\components\MyHtmlHelper,
-    yii\helpers\Html,
     app\models\HoldingDecision,
-    app\models\factories\proto\FactoryProtoCategory,
-    app\models\factories\proto\FactoryProto,
-    app\models\factories\Factory,
-    app\models\factories\proto\LineProto,
-    app\models\licenses\proto\LicenseProto,
-    app\models\User,
-    app\models\State,
-    app\models\Region,
     app\models\Unnp;
 
-/* @var $user \app\models\User */
+/* @var $user app\models\User */
+/* @var $holding app\models\Holding */
+/* @var $licenses app\models\licenses\License[] */
+/* @var $factories app\models\factories\Factory[] */
+
 $userStock = $user->getShareholderStock($holding);
-$factoryCategories = FactoryProtoCategory::find()->all();
 ?>
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-
-            <h1>Управление «<?= $holding->name ?>»</h1>
-            <p>Директор: <?= $holding->director ? MyHtmlHelper::a($holding->director->name, 'load_page("profile",{"id":' . $holding->director_id . '})') : '<em>не назначен</em>' ?></p>
-            <p>Капитализация: <?= number_format($holding->capital, 0, '', ' ') ?> <?= MyHtmlHelper::icon('money') ?></p>
-            <p>Баланс: <?= number_format($holding->balance, 0, '', ' ') ?> <?= MyHtmlHelper::icon('money') ?></p>
-            <? if ($holding->state) { ?>
-                <p>Компания зарегистрирована в государстве: <?= Html::a($holding->state->name, '#', ['onclick' => "load_page('state-info',{'id':{$holding->state_id}})"]) ?></p>
-            <? } ?>
-            <? if ($holding->region) { ?>
-                <p>Компания имеет штаб-квартиру в регионе: <?= $holding->region->name ?></p>
-            <? } else { ?>
-                <p>Компания не имеет штаб-квартиры</p>
-            <? } ?>
-            <h3>Лицензии:</h3>
-            <? if (count($holding->licenses)) { ?>
-                <button class="btn btn-xs btn-default" id="list_licenses_button" >Развернуть список</button>
-                <ul id="list_licenses" style="display: none" >
-                    <? foreach ($holding->licenses as $license) { ?>
+            <h1><?= htmlspecialchars($holding->name) ?></h1>
+            <p>Директор: <?= $holding->director ? $holding->director->getHtmlName() : '<em>не назначен</em>' ?></p>
+            <p>Капитализация: <?= MyHtmlHelper::moneyFormat($holding->capital) ?></p>
+            <p>
+                Баланс лицевого счёта: <?= MyHtmlHelper::moneyFormat($holding->balance) ?>
+                <button onclick="$('#stock_dividents_modal').modal();" class="btn btn-xs dropdown-toggle btn-green">
+                    Выплатить дивиденты
+                </button>
+                <button onclick="$('#insert_money_modal').modal();" class="btn btn-xs dropdown-toggle btn-blue">
+                    Внести деньги на счёт
+                </button>
+            </p>
+            <? if ($holding->state): ?>
+                <p>Компания зарегистрирована в государстве <?= $holding->state->getHtmlName() ?></p>
+            <? else: ?>
+                <p class="status-error">Компания зарегистрирована в несущесвующем ныне государстве!</p>
+            <? endif ?>
+            <? if ($holding->region) { ?><p>Компания имеет головной офис в городе <?= $holding->region->getCityHtmlName() ?></p><? } ?>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="box">
+                <div class="box-header">
+                    <span class="title">
+                        <i class="icon-group"></i> Акционеры
+                    </span>
+                </div>
+                <div class="box-content">    
+                    <table class="table table-normal">
+                        <thead>
+                            <tr>
+                                <td>Владелец</td>
+                                <td>Пакет акций</td>
+                            </tr>
+                        </thead>
+                        <? foreach ($holding->stocks as $stock): ?>
+                            <tr>
+                                <td><?= $stock->master->getHtmlName() ?></td>
+                                <td style="text-align:center"><?= MyHtmlHelper::formateNumberword($stock->count, 'акций', 'акция', 'акции') ?> (<?= round($stock->getPercents(), 2) ?>%)</td>
+                            </tr>
+                        <? endforeach ?>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="box">
+                <div class="box-header">
+                    <span class="title">
+                        <i class="icon-legal"></i> Лицензии
+                    </span>
+                    <ul class="box-toolbar">
                         <li>
-                            <?= $license->proto->name ?> (<?= $license->state->name ?>)
+                            <button onclick="load_modal('holding-new-license',{'holding_id':<?=$holding->id?>},'new_license_modal','new_license_modal_body')" class="btn btn-xs dropdown-toggle btn-green">
+                                Получить лицензию
+                            </button>
                         </li>
-                    <? } ?>
-                </ul>
-            <? } else { ?>
-                <p>Компания не обладает лицензией ни на один вид деятельности</p>
-            <? } ?>
-            <h3>Недвижимость</h3>
-            <? if (count($holding->factories)) { ?>
-                <ul>
-                    <? foreach ($holding->factories as $factory) { ?>
+                    </ul>
+                </div>
+                <div class="box-content">    
+                    <table class="table table-normal">
+                        <? if (count($licenses)): ?>
+                            <thead>
+                                <tr>
+                                    <td>Вид деятельности</td>
+                                    <td>Государство</td>
+                                </tr>
+                            </thead>
+                            <? foreach ($licenses as $license): ?>
+                                <tr>
+                                    <td><?= $license->proto->name ?></td>
+                                    <td><?= $license->state->getHtmlName() ?></td>
+                                </tr>
+                            <? endforeach ?>
+                        <? else: ?>
+                            <tr>
+                                <td>Компания не обладает лицензией ни на один вид деятельности</td>
+                            </tr>
+                        <? endif ?>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box">
+                <div class="box-header">
+                    <span class="title">
+                        <i class="icon-building"></i> Недвижимость
+                    </span>
+                    <ul class="box-toolbar">
                         <li>
-                            <?= Html::a($factory->name, '#', ['onclick' => "load_page('factory-info',{'id':{$factory->id}})"]) ?> 
-                            <? if ($factory->status < 0) { ?><span style="color:red;">(не достроено, запланированная дата окончания строительства: <span class="formatDate" data-unixtime="<?= $factory->builded ?>"><?= date('d-M-Y H:i', $factory->builded) ?></span>)</span><? } ?>
-                            <? if ($factory->status > 1) { ?><span style="color:red;">(не работает)</span><? } ?>
+                            <button class="btn btn-xs btn-green" onclick="load_modal('build-factory-select-region',{'holding_id':<?=$holding->id?>},'build-factory-modal','build-factory-modal-body')" >
+                                Построить новое предприятие
+                            </button>
                         </li>
-                    <? } ?>
-                </ul>
-            <? } else { ?>
-                <p>Компания не владеет недвижимостью</p>
-            <? } ?>
-            <h3>Инфраструктура</h3>
-            <? if (count($holding->lines)) { ?>
-                <ul>
-                    <? foreach ($holding->lines as $line) { ?>
-                        <li>
-                            <?= $line->proto->name ?> <?= $line->region1->name ?> — <?= $line->region2->name ?>
-                        </li>
-                    <? } ?>
-                </ul>
-            <? } else { ?>
-                <p>Компания не владеет объектами инфраструктуры</p>
-            <? } ?>
-            <h3>Список акционеров:</h3>
-            <ul>
-                <? foreach ($holding->stocks as $stock) { ?>
-                    <li>
-                        <?= $stock->master->getHtmlName() ?> <?= round($stock->getPercents(), 2) ?>%
-                    </li>
-                <? } ?>
-            </ul>
+                    </ul>
+                </div>
+                <div class="box-content">    
+                    <table class="table table-normal">
+                        <? if (count($factories)): ?>
+                            <thead>
+                                <tr>
+                                    <td>Предприятие</td>
+                                    <td style="min-width:200px">Регион</td>
+                                    <td style="min-width:102px">Лицевой счёт</td>
+                                    <td>Статус</td>
+                                    <td style="min-width:116px">Действия</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <? foreach ($factories as $factory): ?>
+                                    <tr>
+                                        <td><?= $factory->getHtmlName() ?></td>
+                                        <td><?= $factory->region->getHtmlName() ?></td>
+                                        <td><?= MyHtmlHelper::moneyFormat($factory->balance) ?></td>
+                                        <td style="text-align: center"><?= $factory->getStatusShortName() ?></td>
+                                        <td style="text-align: center">
+                                            <div class="btn-toolbar">
+                                                <div class="btn-group">
+                                                    <button title="Переименовать" class="btn btn-xs btn-lightblue" onclick="$('#factory_id_for_rename').val(<?=$factory->id?>);$('#rename_factory_modal').modal();" >
+                                                        <i class="icon-edit"></i>
+                                                    </button>
+                                                    <button title="Выставить на продажу" class="btn btn-xs btn-gold" onclick="$('#factory_id_for_sell').val(<?=$factory->id?>); $('#sell_factory_modal').modal();" >
+                                                        <i class="icon-money"></i>
+                                                    </button>
+                                                    <button title="Назначить управляющего" class="btn btn-xs btn-gray" onclick="$('#new_manager_factory').val(<?=$factory->id?>);$('#set_manager_modal').modal();" >
+                                                        <i class="icon-user"></i>
+                                                    </button>
+                                                    <button title="Внести деньги на сяёт" class="btn btn-xs btn-brown" onclick="$('#transfer_inner_factory_unnp').val(<?=$factory->unnp?>); $('#transfer_money_inner_modal').modal();" >
+                                                        <i class="icon-money"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <? endforeach ?>
+                            <? else: ?>
+                            <tbody>
+                                <tr>
+                                    <td>Компания не владеет недвижимостью</td>
+                                </tr>
+                            <? endif ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
             <h3>Решения на голосовании:</h3>
             <? if (count($holding->decisions)) { ?>
                 <table class="table">
@@ -92,64 +175,10 @@ $factoryCategories = FactoryProtoCategory::find()->all();
                         $data = json_decode($decision->data);
                         ?>
                         <tr>
-                            <td><?= date('d-m-Y', $decision->created) ?></td>
-                            <td><?
-                                switch ($decision->decision_type) {
-                                    case HoldingDecision::DECISION_CHANGENAME:
-                                        echo 'Переименование компании в «' . $data->new_name . '»';
-                                        break;
-                                    case HoldingDecision::DECISION_PAYDIVIDENTS:
-                                        echo 'Выплата дивидентов в размере ' . $data->sum . ' ' . MyHtmlHelper::icon('money');
-                                        break;
-                                    case HoldingDecision::DECISION_GIVELICENSE:
-                                        $license = LicenseProto::findByPk($data->license_id);
-                                        $state = State::findByPk($data->state_id);
-                                        echo 'Получение лицензии на «' . $license->name . '» в государстве ' . $state->name;
-                                        break;
-                                    case HoldingDecision::DECISION_BUILDFABRIC:
-                                        $fType = FactoryProto::findByPk($data->factory_type);
-                                        $region = Region::findByPk($data->region_id);
-                                        echo "Строительство нового обьекта: {$fType->name} под названием «{$data->name}» в регионе {$region->name}";
-                                        break;
-                                    case HoldingDecision::DECISION_SETMANAGER:
-                                        $user = User::findByPk($data->uid);
-                                        $factory = Factory::findByPk($data->factory_id);
-                                        $region_name = $factory->region->name . ($factory->region->state ? ', ' . $factory->region->state->short_name : '');
-                                        echo "Назначение человека по имени {$user->name} на должность управляющего обьектом {$factory->name} ({$region_name})";
-                                        break;
-                                    case HoldingDecision::DECISION_SETMAINOFFICE:
-                                        $factory = Factory::findByPk($data->factory_id);
-                                        $region_name = $factory->region->name . ($factory->region->state ? ', ' . $factory->region->state->short_name : '');
-                                        echo "Назначение офиса {$factory->name} ({$region_name}) главным офисом компании";
-                                        break;
-                                    case HoldingDecision::DECISION_RENAMEFABRIC:
-                                        $factory = Factory::findByPk($data->factory_id);
-                                        $region_name = $factory->region->name . ($factory->region->state ? ', ' . $factory->region->state->short_name : '');
-                                        echo "Переименование объекта {$factory->name} ({$region_name}) в {$data->new_name}";
-                                        break;
-                                    case HoldingDecision::DECISION_SELLFACTORY:
-                                        $factory = Factory::findByPk($data->factory_id);
-                                        $region_name = $factory->region->name . ($factory->region->state ? ', ' . $factory->region->state->short_name : '');
-                                        $startPrice = MyHtmlHelper::moneyFormat($data->start_price);
-                                        $endPrice = ($data->end_price) ? " и стоп-ценой " . MyHtmlHelper::moneyFormat($data->end_price) : '';
-                                        echo "Продажа объекта {$factory->name} ({$region_name}) с начальной ценой " . $startPrice . $endPrice;
-                                        break;
-                                    case HoldingDecision::DECISION_SETDIRECTOR:
-                                        $user = User::findByPk($data->uid);
-                                        echo "Назначение человека по имени {$user->name} на должность управляющего директора";
-                                        break;
-                                    case HoldingDecision::DECISION_BUILDLINE:
-                                        $lineProto = LineProto::findByPk($data->proto_id);
-                                        $region1 = Region::findByPk($data->region1_id);
-                                        $region2 = Region::findByPk($data->region2_id);
-                                        echo "Строительство объекта «{$lineProto->name}» между регионами {$region1->name} и {$region2->name}";
-                                        break;
-                                    case HoldingDecision::DECISION_TRANSFERMONEY:
-                                        $to = Unnp::findByPk($data->unnp)->master;
-                                        echo 'Перевод ' . $data->sum . ' ' . MyHtmlHelper::icon('money') . ' для '. $to->getHtmlName();
-                                        break;
-                                }
-                                ?></td><td>
+                            <td>
+                                <?= $decision->getHtml() ?>
+                            </td>
+                            <td style="width:250px">
                                 <?
                                 $za = 0;
                                 $protiv = 0;
@@ -161,9 +190,9 @@ $factoryCategories = FactoryProtoCategory::find()->all();
                                     }
                                 }
                                 ?>
-                                <span style="color:green"><?= round($za, 2) ?>% акций ЗА</span>, <span style="color:red"><?= round($protiv, 2) ?>% акций ПРОТИВ</span>
+                                <span class="status-success"><?= round($za, 2) ?>% акций ЗА</span>, <span class="status-error"><?= round($protiv, 2) ?>% акций ПРОТИВ</span>
                             </td>
-                            <td>
+                            <td style="width:200px">
                                 <?
                                 $allreadyVoted = false;
                                 foreach ($decision->votes as $vote) {
@@ -172,7 +201,7 @@ $factoryCategories = FactoryProtoCategory::find()->all();
                                     }
                                 }
                                 if ($allreadyVoted) {
-                                    echo "Вы уже проголосовали";
+                                    echo "<span class='status-success'>Вы уже проголосовали</span>";
                                 } else {
                                     ?>
                                     <button class="btn btn-green" onclick="vote_for_decision(<?= $decision->id ?>, 1)">ЗА</button>
@@ -190,524 +219,289 @@ $factoryCategories = FactoryProtoCategory::find()->all();
                 <p>Нет решений на голосовании</p>
             <? } ?>
 
+            <h4>Новое решение:</h4>
             <div class="btn-toolbar">
                 <div class="btn-group">
-                    <button class="btn btn-sm dropdown-toggle btn-sea" data-toggle="dropdown">
-                        Общие предложения <span class="caret"></span>
+                    <button onclick="$('#rename_holding_modal').modal();" class="btn btn-sm dropdown-toggle btn-lightblue">
+                        Переименовать холдинг
                     </button>
-                    <ul class="dropdown-menu">
-                        <!--<li class="divider"></li>-->
-                        <li><a href="#" onclick="$('#rename_holding_modal').modal();" >Переименовать холдинг</a></li>
-                        <li><a href="#" onclick="$('#set_main_office_modal').modal();" >Установить главный офис</a></li>
-                        <li><a href="#" onclick="$('#set_director_modal').modal();" >Назначить директора</a></li>
-                    </ul>
                 </div>
                 <div class="btn-group">
-                    <button class="btn btn-sm dropdown-toggle btn-green" data-toggle="dropdown">
-                        Управление счётом <span class="caret"></span>
+                    <button onclick="$('#set_main_office_modal').modal();" class="btn btn-sm dropdown-toggle btn-sea">
+                        Установить главный офис
                     </button>
-                    <ul class="dropdown-menu">
-                        <li><a href="#" onclick="$('#stock_dividents_modal').modal();" >Выплатить дивиденты</a></li>
-                        <li><a href="#" onclick="$('#insert_money_modal').modal();" >Внести деньги на счёт</a></li>
-                        <li><a href="#" onclick="$('#transfer_money_inner_modal').modal();" >Перевести деньги на счёт предприятия</a></li>
-                    </ul>
                 </div>
                 <div class="btn-group">
-                    <button class="btn btn-sm dropdown-toggle btn-gray" data-toggle="dropdown">
-                        Управление недвижимостью <span class="caret"></span>
+                    <button onclick="$('#set_director_modal').modal();" class="btn btn-sm dropdown-toggle btn-green">
+                        Назначить директора
                     </button>
-                    <ul class="dropdown-menu">
-                        <li><a href="#" onclick="$('#new_factory_modal').modal();" >Построить новое предприятие</a></li>
-                        <li><a href="#" onclick="$('#new_line_modal').modal();
-                    recalc_build_line_variants();" >Построить новый объект инфраструктуры</a></li>
-                        <li><a href="#" onclick="$('#rename_factory_modal').modal();" >Переименовать обьект</a></li>
-                        <li><a href="#" onclick="$('#sell_factory_modal').modal();" >Выставить предприятие на продажу</a></li>
-                        <li><a href="#" onclick="$('#set_manager_modal').modal();" >Назначить управляющего</a></li>
-                    </ul>
                 </div>
-                <? if ($holding->state) { ?>
-                    <div class="btn-group">
-                        <button class="btn btn-sm dropdown-toggle btn-brown" data-toggle="dropdown">
-                            Управление лицензиями <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu">
-                            <!--<li class="divider"></li>-->
-                            <li><a href="#" onclick="$('#new_license_modal').modal();" >Получить лицензию на новый вид деятельности</a></li>
-                        </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div style="display:none;" class="modal fade" id="new_license_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel123" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="myModalLabel1231">Получение лицензии</h3>
+            </div>
+            <div id="new_license_modal_body" class="modal-body">
+                
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" data-dismiss="modal"  onclick="get_new_license(<?= $holding->id ?>)">Получить</button>
+                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+            </div>
+        </div></div>
+</div>
+<div style="display:none;" class="modal fade" id="insert_money_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel123" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="myModalLabel1232">Внесение денег на счёт</h3>
+            </div>
+            <div id="insert_money_modal_body" class="modal-body">
+                <div class="control-group">
+                    <label class="control-label" for="#insert_sum">Сумма для внесения на счёт</label>
+                    <div class="controls">
+                        <input type="number" id="insert_sum" value="0"> <?= MyHtmlHelper::icon('money') ?>
                     </div>
                 </div>
-
-                <div style="display:none;" class="modal fade" id="new_license_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel123" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                                <h3 id="myModalLabel1231">Получение лицензии</h3>
-                            </div>
-                            <div id="new_license_modal_body" class="modal-body">
-                                <div class="control-group">
-                                    <label class="control-label" for="#new_license_state_id">Государство</label>
-                                    <div class="controls">            
-                                        <select id="new_license_state_id">
-                                            <?
-                                            $states = State::find()->all();
-                                            foreach ($states as $state):
-                                                ?>
-                                                <option <? if ($state->id === $holding->state_id): ?> selected="selected" <? endif ?> id="state_option<?= $state->id ?>" value="<?= $state->id ?>" ><?= $state->name ?></option>       
-                                            <? endforeach ?>
-                                        </select>
-                                    </div>
-                                    <label class="control-label" for="#new_license_id">Лицензия</label>
-                                    <div class="controls">
-                                        <select id="new_license_id">
-                                            <?
-                                            $licenses = LicenseProto::find()->all();
-
-                                            foreach ($licenses as $license) {
-                                                $stateLicense = null;
-                                                $allowed = true;
-                                                foreach ($holding->licenses as $hl) {
-                                                    if ($license->id === $hl->proto_id) {
-                                                        $allowed = false;
-                                                        $break;
-                                                    }
-                                                }
-                                                if (!$allowed)
-                                                    continue;
-
-                                                foreach ($holding->state->licenses as $sl) {
-                                                    if ($license->id === $sl->proto_id) {
-                                                        $stateLicense = $sl;
-                                                        break;
-                                                    }
-                                                }
-                                                $text = "Получение лицензии бесплатно";
-                                                if (!(is_null($stateLicense))) {
-                                                    if ($stateLicense->is_only_goverment) {
-                                                        if (!$userStock->master->isGoverment($holding->state)) {
-                                                            continue;
-                                                        }
-                                                    }
-                                                    if ($stateLicense->cost) {
-                                                        $text = number_format($stateLicense->cost, 0, '', ' ') . ' ' . MyHtmlHelper::icon('money');
-                                                    }
-                                                    if ($stateLicense->is_need_confirm) {
-                                                        $text .= "<br>Необходимо подтверждение министра";
-                                                    }
-                                                }
-                                                ?>
-                                                <option id="license_option<?= $license->id ?>" value="<?= $license->id ?>" data-text="<?= $text ?>"><?= $license->name ?></option>      
-                                                <? }
-                                            ?>
-                                        </select>
-                                    </div>
-                                    <p id="license_info"></p>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button class="btn btn-primary" data-dismiss="modal"  onclick="get_new_license(<?= $holding->id ?>)">Получить</button>
-                                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
-                            </div>
-                        </div></div>
+                <p>Деньги будут сняты с вашего счёта и внесены на баланс компании. Снять их будет проблематично, если вы не владеете 100% акций.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" data-dismiss="modal"  onclick="insert_money(<?= $holding->id ?>)">Внести</button>
+                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+            </div>
+        </div></div>
+</div>
+<div style="display:none;" class="modal fade" id="stock_dividents_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel123" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="myModalLabel1232">Выплата дивидентов акционерам</h3>
+            </div>
+            <div id="stock_dividents_modal_body" class="modal-body">
+                <div class="control-group">
+                    <label class="control-label" for="#dividents_sum">Сумма для выплаты</label>
+                    <div class="controls">
+                        <input type="number" id="dividents_sum" value="0"> <?= MyHtmlHelper::icon('money') ?>
+                    </div>
                 </div>
-            <? } else { ?>
-                <p style="color:red;">Компания зарегистрирована в несущесвующем ныне государстве!</p>
-            <? } ?>
-            <div style="display:none;" class="modal fade" id="insert_money_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel123" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                            <h3 id="myModalLabel1232">Внесение денег на счёт</h3>
-                        </div>
-                        <div id="insert_money_modal_body" class="modal-body">
-                            <div class="control-group">
-                                <label class="control-label" for="#insert_sum">Сумма для внесения на счёт</label>
-                                <div class="controls">
-                                    <input type="number" id="insert_sum" value="0"> <?= MyHtmlHelper::icon('money') ?>
-                                </div>
-                            </div>
-                            <p>Деньги будут сняты с вашего счёта и внесены на баланс компании. Снять их будет проблематично, если вы не владеете 100% акций.</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-primary" data-dismiss="modal"  onclick="insert_money(<?= $holding->id ?>)">Внести</button>
-                            <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
-                        </div>
-                    </div></div>
+                <p>Деньги будут выплачены со счёта компании акционерам в долях, равных их долям в компании.</p>
             </div>
-            <div style="display:none;" class="modal fade" id="stock_dividents_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel123" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                            <h3 id="myModalLabel1232">Выплата дивидентов акционерам</h3>
-                        </div>
-                        <div id="stock_dividents_modal_body" class="modal-body">
-                            <div class="control-group">
-                                <label class="control-label" for="#dividents_sum">Сумма для выплаты</label>
-                                <div class="controls">
-                                    <input type="number" id="dividents_sum" value="0"> <?= MyHtmlHelper::icon('money') ?>
-                                </div>
-                            </div>
-                            <p>Деньги будут выплачены со счёта компании акционерам в долях, равных их долям в компании.</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-primary" data-dismiss="modal"  onclick="pay_dividents(<?= $holding->id ?>)">Выплатить</button>
-                            <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
-                        </div>
-                    </div></div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" data-dismiss="modal"  onclick="pay_dividents(<?= $holding->id ?>)">Выплатить</button>
+                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
             </div>
-            <div style="display:none;" class="modal fade" id="transfer_money_inner_modal" tabindex="-1" role="dialog" aria-labelledby="transfer_money_inner_modal_label" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                            <h3 id="transfer_money_inner_modal_label">Перевод денег на внутренний счёт</h3>
-                        </div>
-                        <div id="transfer_money_inner_modal_body" class="modal-body">
-                            <div class="control-group">
-                                <label class="control-label" for="#transfer_inner_factory_unnp">Предприятие</label>
-                                <div class="controls">
-                                    <select id="transfer_inner_factory_unnp">
-                                    <? foreach ($holding->factories as $factory): ?>
-                                        <option value="<?=$factory->unnp?>"><?=$factory->name?> (<?=$factory->region->name?>)</option>
-                                    <? endforeach ?>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="control-group">
-                                <label class="control-label" for="#transfer_inner_sum">Сумма для перевода</label>
-                                <div class="controls">
-                                    <input type="number" id="transfer_inner_sum" value="0"> <?= MyHtmlHelper::icon('money') ?>
-                                </div>
-                            </div>
-                            <p>Деньги будут выплачены со счёта компании.</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-primary" data-dismiss="modal"  onclick="transfer_money_inner(<?=$holding->id?>)">Перевести</button>
-                            <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
-                        </div>
-                    </div></div>
+        </div></div>
+</div>
+<div style="display:none;" class="modal fade" id="transfer_money_inner_modal" tabindex="-1" role="dialog" aria-labelledby="transfer_money_inner_modal_label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="transfer_money_inner_modal_label">Перевод денег на внутренний счёт</h3>
             </div>
-            <div style="display:none;" class="modal fade" id="set_manager_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel1432" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content"><div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                            <h3 id="myModalLabel1233">Назначение нового управляющего</h3>
-                        </div>
-                        <div id="set_manager_modal_body" class="modal-body">
-                            <div class="control-group">
-                                <label class="control-label" for="#new_manager_factory">Объект недвижимсти:</label>
-                                <div class="controls">
-                                    <select id="new_manager_factory">
-                                        <? foreach ($holding->factories as $factory) { ?>
-                                            <option value="<?= $factory->id ?>"><?= $factory->name ?> (<?= $factory->region->name ?>)</option>
-                                        <? } ?>
-                                    </select>
-                                </div>
-                                <label class="control-label" for="#new_manager_uid">Новый управляющий:</label>
-                                <div class="controls">
-                                    <select id="new_manager_uid">
-                                        <? foreach ($holding->stocks as $stock) { ?>
-                                            <?
-                                            switch (get_class($stock->master)) {
-                                                case 'app\models\User':
-                                                    echo "<option value='{$stock->master->id}'>" . Html::a(Html::img($stock->master->photo, ['style' => 'width:20px']) . ' ' . $stock->master->name, "#", ['onclick' => "load_page('profile',{'uid':{$stock->master->id}})"]) . "</option>";
-                                                    break;
-                                                case 'app\models\Post':
-                                                    echo "<option value='{$stock->master->user->id}'>" . Html::a(Html::img($stock->master->user->photo, ['style' => 'width:20px']) . ' ' . $stock->master->user->name, "#", ['onclick' => "load_page('profile',{'uid':{$stock->master->user->id}})"]) . "</option>";
-                                                    break;
-                                                case 'app\models\Holding':
-
-                                                    break;
-                                            }
-                                            ?>
-                                        <? } ?>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-primary" data-dismiss="modal"  onclick="json_request('new-holding-decision', {'holding_id':<?= $holding->id ?>, 'factory_id': $('#new_manager_factory').val(), 'uid': $('#new_manager_uid').val(), 'type': 6})">Назначить</button>
-                            <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
-                        </div>
-                    </div></div>
+            <div id="transfer_money_inner_modal_body" class="modal-body">
+                <input type="hidden" id="transfer_inner_factory_unnp">
+                <div class="control-group">
+                    <label class="control-label" for="#transfer_inner_sum">Сумма для перевода</label>
+                    <div class="controls">
+                        <input type="number" id="transfer_inner_sum" value="0"> <?= MyHtmlHelper::icon('money') ?>
+                    </div>
+                </div>
+                <p>Деньги будут выплачены со счёта компании.</p>
             </div>
-            <div style="display:none;" class="modal fade" id="set_director_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabelsdm" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                            <h3 id="myModalLabelsdm">Назначение нового директора</h3>
-                        </div>
-                        <div id="set_manager_modal_body" class="modal-body">
-                            <div class="control-group">
-                                <label class="control-label" for="#new_director_uid">Новый директор:</label>
-                                <div class="controls">
-                                    <select id="new_director_uid">
-                                        <? foreach ($holding->stocks as $stock) { ?>
-                                            <?
-                                            switch (get_class($stock->master)) {
-                                                case 'app\models\User':
-                                                    echo "<option value='{$stock->master->id}'>" . Html::a(Html::img($stock->master->photo, ['style' => 'width:20px']) . ' ' . $stock->master->name, "#", ['onclick' => "load_page('profile',{'uid':{$stock->master->id}})"]) . "</option>";
-                                                    break;
-                                                case 'app\models\Post':
-                                                    echo "<option value='{$stock->master->user->id}'>" . Html::a(Html::img($stock->master->user->photo, ['style' => 'width:20px']) . ' ' . $stock->master->user->name, "#", ['onclick' => "load_page('profile',{'uid':{$stock->master->user->id}})"]) . "</option>";
-                                                    break;
-                                                case 'app\models\Holding':
-
-                                                    break;
-                                            }
-                                            ?>
-                                        <? } ?>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-primary" data-dismiss="modal"  onclick="json_request('new-holding-decision', {'holding_id':<?= $holding->id ?>, 'uid': $('#new_director_uid').val(), 'type': <?= HoldingDecision::DECISION_SETDIRECTOR ?>})">Назначить</button>
-                            <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
-                        </div>
-                    </div></div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" data-dismiss="modal"  onclick="transfer_money_inner(<?= $holding->id ?>)">Перевести</button>
+                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
             </div>
-            <div style="display:none;" class="modal fade" id="rename_holding_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel123" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                            <h3 id="myModalLabel1234">Переименование компании</h3>
-                        </div>
-                        <div id="rename_holding_modal_body" class="modal-body">
-                            <div class="control-group">
-                                <label class="control-label" for="#holding_new_name">Название</label>
-                                <div class="controls">
-                                    <input type="text" id="holding_new_name" value="<?= htmlspecialchars($holding->name) ?>">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-primary" data-dismiss="modal"  onclick="rename_holding(<?= $holding->id ?>)">Переименовать</button>
-                            <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
-                        </div>
-                    </div></div>
+        </div></div>
+</div>
+<div style="display:none;" class="modal fade" id="set_manager_modal" tabindex="-1" role="dialog" aria-labelledby="set_manager_modal_label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content"><div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="set_manager_modal_label">Назначение нового управляющего</h3>
             </div>
-
-            <div style="display:none;" class="modal fade" id="rename_factory_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel123" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                            <h3 id="myModalLabel1234">Переименование обьекта</h3>
-                        </div>
-                        <div id="rename_factory_modal_body" class="modal-body">
-                            <div class="control-group">
-                                <label class="control-label" for="#factory_id_for_rename">Обьект</label>
-                                <div class="controls">
-                                    <select id="factory_id_for_rename">
-                                        <? foreach ($holding->factories as $factory) { ?>
-                                            <option value="<?= $factory->id ?>"><?= $factory->name ?> (<?= $factory->region->name ?>)</option>
-                                        <? } ?>
-                                    </select>
-                                </div>
-                                <label class="control-label" for="#factory_new_name">Название</label>
-                                <div class="controls">
-                                    <input type="text" id="factory_new_name" value="">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-primary" data-dismiss="modal"  onclick="rename_factory()">Переименовать</button>
-                            <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
-                        </div>
-                    </div></div>
-            </div>
-
-            <div style="display:none;" class="modal fade" id="sell_factory_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabelsell_factory_modal" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                            <h3 id="myModalLabel123sell_factory_modal">Выставление на продажу</h3>
-                        </div>
-                        <div id="rename_factory_modal_body" class="modal-body">
-                            <div class="control-group">
-                                <label class="control-label" for="#factory_id_for_sell">Обьект</label>
-                                <div class="controls">
-                                    <select id="factory_id_for_sell">
-                                        <? foreach ($holding->factories as $factory): ?>
-                                            <option value="<?= $factory->id ?>"><?= $factory->name ?> (<?= $factory->region->name ?>)</option>
-                                        <? endforeach ?>
-                                    </select>
-                                </div>
-                                <label class="control-label" for="#factory_start_price">Начальная цена</label>
-                                <div class="controls">
-                                    <input type="number" id="factory_start_price" value=""> <?= MyHtmlHelper::icon('money') ?>
-                                </div>
-                                <label class="control-label" for="#factory_end_price">Стоп-цена</label>
-                                <div class="controls">
-                                    <input type="number" id="factory_end_price" value=""> <?= MyHtmlHelper::icon('money') ?>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-primary" data-dismiss="modal"  onclick="sell_factory()">Выставить на продажу</button>
-                            <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
-                        </div>
+            <div id="set_manager_modal_body" class="modal-body">
+                <input type="hidden" id="new_manager_factory">
+                <div class="control-group">
+                    <label class="control-label" for="#new_manager_uid">Новый управляющий:</label>
+                    <div class="controls">
+                        <select id="new_manager_uid">
+                        <? foreach ($holding->stocks as $stock): ?>
+                        <? if ($stock->master->getUnnpType() === Unnp::TYPE_USER): ?>
+                            <option value="<?=$stock->master->id?>"><?=$stock->master->name?></option>
+                        <? endif ?>
+                        <? endforeach ?>
+                        </select>
                     </div>
                 </div>
             </div>
-
-            <div style="display:none;" class="modal fade" id="set_main_office_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel123" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                            <h3 id="myModalLabel1234">Установка главного офиса</h3>
-                        </div>
-                        <div id="set_main_office_modal_body" class="modal-body">
-                            <div class="control-group">
-                                <label class="control-label" for="#new_main_office_id">Обьект</label>
-                                <div class="controls">
-                                    <select id="new_main_office_id">
-                                        <?
-                                        foreach ($holding->factories as $factory) {
-                                            if ($factory->proto_id == 4) {
-                                                ?>
-                                                <option value="<?= $factory->id ?>"><?= $factory->name ?> (<?= $factory->region->name ?>)</option>
-                                            <?
-                                            }
-                                        }
-                                        ?>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-primary" data-dismiss="modal"  onclick="set_main_office()">Установить</button>
-                            <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
-                        </div>
-                    </div></div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" data-dismiss="modal"  onclick="json_request('new-holding-decision', {'holding_id':<?= $holding->id ?>, 'factory_id': $('#new_manager_factory').val(), 'uid': $('#new_manager_uid').val(), 'type': 6})">Назначить</button>
+                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
             </div>
-
-            <div style="display:none;" class="modal fade" id="new_factory_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabelnew_factory_modal" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                            <h3>Строительство</h3>
-                        </div>
-                        <div id="new_factory_modal_body" class="modal-body">
-
-                            <div class="control-group" >
-
-                                <label class="control-label" for="#factory_new_region">Место строительства</label>
-                                <div class="controls">
-                                    <select id="factory_new_region">
-                                        <?
-                                        $regions = Region::find()->with('state')->orderBy('state_id')->all();
-                                        foreach ($regions as $i => $region) {
-                                            ?>
-                                                <? if ($i == 0 || $regions[$i - 1]->state_id != $region->state_id) { ?>
-                                                    <?= ($i) ? '</optgroup>' : '' ?><optgroup label="<?= ($region->state) ? $region->state->name : 'Ничейные регионы' ?>">
-                                                <? } ?>
-                                                <option value="<?= $region->id ?>" <?= ($region->id == $holding->region_id) ? "selected='selected'" : '' ?>><?= $region->name ?></option>
-<? } ?>
-                                    </select>
-                                </div>
-                            </div>
-
-
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-primary" id="build_fabric_page2" >Далее</button>
-                            <button style="display:none;" class="btn btn-primary" data-dismiss="modal" id="start_build" onclick="start_build()">Начать строительство</button>
-                            <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
-                        </div>
-                    </div></div>
+        </div></div>
+</div>
+<div style="display:none;" class="modal fade" id="set_director_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabelsdm" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="myModalLabelsdm">Назначение нового директора</h3>
             </div>
+            <div id="set_manager_modal_body" class="modal-body">
+                <div class="control-group">
+                    <label class="control-label" for="#new_director_uid">Новый директор:</label>
+                    <div class="controls">
+                        <select id="new_director_uid">
+                            <? foreach ($holding->stocks as $stock): ?>
+                            <? if ($stock->master->getUnnpType() === Unnp::TYPE_USER): ?>
+                                <option value='<?=$stock->master->id?>'><?=$stock->master->name?></option>
+                            <? endif ?>
+                            <? endforeach ?>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" data-dismiss="modal"  onclick="json_request('new-holding-decision', {'holding_id':<?= $holding->id ?>, 'uid': $('#new_director_uid').val(), 'type': <?= HoldingDecision::DECISION_SETDIRECTOR ?>})">Назначить</button>
+                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+            </div>
+        </div></div>
+</div>
+<div style="display:none;" class="modal fade" id="rename_holding_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel123" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="myModalLabel1234">Переименование компании</h3>
+            </div>
+            <div id="rename_holding_modal_body" class="modal-body">
+                <div class="control-group">
+                    <label class="control-label" for="#holding_new_name">Название</label>
+                    <div class="controls">
+                        <input type="text" id="holding_new_name" value="<?= htmlspecialchars($holding->name) ?>">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" data-dismiss="modal"  onclick="rename_holding(<?= $holding->id ?>)">Переименовать</button>
+                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+            </div>
+        </div></div>
+</div>
 
-            <div style="display:none;" class="modal fade" id="new_line_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabelnew_line_modal" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                            <h3>Строительство</h3>
-                        </div>
-                        <div id="new_line_modal_body" class="modal-body">
+<div style="display:none;" class="modal fade" id="rename_factory_modal" tabindex="-1" role="dialog" aria-labelledby="rename_factory_modal_label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="rename_factory_modal_label">Переименование обьекта</h3>
+            </div>
+            <div id="rename_factory_modal_body" class="modal-body">
+                <div class="control-group">
+                    <input type="hidden" id="factory_id_for_rename" >
+                    <label class="control-label" for="#factory_new_name">Название</label>
+                    <div class="controls">
+                        <input type="text" id="factory_new_name" value="">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" data-dismiss="modal"  onclick="rename_factory()">Переименовать</button>
+                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+            </div>
+        </div></div>
+</div>
 
-                            <div class="control-group" >
-
-                                <label class="control-label" for="#line_new_proto_id">Тип</label>
-                                <div class="controls">
-                                    <select id="line_new_proto_id">
-                                        <? $protos = LineProto::find()->all();
-                                        foreach ($protos as $proto):
-                                            ?>
-                                            <option data-cost="<?= $proto->build_cost ?>" value="<?= $proto->id ?>"><?= $proto->name ?></option>
-<? endforeach ?>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="control-group" >
-
-                                <label class="control-label" for="#line_new_region1">Откуда</label>
-                                <div class="controls">
-                                    <select id="line_new_region1">
-                                        <?
-                                        foreach ($regions as $i => $region) {
-                                            ?>
-                                                <? if ($i == 0 || $regions[$i - 1]->state_id != $region->state_id) { ?>
-                                                    <?= ($i) ? '</optgroup>' : '' ?><optgroup label="<?= ($region->state) ? $region->state->name : 'Ничейные регионы' ?>">
-    <? } ?>
-                                                <option value="<?= $region->id ?>" <?= ($region->id == $holding->region_id) ? "selected='selected'" : '' ?>><?= $region->name ?></option>
-<? } ?>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="control-group" >
-
-                                <label class="control-label" for="#line_new_region2">Куда</label>
-                                <div class="controls">
-                                    <select id="line_new_region2" disabled="disabled" >
-                                        <option>...</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="help-block">
-                                Стоимость: <span id="line_new_cost_sum">0</span> <?= MyHtmlHelper::icon('money') ?>
-                            </div>
-
-
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-primary" onclick="start_build_line()" >Начать строительство</button>
-                            <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
-                        </div>
-                    </div></div>
+<div style="display:none;" class="modal fade" id="sell_factory_modal" tabindex="-1" role="dialog" aria-labelledby="sell_factory_modal_label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="sell_factory_modal_label">Выставление на продажу</h3>
+            </div>
+            <div id="sell_factory_modal_body" class="modal-body">
+                <div class="control-group">
+                    <input id="factory_id_for_sell" type="hidden">
+                    <label class="control-label" for="#factory_start_price">Начальная цена</label>
+                    <div class="controls">
+                        <input type="number" id="factory_start_price" value=""> <?= MyHtmlHelper::icon('money') ?>
+                    </div>
+                    <label class="control-label" for="#factory_end_price">Стоп-цена</label>
+                    <div class="controls">
+                        <input type="number" id="factory_end_price" value=""> <?= MyHtmlHelper::icon('money') ?>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" data-dismiss="modal"  onclick="sell_factory()">Выставить на продажу</button>
+                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
             </div>
         </div>
     </div>
 </div>
 
+<div style="display:none;" class="modal fade" id="set_main_office_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel123" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="myModalLabel1234">Установка главного офиса</h3>
+            </div>
+            <div id="set_main_office_modal_body" class="modal-body">
+                <div class="control-group">
+                    <label class="control-label" for="#new_main_office_id">Обьект</label>
+                    <div class="controls">
+                        <select id="new_main_office_id">
+                            <?
+                            foreach ($factories as $factory) {
+                                if ($factory->proto_id == 4) {
+                                    ?>
+                                    <option value="<?= $factory->id ?>"><?= $factory->name ?> (<?= $factory->region->name ?>)</option>
+                                    <?
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" data-dismiss="modal"  onclick="set_main_office()">Установить</button>
+                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div style="display:none;" class="modal fade" id="build-factory-modal" tabindex="-1" role="dialog" aria-labelledby="build-factory-modal-label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="build-factory-modal-label">Постройка предприятия</h3>
+            </div>
+            <div id="build-factory-modal-body" class="modal-body">
+                
+            </div>
+            <div class="modal-footer">
+                <button id="build-factory-modal-main-btn" class="btn btn-primary" data-dismiss="modal" >Установить</button>
+                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
-    function recalc_build_line_variants() {
-        get_html('build-line-variants', {'proto_id': $('#line_new_proto_id').val(), 'region1_id': $('#line_new_region1').val()}, function (html) {
-            $('#line_new_region2').html(html);
-            $('#line_new_region2').removeAttr("disabled");
-            recalc_build_line_cost();
-        })
-    }
-
-    function recalc_build_line_cost() {
-        var cost = parseFloat($('#line_new_proto_id').find(':selected').data('cost')),
-                dist = parseFloat($('#line_new_region2').find(':selected').data('distance'));
-
-        $('#line_new_cost_sum').text(number_format(cost * dist, 0, '.', ' '));
-    }
-
+    
     function rename_holding(id) {
         if ($('#holding_new_name').val()) {
             json_request('new-holding-decision', {'holding_id': id, 'type': 1, 'new_name': $('#holding_new_name').val()});
@@ -723,7 +517,7 @@ $factoryCategories = FactoryProtoCategory::find()->all();
             json_request('new-holding-decision', {'holding_id': id, 'type': 2, 'sum': $('#dividents_sum').val()});
         }
     }
-    
+
     function transfer_money_inner(id) {
         if ($('#transfer_inner_sum').val()) {
             json_request('new-holding-decision', {'holding_id': id, 'type': 12, 'unnp': $('#transfer_inner_factory_unnp').val(), 'sum': $('#transfer_inner_sum').val()});
@@ -740,10 +534,6 @@ $factoryCategories = FactoryProtoCategory::find()->all();
 
     function get_new_license(id) {
         json_request('new-holding-decision', {'holding_id': id, 'type': 3, 'license_id': $('#new_license_id').val(), 'state_id': $('#new_license_state_id').val()});
-    }
-
-    function updateLicenseInfo() {
-        $('#license_info').html($("#license_option" + $('#new_license_id').val()).data('text'));
     }
 
     function rename_factory() {
@@ -782,35 +572,8 @@ $factoryCategories = FactoryProtoCategory::find()->all();
             });
         }
     }
-
-    function start_build_line() {
-        var cost = parseFloat($('#line_new_proto_id').find(':selected').data('cost')),
-                dist = parseFloat($('#line_new_region2').find(':selected').data('distance'));
-
-        if (Math.round(cost * dist) > <?= $holding->balance ?>) {
-            alert("На счету фирмы недостаточно денег для строительства");
-        } else {
-            json_request('new-holding-decision', {
-                'holding_id':<?= $holding->id ?>,
-                'type': <?= HoldingDecision::DECISION_BUILDLINE ?>,
-                'region1_id': $('#line_new_region1').val(),
-                'region2_id': $('#line_new_region2').val(),
-                'proto_id': $('#line_new_proto_id').val(),
-            });
-        }
-    }
-
+    
     $(function () {
-        updateLicenseInfo();
-        $('#new_license_id').change(updateLicenseInfo);
-        $('#new_license_state_id').change(function () {
-            $('#new_license_id').attr('disabled', 'disabled');
-            get_html('licenses-options', {'state_id': $(this).val(), 'holding_id':<?= $holding->id ?>}, function (data) {
-                $('#new_license_id').html(data);
-                $('#new_license_id').removeAttr('disabled');
-                updateLicenseInfo();
-            });
-        })
 
         $('#dividents_sum').change(function () {
             if ($(this).val() <=<?= count($holding->stocks) ?>) {
@@ -820,28 +583,6 @@ $factoryCategories = FactoryProtoCategory::find()->all();
                 $(this).val(<?= $holding->balance ?>);
             }
         });
-
-        $('#list_licenses_button').click(function () {
-            if ($(this).text() === "Развернуть список") {
-                $(this).text('Свернуть список');
-                $('#list_licenses').slideDown();
-            } else {
-                $(this).text("Развернуть список");
-                $('#list_licenses').slideUp();
-            }
-        });
-
-        $('#build_fabric_page2').click(function () {
-            $(this).remove();
-            load_modal('build-fabric', {
-                'region_id': $('#factory_new_region').val(),
-                'holding_id':<?= $holding->id ?>
-            }, 'new_factory_modal', 'new_factory_modal_body');
-        });
-
-        $('#line_new_region1').change(recalc_build_line_variants);
-
-        $('#line_new_region2').change(recalc_build_line_cost);
-        $('#line_new_proto_id').change(recalc_build_line_cost);
+        
     });
 </script>

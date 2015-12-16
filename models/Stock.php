@@ -12,7 +12,7 @@ use app\components\MyModel;
  * @property integer $unnp ID налогоплательщика которому принадлежит
  * @property integer $count Число акций
  * 
- * @property \app\components\NalogPayer $master Владелец пакета
+ * @property \app\components\TaxPayer $master Владелец пакета
  * @property Holding $holding АО, акции которого имеются ввиду
  * @property Unnp $unnpModel UNNP владельца пакета
  */

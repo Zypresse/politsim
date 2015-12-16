@@ -192,4 +192,14 @@ class Party extends MyModel implements TaxPayer
         return $this->state_id == $stateId;
     }
 
+    public function getUserControllerId()
+    {
+        return $this->leader;
+    }
+
+    public function isUserController($userId)
+    {
+        return $this->leader === $userId;
+    }
+
 }

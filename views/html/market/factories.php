@@ -68,7 +68,7 @@ $unnps = [];
                         'attribute' => 'regionName',
                         'label' => 'Местоположение',
                         'content' => function($model) {
-                            return MyHtmlHelper::a($model->factory->region->name, "show_region({$model->factory->region->id})") . ( $model->factory->region->state ? " (" . MyHtmlHelper::a($model->factory->region->state->short_name, "load_page('state-info',{'id':" . $model->factory->region->state_id . "})") . ")" : '');
+                            return $model->factory->region->getHtmlName();// MyHtmlHelper::a($model->factory->region->name, "show_region({$model->factory->region->id})") . ( $model->factory->region->state ? " (" . MyHtmlHelper::a($model->factory->region->state->short_name, "load_page('state-info',{'id':" . $model->factory->region->state_id . "})") . ")" : '');
                         }
                     ],
                     [

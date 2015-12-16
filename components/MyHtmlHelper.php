@@ -240,35 +240,35 @@ class MyHtmlHelper {
     {
         switch (true) {
             case $n < 0:
-                return '< 0';
+                return '<&nbsp;0';
             case $n < 1000:
-                return '< 1 000';
+                return '<&nbsp;1&nbsp;000';
             case $n < 10000:
-                return round($n / 1000) . 'K';
+                return round($n / 1000) . '&nbsp;тыс.';
             case $n < 100000:
-                return round($n / 10000) . '0K';
+                return round($n / 10000) . '0&nbsp;тыс.';
             case $n < 1000000:
-                return round($n / 100000) . '00K';
+                return round($n / 100000) . '00&nbsp;тыс.';
             case $n < 10000000:
-                return round($n / 1000000) . 'KK';
+                return round($n / 1000000) . '&nbsp;млн.';
             case $n < 100000000:
-                return round($n / 10000000) . '0KK';
+                return round($n / 10000000) . '0&nbsp;млн.';
             case $n < 1000000000:
-                return round($n / 100000000) . '00KK';
+                return round($n / 100000000) . '00&nbsp;млн.';
             case $n < 10000000000:
-                return round($n / 1000000000) . 'KKK';
+                return round($n / 1000000000) . '&nbsp;млрд.';
             case $n < 100000000000:
-                return round($n / 10000000000) . '0KKK';
+                return round($n / 10000000000) . '0&nbsp;млрд.';
             case $n < 1000000000000:
-                return round($n / 100000000000) . '00KKK';
+                return round($n / 100000000000) . '00&nbsp;млрд.';
             default:
-                return 'KKKK';
+                return number_format(round($n / 1000000000000),0,'','&nbsp;') . '&nbsp;трлн.';
         }
     }
 
     public static function moneyFormat($money, $decimals = 0)
     {
-        return number_format($money, $decimals, '.', ' ') . ' ' . static::icon('money');
+        return '<span class="status-'.($money>0?'success':'error').'">'.number_format($money, $decimals, '.', '&nbsp;') . ' ' . static::icon('money').'</span>';
     }
 
     /**

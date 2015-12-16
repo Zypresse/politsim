@@ -13,7 +13,7 @@ use app\components\MyModel;
  * @property integer $state_id
  * 
  * @property \app\models\Holding $holding Акционерное общество
- * @property \app\models\licenses\proto\LicenseProto $proto Тип лицензии
+ * @property proto\LicenseProto $proto Тип лицензии
  * @property \app\models\State $state Государство, выдавшее лицензию
  */
 class License extends MyModel

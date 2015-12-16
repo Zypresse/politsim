@@ -2,7 +2,8 @@
 
 namespace app\models;
 
-use app\components\MyModel;
+use app\components\MyModel,
+    app\components\TaxPayer;
 
 /**
  * Универсальный ИНН для всех платежей. Таблица "unnp".
@@ -11,7 +12,7 @@ use app\components\MyModel;
  * @property integer $type тип плательщика
  * @property integer $p_id ID плательщика
  * 
- * @property \app\components\NalogPayer $master Владелец
+ * @property TaxPayer $master Владелец
  */
 class Unnp extends MyModel
 {
@@ -37,7 +38,7 @@ class Unnp extends MyModel
     
     /**
      * 
-     * @return \app\components\NalogPayer
+     * @return TaxPayer
      */
     public function getMaster()
     {

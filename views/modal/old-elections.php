@@ -1,6 +1,6 @@
 <?php if ($results) { ?>
 <table class="table"> 
-<?
+<?php
 foreach ($results as $result) {
 ?>
     <tr>
@@ -8,11 +8,11 @@ foreach ($results as $result) {
         <td><?=date('d-m-Y',$result->date)?></td>
         <td><button onclick="load_modal('elections-result',{'id':<?=$result->id?>},'old-elections','old-elections_body')" class="btn btn-sm btn-lightblue">Просмотр</button></td>
     </tr>
-<?
+<?php
 }
 ?>
 </table>
 
-<? } else { ?>
+<?php } else { ?>
 <p>Выборов не проводилось</p>
-<? } ?>
+<?php } ?>

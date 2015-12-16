@@ -368,7 +368,7 @@ class ModalController extends MyController {
         return $this->render("account-settings", ['user' => $this->getUser()]);
     }
 
-    public function actionBuildFabric($region_id, $holding_id)
+    public function actionBuildFactory($region_id, $holding_id)
     {
         $region = Region::findByPk($region_id);
         $holding = Holding::findByPk($holding_id);
@@ -382,57 +382,18 @@ class ModalController extends MyController {
         ]);
     }
 
+    
     public function actionLicensesOptions($holding_id, $state_id)
     {
         $holding = Holding::findByPk($holding_id);
         $state = State::findByPk($state_id);
-        $licenses = HoldingLicenseType::find()->all();
+        $licensesProtos = LicenseProto::find()->all();
 
-        foreach ($licenses as $license) {
-            $allowed = true;
-            foreach ($holding->licenses as $hl) {
-                if ($license->id === $hl->license_id && $hl->state_id === $state->id) {
-                    $allowed = false;
-                    $break;
-                }
-            }
-            if (!$allowed)
-                continue;
-
-            $stateLicense = null;
-            foreach ($state->licenses as $sl) {
-                if ($sl->license_id === $license->id) {
-                    $stateLicense = $sl;
-                    break;
-                }
-            }
-            $text = "Получение лицензии бесплатно";
-            if (!(is_null($stateLicense))) {
-                if ($stateLicense->is_only_goverment) {
-                    if (!$holding->isGosHolding() || $holding->state_id !== $state->id) {
-                        continue;
-                    }
-                }
-                if ($holding->state_id === $state->id) {
-                    if ($stateLicense->cost) {
-                        $text = number_format($stateLicense->cost, 0, '', ' ') . ' ' . MyHtmlHelper::icon('money');
-                    }
-                    if ($stateLicense->is_need_confirm) {
-                        $text .= "<br>Необходимо подтверждение министра";
-                    }
-                } else {
-                    if ($stateLicense->cost_noncitizens) {
-                        $text = number_format($stateLicense->cost_noncitizens, 0, '', ' ') . ' ' . MyHtmlHelper::icon('money');
-                    }
-                    if ($stateLicense->is_need_confirm_noncitizens) {
-                        $text .= "<br>Необходимо подтверждение министра";
-                    }
-                }
-            }
-            ?>
-            <option id="license_option<?= $license->id ?>" value="<?= $license->id ?>" data-text="<?= $text ?>" ><?= $license->name ?></option>      
-            <?
-        }
+        return $this->render("licenses-options",[
+            'licensesProtos' => $licensesProtos,
+            'holding' => $holding,
+            'state' => $state
+        ]);
     }
 
     public function actionLicensesControlsChange($license_proto_id)
@@ -484,15 +445,11 @@ class ModalController extends MyController {
         $regionBase = Region::findByPk($region1_id);
         if ($regionBase) {
             $regions = $regionBase->getBordersArray();
-            foreach ($regions as $i => $region) {
-                $distance = $region->calcDist($regionBase);
-                ?>
-                <? if ($i == 0 || $regions[$i - 1]->state_id != $region->state_id) { ?>
-                    <?= ($i) ? '</optgroup>' : '' ?><optgroup label="<?= ($region->state) ? $region->state->name : 'Ничейные регионы' ?>">
-                <? } ?>
-                    <option data-distance="<?=$distance?>" value="<?= $region->id ?>" ><?= $region->name ?> (<?= number_format($distance, 2, '.', ' ') ?> км.)</option>
-            <?
-            }
+            
+            return $this->render('build-line-variants',[
+                'regions' => $regions,
+                'regionBase' => $regionBase
+            ]);
         } else {
             return $this->_r("Invalid region ID");
         }
@@ -697,5 +654,49 @@ class ModalController extends MyController {
         
         return $this->render('factory-dealings',['factory'=>$factory]);
     }
+    
+    public function actionBuildFactorySelectRegion($holding_id)
+    {
+        if (intval($holding_id) <= 0) {
+            return $this->_r("Invalid holding ID");
+        }
+        
+        $holding = Holding::findByPk($holding_id);
+        if (is_null($holding)) {
+            return $this->_r("Holding not found");
+        }
+        
+        if (!$holding->isUserController($this->viewer_id)) {
+            return $this->_r("Not allowed");
+        }
+                
+        $regions = Region::find()->with('state')->with('state.articles')->orderBy('state_id')->all();
+        
+        return $this->render('build-factory-select-region', [
+            'holding' => $holding,
+            'regions' => $regions
+        ]);
+    }
 
+    public function actionHoldingNewLicense($holding_id)
+    {
+        if (intval($holding_id) <= 0) {
+            return $this->_r("Invalid holding id");
+        }
+        
+        $holding = Holding::findByPk($holding_id);
+        if (is_null($holding)) {
+            return $this->_r("Holding not found");
+        }
+        
+        $states = State::find()->with('licenses')->all();
+        $licenses = LicenseProto::find()->all();
+        
+        return $this->render('holding-new-license',[
+            'states' => $states,
+            'licenses' => $licenses,
+            'holding' => $holding
+        ]);
+    }
+    
 }

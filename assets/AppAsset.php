@@ -22,11 +22,11 @@ class AppAsset extends AssetBundle
 //        '//fonts.googleapis.com/css?family=Roboto+Condensed:400italic,400,700&subset=cyrillic,latin',
 //        'css/plusstrap.min.css',
         'https://fonts.googleapis.com/css?family=Open+Sans:400,600,800&subset=latin,cyrillic',
-        'css/application.css',
         'css/square.css',
         'css/snackbar.min.css',
         'css/spectrum.css',
         'css/jquery-jvectormap-2.0.3.css',
+        'css/application.css',
         'css/style.css',
     ];
     public $js = [
@@ -39,6 +39,7 @@ class AppAsset extends AssetBundle
         'js/icheck.js',
         'js/jquery.peity.min.js',
         'js/jquery-dateFormat.min.js',
+        'js/jquery.steps.min.js',
         '//vk.com/js/api/xd_connection.js',
         '//www.google.com/jsapi?autoload={\'modules\':[{\'name\':\'visualization\',\'version\':\'1\',\'packages\':[\'corechart\']}]}',
         '//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js',

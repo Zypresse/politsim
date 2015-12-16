@@ -5,7 +5,8 @@ namespace app\models;
 use app\components\TaxPayer,
     app\components\MyModel,
     app\components\MyHtmlHelper,
-    app\models\Unnp;
+    app\models\Unnp,
+    app\models\HoldingDecision;
 
 /**
  * Акционерное общество. Таблица "holdings".
@@ -24,6 +25,9 @@ use app\components\TaxPayer,
  * @property factories\Factory[] $factories Фабрики
  * @property factories\Line[] $lines
  * @property User $director
+ * @property State $state
+ * @property Region $region
+ * @property HoldingDecision[] $decisions
  */
 class Holding extends MyModel implements TaxPayer
 {
@@ -163,12 +167,13 @@ class Holding extends MyModel implements TaxPayer
     {
         if (is_null($this->_isGosHolding)) {
             $this->_isGosHolding = false;
+            $sumPercents = 0;
             foreach ($this->stocks as $stock) {
-                if ($stock->isGos($stateId) && $stock->getPercents() > 50) {
-                    $this->_isGosHolding = true;
-                    break;
+                if ($stock->isGos($stateId)) {
+                    $sumPercents += $stock->getPercents();
                 }
             }
+            $this->_isGosHolding = $sumPercents > 50.0;
         }
         return $this->_isGosHolding;
     }
@@ -227,6 +232,26 @@ class Holding extends MyModel implements TaxPayer
     public function isTaxedInState($stateId)
     {
         return ($this->state_id === (int)$stateId);
+    }
+
+    public function getUserControllerId()
+    {
+        return $this->director_id;
+    }
+
+    public function isUserController($userId)
+    {
+        if ($this->director_id === $userId) {
+            return true;
+        }
+        
+        foreach ($this->stocks as $stock) {
+            if ($stock->master->isUserController($userId)) {
+                return true;
+            }
+        }
+        
+        return false;
     }
 
 }

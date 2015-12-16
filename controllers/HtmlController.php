@@ -14,6 +14,7 @@ use Yii,
     app\models\Ideology,
     app\models\Twitter,
     app\models\Holding,
+    app\models\licenses\License,
     app\models\factories\Factory,
     app\models\factories\FactoryAuction,
     app\models\factories\FactoryAuctionSearch,
@@ -280,16 +281,40 @@ class HtmlController extends MyController
     public function actionHoldingInfo($id)
     {
         $id = intval($id);
-        if ($id) {
+        if ($id > 0) {
             $holding = Holding::findByPk($id);
             if (is_null($holding)) {
                 return $this->_r("Holding not found");
             }
+            
+            $factories = Factory::find()->where([
+                    'holding_id' => $id
+                ])
+                ->with('region')
+                ->with('region.state')
+                ->with('proto')
+                ->all();
 
             if ($this->getUser()->isShareholder($holding)) {
-                return $this->render("holding-control", ['holding' => $holding, 'user' => $this->getUser()]);
+                
+                $licenses = License::find()->where([
+                        'holding_id' => $id
+                    ])
+                    ->with('proto')
+                    ->with('state')
+                    ->all();
+            
+                return $this->render("holding-control", [
+                    'holding' => $holding,
+                    'factories' => $factories,
+                    'licenses' => $licenses,
+                    'user' => $this->getUser()
+                ]);
             } else {
-                return $this->render("holding-info", ['holding' => $holding]);
+                return $this->render("holding-info", [
+                    'holding' => $holding,
+                    'factories' => $factories
+                ]);
             }
         } else {
             return $this->_r("Invalid holding ID");
@@ -407,5 +432,5 @@ class HtmlController extends MyController
             'user' => $this->getUser()
         ]);
     }
-    
+        
 }
