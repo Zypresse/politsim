@@ -287,7 +287,12 @@ class State extends MyModel implements TaxPayer
 
     public function getHtmlName()
     {
-        return '<img src="'.$this->flag.'" alt="" style="max-height:12px; max-width:16px"> '.MyHtmlHelper::a($this->name, "load_page('state-info',{'id':{$this->id}})");
+        return MyHtmlHelper::a(\yii\helpers\Html::img($this->flag,['style'=>'max-width:16px;max-height:12px']), "load_page('state-info',{'id':{$this->id}})").' '.MyHtmlHelper::a($this->name, "load_page('state-info',{'id':{$this->id}})");
+    }
+
+    public function getHtmlShortName()
+    {
+        return MyHtmlHelper::a(\yii\helpers\Html::img($this->flag,['style'=>'max-width:16px;max-height:12px']), "load_page('state-info',{'id':{$this->id}})").' '.MyHtmlHelper::a($this->short_name, "load_page('state-info',{'id':{$this->id}})");
     }
 
     public function getTaxStateId()

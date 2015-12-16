@@ -382,57 +382,18 @@ class ModalController extends MyController {
         ]);
     }
 
+    
     public function actionLicensesOptions($holding_id, $state_id)
     {
         $holding = Holding::findByPk($holding_id);
         $state = State::findByPk($state_id);
-        $licenses = LicenseProto::find()->all();
+        $licensesProtos = LicenseProto::find()->all();
 
-        foreach ($licenses as $licenseProto) {
-            $allowed = true;
-            foreach ($holding->licenses as $hl) {
-                if ($licenseProto->id === $hl->proto_id && $hl->state_id === $state->id) {
-                    $allowed = false;
-                    $break;
-                }
-            }
-            if (!$allowed)
-                continue;
-
-            $stateLicense = null;
-            foreach ($state->licenses as $sl) {
-                if ($sl->proto_id === $licenseProto->id) {
-                    $stateLicense = $sl;
-                    break;
-                }
-            }
-            $text = "Получение лицензии бесплатно";
-            if (!(is_null($stateLicense))) {
-                if ($stateLicense->is_only_goverment) {
-                    if (!$holding->isGosHolding() || $holding->state_id !== $state->id) {
-                        continue;
-                    }
-                }
-                if ($holding->state_id === $state->id) {
-                    if ($stateLicense->cost) {
-                        $text = number_format($stateLicense->cost, 0, '', ' ') . ' ' . MyHtmlHelper::icon('money');
-                    }
-                    if ($stateLicense->is_need_confirm) {
-                        $text .= "<br>Необходимо подтверждение министра";
-                    }
-                } else {
-                    if ($stateLicense->cost_noncitizens) {
-                        $text = number_format($stateLicense->cost_noncitizens, 0, '', ' ') . ' ' . MyHtmlHelper::icon('money');
-                    }
-                    if ($stateLicense->is_need_confirm_noncitizens) {
-                        $text .= "<br>Необходимо подтверждение министра";
-                    }
-                }
-            }
-            ?>
-            <option id="license_option<?= $licenseProto->id ?>" value="<?= $licenseProto->id ?>" data-text="<?= $text ?>" ><?= $licenseProto->name ?></option>      
-            <?
-        }
+        return $this->render("licenses-options",[
+            'licensesProtos' => $licensesProtos,
+            'holding' => $holding,
+            'state' => $state
+        ]);
     }
 
     public function actionLicensesControlsChange($license_proto_id)
@@ -484,15 +445,11 @@ class ModalController extends MyController {
         $regionBase = Region::findByPk($region1_id);
         if ($regionBase) {
             $regions = $regionBase->getBordersArray();
-            foreach ($regions as $i => $region) {
-                $distance = $region->calcDist($regionBase);
-                ?>
-                <? if ($i == 0 || $regions[$i - 1]->state_id != $region->state_id) { ?>
-                    <?= ($i) ? '</optgroup>' : '' ?><optgroup label="<?= ($region->state) ? $region->state->name : 'Ничейные регионы' ?>">
-                <? } ?>
-                    <option data-distance="<?=$distance?>" value="<?= $region->id ?>" ><?= $region->name ?> (<?= number_format($distance, 2, '.', ' ') ?> км.)</option>
-            <?
-            }
+            
+            return $this->render('build-line-variants',[
+                'regions' => $regions,
+                'regionBase' => $regionBase
+            ]);
         } else {
             return $this->_r("Invalid region ID");
         }

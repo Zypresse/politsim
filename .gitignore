@@ -50,6 +50,7 @@ config/db.php
 config/params.php
 config/auth-clients.php
 web/assets
+web/.htaccess
 mail
 runtime
 vendor
@@ -69,3 +70,4 @@ tests/codeception/
 yii.bat
 
 
+/composer.*
