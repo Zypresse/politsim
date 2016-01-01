@@ -2,9 +2,7 @@
 
 namespace app\controllers;
 
-use Yii,
-    app\components\MyController,
-    app\components\MyHtmlHelper,
+use app\components\MyController,
     yii\helpers\ArrayHelper,
     app\models\Region,
     app\models\Post,
@@ -27,7 +25,6 @@ use Yii,
     app\models\Unnp,
     app\models\Ideology,
     app\models\factories\Factory,
-    app\models\resurses\Resurse,
     app\models\resurses\ResurseCost,
     app\models\resurses\proto\ResurseProto,
     app\models\factories\FactoryAutobuySettings;
