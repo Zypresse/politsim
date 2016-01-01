@@ -59,9 +59,9 @@ class LicenseProto extends MyModel
     {
         $allowed = true;
         foreach ($holding->licenses as $hl) {
-            if ($licenseProto->id === $hl->proto_id && $hl->state_id === $state->id) {
+            if ($this->id === $hl->proto_id && $hl->state_id === $state->id) {
                 $allowed = false;
-                $break;
+                break;
             }
         }
         
