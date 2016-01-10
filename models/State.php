@@ -6,7 +6,18 @@ use app\components\TaxPayer,
     app\components\MyModel,
     app\components\MyHtmlHelper,
     app\models\Unnp,
-    app\models\CoreCountryState;
+    app\models\Tax,
+    app\models\Org,
+    app\models\User,
+    app\models\Party,
+    app\models\Region,
+    app\models\Structure,
+    app\models\GovermentForm,
+    app\models\CoreCountry,
+    app\models\CoreCountryState,
+    app\models\licenses\LicenseRule,
+    app\models\licenses\proto\LicenseProto,
+    app\models\articles\Article;
 
 /**
  * Государство. Таблица "states".
@@ -142,62 +153,67 @@ class State extends MyModel implements TaxPayer
 
     public function getLegislatureOrg()
     {
-        return $this->hasOne('app\models\Org', array('id' => 'legislature'));
+        return $this->hasOne(Org::className(), array('id' => 'legislature'));
     }
 
     public function getExecutiveOrg()
     {
-        return $this->hasOne('app\models\Org', array('id' => 'executive'));
+        return $this->hasOne(Org::className(), array('id' => 'executive'));
     }
 
     public function getStructure()
     {
-        return $this->hasOne('app\models\Structure', array('id' => 'state_structure'));
+        return $this->hasOne(Structure::className(), array('id' => 'state_structure'));
     }
 
     public function getGovermentForm()
     {
-        return $this->hasOne('app\models\GovermentForm', array('id' => 'goverment_form'));
+        return $this->hasOne(GovermentForm::className(), array('id' => 'goverment_form'));
     }
 
     public function getCore()
     {
-        return $this->hasOne('app\models\CoreCountry', array('id' => 'core_id'));
+        return $this->hasOne(CoreCountry::className(), array('id' => 'core_id'));
     }
 
     public function getCapitalRegion()
     {
-        return $this->hasOne('app\models\Region', array('id' => 'capital'));
+        return $this->hasOne(Region::className(), array('id' => 'capital'));
     }
 
     public function getRegions()
     {
-        return $this->hasMany('app\models\Region', array('state_id' => 'id'))->orderBy('name');
+        return $this->hasMany(Region::className(), array('state_id' => 'id'))->orderBy('name');
     }
 
     public function getCities()
     {
-        return $this->hasMany('app\models\Region', array('state_id' => 'id'))->orderBy('city');
+        return $this->hasMany(Region::className(), array('state_id' => 'id'))->orderBy('city');
     }
 
     public function getLicenses()
     {
-        return $this->hasMany('app\models\licenses\LicenseRule', array('state_id' => 'id'));
+        return $this->hasMany(LicenseRule::className(), array('state_id' => 'id'));
     }
 
     public function getArticles()
     {
-        return $this->hasMany('app\models\articles\Article', array('state_id' => 'id'))->orderBy('proto_id');
+        return $this->hasMany(Article::className(), array('state_id' => 'id'))->orderBy('proto_id');
     }
 
     public function getParties()
     {
-        return $this->hasMany('app\models\Party', array('state_id' => 'id'));
+        return $this->hasMany(Party::className(), array('state_id' => 'id'));
     }
 
     public function getUsers()
     {
-        return $this->hasMany('app\models\User', array('state_id' => 'id'));
+        return $this->hasMany(User::className(), array('state_id' => 'id'));
+    }
+    
+    public function getTaxes()
+    {
+        return $this->hasMany(Tax::className(), array('state_id' => 'id'));
     }
     
     public function getCoreCountryStates()
@@ -207,12 +223,12 @@ class State extends MyModel implements TaxPayer
 
     /**
      * 
-     * @param licenses\proto\LicenseProto $licenseType
-     * @return licenses\LicenseRule
+     * @param LicenseProto $licenseType
+     * @return LicenseRule
      */
     public function getLicenseRuleByPrototype($licenseType)
     {        
-        return licenses\LicenseRule::findOrCreate(['state_id' => $this->id, 'proto_id' => $licenseType->id], true);
+        return LicenseRule::findOrCreate(['state_id' => $this->id, 'proto_id' => $licenseType->id], true);
     }
 
     /**
