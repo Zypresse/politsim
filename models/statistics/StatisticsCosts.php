@@ -4,6 +4,7 @@ namespace app\models\statistics;
 
 use app\models\resurses\proto\ResurseProto,
     app\models\resurses\ResurseCost,
+    app\models\resurses\Resurse,
     app\models\State;
 
 /**
@@ -67,19 +68,23 @@ class StatisticsCosts extends Statistics
     public function updateValue()
     {
         $cost = ResurseCost::find()
-            ->join('LEFT JOIN', 'resurses', 'resurses.id = resurse_costs.resurse_id')
-            ->where(["resurses.proto_id"=>$this->resurse_proto_id])
-            ->andWhere([">","resurses.count",0])
+            ->join('LEFT JOIN', Resurse::tableName(), Resurse::tableName().'.id = '.ResurseCost::tableName().'.resurse_id')
+            ->where([Resurse::tableName().'.proto_id'=>$this->resurse_proto_id])
+            ->andWhere(['>',Resurse::tableName().'.count',0])
             ->andWhere(['holding_id'=>null])
             ->andWhere(['state_id'=>null])
-            ->orderBy('cost ASC, resurses.quality DESC')
-            ->groupBy('resurses.place_id')
+            ->orderBy(ResurseCost::tableName().'.cost ASC, '.Resurse::tableName().'.quality DESC')
+            ->groupBy(Resurse::tableName().'.place_id')
             ->one();
         if (is_null($cost)) {
             $this->value = 0;
         } else {
             $this->value = $cost->cost;
         }
+        $this->save();
+        
+        $this->resurseProto->market_cost = $this->value;
+        $this->resurseProto->save();
     }
     
 }

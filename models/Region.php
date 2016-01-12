@@ -286,7 +286,7 @@ class Region extends MyModel implements TaxPayer
              */ 
             /*
             foreach ($this->holdings as $holding) {
-                if ($holding->isGosHolding()) {
+                if ($holding->isGosHolding($this->state_id)) {
                     $holding->region_id = 0;//$holding->state->region_id;
                     $holding->save();
                 } else {

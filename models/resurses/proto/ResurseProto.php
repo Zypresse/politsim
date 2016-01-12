@@ -12,6 +12,7 @@ use app\components\MyModel,
  * @property string $class_name Класс ресурса (напр. "Oil")
  * @property string $name Имя ресурса (напр. "Нефть")
  * @property integer $level Уровень ресурса (0 - добываемые, 1 - переработанные, 2 - отходы, 3 - люди, 4 - временные ресурсы)
+ * @property double $market_cost Рыночная цена
  */
 class ResurseProto extends MyModel
 {
@@ -30,8 +31,9 @@ class ResurseProto extends MyModel
     public function rules()
     {
         return [
-            [['code', 'class_name', 'level'], 'required'],
+            [['class_name', 'level', 'name'], 'required'],
             [['level'], 'integer'],
+            [['market_cost'], 'number'],
             [['class_name', 'name'], 'string'],
             [['class_name'], 'unique']
         ];
@@ -47,6 +49,7 @@ class ResurseProto extends MyModel
             'level' => 'Level',
             'class_name' => 'Class Name', 
             'name' => 'Name', 
+            'market_cost' => 'Market Cost',
         ];
     }
     
