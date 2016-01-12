@@ -496,7 +496,6 @@ class UpdateHourlyController extends Controller
                 'resurse_proto_id' => $id
             ]);
             $worldStatistics[$id]->updateValue();
-            $worldStatistics[$id]->save();
         }
     }
     

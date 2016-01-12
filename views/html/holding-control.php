@@ -136,7 +136,7 @@ $userStock = $user->getShareholderStock($holding);
                                         <td style="text-align: center">
                                             <div class="btn-toolbar">
                                                 <div class="btn-group">
-                                                    <button title="Переименовать" class="btn btn-xs btn-lightblue" onclick="$('#factory_id_for_rename').val(<?=$factory->id?>);$('#rename_factory_modal').modal();" >
+                                                    <button title="Переименовать" class="btn btn-xs btn-lightblue" onclick="$('#factory_id_for_rename').val(<?=$factory->id?>); $('#factory_new_name').val('<?=$factory->name?>'); $('#rename_factory_modal').modal();" >
                                                         <i class="icon-edit"></i>
                                                     </button>
                                                     <button title="Выставить на продажу" class="btn btn-xs btn-gold" onclick="$('#factory_id_for_sell').val(<?=$factory->id?>); $('#sell_factory_modal').modal();" >

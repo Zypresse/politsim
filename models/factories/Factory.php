@@ -396,16 +396,16 @@ class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
             foreach ($this->autobuySettings as $settings) {
                 
                 $costs = ResurseCost::find()
-                        ->join('LEFT JOIN', 'resurses', 'resurses.id = resurse_costs.resurse_id')
-                        ->where(["resurses.proto_id"=>$settings->resurse_proto_id])
-                        ->andWhere([">","resurses.count",0])
-                        ->andWhere([">=","resurses.quality",$settings->min_quality])
-                        ->andWhere(["<=","cost",$settings->max_cost])
+                        ->join('LEFT JOIN', Resurse::tableName(), Resurse::tableName().'.id = '.ResurseCost::tableName().'.resurse_id')
+                        ->where([Resurse::tableName().'.proto_id'=>$settings->resurse_proto_id])
+                        ->andWhere(['>',Resurse::tableName().'.count',0])
+                        ->andWhere(['>=',Resurse::tableName().'.quality',$settings->min_quality])
+                        ->andWhere(['<=',ResurseCost::tableName().'.cost',$settings->max_cost])
                         ->andWhere(['or',['holding_id'=>null],['holding_id'=>$this->holding_id]])
                         ->andWhere(['or',['state_id'=>null],['state_id'=>$this->getLocatedStateId()]])
                         ->with('resurse')
-                        ->orderBy('cost ASC, resurses.quality DESC')
-                        ->groupBy('resurses.place_id')
+                        ->orderBy('cost ASC, '.Resurse::tableName().'.quality DESC')
+                        ->groupBy(Resurse::tableName().'.place_id')
                         ->all();
                 $toBuyLeft = $settings->count;
                 

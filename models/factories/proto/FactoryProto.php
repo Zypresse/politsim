@@ -118,7 +118,7 @@ class FactoryProto extends UnmovableObjectProto
     public function getLicenses()
     {
         return $this->hasMany(License::className(), ['id' => 'license_proto_id'])
-                ->viaTable('factory_prototypes_licenses', ['factory_proto_id' => 'id']);
+                ->viaTable(License::tableName(), ['factory_proto_id' => 'id']);
     }
     
     /**
