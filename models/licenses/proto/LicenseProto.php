@@ -67,7 +67,7 @@ class LicenseProto extends MyModel
         
         $stateLicense = $state->getLicenseRuleByPrototype($this);
         if ($stateLicense && $stateLicense->is_only_goverment) {
-            if (!$holding->isGosHolding() || $holding->state_id !== $state->id) {
+            if (!$holding->isGosHolding($state->id)) {
                 $allowed = false;
             }
         }

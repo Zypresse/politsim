@@ -233,7 +233,7 @@ class HoldingDecision extends MyModel {
                     if (!(is_null($stateLicense))) {
                         if ($data->state_id == $this->holding->state_id) {
                             if ($stateLicense->is_only_goverment) {
-                                $allow = $this->holding->isGosHolding();
+                                $allow = $this->holding->isGosHolding($data->state_id);
                             }
                             if ($stateLicense->cost) {
                                 if ($this->holding->balance < $stateLicense->cost) {
