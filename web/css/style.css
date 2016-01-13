@@ -570,6 +570,7 @@ dd {
     left:0px;
     right:0px;
     margin-bottom:0px;
+    z-index: 12;
 }
 
 #page_content a {

@@ -25,6 +25,7 @@ use app\components\MyController,
     app\models\Unnp,
     app\models\Ideology,
     app\models\factories\Factory,
+    app\models\resurses\Resurse,
     app\models\resurses\ResurseCost,
     app\models\resurses\proto\ResurseProto,
     app\models\factories\FactoryAutobuySettings;
@@ -540,9 +541,9 @@ class ModalController extends MyController {
         }
         
         $query = ResurseCost::find()
-                ->join('LEFT JOIN', 'resurses', 'resurses.id = resurse_costs.resurse_id')
-                ->where(["resurses.proto_id"=>$resProto->id])
-//                ->andWhere([">","resurses.count",0])
+                ->join('LEFT JOIN', Resurse::tableName(), Resurse::tableName().'.id = '.ResurseCost::tableName().'.resurse_id')
+                ->where([Resurse::tableName().'.proto_id' => $resProto->id])
+//                ->andWhere(['>',Resurse::tableName().'.count',0])
                 ;
         
         if (intval($unnp) > 0) {            
@@ -554,8 +555,8 @@ class ModalController extends MyController {
         }
         
         $costs = $query->with('resurse')
-                ->orderBy('cost ASC, resurses.quality DESC')
-                ->groupBy('resurses.place_id')
+                ->orderBy(ResurseCost::tableName().'.cost ASC, '.Resurse::tableName().'.quality DESC')
+                ->groupBy(Resurse::tableName().'.place_id')
                 ->all();
                             
         return $this->render('market-resurses',[
