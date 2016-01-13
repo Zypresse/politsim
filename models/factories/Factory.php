@@ -316,12 +316,15 @@ class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
         ], false, [
             'count' => 0
         ]);
-        if ($store->count+$count <= $this->storageSize($proto_id)) {
+        
+        $storageSize = $this->storageSize($proto_id);
+        
+        if ($store->count+$count <= $storageSize) {
             $store->count += $count;
-            return $store->save();
         } else {
-            return false;
+            $store->count = $storageSize;
         }
+        return $store->save();
     }
     
     public function delFromStorage($proto_id, $count, $quality = 10) 
