@@ -415,7 +415,7 @@ class HtmlController extends MyController
                 '>', 'date_end', time()
             ])->with('factory.holding')->with('lastBet.holding')
         );
-
+                
         return $this->render('market/factories', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,

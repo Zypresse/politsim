@@ -80,7 +80,6 @@ class FactoryAuctionSearch extends FactoryAuction
                    'desc' => [Region::tableName().'.name' => SORT_DESC],
                    'label' => 'Region Name'
                ],
-               'regionName',
                'current_price',
                'end_price',
                'date_end'
