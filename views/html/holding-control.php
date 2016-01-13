@@ -123,7 +123,7 @@ $userStock = $user->getShareholderStock($holding);
                                     <td style="min-width:200px">Регион</td>
                                     <td style="min-width:102px">Лицевой счёт</td>
                                     <td>Статус</td>
-                                    <td style="min-width:116px">Действия</td>
+                                    <td style="min-width:142px">Действия</td>
                                 </tr>
                             </thead>
                             <tbody>
@@ -145,7 +145,10 @@ $userStock = $user->getShareholderStock($holding);
                                                     <button title="Назначить управляющего" class="btn btn-xs btn-gray" onclick="$('#new_manager_factory').val(<?=$factory->id?>);$('#set_manager_modal').modal();" >
                                                         <i class="icon-user"></i>
                                                     </button>
-                                                    <button title="Внести деньги на сяёт" class="btn btn-xs btn-brown" onclick="$('#transfer_inner_factory_unnp').val(<?=$factory->unnp?>); $('#transfer_money_inner_modal').modal();" >
+                                                    <button title="Внести деньги на счёт" class="btn btn-xs btn-brown" onclick="$('#transfer_inner_factory_unnp').val(<?=$factory->unnp?>); $('#transfer_money_inner_modal').modal();" >
+                                                        <i class="icon-money"></i>
+                                                    </button>
+                                                    <button title="Вывести деньги со счёта" class="btn btn-xs btn-green" onclick="$('#transfer_outer_factory_unnp').val(<?=$factory->unnp?>); $('#transfer_money_outer_modal').modal();" >
                                                         <i class="icon-money"></i>
                                                     </button>
                                                 </div>
@@ -319,6 +322,29 @@ $userStock = $user->getShareholderStock($holding);
             </div>
             <div class="modal-footer">
                 <button class="btn btn-primary" data-dismiss="modal"  onclick="transfer_money_inner(<?= $holding->id ?>)">Перевести</button>
+                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+            </div>
+        </div></div>
+</div>
+<div style="display:none;" class="modal fade" id="transfer_money_outer_modal" tabindex="-1" role="dialog" aria-labelledby="transfer_money_outer_modal_label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="transfer_money_outer_modal_label">Перевод денег на счёт компании</h3>
+            </div>
+            <div id="transfer_money_outer_modal_body" class="modal-body">
+                <input type="hidden" id="transfer_outer_factory_unnp">
+                <div class="control-group">
+                    <label class="control-label" for="#transfer_outer_sum">Сумма для перевода</label>
+                    <div class="controls">
+                        <input type="number" id="transfer_outer_sum" value="0"> <?= MyHtmlHelper::icon('money') ?>
+                    </div>
+                </div>
+                <p>Деньги будут выплачены со счёта предприятия.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" data-dismiss="modal"  onclick="transfer_money_outer(<?= $holding->id ?>)">Перевести</button>
                 <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
             </div>
         </div></div>
@@ -521,6 +547,12 @@ $userStock = $user->getShareholderStock($holding);
     function transfer_money_inner(id) {
         if ($('#transfer_inner_sum').val()) {
             json_request('new-holding-decision', {'holding_id': id, 'type': 12, 'unnp': $('#transfer_inner_factory_unnp').val(), 'sum': $('#transfer_inner_sum').val()});
+        }
+    }
+
+    function transfer_money_outer(id) {
+        if ($('#transfer_outer_sum').val()) {
+            json_request('new-holding-decision', {'holding_id': id, 'type': 13, 'unnp': $('#transfer_outer_factory_unnp').val(), 'sum': $('#transfer_outer_sum').val()});
         }
     }
 

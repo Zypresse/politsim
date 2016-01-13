@@ -141,6 +141,11 @@ class HoldingDecision extends MyModel {
      */
     const DECISION_TRANSFERMONEY = 12;
     
+    /**
+     * Перевод денег со счёта фабрики
+     */
+    const DECISION_TRANSFERMONEYBACK = 13;
+    
     public function getHtml()
     {
         $data = json_decode($this->data);
@@ -183,6 +188,9 @@ class HoldingDecision extends MyModel {
             case HoldingDecision::DECISION_TRANSFERMONEY:
                 $to = Unnp::findByPk($data->unnp)->master;
                 return 'Перевод ' . MyHtmlHelper::moneyFormat($data->sum) . ' для ' . $to->getHtmlName();
+            case HoldingDecision::DECISION_TRANSFERMONEYBACK:
+                $from = Unnp::findByPk($data->unnp)->master;
+                return 'Перевод ' . MyHtmlHelper::moneyFormat($data->sum) . ' от ' . $from->getHtmlName();
         }
     }
 
@@ -217,6 +225,18 @@ class HoldingDecision extends MyModel {
                         'proto_id' => 5,
                         'from_unnp' => $this->holding->unnp,
                         'to_unnp' => $data->unnp,
+                        'sum' => $data->sum
+                    ]);
+                    $dealing->accept();
+                }
+                break;
+            case self::DECISION_TRANSFERMONEYBACK: // выплата дивидентов
+                $factory = Unnp::findByPk($data->unnp)->master;
+                if ($factory->balance >= $data->sum && $factory->holding_id === $this->holding_id) {
+                    $dealing = new Dealing([
+                        'proto_id' => 5,
+                        'from_unnp' => $factory->unnp,
+                        'to_unnp' => $this->holding->unnp,
                         'sum' => $data->sum
                     ]);
                     $dealing->accept();

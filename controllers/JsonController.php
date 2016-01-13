@@ -1269,6 +1269,13 @@ class JsonController extends MyController {
                             return $this->_r("Invalid sum");
                         }
                         break;
+                    case HoldingDecision::DECISION_TRANSFERMONEYBACK:
+                        if (floatval($_REQUEST['sum']) > 0 && intval($_REQUEST['unnp']) > 0) {
+                            $decision->data = ['sum' => floatval($_REQUEST['sum']), 'unnp' => intval($_REQUEST['unnp'])];
+                        } else {
+                            return $this->_r("Invalid sum");
+                        }
+                        break;
                     case HoldingDecision::DECISION_GIVELICENSE: // Получение новой лицензии
                         if (intval($_REQUEST['license_id']) > 0 && intval($_REQUEST['state_id']) > 0) {
                             $decision->data = [

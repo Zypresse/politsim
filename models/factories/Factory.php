@@ -411,10 +411,8 @@ class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
                         ->groupBy(Resurse::tableName().'.place_id')
                         ->all();
                 $toBuyLeft = $settings->count;
-                
                 foreach ($costs as $cost) {
                     /* @var $cost ResurseCost */
-                    
                     if ($settings->state_id && $cost->resurse->place->getLocatedStateId() !== $settings->state_id) {
                         continue;
                     }
