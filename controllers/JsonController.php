@@ -1796,7 +1796,7 @@ class JsonController extends MyController {
             return $this->_r("Factory not found");
         }
         
-        if ($factory->manager_uid !== $this->viewer_id) {
+        if (!$factory->isUserController($this->viewer_id)) {
             return $this->_r("Not allowed");
         }
         
@@ -1987,4 +1987,24 @@ class JsonController extends MyController {
         return $this->_rOk();
     }
 
+    public function actionManagerFactoryStartWork($id)
+    {
+        if (intval($id) <= 0) {
+            return $this->_r("Invalid factory ID");
+        }
+        
+        $factory = Factory::findByPk($id);
+        if (is_null($factory)) {
+            return $this->_r("Factory not found");
+        }
+        
+        if (!$factory->isUserController($this->viewer_id)) {
+            return $this->_r("Not allowed");
+        }
+        
+        $factory->status = Factory::STATUS_ACTIVE;
+        $factory->save();
+        
+        return $this->_rOk();
+    }
 }

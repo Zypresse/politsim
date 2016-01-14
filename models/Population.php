@@ -5,7 +5,13 @@ namespace app\models;
 use app\components\TaxPayer,
     app\components\MyModel,
     app\components\MyHtmlHelper,
-    app\models\Unnp;
+    app\models\Unnp,
+    app\models\PopClass,
+    app\models\PopNation,
+    app\models\Region,
+    app\models\Religion,
+    app\models\Ideology,
+    app\models\factories\Factory;
 
 /**
  * Минимальная группа населения. Таблица "population".
@@ -20,12 +26,14 @@ use app\components\TaxPayer,
  * @property integer $count Число людей
  * @property integer $region_id ID региона
  * @property integer $factory_id ID региона
+ * @property double $contentment Удовлетворённость
+ * @property double $consciousness Сознательность
  * @property double $money
  * 
  * @property PopClass $classinfo Класс населения
  * @property PopNation $nationinfo Национальность
  * @property Region $region Регион
- * @property factories\Factory $factory Фабрика
+ * @property Factory $factory Фабрика
  * @property Ideology $ideologyinfo Идеология
  * @property Religion $religioninfo Религия
  */
@@ -89,32 +97,32 @@ class Population extends MyModel implements TaxPayer {
 
     public function getClassinfo()
     {
-        return $this->hasOne('app\models\PopClass', array('id' => 'class'));
+        return $this->hasOne(PopClass::className(), array('id' => 'class'));
     }
 
     public function getNationinfo()
     {
-        return $this->hasOne('app\models\PopNation', array('id' => 'nation'));
+        return $this->hasOne(PopNation::className(), array('id' => 'nation'));
     }
 
     public function getRegion()
     {
-        return $this->hasOne('app\models\Region', array('id' => 'region_id'));
+        return $this->hasOne(Region::className(), array('id' => 'region_id'));
     }
 
     public function getIdeologyinfo()
     {
-        return $this->hasOne('app\models\Ideology', array('id' => 'ideology'));
+        return $this->hasOne(Ideology::className(), array('id' => 'ideology'));
     }
 
     public function getReligioninfo()
     {
-        return $this->hasOne('app\models\Religion', array('id' => 'religion'));
+        return $this->hasOne(Religion::className(), array('id' => 'religion'));
     }
 
     public function getFactory()
     {
-        return $this->hasOne('app\models\Factory', array('id' => 'factory_id'));
+        return $this->hasOne(Factory::className(), array('id' => 'factory_id'));
     }
 
     /**
@@ -124,9 +132,9 @@ class Population extends MyModel implements TaxPayer {
      */
     public static function getAllGroups($query = false)
     {
-        if ($query === false)
+        if ($query === false) {
             $query = static::find();
-
+        }
         return $query->all();
     }
 
@@ -304,7 +312,7 @@ class Population extends MyModel implements TaxPayer {
 
     public function getHtmlName()
     {
-        return "население";
+        return $this->classinfo->name." из региона ".$this->region->getHtmlName();
     }
 
     public function getTaxStateId()

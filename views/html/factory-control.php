@@ -278,7 +278,11 @@ use app\components\MyHtmlHelper,
                         <li><a href="#" onclick="$('#resurses_autobuy_first').modal();" >Автозакупка ресурсов</a></li>
                     </ul>
                 </div>
+                <? if ($factory->status === app\models\factories\Factory::STATUS_STOPPED): ?>
+                <button class="btn btn-green" onclick="if (confirm('Вы действительно возобновить работу предприятия?')) {json_request('manager-factory-start-work',{'id':<?=$factory->id?>})}">Возобновить работу</button>
+                <? else: ?>
                 <button class="btn btn-red" onclick="if (confirm('Вы действительно хотите уволить всех рабочих и остановить работу?')) {json_request('manager-factory-stop-work',{'id':<?=$factory->id?>})}">Остановить работу</button>
+                <? endif ?>
             </div>
         </div>
     </div>
