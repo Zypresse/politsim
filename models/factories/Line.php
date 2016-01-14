@@ -6,6 +6,7 @@ use app\components\TaxPayer,
     app\models\objects\UnmovableObject,
     app\models\Holding,
     app\models\Region,
+    app\models\Utr,
     app\models\factories\proto\LineProto;
 
 /**
@@ -25,18 +26,18 @@ use app\components\TaxPayer,
 class Line extends UnmovableObject implements TaxPayer
 {
     
-    private $_unnp;
     public function getUnnp() {
-        if (is_null($this->_unnp)) {
-            $u = Unnp::findOneOrCreate(['p_id' => $this->id, 'type' => $this->getUnnpType()]);
-            $this->_unnp = ($u) ? $u->id : 0;
+        if (is_null($this->utr)) {
+            $u = Utr::findOneOrCreate(['p_id' => $this->id, 'type' => $this->getUnnpType()]);
+            $this->utr = ($u) ? $u->id : 0;
+            $this->save();
         } 
-        return $this->_unnp;
+        return $this->utr;
     }
 
     public function getUnnpType()
     {
-        return Unnp::TYPE_LINE;
+        return Utr::TYPE_LINE;
     }
     
     public function isGoverment($stateId)

@@ -6,7 +6,8 @@ use app\components\MyModel,
     app\models\Stock,
     app\models\factories\Factory,
     app\models\DealingProto,
-    app\components\TaxPayer;
+    app\components\TaxPayer,
+    app\models\Utr;
 
 /**
  * Сделка между игроками. Таблица "dealings".
@@ -68,12 +69,12 @@ class Dealing extends MyModel
 
     public function getSender()
     {
-        return Unnp::findByPk($this->from_unnp)->getMaster();
+        return Utr::findByPk($this->from_unnp)->getMaster();
     }
 
     public function getRecipient()
     {
-        return Unnp::findByPk($this->to_unnp)->getMaster();
+        return Utr::findByPk($this->to_unnp)->getMaster();
     }
     
     public function getProto()
@@ -140,8 +141,13 @@ class Dealing extends MyModel
         $this->save();
 
         if ($this->sum) {
-            $this->recipient->changeBalance($this->sum);
-            $this->sender->changeBalance(-1*$this->sum);
+            if ($this->sender->getBalance()-1*$this->sum >= 0 &&
+                $this->recipient->getBalance()+$this->sum >= 0 ) {
+                $this->recipient->changeBalance($this->sum);
+                $this->sender->changeBalance(-1*$this->sum);
+            } else {
+                return false;
+            }
         }
 
         $items = json_decode($this->items, true);
@@ -151,16 +157,20 @@ class Dealing extends MyModel
                     case "stock":
                         $stock = Stock::find()->where(['holding_id' => $item['holding_id'], 'unnp' => $this->sender->unnp])->one();
                         $recStock = Stock::findOrCreate(['holding_id' => $item['holding_id'], 'unnp' => $this->recipient->unnp], false, ['count' => 0]);
+                        
+                        if ($stock && $stock->count >= $item['count']) {
+                            $stock->count -= $item['count'];
+                            $recStock->count += $item['count'];
 
-                        $stock->count -= $item['count'];
-                        $recStock->count += $item['count'];
-
-                        if ($stock->count > 0) {
-                            $stock->save();
+                            if ($stock->count > 0) {
+                                $stock->save();
+                            } else {
+                                $stock->delete();
+                            }
+                            $recStock->save();
                         } else {
-                            $stock->delete();
+                            return false;
                         }
-                        $recStock->save();
                         break;
                     case "factory":
                         $factory = Factory::findByPk($item['factory_id']);
@@ -168,15 +178,24 @@ class Dealing extends MyModel
                         if ($this->recipient->getUnnpType() === Unnp::TYPE_HOLDING) {
                             $factory->holding_id = $this->recipient->id;
                             $factory->save();
+                        } else {
+                            return false;
                         }
                         break;
                     case "resurse":
-                        $this->sender->delFromStorage($item['proto_id'],$item['count'],$item['quality']);
-                        $this->recipient->pushToStorage($item['proto_id'],$item['count'],$item['quality']);
+                        $store = $this->sender->getStorage($item['proto_id'],$item['quality']);
+                        if ($store && $store->count >= $item['count']) {
+                            $this->sender->delFromStorage($item['proto_id'],$item['count'],$item['quality']);
+                            $this->recipient->pushToStorage($item['proto_id'],$item['count'],$item['quality']);
+                        } else {
+                            return false;
+                        }
                         break;
                 }
             }
         }
+        
+        return true;
     }
     
 }

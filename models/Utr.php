@@ -6,7 +6,7 @@ use app\components\MyModel,
     app\components\TaxPayer;
 
 /**
- * Универсальный ИНН для всех платежей. Таблица "unnp".
+ * Универсальный ИНН для всех платежей. Таблица "utr".
  *
  * @property integer $id
  * @property integer $type тип плательщика
@@ -14,7 +14,7 @@ use app\components\MyModel,
  * 
  * @property TaxPayer $master Владелец
  */
-class Unnp extends MyModel
+class Utr extends MyModel
 {
 
     const TYPE_USER = 1;
@@ -33,7 +33,7 @@ class Unnp extends MyModel
      */
     public static function tableName()
     {
-        return 'unnp';
+        return 'utr';
     }
     
     /**
@@ -92,7 +92,7 @@ class Unnp extends MyModel
     {
         $u = self::find()->where($fields)->one();
         if (is_null($u)) {
-            $u = new Unnp($fields);
+            $u = new Utr($fields);
             if (!$u->save()) {
                 $u = null;
             }

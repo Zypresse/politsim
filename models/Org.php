@@ -7,7 +7,7 @@ use app\components\TaxPayer,
     app\components\MyHtmlHelper,
     app\models\Post,
     app\models\State,
-    app\models\Unnp,
+    app\models\Utr,
     app\models\ElectOrgLeaderRequest,
     app\models\ElectRequest;
 
@@ -46,7 +46,7 @@ class Org extends MyModel implements TaxPayer {
 
     public function getUnnpType()
     {
-        return Unnp::TYPE_ORG;
+        return Utr::TYPE_ORG;
     }
 
     public function getStocks()
@@ -54,13 +54,13 @@ class Org extends MyModel implements TaxPayer {
         return $this->hasMany(Stock::className(), array('unnp' => 'unnp'));
     }
     
-    private $_unnp;
     public function getUnnp() {
-        if (is_null($this->_unnp)) {
-            $u = Unnp::findOneOrCreate(['p_id' => $this->id, 'type' => $this->getUnnpType()]);
-            $this->_unnp = ($u) ? $u->id : 0;
+        if (is_null($this->utr)) {
+            $u = Utr::findOneOrCreate(['p_id' => $this->id, 'type' => $this->getUnnpType()]);
+            $this->utr = ($u) ? $u->id : 0;
+            $this->save();
         } 
-        return $this->_unnp;
+        return $this->utr;
     }
     
     public function isGoverment($stateId)

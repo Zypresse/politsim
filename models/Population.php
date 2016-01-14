@@ -5,7 +5,7 @@ namespace app\models;
 use app\components\TaxPayer,
     app\components\MyModel,
     app\components\MyHtmlHelper,
-    app\models\Unnp,
+    app\models\Utr,
     app\models\PopClass,
     app\models\PopNation,
     app\models\Region,
@@ -29,6 +29,7 @@ use app\components\TaxPayer,
  * @property double $contentment Удовлетворённость
  * @property double $consciousness Сознательность
  * @property double $money
+ * @property integer $last_salary Дата получения последней зарплаты
  * 
  * @property PopClass $classinfo Класс населения
  * @property PopNation $nationinfo Национальность
@@ -41,16 +42,16 @@ class Population extends MyModel implements TaxPayer {
 
     public function getUnnpType()
     {
-        return Unnp::TYPE_POP;
+        return Utr::TYPE_POP;
     }
 
-    private $_unnp;
     public function getUnnp() {
-        if (is_null($this->_unnp)) {
-            $u = Unnp::findOneOrCreate(['p_id' => $this->id, 'type' => $this->getUnnpType()]);
-            $this->_unnp = ($u) ? $u->id : 0;
+        if (is_null($this->utr)) {
+            $u = Utr::findOneOrCreate(['p_id' => $this->id, 'type' => $this->getUnnpType()]);
+            $this->utr = ($u) ? $u->id : 0;
+            $this->save();
         } 
-        return $this->_unnp;
+        return $this->utr;
     }
 
     public function isGoverment($stateId)
@@ -302,7 +303,6 @@ class Population extends MyModel implements TaxPayer {
     public function changeBalance($delta)
     {
         $this->money += $delta;
-        $this->save();
     }
 
     public function getBalance()

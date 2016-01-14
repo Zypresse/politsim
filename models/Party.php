@@ -6,7 +6,7 @@ use app\components\TaxPayer,
     app\components\MyModel,
     app\components\MyHtmlHelper,
     app\models\User,
-    app\models\Unnp,
+    app\models\Utr,
     app\models\ElectRequest,
     app\models\State,
     app\models\Post,
@@ -39,16 +39,16 @@ class Party extends MyModel implements TaxPayer
 
     public function getUnnpType()
     {
-        return Unnp::TYPE_PARTY;
+        return Utr::TYPE_PARTY;
     }
     
-    private $_unnp;
     public function getUnnp() {
-        if (is_null($this->_unnp)) {
-            $u = Unnp::findOneOrCreate(['p_id' => $this->id, 'type' => $this->getUnnpType()]);
-            $this->_unnp = ($u) ? $u->id : 0;
+        if (is_null($this->utr)) {
+            $u = Utr::findOneOrCreate(['p_id' => $this->id, 'type' => $this->getUnnpType()]);
+            $this->utr = ($u) ? $u->id : 0;
+            $this->save();
         } 
-        return $this->_unnp;
+        return $this->utr;
     }
 
     public function isGoverment($stateId)

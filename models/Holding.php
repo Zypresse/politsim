@@ -5,7 +5,7 @@ namespace app\models;
 use app\components\TaxPayer,
     app\components\MyModel,
     app\components\MyHtmlHelper,
-    app\models\Unnp,
+    app\models\Utr,
     app\models\State,
     app\models\Region,
     app\models\User,
@@ -40,16 +40,16 @@ class Holding extends MyModel implements TaxPayer
 
     public function getUnnpType()
     {
-        return Unnp::TYPE_HOLDING;
+        return Utr::TYPE_HOLDING;
     }
     
-    private $_unnp;
     public function getUnnp() {
-        if (is_null($this->_unnp)) {
-            $u = Unnp::findOneOrCreate(['p_id' => $this->id, 'type' => $this->getUnnpType()]);
-            $this->_unnp = ($u) ? $u->id : 0;
+        if (is_null($this->utr)) {
+            $u = Utr::findOneOrCreate(['p_id' => $this->id, 'type' => $this->getUnnpType()]);
+            $this->utr = ($u) ? $u->id : 0;
+            $this->save();
         } 
-        return $this->_unnp;
+        return $this->utr;
     }
 
     public function isGoverment($stateId)

@@ -5,7 +5,7 @@ namespace app\models;
 use app\components\TaxPayer,
     app\components\MyModel,
     app\components\MyHtmlHelper,
-    app\models\Unnp,
+    app\models\Utr,
     app\models\Tax,
     app\models\Org,
     app\models\User,
@@ -69,7 +69,7 @@ class State extends MyModel implements TaxPayer
 
     public function getUnnpType()
     {
-        return Unnp::TYPE_STATE;
+        return Utr::TYPE_STATE;
     }
     
     public function isGoverment($stateId)
@@ -82,13 +82,13 @@ class State extends MyModel implements TaxPayer
         return $this->hasMany('app\models\Stock', array('unnp' => 'unnp'));
     }
     
-    private $_unnp;
     public function getUnnp() {
-        if (is_null($this->_unnp)) {
-            $u = Unnp::findOneOrCreate(['p_id' => $this->id, 'type' => $this->getUnnpType()]);
-            $this->_unnp = ($u) ? $u->id : 0;
+        if (is_null($this->utr)) {
+            $u = Utr::findOneOrCreate(['p_id' => $this->id, 'type' => $this->getUnnpType()]);
+            $this->utr = ($u) ? $u->id : 0;
+            $this->save();
         } 
-        return $this->_unnp;
+        return $this->utr;
     }
 
     /**

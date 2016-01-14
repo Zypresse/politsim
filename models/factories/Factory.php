@@ -5,7 +5,7 @@ namespace app\models\factories;
 use app\components\MyMathHelper,
     app\components\MyHtmlHelper,
     app\components\TaxPayer,
-    app\models\Unnp,
+    app\models\Utr,
     app\models\factories\proto\FactoryProto,
     app\models\factories\proto\FactoryProtoKit,
     app\models\factories\FactoryWorkersSalary as WorkersSalary,
@@ -37,6 +37,7 @@ use app\components\MyMathHelper,
  * @property double $eff_region
  * @property double $eff_workers
  * @property double $balance
+ * @property integer $not_paying_salaries
  * 
  * @property integer $IAmPlace
  * 
@@ -103,7 +104,7 @@ class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
 
     public function getUnnpType()
     {
-        return Unnp::TYPE_FACTORY;
+        return Utr::TYPE_FACTORY;
     }
     
     public function isGoverment($stateId)
@@ -509,13 +510,13 @@ class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
         return $result;
     }
     
-    private $_unnp;
     public function getUnnp() {
-        if (is_null($this->_unnp)) {
-            $u = Unnp::findOneOrCreate(['p_id' => $this->id, 'type' => $this->getUnnpType()]);
-            $this->_unnp = ($u) ? $u->id : 0;
+        if (is_null($this->utr)) {
+            $u = Utr::findOneOrCreate(['p_id' => $this->id, 'type' => $this->getUnnpType()]);
+            $this->utr = ($u) ? $u->id : 0;
+            $this->save();
         } 
-        return $this->_unnp;
+        return $this->utr;
     }
 
     public function changeBalance($delta)
@@ -534,6 +535,11 @@ class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
         return MyHtmlHelper::a("{$this->proto->name} «{$this->name}»", "load_page('factory-info',{'id':{$this->id}})");
     }
     
+    /**
+     * 
+     * @param int $popClassId
+     * @return int
+     */
     public function getNeedWorkersCountByClass($popClassId)
     {
         foreach ($this->proto->workers as $tWorker) {
@@ -544,6 +550,11 @@ class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
         return 0;
     }
     
+    /**
+     * 
+     * @param int $popClassId
+     * @return int
+     */
     public function getWorkersCountByClass($popClassId)
     {
         $sum = 0;
@@ -555,6 +566,11 @@ class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
         return $sum;
     }
     
+    /**
+     * 
+     * @param int $popClassId
+     * @return boolean|double
+     */
     public function getSalaryByClass($popClassId)
     {
         foreach ($this->salaries as $salary) {

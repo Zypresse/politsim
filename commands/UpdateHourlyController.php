@@ -13,6 +13,7 @@ use Yii,
     app\models\factories\Factory,
     app\models\Population,
     app\models\User,
+    app\models\Dealing,
     app\models\resurses\Resurse,
     app\models\resurses\proto\ResurseProto,
     app\models\statistics\StatisticsMining,
@@ -97,6 +98,15 @@ class UpdateHourlyController extends Controller
             $time = microtime(true);
             $this->updateResursesCostsStatistics();
             if ($debug) printf("Updated resurses costs statistics: %f s.".PHP_EOL, microtime(true)-$time);
+                        
+            $time = microtime(true);
+            $this->updatePopPaySalaries();
+            if ($debug) printf("Updated population payed salaries: %f s.".PHP_EOL, microtime(true)-$time);
+                        
+            $time = microtime(true);
+            $this->updatePopFireJob();
+            if ($debug) printf("Updated population fire job: %f s.".PHP_EOL, microtime(true)-$time);
+            
         }
     }
 
@@ -497,6 +507,53 @@ class UpdateHourlyController extends Controller
             ]);
             $worldStatistics[$id]->updateValue();
         }
+    }
+    
+    private function updatePopPaySalaries()
+    {
+            
+        $pops = Population::find()
+                ->where(['<>','factory_id',0])
+                ->with('factory')
+                ->with('factory.salaries')
+                ->all();
+                
+        foreach ($pops as $pop) {
+            /* @var $pop Population */
+            if (is_null($pop->factory)) {
+                $pop->factory_id = 0;
+                $pop->save();
+                continue;
+            }
+            
+            $salary = $pop->factory->getSalaryByClass($pop->class);
+            
+            $dealing = new Dealing([
+                'proto_id' => 2,
+                'from_unnp' => $pop->factory->unnp,
+                'to_unnp' => $pop->unnp,
+                'sum' => $salary
+            ]);
+            if ($dealing->accept()) {
+                $pop->changeBalance($salary);
+                $pop->last_salary = time();
+                $pop->save();
+            } else {
+                $pop->factory->not_paying_salaries = 1;
+                $pop->factory->save();
+            }
+            
+        }
+    }
+    
+    public function updatePopFireJob()
+    {
+        Yii::$app->db->createCommand("UPDATE `".Population::tableName()."` "
+                . "SET factory_id = 0 "
+                . "WHERE factory_id IN ("
+                    . "SELECT id FROM `".Factory::tableName()."` "
+                    . "WHERE not_paying_salaries = 1"
+                . ")")->execute();
     }
     
 }

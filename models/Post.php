@@ -5,7 +5,7 @@ namespace app\models;
 use app\components\TaxPayer,
     app\components\MyModel,
     app\components\MyHtmlHelper,
-    app\models\Unnp;
+    app\models\Utr;
 
 /**
  * Должность в правительстве. Таблица "posts".
@@ -27,7 +27,7 @@ class Post extends MyModel implements TaxPayer
 
     public function getUnnpType()
     {
-        return Unnp::TYPE_POST;
+        return Utr::TYPE_POST;
     }
 
     public function getStocks()
@@ -35,13 +35,13 @@ class Post extends MyModel implements TaxPayer
         return $this->hasMany('app\models\Stock', array('unnp' => 'unnp'));
     }
     
-    private $_unnp;
     public function getUnnp() {
-        if (is_null($this->_unnp)) {
+        if (is_null($this->utr)) {
             $u = Unnp::findOneOrCreate(['p_id' => $this->id, 'type' => $this->getUnnpType()]);
-            $this->_unnp = ($u) ? $u->id : 0;
+            $this->utr = ($u) ? $u->id : 0;
+            $this->save();
         } 
-        return $this->_unnp;
+        return $this->utr;
     }
 
     public function isGoverment($stateId)
