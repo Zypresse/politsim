@@ -2,7 +2,7 @@
 
 use app\components\MyHtmlHelper,
     app\models\HoldingDecision,
-    app\models\Unnp;
+    app\models\Utr;
 
 /* @var $user app\models\User */
 /* @var $holding app\models\Holding */
@@ -362,7 +362,7 @@ $userStock = $user->getShareholderStock($holding);
                     <div class="controls">
                         <select id="new_manager_uid">
                         <? foreach ($holding->stocks as $stock): ?>
-                        <? if ($stock->master->getUnnpType() === Unnp::TYPE_USER): ?>
+                        <? if ($stock->master->getUnnpType() === Utr::TYPE_USER): ?>
                             <option value="<?=$stock->master->id?>"><?=$stock->master->name?></option>
                         <? endif ?>
                         <? endforeach ?>
@@ -389,7 +389,7 @@ $userStock = $user->getShareholderStock($holding);
                     <div class="controls">
                         <select id="new_director_uid">
                             <? foreach ($holding->stocks as $stock): ?>
-                            <? if ($stock->master->getUnnpType() === Unnp::TYPE_USER): ?>
+                            <? if ($stock->master->getUnnpType() === Utr::TYPE_USER): ?>
                                 <option value='<?=$stock->master->id?>'><?=$stock->master->name?></option>
                             <? endif ?>
                             <? endforeach ?>

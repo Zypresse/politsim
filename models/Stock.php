@@ -14,7 +14,7 @@ use app\components\MyModel;
  * 
  * @property \app\components\TaxPayer $master Владелец пакета
  * @property Holding $holding АО, акции которого имеются ввиду
- * @property Unnp $unnpModel UNNP владельца пакета
+ * @property Utr $unnpModel UNNP владельца пакета
  */
 class Stock extends MyModel
 {
@@ -63,7 +63,7 @@ class Stock extends MyModel
 
     public function getUnnpModel()
     {
-        return $this->hasOne('app\models\Unnp', array('id' => 'unnp'));
+        return $this->hasOne('app\models\Utr', array('id' => 'unnp'));
     }
 
     /**

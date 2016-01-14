@@ -6,7 +6,7 @@ use Yii,
     app\components\MyModel,
     app\models\factories\Factory,
     app\models\factories\FactoryAuctionBet,
-    app\models\Unnp,
+    app\models\Utr,
     app\models\Dealing,
     app\components\TaxPayer;
 
@@ -85,7 +85,7 @@ class FactoryAuction extends MyModel
     
     public function getWinner()
     {
-        return Unnp::findByPk($this->winner_unnp)->master;
+        return Utr::findByPk($this->winner_unnp)->master;
     }
     
     public function getFactoryName()

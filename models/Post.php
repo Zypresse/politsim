@@ -37,7 +37,7 @@ class Post extends MyModel implements TaxPayer
     
     public function getUnnp() {
         if (is_null($this->utr)) {
-            $u = Unnp::findOneOrCreate(['p_id' => $this->id, 'type' => $this->getUnnpType()]);
+            $u = Utr::findOneOrCreate(['p_id' => $this->id, 'type' => $this->getUnnpType()]);
             $this->utr = ($u) ? $u->id : 0;
             $this->save();
         } 
