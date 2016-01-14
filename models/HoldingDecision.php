@@ -15,6 +15,7 @@ use app\components\MyModel,
     app\models\Region,
     app\models\Dealing,
     app\models\User,
+    app\models\Utr,
     app\models\Holding,
     app\models\HoldingDecisionVote,
     app\components\MyHtmlHelper;
@@ -186,10 +187,10 @@ class HoldingDecision extends MyModel {
                 $region2 = Region::findByPk($data->region2_id);
                 return "Строительство объекта «{$lineProto->name}» между регионами {$region1->getHtmlName()} и {$region2->getHtmlName()}";
             case HoldingDecision::DECISION_TRANSFERMONEY:
-                $to = Unnp::findByPk($data->unnp)->master;
+                $to = Utr::findByPk($data->unnp)->master;
                 return 'Перевод ' . MyHtmlHelper::moneyFormat($data->sum) . ' для ' . $to->getHtmlName();
             case HoldingDecision::DECISION_TRANSFERMONEYBACK:
-                $from = Unnp::findByPk($data->unnp)->master;
+                $from = Utr::findByPk($data->unnp)->master;
                 return 'Перевод ' . MyHtmlHelper::moneyFormat($data->sum) . ' от ' . $from->getHtmlName();
         }
     }
@@ -231,7 +232,7 @@ class HoldingDecision extends MyModel {
                 }
                 break;
             case self::DECISION_TRANSFERMONEYBACK: // выплата дивидентов
-                $factory = Unnp::findByPk($data->unnp)->master;
+                $factory = Utr::findByPk($data->unnp)->master;
                 if ($factory->balance >= $data->sum && $factory->holding_id === $this->holding_id) {
                     $dealing = new Dealing([
                         'proto_id' => 5,

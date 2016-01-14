@@ -526,7 +526,7 @@ class UpdateHourlyController extends Controller
                 continue;
             }
             
-            $salary = $pop->factory->getSalaryByClass($pop->class);
+            $salary = $pop->factory->getSalaryByClass($pop->class) * $pop->count;
             
             $dealing = new Dealing([
                 'proto_id' => 2,
