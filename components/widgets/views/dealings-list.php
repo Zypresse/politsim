@@ -22,15 +22,15 @@ use app\components\MyHtmlHelper,
     </tr>
     </thead>
     <tbody>
-    <? foreach ($dealings as $dealing): 
+    <?php foreach ($dealings as $dealing): 
         $items = json_decode($dealing->items,true);?>
         <tr>
             <td><i class="icon-time"></i> <span class="prettyDate" data-unixtime="<?=$dealing->time?>"><?=date('H:i:s d-m-Y',$dealing->time)?></span></td>
-            <td><?= $dealing->sender->getHtmlName() ?></td>
-            <td><?= $dealing->recipient->getHtmlName() ?></td>
+            <td><?= $dealing->sender ? $dealing->sender->getHtmlName() : 'unknown' ?></td>
+            <td><?= $dealing->recipient ? $dealing->recipient->getHtmlName() : 'unknown' ?></td>
             <td><?=$dealing->sum?> <?=MyHtmlHelper::icon('money')?></td>
             <td>
-            <? 
+            <?php 
                 if (is_array($items) && count($items)) {
                     echo "<ul>";
                 foreach ($items as $item) {
@@ -55,6 +55,6 @@ use app\components\MyHtmlHelper,
                 } ?>
             </td>
         </tr>        
-    <? endforeach ?>
+    <?php endforeach ?>
     </tbody>
 </table>

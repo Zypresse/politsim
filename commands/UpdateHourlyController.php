@@ -69,10 +69,6 @@ class UpdateHourlyController extends Controller
             if ($debug) printf("Updated populations works: %f s.".PHP_EOL, microtime(true)-$time);
 
             $time = microtime(true);
-            $this->updatePopAnalogies();
-            if ($debug) printf("Updated populations analogies: %f s.".PHP_EOL, microtime(true)-$time);
-
-            $time = microtime(true);
             $this->updateFactories();
             if ($debug) printf("Updated factories: %f s.".PHP_EOL, microtime(true)-$time);
 
@@ -111,6 +107,10 @@ class UpdateHourlyController extends Controller
             $time = microtime(true);
             $this->updateNonstorableResurses();
             if ($debug) printf("Updated nonstorable resurses: %f s.".PHP_EOL, microtime(true)-$time);
+
+            $time = microtime(true);
+            $this->updatePopAnalogies();
+            if ($debug) printf("Updated populations analogies: %f s.".PHP_EOL, microtime(true)-$time);
                         
         }
     }
@@ -526,7 +526,9 @@ class UpdateHourlyController extends Controller
                 ->with('factory')
                 ->with('factory.salaries')
                 ->all();
-                
+        
+        $factoriesPayed = [];
+        
         foreach ($pops as $pop) {
             /* @var $pop Population */
             if (is_null($pop->factory)) {
@@ -544,15 +546,26 @@ class UpdateHourlyController extends Controller
                 'sum' => $salary
             ]);
             if ($dealing->accept()) {
-                $pop->changeBalance($salary);
+//                $pop->changeBalance($salary);
                 $pop->last_salary = time();
                 $pop->save();
+                if (!in_array($pop->factory_id, $factoriesPayed)) {
+                    $factoriesPayed[] = $pop->factory_id;
+                }
             } else {
                 $pop->factory->not_paying_salaries = 1;
                 $pop->factory->save();
             }
             
         }
+        
+        if (count($factoriesPayed)) {
+            Yii::$app->db->createCommand("UPDATE `".Factory::tableName()."` "
+                    . "SET not_paying_salaries = 0 "
+                    . "WHERE id IN (".implode(',', $factoriesPayed).")")
+                    ->execute();
+        }
+        
     }
     
     private function updatePopFireJob()
