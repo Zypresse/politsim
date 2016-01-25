@@ -81,10 +81,6 @@ class StatisticsCosts extends Statistics
         } else {
             $this->value = $cost->cost;
         }
-        $this->save();
-        
-        $this->resurseProto->market_cost = $this->value;
-        $this->resurseProto->save();
     }
     
 }

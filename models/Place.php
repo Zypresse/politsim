@@ -3,7 +3,8 @@
 namespace app\models;
 
 use app\components\MyModel,
-    app\models\factories\Factory;
+    app\models\factories\Factory,
+    app\components\TaxPayer;
 
 /**
  * This is the model class for table "places".
@@ -11,6 +12,8 @@ use app\components\MyModel,
  * @property integer $id
  * @property integer $type
  * @property integer $object_id
+ * 
+ * @property TaxPayer $object
  */
 class Place extends MyModel
 {
@@ -53,10 +56,6 @@ class Place extends MyModel
     }
     
     
-    /**
-     * 
-     * @return \app\components\NalogPayer
-     */
     public function getObject()
     {
         switch ($this->type) {

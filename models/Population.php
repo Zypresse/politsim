@@ -11,7 +11,8 @@ use app\components\TaxPayer,
     app\models\Region,
     app\models\Religion,
     app\models\Ideology,
-    app\models\factories\Factory;
+    app\models\factories\Factory,
+    app\models\resurses\ResurseCost;
 
 /**
  * Минимальная группа населения. Таблица "population".
@@ -303,6 +304,7 @@ class Population extends MyModel implements TaxPayer {
     public function changeBalance($delta)
     {
         $this->money += $delta;
+        $this->save();
     }
 
     public function getBalance()
@@ -337,6 +339,50 @@ class Population extends MyModel implements TaxPayer {
     public function isUserController($userId)
     {
         return false;
+    }
+    
+    public function pushToStorage($proto_id, $count, $quality = 10) 
+    {
+        return true;
+    }
+    
+    /**
+     * 
+     * @param ResurseCost $resursesCosts
+     * @param double $maxCount
+     * @return double сколько было закуплено
+     */
+    public function autobuy($resursesCosts, $maxCount)
+    {
+        $purchasedFood = 0;
+        foreach ($resursesCosts as $resurseCost) {
+            if ($resurseCost->resurse->count >= $maxCount) {
+                $buy = $maxCount;
+            } else {
+                $buy = $resurseCost->resurse->count;
+            }
+            $dealing = new Dealing([
+                'proto_id' => 1,
+                'from_unnp' => $resurseCost->resurse->place->unnp,
+                'to_unnp' => $this->unnp,
+                'sum' => -1*$resurseCost->cost*$buy,
+                'items' => json_encode([
+                    [
+                        'type' => 'resurse',
+                        'proto_id' => $resurseCost->resurse->proto_id,
+                        'quality' => $resurseCost->resurse->quality,
+                        'count' => $buy
+                    ]
+                ])
+            ]);
+            if ($dealing->accept()) {
+                $purchasedFood += $buy;
+            }
+            if ($purchasedFood >= $maxCount) {
+                break;
+            }
+        }
+        return $purchasedFood;
     }
 
 }

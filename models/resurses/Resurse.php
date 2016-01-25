@@ -4,7 +4,8 @@ namespace app\models\resurses;
 
 use app\models\objects\MovableObject,
     app\models\resurses\ResurseCost,
-    app\models\resurses\proto\ResurseProto;
+    app\models\resurses\proto\ResurseProto,
+    app\models\Place;
 
 /**
  * This is the model class for table "resurses".
@@ -17,6 +18,7 @@ use app\models\objects\MovableObject,
  *
  * @property ResurseProto $proto
  * @property ResurseCost[] $costs
+ * @property Place $place
  */
 class Resurse extends MovableObject
 {

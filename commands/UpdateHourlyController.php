@@ -15,6 +15,7 @@ use Yii,
     app\models\User,
     app\models\Dealing,
     app\models\resurses\Resurse,
+    app\models\resurses\ResurseCost,
     app\models\resurses\proto\ResurseProto,
     app\models\statistics\StatisticsMining,
     app\models\statistics\StatisticsCosts;
@@ -92,10 +93,6 @@ class UpdateHourlyController extends Controller
             if ($debug) printf("Updated factories production: %f s.".PHP_EOL, microtime(true)-$time);
             
             $time = microtime(true);
-            $this->updateNonstorableResurses();
-            if ($debug) printf("Updated nonstorable resurses: %f s.".PHP_EOL, microtime(true)-$time);
-            
-            $time = microtime(true);
             $this->updateResursesCostsStatistics();
             if ($debug) printf("Updated resurses costs statistics: %f s.".PHP_EOL, microtime(true)-$time);
                         
@@ -107,6 +104,14 @@ class UpdateHourlyController extends Controller
             $this->updatePopFireJob();
             if ($debug) printf("Updated population fire job: %f s.".PHP_EOL, microtime(true)-$time);
             
+            $time = microtime(true);
+            $this->updatePopPurchaseResurses();
+            if ($debug) printf("Updated population purchase resurses: %f s.".PHP_EOL, microtime(true)-$time);
+            
+            $time = microtime(true);
+            $this->updateNonstorableResurses();
+            if ($debug) printf("Updated nonstorable resurses: %f s.".PHP_EOL, microtime(true)-$time);
+                        
         }
     }
 
@@ -282,7 +287,7 @@ class UpdateHourlyController extends Controller
                         $studied += $new_unworker->count;
                     }
                     
-                    if (!($studied < $speed)) break;
+                    if ($studied >= $speed) break;
                 }
             }
         }
@@ -506,6 +511,10 @@ class UpdateHourlyController extends Controller
                 'resurse_proto_id' => $id
             ]);
             $worldStatistics[$id]->updateValue();
+            $worldStatistics[$id]->save();
+
+            $worldStatistics[$id]->resurseProto->market_cost = $worldStatistics[$id]->value;
+            $worldStatistics[$id]->resurseProto->save();
         }
     }
     
@@ -546,7 +555,7 @@ class UpdateHourlyController extends Controller
         }
     }
     
-    public function updatePopFireJob()
+    private function updatePopFireJob()
     {
         Yii::$app->db->createCommand("UPDATE `".Population::tableName()."` "
                 . "SET factory_id = 0 "
@@ -554,6 +563,91 @@ class UpdateHourlyController extends Controller
                     . "SELECT id FROM `".Factory::tableName()."` "
                     . "WHERE not_paying_salaries = 1"
                 . ")")->execute();
+    }
+    
+    private function updatePopPurchaseResurses()
+    {
+        $pops = Population::find()->with('classinfo')->with('region')->all();
+        foreach ($pops as $pop) {
+            /* @var $pop Population */
+            
+            $pop->contentment = 0;
+            if ($pop->getBalance() > 0) {
+
+                // Закупка еды
+                $needFoodMax = $pop->classinfo->food_max_count*$pop->count;
+                $needFoodMin = $pop->classinfo->food_min_count*$pop->count;
+                $foodCosts = ResurseCost::getBuyableFood($pop->getTaxStateId(),$needFoodMax);
+                
+                $purchasedFood = $pop->autobuy($foodCosts, $needFoodMax);
+                
+                if ($purchasedFood >= $needFoodMin) {
+                    $pop->contentment += 0.1;
+                }
+                if ($purchasedFood >= $needFoodMax) {
+                    $pop->contentment += 0.1;
+                }
+                
+                // Закупка одежды
+                $needDressMax = $pop->classinfo->dress_max_count*$pop->count;
+                $needDressMin = $pop->classinfo->dress_min_count*$pop->count;
+                $dressCosts = ResurseCost::getBuyableDress($pop->getTaxStateId(),$needDressMax);
+                
+                $purchasedDress = $pop->autobuy($dressCosts, $needDressMax);
+                
+                if ($purchasedDress >= $needDressMin) {
+                    $pop->contentment += 0.1;
+                }
+                if ($purchasedDress >= $needDressMax) {
+                    $pop->contentment += 0.1;
+                }
+                                
+                // Закупка электричества
+                $needElectricityMax = $pop->classinfo->energy_max*$pop->count;
+                $needElectricityMin = $pop->classinfo->energy_min*$pop->count;
+                $electricityCosts = ResurseCost::getBuyableElecticity($pop->getTaxStateId(),$needElectricityMax);
+                
+                $purchasedElecticity = $pop->autobuy($electricityCosts, $needElectricityMax);
+                
+                if ($purchasedElecticity >= $needElectricityMin) {
+                    $pop->contentment += 0.1;
+                }
+                if ($purchasedElecticity >= $needElectricityMax) {
+                    $pop->contentment += 0.1;
+                }
+                
+                // Закупка алкоголя
+                $needAlcoholMax = $pop->classinfo->alcohol_max_count*$pop->count;
+                $needAlcoholMin = $pop->classinfo->alcohol_min_count*$pop->count;
+                $alcoholCosts = ResurseCost::getBuyableAlcohol($pop->getTaxStateId(),$needAlcoholMax);
+                
+                $purchasedAlcohol = $pop->autobuy($alcoholCosts, $needAlcoholMax);
+                
+                if ($purchasedAlcohol >= $needAlcoholMin) {
+                    $pop->contentment += 0.1;
+                }
+                if ($purchasedAlcohol >= $needAlcoholMax) {
+                    $pop->contentment += 0.1;
+                }
+                
+                // Закупка мебели
+                $needFurnitureMax = $pop->classinfo->furniture_max_count*$pop->count;
+                $needFurnitureMin = $pop->classinfo->furniture_min_count*$pop->count;
+                $furnitureCosts = ResurseCost::getBuyableFurniture($pop->getTaxStateId(),$needFurnitureMax);
+                
+                $purchasedFurniture = $pop->autobuy($furnitureCosts, $needFurnitureMax);
+                
+                if ($purchasedFurniture >= $needFurnitureMin) {
+                    $pop->contentment += 0.1;
+                }
+                if ($purchasedFurniture >= $needFurnitureMax) {
+                    $pop->contentment += 0.1;
+                }
+                
+            }
+            $pop->save();
+        }
+        
     }
     
 }

@@ -83,4 +83,113 @@ class ResurseCost extends MyModel
         
         return "Любые покупатели";
     }
+    
+    /**
+     * Поиск предложений еды подходящих по стране и ограниченных числом count
+     * @param int $stateId
+     * @param double $count
+     * 
+     * @return ResurseCost[] 
+     */
+    public static function getBuyableFood($stateId, $count)
+    {
+        return static::getBuyableResurses([
+            9, // Зерно
+            10, // Фруктовощи
+            11, // Рыба
+            12, // Мясо
+            25 // Готовая еда
+        ], $stateId, $count);        
+    }
+    
+    /**
+     * Поиск предложений одежды подходящих по стране и ограниченных числом count
+     * @param int $stateId
+     * @param double $count
+     * 
+     * @return ResurseCost[] 
+     */
+    public static function getBuyableDress($stateId, $count)
+    {
+        return static::getBuyableResurses([
+            35 // одежда и обувь
+        ], $stateId, $count);        
+    }    
+    
+    /**
+     * Поиск предложений электричества подходящих по стране и ограниченных числом count
+     * @param int $stateId
+     * @param double $count
+     * 
+     * @return ResurseCost[] 
+     */
+    public static function getBuyableElecticity($stateId, $count)
+    {
+        return static::getBuyableResurses([
+            16 // электричество
+        ], $stateId, $count);        
+    }    
+    
+    /**
+     * Поиск предложений алкоголя подходящих по стране и ограниченных числом count
+     * @param int $stateId
+     * @param double $count
+     * 
+     * @return ResurseCost[] 
+     */
+    public static function getBuyableAlcohol($stateId, $count)
+    {
+        return static::getBuyableResurses([
+            36 // алкоголь
+        ], $stateId, $count);        
+    }    
+    
+    /**
+     * Поиск предложений мебели подходящих по стране и ограниченных числом count
+     * @param int $stateId
+     * @param double $count
+     * 
+     * @return ResurseCost[] 
+     */
+    public static function getBuyableFurniture($stateId, $count)
+    {
+        return static::getBuyableResurses([
+            37 // мебель
+        ], $stateId, $count);        
+    }    
+    
+    /**
+     * 
+     * @param int[] $resProtoIds
+     * @param int $stateId
+     * @param double $count
+     * 
+     * @return ResurseCost[] 
+     */
+    public static function getBuyableResurses($resProtoIds, $stateId, $count)
+    {
+        $costs = static::find()
+                    ->join('LEFT JOIN', Resurse::tableName(), Resurse::tableName().'.id = '.static::tableName().'.resurse_id')
+                    ->where(['IN', Resurse::tableName().'.proto_id', $resProtoIds])
+                    ->andWhere(['>',Resurse::tableName().'.count',0])
+                    ->andWhere(['holding_id'=>null])
+                    ->andWhere(['or',['state_id'=>null],['state_id'=>$stateId]])
+                    ->with('resurse')
+                    ->orderBy('cost ASC, '.Resurse::tableName().'.quality DESC')
+                    ->groupBy(Resurse::tableName().'.place_id')
+                    ->all();
+        
+        $toBuyLeft = $count;
+        $result = [];
+        foreach ($costs as $cost) {
+            /* @var $cost self */
+            $toBuyLeft -= $cost->resurse->count;
+            $result[] = $cost;
+            if ($toBuyLeft <= 0) {
+                break;
+            }
+        }
+        
+        return $result;
+    }
 }
