@@ -175,7 +175,7 @@ class Dealing extends MyModel
                     case "factory":
                         $factory = Factory::findByPk($item['factory_id']);
                         
-                        if ($this->recipient->getUnnpType() === Unnp::TYPE_HOLDING) {
+                        if ($this->recipient->getUnnpType() === Utr::TYPE_HOLDING) {
                             $factory->holding_id = $this->recipient->id;
                             $factory->save();
                         } else {
