@@ -585,79 +585,96 @@ class UpdateHourlyController extends Controller
             /* @var $pop Population */
             
             $pop->contentment = 0;
-            if ($pop->getBalance() > 0) {
-
-                // Закупка еды
-                $needFoodMax = $pop->classinfo->food_max_count*$pop->count;
-                $needFoodMin = $pop->classinfo->food_min_count*$pop->count;
-                $foodCosts = ResurseCost::getBuyableFood($pop->getTaxStateId(),$needFoodMax);
-                
-                $purchasedFood = $pop->autobuy($foodCosts, $needFoodMax);
-                
-                if ($purchasedFood >= $needFoodMin) {
-                    $pop->contentment += 0.1;
-                }
-                if ($purchasedFood >= $needFoodMax) {
-                    $pop->contentment += 0.1;
-                }
-                
-                // Закупка одежды
-                $needDressMax = $pop->classinfo->dress_max_count*$pop->count;
-                $needDressMin = $pop->classinfo->dress_min_count*$pop->count;
-                $dressCosts = ResurseCost::getBuyableDress($pop->getTaxStateId(),$needDressMax);
-                
-                $purchasedDress = $pop->autobuy($dressCosts, $needDressMax);
-                
-                if ($purchasedDress >= $needDressMin) {
-                    $pop->contentment += 0.1;
-                }
-                if ($purchasedDress >= $needDressMax) {
-                    $pop->contentment += 0.1;
-                }
-                                
-                // Закупка электричества
-                $needElectricityMax = $pop->classinfo->energy_max*$pop->count;
-                $needElectricityMin = $pop->classinfo->energy_min*$pop->count;
-                $electricityCosts = ResurseCost::getBuyableElecticity($pop->getTaxStateId(),$needElectricityMax);
-                
-                $purchasedElecticity = $pop->autobuy($electricityCosts, $needElectricityMax);
-                
-                if ($purchasedElecticity >= $needElectricityMin) {
-                    $pop->contentment += 0.1;
-                }
-                if ($purchasedElecticity >= $needElectricityMax) {
-                    $pop->contentment += 0.1;
-                }
-                
-                // Закупка алкоголя
-                $needAlcoholMax = $pop->classinfo->alcohol_max_count*$pop->count;
-                $needAlcoholMin = $pop->classinfo->alcohol_min_count*$pop->count;
-                $alcoholCosts = ResurseCost::getBuyableAlcohol($pop->getTaxStateId(),$needAlcoholMax);
-                
-                $purchasedAlcohol = $pop->autobuy($alcoholCosts, $needAlcoholMax);
-                
-                if ($purchasedAlcohol >= $needAlcoholMin) {
-                    $pop->contentment += 0.1;
-                }
-                if ($purchasedAlcohol >= $needAlcoholMax) {
-                    $pop->contentment += 0.1;
-                }
-                
-                // Закупка мебели
-                $needFurnitureMax = $pop->classinfo->furniture_max_count*$pop->count;
-                $needFurnitureMin = $pop->classinfo->furniture_min_count*$pop->count;
-                $furnitureCosts = ResurseCost::getBuyableFurniture($pop->getTaxStateId(),$needFurnitureMax);
-                
-                $purchasedFurniture = $pop->autobuy($furnitureCosts, $needFurnitureMax);
-                
-                if ($purchasedFurniture >= $needFurnitureMin) {
-                    $pop->contentment += 0.1;
-                }
-                if ($purchasedFurniture >= $needFurnitureMax) {
-                    $pop->contentment += 0.1;
-                }
-                
+            if ($pop->getBalance() <= 0.001) {
+                continue;
             }
+
+            // Закупка еды
+            $needFoodMax = $pop->classinfo->food_max_count*$pop->count;
+            $needFoodMin = $pop->classinfo->food_min_count*$pop->count;
+            $foodCosts = ResurseCost::getBuyableFood($pop->getTaxStateId(),$needFoodMax);
+
+            $purchasedFood = $pop->autobuy($foodCosts, $needFoodMax);
+
+            if ($purchasedFood >= $needFoodMin) {
+                $pop->contentment += 0.1;
+            }
+            if ($purchasedFood >= $needFoodMax) {
+                $pop->contentment += 0.1;
+            }
+
+            if ($pop->getBalance() <= 0.001) {
+                continue;
+            }
+            
+            // Закупка одежды
+            $needDressMax = $pop->classinfo->dress_max_count*$pop->count;
+            $needDressMin = $pop->classinfo->dress_min_count*$pop->count;
+            $dressCosts = ResurseCost::getBuyableDress($pop->getTaxStateId(),$needDressMax);
+
+            $purchasedDress = $pop->autobuy($dressCosts, $needDressMax);
+
+            if ($purchasedDress >= $needDressMin) {
+                $pop->contentment += 0.1;
+            }
+            if ($purchasedDress >= $needDressMax) {
+                $pop->contentment += 0.1;
+            }
+
+            if ($pop->getBalance() <= 0.001) {
+                continue;
+            }
+            
+            // Закупка электричества
+            $needElectricityMax = $pop->classinfo->energy_max*$pop->count;
+            $needElectricityMin = $pop->classinfo->energy_min*$pop->count;
+            $electricityCosts = ResurseCost::getBuyableElecticity($pop->getTaxStateId(),$needElectricityMax);
+
+            $purchasedElecticity = $pop->autobuy($electricityCosts, $needElectricityMax);
+
+            if ($purchasedElecticity >= $needElectricityMin) {
+                $pop->contentment += 0.1;
+            }
+            if ($purchasedElecticity >= $needElectricityMax) {
+                $pop->contentment += 0.1;
+            }
+
+            if ($pop->getBalance() <= 0.001) {
+                continue;
+            }
+            
+            // Закупка алкоголя
+            $needAlcoholMax = $pop->classinfo->alcohol_max_count*$pop->count;
+            $needAlcoholMin = $pop->classinfo->alcohol_min_count*$pop->count;
+            $alcoholCosts = ResurseCost::getBuyableAlcohol($pop->getTaxStateId(),$needAlcoholMax);
+
+            $purchasedAlcohol = $pop->autobuy($alcoholCosts, $needAlcoholMax);
+
+            if ($purchasedAlcohol >= $needAlcoholMin) {
+                $pop->contentment += 0.1;
+            }
+            if ($purchasedAlcohol >= $needAlcoholMax) {
+                $pop->contentment += 0.1;
+            }
+
+            if ($pop->getBalance() <= 0.001) {
+                continue;
+            }
+            
+            // Закупка мебели
+            $needFurnitureMax = $pop->classinfo->furniture_max_count*$pop->count;
+            $needFurnitureMin = $pop->classinfo->furniture_min_count*$pop->count;
+            $furnitureCosts = ResurseCost::getBuyableFurniture($pop->getTaxStateId(),$needFurnitureMax);
+
+            $purchasedFurniture = $pop->autobuy($furnitureCosts, $needFurnitureMax);
+
+            if ($purchasedFurniture >= $needFurnitureMin) {
+                $pop->contentment += 0.1;
+            }
+            if ($purchasedFurniture >= $needFurnitureMax) {
+                $pop->contentment += 0.1;
+            }
+
             $pop->save();
         }
         

@@ -361,25 +361,28 @@ class Population extends MyModel implements TaxPayer {
             } else {
                 $buy = $resurseCost->resurse->count;
             }
-            $dealing = new Dealing([
-                'proto_id' => 1,
-                'from_unnp' => $resurseCost->resurse->place->unnp,
-                'to_unnp' => $this->unnp,
-                'sum' => -1*$resurseCost->cost*$buy,
-                'items' => json_encode([
-                    [
-                        'type' => 'resurse',
-                        'proto_id' => $resurseCost->resurse->proto_id,
-                        'quality' => $resurseCost->resurse->quality,
-                        'count' => $buy
-                    ]
-                ])
-            ]);
-            if ($dealing->accept()) {
-                $purchasedFood += $buy;
-            }
-            if ($purchasedFood >= $maxCount) {
-                break;
+            $cost = $resurseCost->cost*$buy;
+            if ($this->getBalance() >= $cost) {
+                $dealing = new Dealing([
+                    'proto_id' => 1,
+                    'from_unnp' => $resurseCost->resurse->place->unnp,
+                    'to_unnp' => $this->unnp,
+                    'sum' => -1*$cost,
+                    'items' => json_encode([
+                        [
+                            'type' => 'resurse',
+                            'proto_id' => $resurseCost->resurse->proto_id,
+                            'quality' => $resurseCost->resurse->quality,
+                            'count' => $buy
+                        ]
+                    ])
+                ]);
+                if ($dealing->accept()) {
+                    $purchasedFood += $buy;
+                }
+                if ($purchasedFood >= $maxCount) {
+                    break;
+                }
             }
         }
         return $purchasedFood;

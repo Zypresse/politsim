@@ -400,6 +400,7 @@ class HoldingDecision extends MyModel {
                         if ($this->holding->balance >= $buildCost) {
 
                             $this->holding->changeBalance(-1*$buildCost);
+                            $this->holding->save();
 
                             $line = new Line([
                                 'holding_id' => $this->holding_id,

@@ -137,9 +137,6 @@ class Dealing extends MyModel
     public function accept()
     {
         
-        $this->time = time();
-        $this->save();
-
         if ($this->sum) {
             if ($this->sender->getBalance()-1*$this->sum >= 0 &&
                 $this->recipient->getBalance()+$this->sum >= 0 ) {
@@ -195,6 +192,10 @@ class Dealing extends MyModel
             }
         }
         
+        $this->sender->save();
+        $this->recipient->save();
+        $this->time = time();
+        $this->save();
         return true;
     }
     
