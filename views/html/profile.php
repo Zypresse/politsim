@@ -6,13 +6,14 @@ use app\components\MyHtmlHelper;
 <div class="container">
     <div class="row">
         <div class="col-md-3">
-            <div class="avarar-container" >
-                <img src="<?= $user->photo_big ?>" class="img-polaroid">
-
-                <div class="photo_bottom_container">
-                    <span class="star"><?= $user->star ?> <?= MyHtmlHelper::icon('star') ?></span>
-                    <span class="heart"><?= $user->heart ?> <?= MyHtmlHelper::icon('heart') ?></span>
-                    <span class="chart_pie"><?= $user->chart_pie ?> <?= MyHtmlHelper::icon('chart_pie') ?></span>
+            <div class="avarar-container box" >
+                <div class="box-content">
+                    <img src="<?= $user->photo_big ?>" class="img-polaroid">
+                    <div class="photo_bottom_container">
+                        <span class="star"><?= $user->star ?> <?= MyHtmlHelper::icon('star') ?></span>
+                        <span class="heart"><?= $user->heart ?> <?= MyHtmlHelper::icon('heart') ?></span>
+                        <span class="chart_pie"><?= $user->chart_pie ?> <?= MyHtmlHelper::icon('chart_pie') ?></span>
+                    </div>
                 </div>
             </div>
         </div>

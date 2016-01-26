@@ -10,7 +10,13 @@ use app\components\MyHtmlHelper,
 
 <div class="container">
     <div class="row">
-        <div class="col-md-2"><img src="<?= $party->image ?>" alt="<?= $party->name ?>" class="img-polaroid" style="max-width:100%"></div>
+        <div class="col-md-2">
+            <div class="avarar-container box" >
+                <div class="box-content">
+                    <img src="<?= $party->image ?>" alt="<?= $party->name ?>" class="img-polaroid">
+                </div>
+            </div>
+        </div>
         <div class="col-md-10">
             <h1><?= htmlspecialchars($party->name) ?> <small>(<?= htmlspecialchars($party->short_name) ?>)</small></h1>
             <p>Партия зарегистрирована в государстве <?=$party->state->getHtmlName()?></p>
