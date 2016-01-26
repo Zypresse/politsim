@@ -57,16 +57,16 @@ class UpdateHourlyController extends Controller
             if ($debug) printf("Updated factory licenses status: %f s.".PHP_EOL, microtime(true)-$time);
 
             $time = microtime(true);
-            $this->updateFactoryWorkersStatus();
-            if ($debug) printf("Updated factory workers status: %f s.".PHP_EOL, microtime(true)-$time);
-
-            $time = microtime(true);
             $this->updatePopStudy();
             if ($debug) printf("Updated populations study: %f s.".PHP_EOL, microtime(true)-$time);
 
             $time = microtime(true);
             $this->updatePopWorkers();
             if ($debug) printf("Updated populations works: %f s.".PHP_EOL, microtime(true)-$time);
+            
+            $time = microtime(true);
+            $this->updateFactoryWorkersStatus();
+            if ($debug) printf("Updated factory workers status: %f s.".PHP_EOL, microtime(true)-$time);
 
             $time = microtime(true);
             $this->updateFactories();
