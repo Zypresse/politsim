@@ -67,7 +67,7 @@ class Resurse extends MovableObject
     }
     
     public function getLocatedStateId() {
-        return $this->place->getLocatedStateId();
+        return $this->place->object->getLocatedStateId();
     }
 
 }

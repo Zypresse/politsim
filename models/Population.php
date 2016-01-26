@@ -365,7 +365,7 @@ class Population extends MyModel implements TaxPayer {
             if ($this->getBalance() >= $cost) {
                 $dealing = new Dealing([
                     'proto_id' => 1,
-                    'from_unnp' => $resurseCost->resurse->place->unnp,
+                    'from_unnp' => $resurseCost->resurse->place->object->unnp,
                     'to_unnp' => $this->unnp,
                     'sum' => -1*$cost,
                     'items' => json_encode([

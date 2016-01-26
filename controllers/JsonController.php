@@ -1831,7 +1831,7 @@ class JsonController extends MyController {
             return $this->_r("Resurse not found");
         }
         
-        if ($resurse->place->getPlaceType() !== Place::TYPE_FACTORY || $resurse->place->manager_uid !== $this->viewer_id) {
+        if ($resurse->place->object->getPlaceType() !== Place::TYPE_FACTORY || $resurse->place->object->manager_uid !== $this->viewer_id) {
             return $this->_r("Not allowed");
         }
         
@@ -1845,7 +1845,7 @@ class JsonController extends MyController {
                 $params['state_id'] = $resurse->getLocatedStateId();
                 break;
             case 3:
-                $params['holding_id'] = $resurse->place->holding_id;
+                $params['holding_id'] = $resurse->place->object->holding_id;
                 break;
         }
         
@@ -1903,7 +1903,7 @@ class JsonController extends MyController {
         }
         
         $sum = $count * $resCost->cost;        
-        $transferCost = round($resCost->resurse->place->region->calcDist($viewer->region)*Region::TRANSFER_COST);
+        $transferCost = round($resCost->resurse->place->object->region->calcDist($viewer->region)*Region::TRANSFER_COST);
         $sum += $transferCost;
         
         if ($sum > $viewer->getBalance()) {
@@ -1912,7 +1912,7 @@ class JsonController extends MyController {
         
         $dealing = new Dealing([
             'proto_id' => 4,
-            'from_unnp' => $resCost->resurse->place->unnp,
+            'from_unnp' => $resCost->resurse->place->object->unnp,
             'to_unnp' => $viewer->unnp,
             'sum' => -1*$sum,
             'items' => json_encode([[
@@ -1956,16 +1956,16 @@ class JsonController extends MyController {
             return $this->_r("Resurse not found");
         }
 
-        if ($resurse->place->getPlaceType() !== Place::TYPE_FACTORY || $resurse->place->manager_uid !== $this->viewer_id) {
+        if ($resurse->place->object->getPlaceType() !== Place::TYPE_FACTORY || $resurse->place->object->manager_uid !== $this->viewer_id) {
             return $this->_r("Not allowed");
         }
         $settings = FactoryAutobuySettings::findOrCreate([
-            'factory_id' => $resurse->place->id,
+            'factory_id' => $resurse->place->object->id,
             'resurse_proto_id' => $resurse->proto_id                
         ],false,[
             'max_cost' => $cost,
             'min_quality' => $quality,
-            'count' => $resurse->place->kitSize($resurse->proto_id),
+            'count' => $resurse->place->object->kitSize($resurse->proto_id),
             'holding_id' => null,
             'state_id' => null
         ],false);
@@ -1976,7 +1976,7 @@ class JsonController extends MyController {
                     $settings->state_id = $resurse->getLocatedStateId();
                     break;
                 case 3:
-                    $settings->holding_id = $resurse->place->holding_id;
+                    $settings->holding_id = $resurse->place->object->holding_id;
                     break;
             }
             $settings->save();

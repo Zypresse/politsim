@@ -414,16 +414,16 @@ class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
                 $toBuyLeft = $settings->count;
                 foreach ($costs as $cost) {
                     /* @var $cost ResurseCost */
-                    if ($settings->state_id && $cost->resurse->place->getLocatedStateId() !== $settings->state_id) {
+                    if ($settings->state_id && $cost->resurse->place->object->getLocatedStateId() !== $settings->state_id) {
                         continue;
                     }
-                    if ($settings->holding_id && ($cost->resurse->place->getPlaceType() !== Place::TYPE_FACTORY || $cost->resurse->place->holding_id !== $settings->state_id)) {
+                    if ($settings->holding_id && ($cost->resurse->place->object->getPlaceType() !== Place::TYPE_FACTORY || $cost->resurse->place->object->holding_id !== $settings->state_id)) {
                         continue;
                     }
 
                     $toBuy = min([$toBuyLeft,$cost->resurse->count]);                
                     $sum = $toBuy * $cost->cost;        
-                    $transferCost = round($cost->resurse->place->region->calcDist($this->region)*Region::TRANSFER_COST);
+                    $transferCost = round($cost->resurse->place->object->region->calcDist($this->region)*Region::TRANSFER_COST);
                     $sum += $transferCost;  
 
                     if ($sum > $this->getBalance()) {
@@ -432,7 +432,7 @@ class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
                     
                     $dealing = new Dealing([
                         'proto_id' => 4,
-                        'from_unnp' => $cost->resurse->place->unnp,
+                        'from_unnp' => $cost->resurse->place->object->unnp,
                         'to_unnp' => $this->unnp,
                         'sum' => -1*$sum,
                         'items' => json_encode([[
