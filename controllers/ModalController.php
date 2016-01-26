@@ -28,7 +28,8 @@ use app\components\MyController,
     app\models\resurses\Resurse,
     app\models\resurses\ResurseCost,
     app\models\resurses\proto\ResurseProto,
-    app\models\factories\FactoryAutobuySettings;
+    app\models\factories\FactoryAutobuySettings,
+    app\models\Place;
 
 class ModalController extends MyController {
 
@@ -542,9 +543,11 @@ class ModalController extends MyController {
         
         $query = ResurseCost::find()
                 ->join('LEFT JOIN', Resurse::tableName(), Resurse::tableName().'.id = '.ResurseCost::tableName().'.resurse_id')
-                ->where([Resurse::tableName().'.proto_id' => $resProto->id])
-//                ->andWhere(['>',Resurse::tableName().'.count',0])
-                ;
+                ->where([Resurse::tableName().'.proto_id' => $resProto->id]);
+        
+        if ($resProto->isStorable()) {
+            $query = $query->andWhere(['>',Resurse::tableName().'.count',0]);
+        }
         
         if (intval($unnp) > 0) {            
             $query = $query->andWhere(['or',['holding_id'=>null],['holding_id'=>$viewer->holding_id]])
@@ -555,9 +558,21 @@ class ModalController extends MyController {
         }
         
         $costs = $query->with('resurse')
+                ->with('resurse.place')
                 ->orderBy(ResurseCost::tableName().'.cost ASC, '.Resurse::tableName().'.quality DESC')
                 ->groupBy(Resurse::tableName().'.place_id')
                 ->all();
+        
+        // delete not working nonstorables
+        if (!$resProto->isStorable()) {
+            foreach ($costs as $i => $cost) {
+                /* @var $cost ResurseCost */
+                if ($cost->resurse->place->object->getPlaceType() === Place::TYPE_FACTORY && $cost->resurse->place->object->status !== Factory::STATUS_ACTIVE) {
+                    unset($costs[$i]);
+                }
+            }
+            sort($costs);
+        }
                             
         return $this->render('market-resurses',[
             'resProto' => $resProto,
