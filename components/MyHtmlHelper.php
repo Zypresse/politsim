@@ -17,6 +17,20 @@ class MyHtmlHelper {
         return ($hash ? '#' : '') . $colors[$i % count($colors)];
     }
 
+    public static function customIcon($file, $title = '', $style = '', $attrs = [])
+    {
+        $attrs_str = '';
+        if (is_array($attrs)) {
+            foreach ($attrs as $key => $value) {
+                $value = stripslashes(htmlspecialchars($value));
+                $attrs_str .= " {$key}='{$value}' ";
+            }
+        } else {
+            $attrs_str .= $attrs;
+        }
+        return "<img src='/img/{$file}.png' alt='{$title}' title='{$title}' style='{$style}' {$attrs_str} />";
+    }
+
     public static function icon($str, $style = '', $attrs = [])
     {
 
@@ -37,21 +51,6 @@ class MyHtmlHelper {
             'newspaper' => 'Газеты',
             'radio_modern' => 'Радио',
             'twitter_bird' => 'Соц. сети',
-            'Oil' => 'Нефть',
-            'NaturalGas' => 'Природный газ',
-            'Coal' => 'Уголь',
-            'NFOre' => 'Руды цветных металлов',
-            'FOre' => 'Руды чёрных металлов',
-            'REOre' => 'Руды редкоземельных металлов',
-            'UOre' => 'Урановые руды',
-            'Wood' => 'Древесина',
-            'Corn' => 'Зерно',
-            'Fruits' => 'Фрукты',
-            'Fish' => 'Рыба и морепродукты',
-            'Meat' => 'Мясо и молочная продукция',
-            'Wool' => 'Шерсть и кожа',
-            'Sand' => 'Стройматериалы (добываемые)',
-            'Electricity' => 'Электричество',
             'money' => 'у.е.',
             'lg-icons/business' => 'Бизнес',
             'lg-icons/goverment' => 'Правительство',
@@ -68,17 +67,10 @@ class MyHtmlHelper {
             'lg-icons/work' => 'Работа',
         ];
         if (isset($lang[$str])) {
-
-            $attrs_str = '';
-            if (is_array($attrs)) {
-                foreach ($attrs as $key => $value) {
-                    $attrs_str .= " {$key}='{$value}' ";
-                }
-            } else
-                $attrs_str .= $attrs;
-            return "<img src='/img/{$str}.png' alt='{$lang[$str]}' title='{$lang[$str]}' style='{$style}' {$attrs_str} />";
-        } else
-            return false;
+            return static::customIcon($str, $lang[$str], $style, $attrs);
+        } else {
+            return "";
+        }
     }
 
     public static function zeroOne2Human($n)

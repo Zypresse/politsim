@@ -6,7 +6,7 @@
 use app\components\MyHtmlHelper;
 
 ?>
-<h5>Установить цену продажи для ресурса <?= MyHtmlHelper::icon($resurse->proto->class_name) ?> <?=$resurse->proto->name?></h5>
+<h5>Установить цену продажи для ресурса <?= $resurse->proto->icon ?> <?=$resurse->proto->name?></h5>
 <form id="form_resurse_selling_cost">
     <input type="hidden" id="resurse_for_selling_id" value="<?=$resurse->id?>">
     <p>Цена за единицу: <input type="number" value="1" id="resurse_for_selling_cost" > <?=MyHtmlHelper::icon('money')?></p>
@@ -23,7 +23,7 @@ use app\components\MyHtmlHelper;
         <label for="resurse_for_selling_type3">Продавать только фабрикам, принадлежащим <?=$factory->holding->getHtmlName()?></label>
     </p>
 </form>
-<!--<p>Всего на складе сейчас <?= number_format($resurse->count, 0, '', ' ') ?> <?= MyHtmlHelper::icon($resurse->proto->class_name) ?></p>-->
+<!--<p>Всего на складе сейчас <?= number_format($resurse->count, 0, '', ' ') ?> <?= $resurse->proto->icon ?></p>-->
 <!--<p>Потенциальный доход: <span id="potential_dohod"></span> <?=MyHtmlHelper::icon('money')?></p>-->
 
 <script type="text/javascript">

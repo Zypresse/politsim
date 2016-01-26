@@ -44,7 +44,7 @@ use app\components\MyHtmlHelper,
                             </td>
                             <?php if ($resProto->isStorable()):?>
                             <td>
-                                <?= number_format($cost->resurse->count, 0, '', ' ') ?> <?= MyHtmlHelper::icon($resProto->class_name) ?>
+                                <?= number_format($cost->resurse->count, 0, '', ' ') ?> <?= $resProto->icon ?>
                             </td>
                             <td>
                                 <?= MyHtmlHelper::oneTen2Stars($cost->resurse->quality) ?>

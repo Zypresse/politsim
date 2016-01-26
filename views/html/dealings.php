@@ -85,7 +85,7 @@ $mdl = $user->getMyDealingsList();
         <td><?= $dealing->recipient->getHtmlName() ?></td>
         <td><?=$dealing->sum?> <?=MyHtmlHelper::icon('money')?></td>
         <td>
-        <? 
+        <?php 
             if (is_array($items) && count($items)) {
                 echo "<ul>";
             foreach ($items as $item) {
@@ -101,7 +101,7 @@ $mdl = $user->getMyDealingsList();
                     break;
                     case 'resurse':
                         $resProto = app\models\resurses\proto\ResurseProto::findByPk($item['proto_id']);
-                        echo $item['count'].' '.MyHtmlHelper::icon($resProto->class_name);
+                        echo $item['count'].' '.$resProto->icon;
                     break;
                 }
                 echo "</li>";

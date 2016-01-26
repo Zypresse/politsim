@@ -13,6 +13,8 @@ use app\components\MyModel,
  * @property string $name Имя ресурса (напр. "Нефть")
  * @property integer $level Уровень ресурса (0 - добываемые, 1 - переработанные, 2 - отходы, 3 - люди, 4 - временные ресурсы)
  * @property double $market_cost Рыночная цена
+ * 
+ * @property string $icon
  */
 class ResurseProto extends MyModel
 {
@@ -84,7 +86,12 @@ class ResurseProto extends MyModel
     
     public function getHtmlName()
     {
-        return MyHtmlHelper::icon($this->class_name).' '.$this->name;
+        return $this->icon.' '.$this->name;
+    }
+    
+    public function getIcon()
+    {
+        return MyHtmlHelper::customIcon('resurses/'.$this->class_name,  $this->name);
     }
 
 }

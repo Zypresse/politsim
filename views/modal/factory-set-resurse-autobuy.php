@@ -7,7 +7,7 @@
 use app\components\MyHtmlHelper;
 
 ?>
-<h5>Установить правила автозакупки ресурса <?= MyHtmlHelper::icon($resurse->proto->class_name) ?> <?=$resurse->proto->name?></h5>
+<h5>Установить правила автозакупки ресурса <?= $resurse->proto->icon ?> <?=$resurse->proto->name?></h5>
 
     <input type="hidden" id="resurse_for_autobuy_id" value="<?=$resurse->id?>">
     <p>

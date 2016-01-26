@@ -28,7 +28,7 @@ use app\components\MyHtmlHelper;
         			echo 'style="background-color:#EDE0AE"';
         			break;
         	}
-        ?> ><?=MyHtmlHelper::icon($de->resurseProto->class_name)?> <?=$de->resurseProto->name?> — <?=MyHtmlHelper::zeroOne2Stars($de->k)?></li>
+        ?> ><?=$de->resurseProto->icon?> <?=$de->resurseProto->name?> — <?=MyHtmlHelper::zeroOne2Stars($de->k)?></li>
     <? endforeach ?>
 </ul>
 

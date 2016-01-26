@@ -48,7 +48,7 @@ use app\components\MyHtmlHelper,
                                         <i class="icon-<?=$isSender?"minus":"plus"?>"></i>
                                         <?php foreach ($items as $item): ?>
                                         <?php if ($item->type === 'resurse'): ?>
-                                        <?=$item->count?> <?=MyHtmlHelper::icon(ResurseProto::findByPk($item->proto_id)->class_name)?>
+                                        <?=$item->count?> <?=ResurseProto::findByPk($item->proto_id)->icon?>
                                         <?php endif ?>
                                         <?php endforeach ?>
                                     <?php else: ?>
@@ -91,7 +91,7 @@ use app\components\MyHtmlHelper,
                         <tbody>
                         <?php foreach ($factory->resurseCosts as $cost): ?>
                             <tr>
-                                <td><?= MyHtmlHelper::icon($cost->resurse->proto->class_name) ?> <?= $cost->resurse->proto->name ?></td>
+                                <td><?= $cost->resurse->proto->icon ?> <?= $cost->resurse->proto->name ?></td>
                                 <td><?= $cost->getHtmlType()?></td>
                                 <td><?= number_format($cost->cost, 2, '.', ' ') ?> <?= MyHtmlHelper::icon("money") ?></td>
                             </tr>
@@ -116,7 +116,7 @@ use app\components\MyHtmlHelper,
                 <?php if (count($factory->autobuySettings)): ?>
                 <?php foreach ($factory->autobuySettings as $settings): ?>
                     <p>
-                        Закупка <?=number_format($settings->count,0,'',' ')?> <?=MyHtmlHelper::icon($settings->resurseProto->class_name)?> в час
+                        Закупка <?=number_format($settings->count,0,'',' ')?> <?=$settings->resurseProto->icon?> в час
                         по цене не выше <?=MyHtmlHelper::moneyFormat($settings->max_cost)?>
                         качества не ниже <?=MyHtmlHelper::oneTen2Stars($settings->min_quality)?>
                         <? if ($settings->state_id): ?>
@@ -151,8 +151,8 @@ use app\components\MyHtmlHelper,
                         <tbody>
                         <?php foreach ($factory->proto->resurses as $rpk): if ($rpk->resurseProto->isStorable()): ?>
                             <tr>
-                                <td><?= MyHtmlHelper::icon($rpk->resurseProto->class_name) ?> <?= $rpk->resurseProto->name ?></td>
-                                <td><?= number_format($factory->storageSize($rpk->resurseProto->id), 0, '', ' ') ?> <?= MyHtmlHelper::icon($rpk->resurseProto->class_name) ?></td>
+                                <td><?= $rpk->resurseProto->icon ?> <?= $rpk->resurseProto->name ?></td>
+                                <td><?= number_format($factory->storageSize($rpk->resurseProto->id), 0, '', ' ') ?> <?= $rpk->resurseProto->icon ?></td>
                             </tr>
                         <?php endif;
                         endforeach; ?>
@@ -178,8 +178,8 @@ use app\components\MyHtmlHelper,
                         <tbody>
                         <?php foreach ($factory->content as $store): if ($store->proto->isStorable()): ?>
                             <tr>
-                                <td><?= MyHtmlHelper::icon($store->proto->class_name) ?> <?= $store->proto->name ?></td>
-                                <td><?= number_format($store->count, 0, '', ' ') ?> <?= MyHtmlHelper::icon($store->proto->class_name) ?></td>
+                                <td><?= $store->proto->icon ?> <?= $store->proto->name ?></td>
+                                <td><?= number_format($store->count, 0, '', ' ') ?> <?= $store->proto->icon ?></td>
                                 <td><?= $store->count ? MyHtmlHelper::oneTen2Stars($store->quality) : '' ?></td>
                             </tr>
                         <?php endif;
@@ -206,7 +206,7 @@ use app\components\MyHtmlHelper,
                         <?php foreach ($factory->proto->import as $kit): ?>
                             <tr>
                                 <td><?= $kit->resurseProto->name ?> </td>
-                                <td><?= number_format($kit->count*$factory->size, 0, '', ' ') ?> <?= MyHtmlHelper::icon($kit->resurseProto->class_name) ?></td>
+                                <td><?= number_format($kit->count*$factory->size, 0, '', ' ') ?> <?= $kit->resurseProto->icon ?></td>
                             </tr>
                         <?php endforeach ?>
                         </tbody>
@@ -221,7 +221,7 @@ use app\components\MyHtmlHelper,
                         <?php foreach ($factory->proto->export as $kit): ?>
                             <tr>
                                 <td><?= $kit->resurseProto->name ?> </td>
-                                <td><?= number_format($kit->count*$factory->size, 0, '', ' ') ?> <?= MyHtmlHelper::icon($kit->resurseProto->class_name) ?></td>
+                                <td><?= number_format($kit->count*$factory->size, 0, '', ' ') ?> <?= $kit->resurseProto->icon ?></td>
                             </tr>
                         <?php endforeach ?>
                         </tbody>
