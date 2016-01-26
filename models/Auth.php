@@ -122,6 +122,12 @@ class Auth extends MyModel
                 break;
 
         }
+        
+        $user->party_id = 0;
+        $user->state_id = 0;
+        $user->post_id = 0;
+        $user->region_id = 0;
+        
         $transaction = $user->getDb()->beginTransaction();
         if ($user->save()) {
             $auth = new Auth([
