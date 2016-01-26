@@ -133,7 +133,7 @@ class Auth extends MyModel
             $auth = new Auth([
                 'user_id' => $user->id,
                 'source' => $source,
-                'source_id' => (string)$attributes['id'],
+                'source_id' => (string)(isset($attributes['id'])?$attributes['id']:$attributes['uid']),
             ]);
             if ($auth->save()) {
                 $transaction->commit();
