@@ -22,8 +22,12 @@ if (typeof VK !== 'undefined') {
             
 var current_page, current_page_params;
 
-
 $(function () {
+    $(document).on('click','a',function(){
+        if ($(this).attr('href') == "#") {
+            return false;
+        }
+    });
     $("#spinner").ajaxSend(function (event, xhr, options) {
         $(this).fadeIn("fast");
     }).ajaxStop(function () {
