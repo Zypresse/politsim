@@ -10,7 +10,20 @@ use Yii,
     yii\helpers\Html,
     app\models\Twitter,
     app\models\Utr,
-    app\models\Dealing;
+    app\models\Dealing,
+    app\models\State,
+    app\models\Party,
+    app\models\Post,
+    app\models\Region,
+    app\models\Medale,
+    app\models\ElectVote,
+    app\models\Stock,
+    app\models\ElectRequest,
+    app\models\Notification,
+    app\models\factories\Factory,
+    app\models\Auth,
+    app\models\Holding,
+    app\models\Ideology;
 
 /**
  * Пользователь игры. Таблица "users".
@@ -37,19 +50,19 @@ use Yii,
  * 
  * @property string $authKey Авторизационный ключ
  * 
- * @property \app\models\State $state Государство
- * @property \app\models\Party $party Партия
- * @property \app\models\Post $post Пост
- * @property \app\models\Region $region Регион
- * @property \app\models\Medales[] $medales Значки
- * @property \app\models\ElectVote[] $votes Голоса этого юзера на выборах
- * @property \app\models\Stock[] $stocks Акции
- * @property \app\models\ElectRequest[] $requests Заявки на выборы
- * @property \app\models\Notification[] $notifications Уведомления
- * @property \app\models\factories\Factory[] $factories 
- * @property \app\models\Auth[] $accounts
- * @property \app\models\Holding[] $holdings Компании, директором которых является
- * @property app\models\Ideology $ideology Идеология
+ * @property State $state Государство
+ * @property Party $party Партия
+ * @property Post $post Пост
+ * @property Region $region Регион
+ * @property Medale[] $medales Значки
+ * @property ElectVote[] $votes Голоса этого юзера на выборах
+ * @property Stock[] $stocks Акции
+ * @property ElectRequest[] $requests Заявки на выборы
+ * @property Notification[] $notifications Уведомления
+ * @property Factory[] $factories 
+ * @property Auth[] $accounts
+ * @property Holding[] $holdings Компании, директором которых является
+ * @property Ideology $ideology Идеология
  */
 class User extends MyModel implements TaxPayer, IdentityInterface {
 
@@ -127,7 +140,7 @@ class User extends MyModel implements TaxPayer, IdentityInterface {
     public function rules()
     {
         return [
-            [['sex', 'last_vote', 'last_tweet', 'party_id', 'state_id', 'post_id', 'region_id', 'star', 'heart', 'chart_pie'], 'integer'],
+            [['sex', 'last_vote', 'last_tweet', 'party_id', 'state_id', 'post_id', 'region_id', 'star', 'heart', 'chart_pie', 'utr'], 'integer'],
             [['party_id', 'state_id', 'post_id', 'region_id'], 'required'],
             [['money'], 'number'],
             [['name', 'photo', 'photo_big'], 'string', 'max' => 255],
@@ -178,67 +191,67 @@ class User extends MyModel implements TaxPayer, IdentityInterface {
 
     public function getParty()
     {
-        return $this->hasOne('app\models\Party', array('id' => 'party_id'));
+        return $this->hasOne(Party::className(), array('id' => 'party_id'));
     }
 
     public function getState()
     {
-        return $this->hasOne('app\models\State', array('id' => 'state_id'));
+        return $this->hasOne(State::className(), array('id' => 'state_id'));
     }
 
     public function getPost()
     {
-        return $this->hasOne('app\models\Post', array('id' => 'post_id'));
+        return $this->hasOne(Post::className(), array('id' => 'post_id'));
     }
 
     public function getRegion()
     {
-        return $this->hasOne('app\models\Region', array('id' => 'region_id'));
+        return $this->hasOne(Region::className(), array('id' => 'region_id'));
     }
     
     public function getIdeology()
     {
-        return $this->hasOne('app\models\Ideology', array('id' => 'ideology_id'));
+        return $this->hasOne(Ideology::className(), array('id' => 'ideology_id'));
     }
 
     public function getMedales()
     {
-        return $this->hasMany('app\models\Medale', array('uid' => 'id'));
+        return $this->hasMany(Medale::className(), array('uid' => 'id'));
     }
 
     public function getVotes()
     {
-        return $this->hasMany('app\models\ElectVote', array('uid' => 'id'));
+        return $this->hasMany(ElectVote::className(), array('uid' => 'id'));
     }
 
     public function getRequests()
     {
-        return $this->hasMany('app\models\ElectRequest', array('candidat' => 'id'));
+        return $this->hasMany(ElectRequest::className(), array('candidat' => 'id'));
     }
 
     public function getNotifications()
     {
-        return $this->hasMany('app\models\Notification', array('uid' => 'id'));
+        return $this->hasMany(Notification::className(), array('uid' => 'id'));
     }
 
     public function getFactories()
     {
-        return $this->hasMany('app\models\factories\Factory', array('manager_uid' => 'id'));
+        return $this->hasMany(Factory::className(), array('manager_uid' => 'id'));
     }
 
     public function getAccounts()
     {
-        return $this->hasMany('app\models\Auth', array('user_id' => 'id'));
+        return $this->hasMany(Auth::className(), array('user_id' => 'id'));
     }
 
     public function getHoldings()
     {
-        return $this->hasMany('app\models\Holding', array('director_id' => 'id'));
+        return $this->hasMany(Holding::className(), array('director_id' => 'id'));
     }
     
     public function getStocks()
     {
-        return $this->hasMany('app\models\Stock', array('unnp' => 'unnp'));
+        return $this->hasMany(Stock::className(), array('unnp' => 'unnp'));
     }
 
     /**
@@ -405,7 +418,6 @@ class User extends MyModel implements TaxPayer, IdentityInterface {
     public function changeBalance($delta)
     {
         $this->money += $delta;
-        $this->save();
     }
 
     public function getBalance()

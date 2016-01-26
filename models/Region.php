@@ -5,7 +5,15 @@ namespace app\models;
 use app\components\TaxPayer,
     app\components\MyModel,
     app\components\MyHtmlHelper,
-    app\models\Utr;
+    app\models\Utr,
+    app\models\State,
+    app\models\Population,
+    app\models\CoreCountry,
+    app\models\Holding,
+    app\models\factories\Factory,
+    app\models\Vacansy,
+    app\models\RegionDiggingEff,
+    app\models\Stock;
 
 /**
  * This is the model class for table "regions".
@@ -27,7 +35,7 @@ use app\components\TaxPayer,
  * @property Population[] $populationGroupsWithoutFactory Группы населения не работающие на фабриках
  * @property CoreCountry[] $cores "Щитки"
  * @property Holding[] $holdings Компании
- * @property factories\Factory[] $factories Фабрики
+ * @property Factory[] $factories Фабрики
  * @property Vacansy[] $vacansies Вакансии
  * @property Vacansy[] $vacansiesWithSalaryAndCount Актуальнаые вакансии
  * @property Vacansy[] $vacansiesWithSalary Потенцальные вакансии
@@ -43,7 +51,7 @@ class Region extends MyModel implements TaxPayer
     
     public function getStocks()
     {
-        return $this->hasMany('app\models\Stock', array('unnp' => 'unnp'));
+        return $this->hasMany(Stock::className(), array('unnp' => 'unnp'));
     }
     
     public function getUnnp() {
@@ -75,8 +83,8 @@ class Region extends MyModel implements TaxPayer
     {
         return [
             [['code', 'name', 'city', /* 'b', */ 'lat', 'lng'], 'required'],
-            [['state_id', 'population'], 'integer'],
-            [['lat', 'lng'], 'number'],
+            [['state_id', 'population', 'utr'], 'integer'],
+            [['lat', 'lng', 'balance'], 'number'],
             [['code'], 'string', 'max' => 7],
             [['name', 'city'], 'string', 'max' => 300],
             //[['b'], 'string', 'max' => 2555],
@@ -99,22 +107,7 @@ class Region extends MyModel implements TaxPayer
             'b'             => 'B',
             'lat'           => 'Lat',
             'lng'           => 'Lng',
-            'separate_risk' => 'Separate Risk',
             'population'    => 'Population',
-            'oil'           => 'Oil',
-            'natural_gas'   => 'Natural Gas',
-            'coal'          => 'Coal',
-            'nf_ores'       => 'Nf Ores',
-            'f_ores'        => 'F Ores',
-            're_ores'       => 'Re Ores',
-            'u_ores'        => 'U Ores',
-            'wood'          => 'Wood',
-            'corn'          => 'Corn',
-            'fruits'        => 'Fruits',
-            'fish'          => 'Fish',
-            'meat'          => 'Meat',
-            'wool'          => 'Wool',
-            'b_materials'   => 'B Materials',
         ];
     }
 
@@ -129,22 +122,7 @@ class Region extends MyModel implements TaxPayer
             'b',
             'lat',
             'lng',
-            'separate_risk',
             'population',
-            'oil',
-            'natural_gas',
-            'coal',
-            'nf_ores',
-            'f_ores',
-            're_ores',
-            'u_ores',
-            'wood',
-            'corn',
-            'fruits',
-            'fish',
-            'meat',
-            'wool',
-            'b_materials'
         ];
     }
 
@@ -201,52 +179,57 @@ class Region extends MyModel implements TaxPayer
 
     public function getState()
     {
-        return $this->hasOne('app\models\State', array('id' => 'state_id'));
+        return $this->hasOne(State::className(), array('id' => 'state_id'));
     }
 
     public function getPopulationGroups()
     {
-        return $this->hasMany('app\models\Population', array('region_id' => 'id'));
+        return $this->hasMany(Population::className(), array('region_id' => 'id'));
     }
 
     public function getPopulationGroupsWithoutFactory()
     {
-        return $this->hasMany('app\models\Population', array('region_id' => 'id'))->where(['factory_id'=>'0']);
+        return $this->hasMany(Population::className(), array('region_id' => 'id'))->where(['factory_id'=>'0']);
     }
 
     public function getHoldings()
     {
-        return $this->hasMany('app\models\Holding', array('region_id' => 'id'));
+        return $this->hasMany(Holding::className(), array('region_id' => 'id'));
     }
 
     public function getFactories()
     {
-        return $this->hasMany('app\models\factories\Factory', array('region_id' => 'id'));
+        return $this->hasMany(Factory::className(), array('region_id' => 'id'));
     }
 
     public function getVacansies()
     {
-        return $this->hasMany('app\models\Vacansy', array('region_id' => 'id'))->orderBy("salary DESC");
+        return $this->hasMany(Vacansy::className(), array('region_id' => 'id'))->orderBy("salary DESC");
     }
 
     public function getVacansiesWithSalaryAndCount()
     {
-        return $this->hasMany('app\models\Vacansy', array('region_id' => 'id'))->where('salary > 0 AND count_need > 0')->orderBy("salary DESC");
+        return $this->hasMany(Vacansy::className(), array('region_id' => 'id'))->where('salary > 0 AND count_need > 0')->orderBy("salary DESC");
     }
 
     public function getVacansiesWithSalary()
     {
-        return $this->hasMany('app\models\Vacansy', array('region_id' => 'id'))->where('salary > 0')->orderBy("salary DESC");
+        return $this->hasMany(Vacansy::className(), array('region_id' => 'id'))->where('salary > 0')->orderBy("salary DESC");
     }
     
     public function getDiggingEffs()
     {
-        return $this->hasMany('app\models\RegionDiggingEff', array('region_id' => 'id'))->orderBy('group_id');
+        return $this->hasMany(RegionDiggingEff::className(), array('region_id' => 'id'))->orderBy('group_id');
     }
 
+    /**
+     * 
+     * @param int $resurse_proto_id
+     * @return RegionDiggingEff
+     */
     public function getDiggingEff($resurse_proto_id)
     {
-        return $this->hasOne('app\models\RegionDiggingEff', array('region_id' => 'id'))->where(['resurse_proto_id' => $resurse_proto_id])->one();
+        return $this->hasOne(RegionDiggingEff::className(), array('region_id' => 'id'))->where(['resurse_proto_id' => $resurse_proto_id])->one();
     }
 
     /**
@@ -260,7 +243,7 @@ class Region extends MyModel implements TaxPayer
 
     public function getCores()
     {
-        return $this->hasMany('app\models\CoreCountry', ['id' => 'core_id'])
+        return $this->hasMany(CoreCountry::className(), ['id' => 'core_id'])
                 ->viaTable('cores_regions', ['region_id' => 'id']);
     }
     
@@ -315,12 +298,12 @@ class Region extends MyModel implements TaxPayer
 
     public function changeBalance($delta)
     {
-        
+        $this->balance += $delta;
     }
 
     public function getBalance()
     {
-        return 0;
+        return $this->balance;
     }
 
     public function getCityHtmlName()
@@ -340,7 +323,7 @@ class Region extends MyModel implements TaxPayer
 
     public function isTaxedInState($stateId)
     {
-        return false;
+        return $this->state_id === $stateId;
     }
 
     public function getUserControllerId()

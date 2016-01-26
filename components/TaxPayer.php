@@ -36,7 +36,7 @@ interface TaxPayer {
     public function getBalance();
     
     /**
-     * Меняет баланс плательщика
+     * Меняет баланс плательщика BUT NOT SAVED IT
      * @param double $delta
      */
     public function changeBalance($delta);

@@ -75,7 +75,8 @@ class Population extends MyModel implements TaxPayer {
     {
         return [
             [['region_id'], 'required'],
-            [['region_id', 'factory_id', 'class', 'nation', 'ideology', 'religion', 'sex', 'age', 'count'], 'integer']
+            [['region_id', 'factory_id', 'class', 'nation', 'ideology', 'religion', 'sex', 'age', 'count', 'utr'], 'integer'],            
+            [['money'], 'number'],
         ];
     }
 
@@ -304,7 +305,6 @@ class Population extends MyModel implements TaxPayer {
     public function changeBalance($delta)
     {
         $this->money += $delta;
-        $this->save();
     }
 
     public function getBalance()

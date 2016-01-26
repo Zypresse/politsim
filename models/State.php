@@ -49,19 +49,20 @@ use app\components\TaxPayer,
  * @property integer $core_id ID коренного государства наследником которого является
  * @property integer $mpfnig Максимальный процент акций, который могут иметь иностранцы в гос. компаниях
  * @property integer $mpfnih Максимальный процент акций, который могут иметь иностранцы в частных компаниях
+ * @property double $balance
  * 
- * @property \app\models\Org $executiveOrg Исполнительная власть
- * @property \app\models\Org $legislatureOrg Законодательная власть
- * @property \app\models\Structure $structure Структура
- * @property \app\models\GovermentForm $govermentForm Форма правления
- * @property \app\models\Region $capitalRegion Столичный регион
- * @property \app\models\CoreCountry $core Государство-предок
- * @property \app\models\Region[] $regions Список регионов
- * @property \app\models\Region[] $cities Список городов
- * @property \app\models\licenses\LicenseRule[] $licenses Список экономических правил
- * @property \app\models\articles\Article[] $articles Список пунктов конституции
- * @property \app\models\Party[] $parties Список партий
- * @property \app\models\User[] $users Список игроков
+ * @property Org $executiveOrg Исполнительная власть
+ * @property Org $legislatureOrg Законодательная власть
+ * @property Structure $structure Структура
+ * @property GovermentForm $govermentForm Форма правления
+ * @property Region $capitalRegion Столичный регион
+ * @property CoreCountry $core Государство-предок
+ * @property Region[] $regions Список регионов
+ * @property Region[] $cities Список городов
+ * @property LicenseRule[] $licenses Список экономических правил
+ * @property Article[] $articles Список пунктов конституции
+ * @property Party[] $parties Список партий
+ * @property User[] $users Список игроков
  * @property CoreCountryState[] $coreCountryStates Список привязок к корневым странам
  */
 class State extends MyModel implements TaxPayer
@@ -79,7 +80,7 @@ class State extends MyModel implements TaxPayer
 
     public function getStocks()
     {
-        return $this->hasMany('app\models\Stock', array('unnp' => 'unnp'));
+        return $this->hasMany(Stock::className(), array('unnp' => 'unnp'));
     }
     
     public function getUnnp() {
@@ -106,8 +107,8 @@ class State extends MyModel implements TaxPayer
     {
         return [
             [['name', 'short_name', 'capital'], 'required'],
-            [['capital', 'legislature', 'executive', 'state_structure', 'goverment_form', 'population', 'sum_star', 'allow_register_parties', 'leader_can_drop_legislature', 'allow_register_holdings', 'allow_register_holdings_noncitizens', 'register_holdings_mincap', 'register_holdings_noncitizens_mincap', 'register_holdings_maxcap', 'register_holdings_noncitizens_maxcap', 'register_parties_cost', 'core_id', 'mpfnig', 'mpfnih'], 'integer'],
-            [['register_holdings_cost', 'register_holdings_noncitizens_cost'], 'number'],
+            [['capital', 'legislature', 'executive', 'state_structure', 'goverment_form', 'population', 'sum_star', 'allow_register_parties', 'leader_can_drop_legislature', 'allow_register_holdings', 'allow_register_holdings_noncitizens', 'register_holdings_mincap', 'register_holdings_noncitizens_mincap', 'register_holdings_maxcap', 'register_holdings_noncitizens_maxcap', 'register_parties_cost', 'core_id', 'mpfnig', 'mpfnih', 'utr'], 'integer'],
+            [['register_holdings_cost', 'register_holdings_noncitizens_cost', 'balance'], 'number'],
             [['name'], 'string', 'max' => 100],
             [['short_name'], 'string', 'max' => 4],
             [['flag','anthem'], 'string', 'max' => 1000],
@@ -293,12 +294,12 @@ class State extends MyModel implements TaxPayer
 
     public function changeBalance($delta)
     {
-        
+        $this->balance += $delta;
     }
 
     public function getBalance()
     {
-        return 0;
+        return $this->balance;
     }
 
     public function getHtmlName()

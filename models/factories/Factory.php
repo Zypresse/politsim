@@ -127,8 +127,8 @@ class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
     {
         return [
             [['proto_id', 'builded', 'name'], 'required'],
-            [['proto_id', 'builded', 'holding_id', 'region_id', 'status', 'size', 'manager_uid'], 'integer'],
-            [['eff_region', 'eff_workers'], 'number'],
+            [['proto_id', 'builded', 'holding_id', 'region_id', 'status', 'size', 'manager_uid', 'utr'], 'integer'],
+            [['eff_region', 'eff_workers', 'balance'], 'number'],
             [['name'], 'string', 'max' => 255]
         ];
     }
@@ -522,7 +522,6 @@ class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
     public function changeBalance($delta)
     {
         $this->balance += $delta;
-        $this->save();
     }
 
     public function getBalance()

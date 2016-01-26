@@ -5,7 +5,11 @@ namespace app\models;
 use app\components\TaxPayer,
     app\components\MyModel,
     app\components\MyHtmlHelper,
-    app\models\Utr;
+    app\models\Utr,
+    app\models\Org,
+    app\models\Party,
+    app\models\User,
+    app\models\Stock;
 
 /**
  * Должность в правительстве. Таблица "posts".
@@ -18,9 +22,9 @@ use app\components\TaxPayer,
  * @property double $balance Бюджет поста
  * @property string $ministry_name Название министерства, министром которого является пост
  * 
- * @property \app\models\Org $org Организация
- * @property \app\models\Party $partyReserve Партия, которой принадлежит этот пост
- * @property \app\models\User $user Игрок, занимающий этот пост
+ * @property Org $org Организация
+ * @property Party $partyReserve Партия, которой принадлежит этот пост
+ * @property User $user Игрок, занимающий этот пост
  */
 class Post extends MyModel implements TaxPayer
 {
@@ -32,7 +36,7 @@ class Post extends MyModel implements TaxPayer
 
     public function getStocks()
     {
-        return $this->hasMany('app\models\Stock', array('unnp' => 'unnp'));
+        return $this->hasMany(Stock::className(), array('unnp' => 'unnp'));
     }
     
     public function getUnnp() {
@@ -65,7 +69,7 @@ class Post extends MyModel implements TaxPayer
         return [
             [['org_id', 'name'], 'required'],
             [['balance'], 'number'],
-            [['org_id', 'can_delete', 'party_reserve'], 'integer'],
+            [['org_id', 'can_delete', 'party_reserve', 'utr'], 'integer'],
             [['name'], 'string', 'max' => 300],
             [['ministry_name'], 'string', 'max' => 255]
         ];
@@ -89,17 +93,17 @@ class Post extends MyModel implements TaxPayer
 
     public function getOrg()
     {
-        return $this->hasOne('app\models\Org', array('id' => 'org_id'));
+        return $this->hasOne(Org::className(), array('id' => 'org_id'));
     }
 
     public function getUser()
     {
-        return $this->hasOne('app\models\User', array('post_id' => 'id'));
+        return $this->hasOne(User::className(), array('post_id' => 'id'));
     }
 
     public function getPartyReserve()
     {
-        return $this->hasOne('app\models\Party', array('id' => 'party_reserve'));
+        return $this->hasOne(Party::className(), array('id' => 'party_reserve'));
     }
 
     /**
@@ -143,14 +147,14 @@ class Post extends MyModel implements TaxPayer
 
     /**
      * Генерирует пост по заданому шаблону
-     * @param \app\models\Org $org Организация
+     * @param Org $org Организация
      * @param integer $type Тип (см. константы TYPE_*)
-     * @return \app\models\Post
+     * @return Post
      */
 
-    public static function generate(\app\models\Org $org, $type)
+    public static function generate(Org $org, $type)
     {
-        $post         = new Post();
+        $post         = new self();
         $post->org_id = $org->id;
         switch ($type) {
             case static::TYPE_PRESIDENT:
@@ -185,7 +189,6 @@ class Post extends MyModel implements TaxPayer
     public function changeBalance($delta)
     {
         $this->balance += $delta;
-        $this->save();
     }
 
     public function getBalance()
@@ -195,7 +198,7 @@ class Post extends MyModel implements TaxPayer
 
     public function getHtmlName()
     {
-        return $this->name." организации «".MyHtmlHelper::a($this->org->name, "load_page('org-info',{'id':{$this->id}})")."»";
+        return $this->name." организации «".$this->org->getHtmlName()."»";
     }
 
     public function getTaxStateId()
@@ -205,7 +208,7 @@ class Post extends MyModel implements TaxPayer
 
     public function isTaxedInState($stateId)
     {
-        return false;
+        return $this->org->state_id === $stateId;
     }
 
     public function getUserControllerId()

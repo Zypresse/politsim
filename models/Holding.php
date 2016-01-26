@@ -72,7 +72,7 @@ class Holding extends MyModel implements TaxPayer
     {
         return [
             [['name', 'state_id'], 'required'],
-            [['state_id', 'region_id', 'director_id'], 'integer'],
+            [['state_id', 'region_id', 'director_id', 'utr'], 'integer'],
             [['capital', 'balance'], 'number'],
             [['name'], 'string', 'max' => 255],
             [['name'], 'unique']
@@ -217,7 +217,6 @@ class Holding extends MyModel implements TaxPayer
     public function changeBalance($delta)
     {
         $this->balance += $delta;
-        $this->save();
     }
 
     public function getBalance()

@@ -34,6 +34,7 @@ use app\components\TaxPayer,
  * @property integer $leader_can_vote_for_bills
  * @property integer $leader_can_create_bills
  * @property integer $leader_can_veto_bills
+ * @property double $balance
  * 
  * @property Post $leader Лидер организации
  * @property State $state Государство
@@ -83,8 +84,9 @@ class Org extends MyModel implements TaxPayer {
     {
         return [
             [['state_id', 'name', 'leader_dest', 'dest'], 'required'],
-            [['state_id', 'leader_post', 'leader_can_create_posts', 'next_elect', 'elect_period', 'other_org_id', 'vote_party_id', 'elect_with_org', 'elect_leader_with_org', 'can_vote_for_bills', 'can_create_bills', 'leader_can_make_dicktator_bills', 'leader_can_vote_for_bills', 'leader_can_create_bills', 'leader_can_veto_bills'], 'integer'],
+            [['state_id', 'leader_post', 'leader_can_create_posts', 'next_elect', 'elect_period', 'other_org_id', 'vote_party_id', 'elect_with_org', 'elect_leader_with_org', 'can_vote_for_bills', 'can_create_bills', 'leader_can_make_dicktator_bills', 'leader_can_vote_for_bills', 'leader_can_create_bills', 'leader_can_veto_bills', 'utr'], 'integer'],
             [['name'], 'string', 'max' => 300],
+            [['balance'], 'number'],
             [['leader_dest', 'dest'], 'string', 'max' => 100]
         ];
     }
@@ -334,12 +336,12 @@ class Org extends MyModel implements TaxPayer {
 
     public function changeBalance($delta)
     {
-        
+        $this->balance += $delta;
     }
 
     public function getBalance()
     {
-        return 0;
+        return $this->balance;
     }
 
     public function getHtmlName()

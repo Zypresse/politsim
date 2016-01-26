@@ -25,6 +25,8 @@ use app\components\TaxPayer,
  * @property integer $star Известность
  * @property integer $heart Доверие
  * @property integer $chart_pie Успешность
+ * @property integer $unnp
+ * @property double $balance
  * 
  * @property User[] $members Члены партии
  * @property ElectRequest[] $requests Заявки на выборы участников организаций
@@ -71,7 +73,8 @@ class Party extends MyModel implements TaxPayer
     {
         return [
             [['name', 'short_name', 'state_id', 'leader', 'ideology'], 'required'],
-            [['state_id', 'leader', 'ideology', 'star', 'heart', 'chart_pie'], 'integer'],
+            [['state_id', 'leader', 'ideology', 'star', 'heart', 'chart_pie', 'utr'], 'integer'],
+            [['balance'], 'number'],
             [['name'], 'string', 'max' => 500],
             [['short_name'], 'string', 'max' => 4],
             [['image'], 'string', 'max' => 1000]
@@ -173,12 +176,12 @@ class Party extends MyModel implements TaxPayer
 
     public function changeBalance($delta)
     {
-        
+        $this->balance += $delta;
     }
 
     public function getBalance()
     {
-        return 0;
+        return $this->balance;
     }
 
     public function getHtmlName()
