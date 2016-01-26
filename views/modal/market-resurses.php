@@ -22,44 +22,48 @@ use app\components\MyHtmlHelper,
                     <tr>
                         <td>Продавец</td>
                         <td style="min-width: 250px">Регион</td>
-                        <? if ($resProto->isStorable()):?><td>Доступно</td>
-                        <td style="min-width: 70px">Качество</td><? endif ?>
+                        <?php if ($resProto->isStorable()):?>
+                        <td>Доступно</td>
+                        <td style="min-width: 70px">Качество</td>
+                        <?php endif ?>
                         <td style="min-width: 70px">Цена</td>
-                        <? if (!$readOnly && $resProto->isStorable()): ?><td>Действия</td><? endif ?>
+                        <?php if (!$readOnly && $resProto->isStorable()): ?>
+                        <td>Действия</td>
+                        <?php endif ?>
                     </tr>
                 </thead>
                 <tbody>
-                    <? foreach ($costs as $cost): ?>
+                    <?php foreach ($costs as $cost): ?>
                         <tr>
                             <td>
-                                <?= $cost->resurse->place->getHtmlName() ?> 
-                                <?= ($cost->resurse->place->getPlaceType() === Place::TYPE_FACTORY) ? '(' . $cost->resurse->place->holding->getHtmlName() . ')' : ''
-                                ?>
+                                <?= $cost->resurse->place->object->getHtmlName() ?> 
+                                <?= ($cost->resurse->place->object->getPlaceType() === Place::TYPE_FACTORY) ? '(' . $cost->resurse->place->object->holding->getHtmlName() . ')' : '' ?>
                             </td>
                             <td>
-                                <?= ($cost->resurse->place->getPlaceType() === Place::TYPE_FACTORY) ? $cost->resurse->place->region->getHtmlName() : ''
-                                ?>
+                                <?= ($cost->resurse->place->object->getPlaceType() === Place::TYPE_FACTORY) ? $cost->resurse->place->object->region->getHtmlName() : '' ?>
                             </td>
-                            <? if ($resProto->isStorable()):?><td>
+                            <?php if ($resProto->isStorable()):?>
+                            <td>
                                 <?= number_format($cost->resurse->count, 0, '', ' ') ?> <?= MyHtmlHelper::icon($resProto->class_name) ?>
                             </td>
                             <td>
                                 <?= MyHtmlHelper::oneTen2Stars($cost->resurse->quality) ?>
-                            </td><? endif ?>
+                            </td>
+                            <?php endif ?>
                             <td><?= MyHtmlHelper::moneyFormat($cost->cost, 2) ?></td>
-                            <? if (!$readOnly && $resProto->isStorable()): ?>
+                            <?php if (!$readOnly && $resProto->isStorable()): ?>
                             <td>
                                 <button onclick="load_modal('resurse-cost-info',{'id':<?=$cost->id?>,'unnp':$('#market-change-unnp-select').val()},'resurse_cost_info','resurse_cost_info_body')" class="btn btn-blue btn-xs">Покупка</button>
                             </td>
-                            <? endif ?>
+                            <?php endif ?>
                         </tr>
-                    <? endforeach ?>
+                    <?php endforeach ?>
                 </tbody>
             </table>
         </div>
     </div>
 </div>
-<? if (!$readOnly): ?>
+<?php if (!$readOnly): ?>
 <div style="display:none" class="modal fade" id="resurse_cost_info" tabindex="-1" role="dialog" aria-labelledby="resurse_cost_info_label" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -77,4 +81,4 @@ use app\components\MyHtmlHelper,
         </div>
     </div>
 </div>
-<? endif ?>
+<?php endif ?>

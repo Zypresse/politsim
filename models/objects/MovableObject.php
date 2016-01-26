@@ -18,7 +18,7 @@ class MovableObject extends Object {
     
     public function getPlace()
     {
-        return $this->hasOne(Place::className(), array('id' => 'place_id'))->one()->getObject();
+        return $this->hasOne(Place::className(), array('id' => 'place_id'));
     }
     
     public function isStorable()
