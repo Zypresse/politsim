@@ -217,7 +217,6 @@ $show_create_party = isset($_GET['show_create_party']);
         <script>
             var firsth_of_state = false;
             $(function(){
-
             <?php if ($show_create_party): ?>
                 firsth_of_state = true;
                 $('#create_party').modal({'keyboard':false, 'backdrop':'static'});
