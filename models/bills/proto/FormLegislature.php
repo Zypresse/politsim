@@ -11,8 +11,8 @@ use app\models\Org;
  */
 class FormLegislature extends BillProto {
 
-    public static $id = 9;
-    public static $name = "Сформировать законодательную власть";
+    public $id = 9;
+    public $name = "Сформировать законодательную власть";
 
     public static function accept($bill)
     {
@@ -31,7 +31,7 @@ class FormLegislature extends BillProto {
         return parent::accept($bill);
     }
 
-    public static function isVisible($state)
+    public function isVisible($state)
     {
         return is_null($state->legislatureOrg);
     }

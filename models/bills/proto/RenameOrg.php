@@ -11,8 +11,8 @@ use app\models\Org;
  */
 class RenameOrg extends BillProto {
 
-    public static $id = 12;
-    public static $name = "Переименовать организацию";
+    public $id = 12;
+    public $name = "Переименовать организацию";
 
     public static function accept($bill)
     {
@@ -31,7 +31,7 @@ class RenameOrg extends BillProto {
         return parent::accept($bill);
     }
 
-    public static function isVisible($state)
+    public function isVisible($state)
     {
         return true;
     }

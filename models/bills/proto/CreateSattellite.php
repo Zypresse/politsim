@@ -16,8 +16,8 @@ use app\models\Region,
  */
 class CreateSattellite extends BillProto {
 
-    public static $id = 13;
-    public static $name = "Выделить государство-сателлит";
+    public $id = 13;
+    public $name = "Выделить государство-сателлит";
 
     public static function accept($bill)
     {
@@ -78,7 +78,7 @@ class CreateSattellite extends BillProto {
         return parent::accept($bill);
     }
 
-    public static function isVisible($state)
+    public function isVisible($state)
     {
         return (intval($state->getRegions()->count()) > 1);
     }

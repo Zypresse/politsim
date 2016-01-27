@@ -12,8 +12,8 @@ use app\models\articles\Article,
  */
 class ConstitutionUpdate extends BillProto {
     
-    public static $id = 7;
-    public static $name = "Внести поправку в конституцию";
+    public $id = 7;
+    public $name = "Внести поправку в конституцию";
     
     public static function accept($bill)
     {
@@ -37,7 +37,7 @@ class ConstitutionUpdate extends BillProto {
         return parent::accept($bill);
     }
     
-    public static function isVisible($state)
+    public function isVisible($state)
     {
         return true;
     }

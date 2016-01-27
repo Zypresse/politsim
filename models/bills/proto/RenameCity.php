@@ -11,8 +11,8 @@ use app\models\Region;
  */
 class RenameCity extends BillProto {
     
-    public static $id = 4;
-    public static $name = "Переименовать город";
+    public $id = 4;
+    public $name = "Переименовать город";
     
     public static function accept($bill)
     {
@@ -31,7 +31,7 @@ class RenameCity extends BillProto {
         return parent::accept($bill);
     }
     
-    public static function isVisible($state)
+    public function isVisible($state)
     {
         return true;
     }

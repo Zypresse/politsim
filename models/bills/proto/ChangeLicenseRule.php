@@ -11,8 +11,8 @@ use app\models\licenses\LicenseRule;
  */
 class ChangeLicenseRule extends BillProto {
 
-    public static $id = 11;
-    public static $name = "Сменить порядок выдачи лицензий";
+    public $id = 11;
+    public $name = "Сменить порядок выдачи лицензий";
 
     public static function accept($bill)
     {
@@ -37,7 +37,7 @@ class ChangeLicenseRule extends BillProto {
         return parent::accept($bill);
     }
 
-    public static function isVisible($state)
+    public function isVisible($state)
     {
         return true;
     }

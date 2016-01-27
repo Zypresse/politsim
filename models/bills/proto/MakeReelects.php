@@ -11,8 +11,8 @@ use app\models\Org;
  */
 class MakeReelects extends BillProto {
 
-    public static $id = 10;
-    public static $name = "Провести перевыборы";
+    public $id = 10;
+    public $name = "Провести перевыборы";
 
     public static function accept($bill)
     {
@@ -32,7 +32,7 @@ class MakeReelects extends BillProto {
         return parent::accept($bill);
     }
 
-    public static function isVisible($state)
+    public function isVisible($state)
     {
         return true;
     }

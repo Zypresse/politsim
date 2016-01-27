@@ -11,8 +11,8 @@ use app\models\Region;
  */
 class ChangeCapital extends BillProto {
     
-    public static $id = 2;
-    public static $name = "Перенести столицу государства";
+    public $id = 2;
+    public $name = "Перенести столицу государства";
 
     public static function accept($bill)
     {
@@ -35,7 +35,7 @@ class ChangeCapital extends BillProto {
      * 
      * @param \app\models\State $state
      */
-    public static function isVisible($state)
+    public function isVisible($state)
     {
         return (intval($state->getRegions()->count()) > 1);
     }

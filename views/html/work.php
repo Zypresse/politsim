@@ -222,13 +222,15 @@ $gft = null;
                         $where['only_dictator'] = 0;
                     }
                     foreach (BillProto::find()->where($where)->asArray()->all() as $bill_type):
-                    $className = "app\\models\\bills\\proto\\" . $bill_type['class_name'];
-                    if ($className::isVisible($user->state)):
+                        $className = "app\\models\\bills\\proto\\" . $bill_type['class_name'];
+                        $billProto = new $className;
+                        /* @var $billProto app\models\bills\proto\BillProto */
+                        if ($billProto->isVisible($user->state)):
                     ?>
-                    <option value="<?= $className::$id ?>" ><?= htmlspecialchars($className::$name) ?></option>
+                    <option value="<?= $billProto->id ?>" ><?= htmlspecialchars($billProto->name) ?></option>
                     <?php
                         endif;
-                        endforeach;
+                    endforeach;
                     ?>
                 </select>
             </div>

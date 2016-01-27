@@ -9,8 +9,8 @@ namespace app\models\bills\proto;
  */
 class RenameState extends BillProto {
 
-    public static $id = 1;
-    public static $name = "Переименовать страну";
+    public $id = 1;
+    public $name = "Переименовать страну";
 
     public static function accept($bill)
     {
@@ -27,7 +27,7 @@ class RenameState extends BillProto {
         return parent::accept($bill);
     }
 
-    public static function isVisible($state)
+    public function isVisible($state)
     {
         return true;
     }

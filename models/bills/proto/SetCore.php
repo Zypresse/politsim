@@ -11,8 +11,8 @@ use app\models\CoreCountry;
  */
 class SetCore extends BillProto {
     
-    public static $id = 15;
-    public static $name = "Выдвинуть претензии на наследование";
+    public $id = 15;
+    public $name = "Выдвинуть претензии на наследование";
     
     public static function accept($bill)
     {
@@ -47,7 +47,7 @@ class SetCore extends BillProto {
      * @param \app\models\State $state
      * @return boolean
      */
-    public static function isVisible($state)
+    public function isVisible($state)
     {
         if ($state->core) {
             return false;

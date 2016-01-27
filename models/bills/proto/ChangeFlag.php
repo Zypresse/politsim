@@ -11,8 +11,8 @@ use app\components\MyHtmlHelper;
  */
 class ChangeFlag extends BillProto {
     
-    public static $id = 6;
-    public static $name = "Сменить флаг государства";
+    public $id = 6;
+    public $name = "Сменить флаг государства";
     
     public static function accept($bill)
     {
@@ -32,7 +32,7 @@ class ChangeFlag extends BillProto {
         }
     }
     
-    public static function isVisible($state)
+    public function isVisible($state)
     {
         return true;
     }

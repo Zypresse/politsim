@@ -160,6 +160,6 @@ abstract class BillProto extends MyModel
     /**
      * @param \app\models\State $state
      */
-    abstract public static function isVisible($state);
+    abstract public function isVisible($state);
 
 }

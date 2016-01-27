@@ -11,8 +11,8 @@ use app\components\MyHtmlHelper;
  */
 class ChangeAnthem extends BillProto {
     
-    public static $id = 16;
-    public static $name = "Сменить гимн государства";
+    public $id = 16;
+    public $name = "Сменить гимн государства";
     
     public static function accept($bill)
     {
@@ -33,7 +33,7 @@ class ChangeAnthem extends BillProto {
         }
     }
     
-    public static function isVisible($state)
+    public function isVisible($state)
     {
         return true;
     }

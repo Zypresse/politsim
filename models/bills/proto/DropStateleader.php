@@ -10,8 +10,8 @@ namespace app\models\bills\proto;
  */
 class DropStateleader extends BillProto {
 
-    public static $id = 14;
-    public static $name = "Отправить в отставку главу государства";
+    public $id = 14;
+    public $name = "Отправить в отставку главу государства";
 
     public static function accept($bill)
     {
@@ -31,7 +31,7 @@ class DropStateleader extends BillProto {
         return parent::accept($bill);
     }
 
-    public static function isVisible($state)
+    public function isVisible($state)
     {
         return (!(is_null($state->executiveOrg->leader->user))) && $state->legislatureOrg->can_drop_stateleader;
     }

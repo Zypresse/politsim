@@ -9,8 +9,8 @@ namespace app\models\bills\proto;
  */
 class ChangeColor extends BillProto {
     
-    public static $id = 8;
-    public static $name = "Сменить цвет государства на карте";
+    public $id = 8;
+    public $name = "Сменить цвет государства на карте";
     
     public static function accept($bill)
     {
@@ -26,7 +26,7 @@ class ChangeColor extends BillProto {
         return parent::accept($bill);
     }
     
-    public static function isVisible($state)
+    public function isVisible($state)
     {
         return true;
     }

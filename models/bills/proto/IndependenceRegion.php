@@ -11,8 +11,8 @@ use app\models\Region;
  */
 class IndependenceRegion extends BillProto {
     
-    public static $id = 5;
-    public static $name = "Дать региону независимость";
+    public $id = 5;
+    public $name = "Дать региону независимость";
     
     public static function accept($bill)
     {
@@ -35,7 +35,7 @@ class IndependenceRegion extends BillProto {
      * 
      * @param \app\models\State $state
      */
-    public static function isVisible($state)
+    public function isVisible($state)
     {
         return (intval($state->getRegions()->count()) > 1);
     }
