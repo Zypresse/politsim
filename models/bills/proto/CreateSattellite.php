@@ -19,7 +19,7 @@ class CreateSattellite extends BillProto {
     public $id = 13;
     public $name = "Выделить государство-сателлит";
 
-    public static function accept($bill)
+    public function accept($bill)
     {
         if (is_null($bill->state)) {
             return $bill->delete();

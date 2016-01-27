@@ -14,7 +14,7 @@ class RenameOrg extends BillProto {
     public $id = 12;
     public $name = "Переименовать организацию";
 
-    public static function accept($bill)
+    public function accept($bill)
     {
         if (is_null($bill->state)) {
             return $bill->delete();

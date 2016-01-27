@@ -14,7 +14,7 @@ class ChangeLicenseRule extends BillProto {
     public $id = 11;
     public $name = "Сменить порядок выдачи лицензий";
 
-    public static function accept($bill)
+    public function accept($bill)
     {
         if (is_null($bill->state)) {
             return $bill->delete();
@@ -32,7 +32,9 @@ class ChangeLicenseRule extends BillProto {
         $sl->is_need_confirm = ($data->is_need_confirm ? 1 : 0);
         $sl->is_need_confirm_noncitizens = ($data->is_need_confirm_noncitizens ? 1 : 0);
         $sl->is_only_goverment = ($data->is_only_goverment ? 1 : 0);
-        $sl->save();
+        if (!$sl->save()) {
+            var_dump($sl->getErrors());
+        }
 
         return parent::accept($bill);
     }

@@ -141,7 +141,7 @@ abstract class BillProto extends MyModel
      * @param \app\models\bills\Bill $bill
      * @return boolean
      */
-    public static function accept($bill)
+    public function accept($bill)
     {
         
         $bill->accepted = time();

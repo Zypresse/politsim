@@ -14,7 +14,7 @@ class ChangeAnthem extends BillProto {
     public $id = 16;
     public $name = "Сменить гимн государства";
     
-    public static function accept($bill)
+    public function accept($bill)
     {
         if (is_null($bill->state)) {
             return $bill->delete();

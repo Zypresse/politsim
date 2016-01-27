@@ -14,7 +14,7 @@ class FormLegislature extends BillProto {
     public $id = 9;
     public $name = "Сформировать законодательную власть";
 
-    public static function accept($bill)
+    public function accept($bill)
     {
         if (is_null($bill->state)) {
             return $bill->delete();

@@ -133,7 +133,7 @@ class BillTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(0,$region2->state_id);
                 
         // ChangeFlag
-        $new_flag = uniqid();
+        $new_flag = '/'.uniqid().'.jpg';
         
         $bill = new app\models\bills\Bill([
             'creator' => 0,
@@ -245,7 +245,7 @@ class BillTest extends PHPUnit_Framework_TestCase
             'created' => time(),
             'vote_ended' => time(),
             'data' => json_encode([
-                'proto_id' => 1,
+                'license_proto_id' => 1,
                 'cost' => 400,
                 'cost_noncitizens' => 700,
                 'is_need_confirm' => 1,

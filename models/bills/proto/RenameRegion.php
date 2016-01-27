@@ -14,7 +14,7 @@ class RenameRegion extends BillProto {
     public $id = 3;
     public $name = "Переименовать регион";
     
-    public static function accept($bill)
+    public function accept($bill)
     {
         if (is_null($bill->state)) {
             return $bill->delete();

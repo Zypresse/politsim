@@ -14,7 +14,7 @@ class SetCore extends BillProto {
     public $id = 15;
     public $name = "Выдвинуть претензии на наследование";
     
-    public static function accept($bill)
+    public function accept($bill)
     {
         if (is_null($bill->state)) {
             return $bill->delete();

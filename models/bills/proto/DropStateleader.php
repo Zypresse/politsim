@@ -13,7 +13,7 @@ class DropStateleader extends BillProto {
     public $id = 14;
     public $name = "Отправить в отставку главу государства";
 
-    public static function accept($bill)
+    public function accept($bill)
     {
         if (is_null($bill->state)) {
             return $bill->delete();

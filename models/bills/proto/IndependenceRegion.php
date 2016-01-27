@@ -14,7 +14,7 @@ class IndependenceRegion extends BillProto {
     public $id = 5;
     public $name = "Дать региону независимость";
     
-    public static function accept($bill)
+    public function accept($bill)
     {
         if (is_null($bill->state)) {
             return $bill->delete();
