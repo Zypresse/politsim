@@ -712,4 +712,24 @@ class ModalController extends MyController {
         ]);
     }
     
+    public function actionSetSuccessor()
+    {
+        if (!$this->user->isOrgLeader() || $this->user->post->org->leader_dest !== Org::DEST_UNLIMITED) {
+            return $this->_r("Not allowed");
+        }
+        
+        $users = User::find()->where([
+                    'state_id' => $this->user->state_id
+                ])
+                ->andWhere(['<>', 'id', $this->user->id])
+                ->orderBy('star DESC')
+                ->with('party')
+                ->all();
+        
+        return $this->render('set-successor',[
+            'users' => $users
+        ]);
+        
+    }
+    
 }

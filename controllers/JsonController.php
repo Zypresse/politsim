@@ -2043,4 +2043,32 @@ class JsonController extends MyController {
         
     }
     
+    public function actionSetSuccessor($uid)
+    {
+        if (!$this->user->isOrgLeader() || $this->user->post->org->leader_dest !== Org::DEST_UNLIMITED) {
+            return $this->_r("Not allowed");
+        }
+        
+        if (intval($uid) < 0) {
+            return $this->_r("Invalid user ID");
+        }
+        
+        $user = User::findByPk($uid);
+        if (is_null($user)) {
+            return $this->_r("User not found");
+        }
+        
+        if ($user->state_id !== $this->user->state_id) {
+            return $this->_r("User have not citizenship");
+        }
+        
+        $user->post_id = $this->user->post_id;
+        $this->user->post_id = 0;
+        
+        $this->user->save();
+        $user->save();
+        
+        return $this->_rOk();
+    }
+    
 }
