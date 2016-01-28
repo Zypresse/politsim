@@ -33,7 +33,7 @@ class DropStateleader extends BillProto {
 
     public function isVisible($state)
     {
-        return (!(is_null($state->executiveOrg->leader->user))) && $state->legislatureOrg->can_drop_stateleader;
+        return (!(is_null($state->executiveOrg->leader->user))) && $state->legislatureOrg && $state->legislatureOrg->can_drop_stateleader;
     }
 
 }
