@@ -24,7 +24,7 @@ use Yii,
 
 /**
  * 
- * @property app\models\User $user
+ * @property User $user
  */
 
 class MyController extends Controller
