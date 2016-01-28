@@ -14,7 +14,7 @@ class ChangeCapital extends BillProto {
     public $id = 2;
     public $name = "Перенести столицу государства";
 
-    public static function accept($bill)
+    public function accept($bill)
     {
         if (is_null($bill->state)) {
             return $bill->delete();

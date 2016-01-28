@@ -1,6 +1,6 @@
 <?php
 
-/** @var app\models\User $user */
+/* @var $user app\models\User */
 
 use app\components\MyHtmlHelper,
     app\models\Org,
@@ -180,14 +180,36 @@ $gft = null;
                     Новый закон
                 </button>
                 <?php endif ?>
+                <?php if ($user->isOrgLeader() && $user->post->org->leader_dest === Org::DEST_UNLIMITED): ?>
+                <button class="btn btn-red" onclick="load_modal('set-successor',{},'set-successor-modal','set-successor-modal-body')" >
+                    Передать должность наследнику
+                </button>
+                <?php else: ?>
                 <button class="btn btn-red" onclick="self_drop_from_post()" >
                     Уволиться
                 </button>
+                <?php endif ?>
             </div>
         </div>
     </div>
 </div>
 
+<div style="display:none;" class="modal fade" id="set-successor-modal" tabindex="-1" role="dialog" aria-labelledby="set-successor-modal-label" aria-hidden="true">
+    <div class="modal-dialog" style="width: 800px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="set-successor-modal-label">Передача должности наследнику</h3>
+            </div>
+            <div id="set-successor-modal-body" class="modal-body">
+                <p>Загрузка…</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Отмена</button>
+            </div>
+        </div>
+    </div>
+</div>
 <div style="display:none;" class="modal fade" id="naznach" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog" style="width: 800px;">
         <div class="modal-content">
@@ -347,6 +369,12 @@ $gft = null;
         if (confirm('Вы действительно хотите назначить человека по имени ' + name + ' на должность «' + post_name + '»?')) {
             json_request('set-post', {'id': id, 'uid': uid});
             $('.modal-backdrop').remove();
+        }
+    }
+    
+    function set_successor(uid, name, post_name) {
+        if (confirm('Вы действительно хотите назначить человека по имени ' + name + ' вашим наследником и уволиться?')) {
+            json_request('set-successor', {'uid': uid});
         }
     }
 </script>

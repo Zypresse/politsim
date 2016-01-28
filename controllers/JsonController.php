@@ -2007,4 +2007,68 @@ class JsonController extends MyController {
         
         return $this->_rOk();
     }
+    
+    public function actionSeizePower($state_id)
+    {
+        if (intval($state_id) <= 0) {
+            return $this->_r("Invalid state ID");
+        }
+        
+        $state = State::findByPk($state_id);
+        if (is_null($state)) {
+            return $this->_r("State not found");
+        }
+        
+        $executive = $state->executiveOrg;
+        
+        if ($executive && $executive->leader &&  $executive->leader->user) {
+            return $this->_r("Not allowed");
+        }
+        
+        if ($this->user->state_id) {
+            $this->user->leaveState();
+        }
+        
+        if (!$executive) {
+            $executive = Org::generate($state, Org::EXECUTIVE_JUNTA);
+            $state->executive = $executive->id;
+            $state->save();
+        }
+                
+        $this->user->post_id = $executive->leader->id;
+        $this->user->state_id = $state->id;
+        $this->user->save();
+        
+        return $this->_rOk();
+        
+    }
+    
+    public function actionSetSuccessor($uid)
+    {
+        if (!$this->user->isOrgLeader() || $this->user->post->org->leader_dest !== Org::DEST_UNLIMITED) {
+            return $this->_r("Not allowed");
+        }
+        
+        if (intval($uid) < 0) {
+            return $this->_r("Invalid user ID");
+        }
+        
+        $user = User::findByPk($uid);
+        if (is_null($user)) {
+            return $this->_r("User not found");
+        }
+        
+        if ($user->state_id !== $this->user->state_id) {
+            return $this->_r("User have not citizenship");
+        }
+        
+        $user->post_id = $this->user->post_id;
+        $this->user->post_id = 0;
+        
+        $this->user->save();
+        $user->save();
+        
+        return $this->_rOk();
+    }
+    
 }

@@ -93,7 +93,7 @@ class Bill extends MyModel
      */
     public function accept()
     {
-        return $this->proto->accept($this);
+        return !!$this->proto->accept($this);
     }
 
     /**

@@ -15,7 +15,7 @@ class ConstitutionUpdate extends BillProto {
     public $id = 7;
     public $name = "Внести поправку в конституцию";
     
-    public static function accept($bill)
+    public function accept($bill)
     {
         if (is_null($bill->state)) {
             return $bill->delete();

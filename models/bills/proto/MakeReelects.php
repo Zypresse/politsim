@@ -14,7 +14,7 @@ class MakeReelects extends BillProto {
     public $id = 10;
     public $name = "Провести перевыборы";
 
-    public static function accept($bill)
+    public function accept($bill)
     {
         if (is_null($bill->state)) {
             return $bill->delete();

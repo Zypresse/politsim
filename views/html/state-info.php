@@ -121,7 +121,7 @@ $show_create_party = isset($_GET['show_create_party']);
 
         <div class="btn-toolbar">
             <div class="btn-group">
-                <button class="btn btn-sm dropdown-toggle btn-lightblue" data-toggle="dropdown">
+                <button class="btn dropdown-toggle btn-lightblue" data-toggle="dropdown">
                     Гражданство <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu">
@@ -140,7 +140,7 @@ $show_create_party = isset($_GET['show_create_party']);
             </div>
 
             <div class="btn-group">
-                <button class="btn btn-sm dropdown-toggle btn-primary" data-toggle="dropdown">
+                <button class="btn dropdown-toggle btn-primary" data-toggle="dropdown">
                     Политика <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu">
@@ -152,6 +152,15 @@ $show_create_party = isset($_GET['show_create_party']);
                     <li><a href='#' onclick="load_page('elections', {'state_id':<?= $state->id ?>});" >Выборы</a></li>
                 </ul>
             </div>
+            
+            <?php if (!$state->executiveOrg || !$state->executiveOrg->leader || !$state->executiveOrg->leader->user): ?>
+            
+            <div class="btn-group">
+                <button class="btn btn-red" onclick="json_request('seize-power', {'state_id':<?= $state->id ?>})" >
+                    Захватить власть
+                </button>
+            </div>
+            <?php endif ?>
         </div><?php if ($state->allow_register_parties || $show_create_party): ?>
             <div style="display:none" class="modal" id="create_party" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div class="modal-header">

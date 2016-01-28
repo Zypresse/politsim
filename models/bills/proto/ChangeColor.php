@@ -12,7 +12,7 @@ class ChangeColor extends BillProto {
     public $id = 8;
     public $name = "Сменить цвет государства на карте";
     
-    public static function accept($bill)
+    public function accept($bill)
     {
         if (is_null($bill->state)) {
             return $bill->delete();

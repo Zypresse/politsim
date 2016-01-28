@@ -14,7 +14,7 @@ class RenameCity extends BillProto {
     public $id = 4;
     public $name = "Переименовать город";
     
-    public static function accept($bill)
+    public function accept($bill)
     {
         if (is_null($bill->state)) {
             return $bill->delete();

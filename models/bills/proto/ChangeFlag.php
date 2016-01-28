@@ -14,7 +14,7 @@ class ChangeFlag extends BillProto {
     public $id = 6;
     public $name = "Сменить флаг государства";
     
-    public static function accept($bill)
+    public function accept($bill)
     {
         if (is_null($bill->state)) {
             return $bill->delete();

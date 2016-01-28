@@ -12,7 +12,7 @@ class RenameState extends BillProto {
     public $id = 1;
     public $name = "Переименовать страну";
 
-    public static function accept($bill)
+    public function accept($bill)
     {
         if (is_null($bill->state)) {
             return $bill->delete();

@@ -87,21 +87,23 @@ class UserTest extends PHPUnit_Framework_TestCase
         
         $user->save();
         
+        $state = \app\models\State::find()->one();
+        
         $party = new \app\models\Party();
         $party->name = "Asd";
         $party->short_name = "ASD";
         $party->ideology = 1;
-        $party->state_id = 195;
+        $party->state_id = $state->id;
         $party->leader = $user->id;
         
         $this->assertTrue($party->save());
         
         $user->party_id = $party->id;
-        $user->state_id = 195;
+        $user->state_id = $state->id;
         
         $this->assertTrue($user->save());
         $this->assertNotNull($user->state);
-        $this->assertEquals(195, $user->state->id);
+        $this->assertEquals($state->id, $user->state->id);
                 
         $user->leaveState();
         $user = \app\models\User::findByPk($user->id);
@@ -119,6 +121,10 @@ class UserTest extends PHPUnit_Framework_TestCase
         $user = new app\models\User;
         $user->name = "Tester Tester";
         $user->money = 123;
+        $user->party_id = 0;
+        $user->state_id = 0;
+        $user->post_id = 0;
+        $user->region_id = 0;
         
         return $user;
     }
