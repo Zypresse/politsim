@@ -14,9 +14,9 @@ use Yii,
     app\models\Population,
     app\models\User,
     app\models\Dealing,
-    app\models\resurses\Resurse,
-    app\models\resurses\ResurseCost,
-    app\models\resurses\proto\ResurseProto,
+    app\models\resources\Resource,
+    app\models\resources\ResourceCost,
+    app\models\resources\proto\ResourceProto,
     app\models\statistics\StatisticsMining,
     app\models\statistics\StatisticsCosts;
 
@@ -81,8 +81,8 @@ class UpdateHourlyController extends Controller
             if ($debug) printf("Updated factories production: %f s.".PHP_EOL, microtime(true)-$time);
             
             $time = microtime(true);
-            $this->updateResursesCostsStatistics();
-            if ($debug) printf("Updated resurses costs statistics: %f s.".PHP_EOL, microtime(true)-$time);
+            $this->updateResourcesCostsStatistics();
+            if ($debug) printf("Updated resources costs statistics: %f s.".PHP_EOL, microtime(true)-$time);
                         
             $time = microtime(true);
             $this->updatePopPaySalaries();
@@ -93,12 +93,12 @@ class UpdateHourlyController extends Controller
             if ($debug) printf("Updated population fire job: %f s.".PHP_EOL, microtime(true)-$time);
             
             $time = microtime(true);
-            $this->updatePopPurchaseResurses();
-            if ($debug) printf("Updated population purchase resurses: %f s.".PHP_EOL, microtime(true)-$time);
+            $this->updatePopPurchaseResources();
+            if ($debug) printf("Updated population purchase resources: %f s.".PHP_EOL, microtime(true)-$time);
             
             $time = microtime(true);
-            $this->updateNonstorableResurses();
-            if ($debug) printf("Updated nonstorable resurses: %f s.".PHP_EOL, microtime(true)-$time);
+            $this->updateNonstorableResources();
+            if ($debug) printf("Updated nonstorable resources: %f s.".PHP_EOL, microtime(true)-$time);
 
             $time = microtime(true);
             $this->updatePopAnalogies();
@@ -390,11 +390,11 @@ class UpdateHourlyController extends Controller
     {
         $factories = Factory::findNoPowerplants()->andWhere(['or',['status'=>Factory::STATUS_ACTIVE],['status'=>Factory::STATUS_NOT_ENOUGHT_RESURSES]])->all();
         
-        $miningResursePrototypeIDs = [1,2];//array_map('intval', ResurseProto::find()->select('id')->where(['level' => ResurseProto::LEVEL_ZERO])->column());
+        $miningResourcePrototypeIDs = [1,2];//array_map('intval', ResourceProto::find()->select('id')->where(['level' => ResourceProto::LEVEL_ZERO])->column());
         $worldStatistics = [];
-        foreach ($miningResursePrototypeIDs as $id) {
+        foreach ($miningResourcePrototypeIDs as $id) {
             $worldStatistics[$id] = new StatisticsMining([
-                'resurse_proto_id' => $id,
+                'resource_proto_id' => $id,
                 'value' => 0
             ]);
         }
@@ -402,9 +402,9 @@ class UpdateHourlyController extends Controller
         foreach ($factories as $factory) {
             $res = $factory->work();
             if (is_array($res)) {
-                foreach ($res as $resurse_proto_id => $count) {
-                    if (in_array($resurse_proto_id, $miningResursePrototypeIDs)) {
-                        $worldStatistics[$resurse_proto_id]->value += $count;
+                foreach ($res as $resource_proto_id => $count) {
+                    if (in_array($resource_proto_id, $miningResourcePrototypeIDs)) {
+                        $worldStatistics[$resource_proto_id]->value += $count;
                     }
                 }
             }
@@ -415,29 +415,29 @@ class UpdateHourlyController extends Controller
         }
     }
     
-    private function updateNonstorableResurses()
+    private function updateNonstorableResources()
     {
-        Yii::$app->db->createCommand("UPDATE `".Resurse::tableName()."` "
+        Yii::$app->db->createCommand("UPDATE `".Resource::tableName()."` "
                 . "SET count = 0 "
                 . "WHERE proto_id IN ("
-                    . "SELECT id FROM `".ResurseProto::tableName()."` "
-                    . "WHERE level = ".ResurseProto::LEVEL_NOTSTORED
+                    . "SELECT id FROM `".ResourceProto::tableName()."` "
+                    . "WHERE level = ".ResourceProto::LEVEL_NOTSTORED
                 . ")")->execute();
     }
     
-    private function updateResursesCostsStatistics()
+    private function updateResourcesCostsStatistics()
     {        
-        $resursePrototypeIDs = [1,2];//array_map('intval', ResurseProto::find()->select('id')->column());
+        $resourcePrototypeIDs = [1,2];//array_map('intval', ResourceProto::find()->select('id')->column());
         $worldStatistics = [];
-        foreach ($resursePrototypeIDs as $id) {
+        foreach ($resourcePrototypeIDs as $id) {
             $worldStatistics[$id] = new StatisticsCosts([
-                'resurse_proto_id' => $id
+                'resource_proto_id' => $id
             ]);
             $worldStatistics[$id]->updateValue();
             $worldStatistics[$id]->save();
 
-            $worldStatistics[$id]->resurseProto->market_cost = $worldStatistics[$id]->value;
-            $worldStatistics[$id]->resurseProto->save();
+            $worldStatistics[$id]->resourceProto->market_cost = $worldStatistics[$id]->value;
+            $worldStatistics[$id]->resourceProto->save();
         }
     }
     
@@ -510,7 +510,7 @@ class UpdateHourlyController extends Controller
                 . ")")->execute();
     }
     
-    private function updatePopPurchaseResurses()
+    private function updatePopPurchaseResources()
     {
         $pops = Population::find()->with('classinfo')->with('region')->all();
         foreach ($pops as $pop) {
@@ -524,7 +524,7 @@ class UpdateHourlyController extends Controller
             // Закупка еды
             $needFoodMax = $pop->classinfo->food_max_count*$pop->count;
             $needFoodMin = $pop->classinfo->food_min_count*$pop->count;
-            $foodCosts = ResurseCost::getBuyableFood($pop->getTaxStateId(),$needFoodMax);
+            $foodCosts = ResourceCost::getBuyableFood($pop->getTaxStateId(),$needFoodMax);
 
             $purchasedFood = $pop->autobuy($foodCosts, $needFoodMax);
 
@@ -542,7 +542,7 @@ class UpdateHourlyController extends Controller
             // Закупка одежды
             $needDressMax = $pop->classinfo->dress_max_count*$pop->count;
             $needDressMin = $pop->classinfo->dress_min_count*$pop->count;
-            $dressCosts = ResurseCost::getBuyableDress($pop->getTaxStateId(),$needDressMax);
+            $dressCosts = ResourceCost::getBuyableDress($pop->getTaxStateId(),$needDressMax);
 
             $purchasedDress = $pop->autobuy($dressCosts, $needDressMax);
 
@@ -560,7 +560,7 @@ class UpdateHourlyController extends Controller
             // Закупка электричества
             $needElectricityMax = $pop->classinfo->energy_max*$pop->count;
             $needElectricityMin = $pop->classinfo->energy_min*$pop->count;
-            $electricityCosts = ResurseCost::getBuyableElecticity($pop->getTaxStateId(),$needElectricityMax);
+            $electricityCosts = ResourceCost::getBuyableElecticity($pop->getTaxStateId(),$needElectricityMax);
 
             $purchasedElecticity = $pop->autobuy($electricityCosts, $needElectricityMax);
 
@@ -578,7 +578,7 @@ class UpdateHourlyController extends Controller
             // Закупка алкоголя
             $needAlcoholMax = $pop->classinfo->alcohol_max_count*$pop->count;
             $needAlcoholMin = $pop->classinfo->alcohol_min_count*$pop->count;
-            $alcoholCosts = ResurseCost::getBuyableAlcohol($pop->getTaxStateId(),$needAlcoholMax);
+            $alcoholCosts = ResourceCost::getBuyableAlcohol($pop->getTaxStateId(),$needAlcoholMax);
 
             $purchasedAlcohol = $pop->autobuy($alcoholCosts, $needAlcoholMax);
 
@@ -596,7 +596,7 @@ class UpdateHourlyController extends Controller
             // Закупка мебели
             $needFurnitureMax = $pop->classinfo->furniture_max_count*$pop->count;
             $needFurnitureMin = $pop->classinfo->furniture_min_count*$pop->count;
-            $furnitureCosts = ResurseCost::getBuyableFurniture($pop->getTaxStateId(),$needFurnitureMax);
+            $furnitureCosts = ResourceCost::getBuyableFurniture($pop->getTaxStateId(),$needFurnitureMax);
 
             $purchasedFurniture = $pop->autobuy($furnitureCosts, $needFurnitureMax);
 
