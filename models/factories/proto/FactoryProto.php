@@ -37,7 +37,7 @@ class FactoryProto extends UnmovableObjectProto
     public static function instantiate($row)
     {
         $className = "app\\models\\factories\\proto\\types\\{$row['class_name']}";
-        return new $className;
+        return new $className($row);
     }
     
     /**
