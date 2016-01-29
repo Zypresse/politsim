@@ -18,6 +18,12 @@ use app\components\MyModel,
  */
 class ResourceProto extends MyModel
 {
+    
+    public static function instantiate($row)
+    {
+        $className = "app\\models\\resources\\proto\\types\\{$row['class_name']}";
+        return new $className($row);
+    }
 
     /**
      * @inheritdoc
