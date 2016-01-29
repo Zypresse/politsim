@@ -224,12 +224,12 @@ class Region extends MyModel implements TaxPayer
 
     /**
      * 
-     * @param int $resurse_proto_id
+     * @param int $resource_proto_id
      * @return RegionDiggingEff
      */
-    public function getDiggingEff($resurse_proto_id)
+    public function getDiggingEff($resource_proto_id)
     {
-        return $this->hasOne(RegionDiggingEff::className(), array('region_id' => 'id'))->where(['resurse_proto_id' => $resurse_proto_id])->one();
+        return $this->hasOne(RegionDiggingEff::className(), array('region_id' => 'id'))->where(['resource_proto_id' => $resource_proto_id])->one();
     }
 
     /**
