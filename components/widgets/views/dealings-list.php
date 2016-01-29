@@ -28,7 +28,7 @@ use app\components\MyHtmlHelper,
             <td><i class="icon-time"></i> <span class="prettyDate" data-unixtime="<?=$dealing->time?>"><?=date('H:i:s d-m-Y',$dealing->time)?></span></td>
             <td><?= $dealing->sender ? $dealing->sender->getHtmlName() : 'unknown' ?></td>
             <td><?= $dealing->recipient ? $dealing->recipient->getHtmlName() : 'unknown' ?></td>
-            <td><?=$dealing->sum?> <?=MyHtmlHelper::icon('money')?></td>
+            <td><?=MyHtmlHelper::moneyFormat($dealing->sum,2)?></td>
             <td>
             <?php 
                 if (is_array($items) && count($items)) {
@@ -38,7 +38,7 @@ use app\components\MyHtmlHelper,
                     switch ($item['type']) {
                         case 'stock':
                             $holding = Holding::findByPk($item['holding_id']);
-                            echo MyHtmlHelper::formateNumberword($item['count'], "акций", "акция", "акции")." компании «".$holding->name."»";
+                            echo MyHtmlHelper::formateNumberword($item['count'], "акций", "акция", "акции")." компании «".$holding->getHtmlName()."»";
                         break;
                         case 'factory':
                             $factory = Factory::findByPk($item['factory_id']);
@@ -46,7 +46,7 @@ use app\components\MyHtmlHelper,
                         break;
                         case 'resource':
                             $resProto = ResourceProto::findByPk($item['proto_id']);
-                            echo $item['count'].' '.MyHtmlHelper::icon($resProto->class_name);
+                            echo $item['count'].' '.$resProto->icon;
                         break;
                     }
                     echo "</li>";
