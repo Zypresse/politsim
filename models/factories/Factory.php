@@ -48,7 +48,7 @@ use app\components\MyMathHelper,
  * @property Population[] $workers Рабочие
  * @property WorkersSalary[] $salaries Установленные зарплаты рабочих
  * @property Resurse[] $storages Ресурсы на складе
- * @property Vacancy[] $vacancies 
+ * @property Vacansy[] $vacansies 
  * @property Vacansy[] $vacansiesWithSalaryAndCount Актуальнаые вакансии
  * @property Vacansy[] $vacansiesWithSalary Потенцальные вакансии
  * @property ResurseCost[] $resurseCosts
@@ -393,6 +393,58 @@ class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
         $this->calcRegionEff();
     }
     
+    public function updateVacansies()
+    {
+        foreach ($this->vacansies as $vacansy) {
+            $vacansy->count_all = $this->getNeedWorkersCountByClass($vacansy->pop_class_id);
+            $vacansy->count_need = $vacansy->count_all - $this->getWorkersCountByClass($vacansy->pop_class_id);
+            $vacansy->save();
+        }
+    }
+
+    public function updateStatus()
+    {
+        if ($this->status < 0 || $this->status === self::STATUS_STOPPED || $this->status === self::STATUS_AUTOSTOPPED) {
+            return;
+        }
+        
+        if ($this->status !== self::STATUS_ACTIVE) {
+            switch ($this->status) {
+                case self::STATUS_HAVE_NOT_LICENSE:
+                    foreach ($this->proto->licenses as $licenseProto) {
+                        if (!$this->holding->isHaveLicense($this->region->state_id,$licenseProto->id)) {
+                            break;
+                        }
+                    }
+                    $this->status = self::STATUS_ACTIVE;
+                    break;
+                case self::STATUS_NOT_ENOUGHT_WORKERS:
+                    foreach ($this->proto->workers as $protoWorker) {
+                        if ($this->getWorkersCountByClass($protoWorker->pop_class_id) < 0.5 * $this->getNeedWorkersCountByClass($protoWorker->pop_class_id)) {
+                            break;
+                        }
+                    }
+                    $this->status = self::STATUS_ACTIVE;
+                    break;
+            }
+        }
+        
+        if ($this->status === self::STATUS_ACTIVE) {
+            foreach ($this->proto->workers as $protoWorker) {
+                if ($this->getWorkersCountByClass($protoWorker->pop_class_id) < 0.5 * $this->getNeedWorkersCountByClass($protoWorker->pop_class_id)) {
+                    $this->status = self::STATUS_NOT_ENOUGHT_WORKERS;
+                    break;
+                }
+            }
+            foreach ($this->proto->licenses as $licenseProto) {
+                if (!$this->holding->isHaveLicense($this->region->state_id,$licenseProto->id)) {
+                    $this->status = self::STATUS_HAVE_NOT_LICENSE;
+                    break;
+                }
+            }
+        }
+    }
+
     public function autobuy()
     {
         if (count($this->autobuySettings)) {

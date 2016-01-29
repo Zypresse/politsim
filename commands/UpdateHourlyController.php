@@ -53,10 +53,6 @@ class UpdateHourlyController extends Controller
             if ($debug) printf("Updated holdings: %f s.".PHP_EOL, microtime(true)-$time);
 
             $time = microtime(true);
-            $this->updateFactoryLicenseStatus();
-            if ($debug) printf("Updated factory licenses status: %f s.".PHP_EOL, microtime(true)-$time);
-
-            $time = microtime(true);
             $this->updatePopStudy();
             if ($debug) printf("Updated populations study: %f s.".PHP_EOL, microtime(true)-$time);
 
@@ -64,10 +60,6 @@ class UpdateHourlyController extends Controller
             $this->updatePopWorkers();
             if ($debug) printf("Updated populations works: %f s.".PHP_EOL, microtime(true)-$time);
             
-            $time = microtime(true);
-            $this->updateFactoryWorkersStatus();
-            if ($debug) printf("Updated factory workers status: %f s.".PHP_EOL, microtime(true)-$time);
-
             $time = microtime(true);
             $this->updateFactories();
             if ($debug) printf("Updated factories: %f s.".PHP_EOL, microtime(true)-$time);
@@ -138,7 +130,7 @@ class UpdateHourlyController extends Controller
      */
     private function updateStates()
     {
-        $states = State::find()->with('regions')->all();
+        $states = State::find()->with('regions')->with('regions.cores')->all();
         foreach ($states as $state) {
             $state->population = 0;
             $cores = [];
@@ -318,15 +310,13 @@ class UpdateHourlyController extends Controller
                         break;
                     }
                 }
-                $vacansy->count_need -= $setted;
-                $vacansy->save();
             }
         }
     }
     
     private function updatePopAnalogies()
     {
-        $popGroups = Population::find()->all();
+        $popGroups = Population::find()->orderBy('id ASC')->all();
         $obrabotannue = [];
         
         foreach ($popGroups as $pop) {
@@ -350,81 +340,14 @@ class UpdateHourlyController extends Controller
         }
     }
     
-    private function updateFactoryLicenseStatus()
-    {
-        $factories = Factory::find()->where(['status'=>Factory::STATUS_ACTIVE])->all();
-        foreach ($factories as $factory) {
-            foreach ($factory->proto->licenses as $tLicense) {
-                
-                if (!$factory->holding->isHaveLicense($factory->region->state_id,$tLicense->id)) {
-                    $factory->status = Factory::STATUS_HAVE_NOT_LICENSE;
-                    $factory->save();
-                    break;
-                }
-            }
-        }
-        
-        $factories = Factory::find()->where(['status'=>Factory::STATUS_HAVE_NOT_LICENSE])->all();
-        foreach ($factories as $factory) {
-            $allLicencesExist = true;
-            foreach ($factory->proto->licenses as $tLicense) {
-                if (!$factory->holding->isHaveLicense($factory->region->state_id,$tLicense->id)) {
-                    $allLicencesExist = false;
-                    break;
-                }
-            }
-            if ($allLicencesExist) {
-                $factory->status = Factory::STATUS_ACTIVE;
-                $factory->save();
-            }
-        }
-    }
-    
-    
-    private function updateFactoryWorkersStatus()
-    {
-        $factories = Factory::find()->where(['status'=>Factory::STATUS_ACTIVE])->all();
-        foreach ($factories as $building) {
-            foreach ($building->proto->workers as $tWorker) {
-                $count = 0;
-                foreach ($building->workers as $pop) {
-                    if ($pop->class == $tWorker->pop_class_id) {
-                        $count += $pop->count;
-                    }
-                }
-                if ($count < $tWorker->count*$building->size/2) {
-                    $building->status = Factory::STATUS_NOT_ENOUGHT_WORKERS;
-                    $building->save();
-                    break;
-                }
-            }
-        }
-        
-        // Проверка не набрали ли фабрики нужного числа рабочих
-        $factories = Factory::find()->where(['status'=>Factory::STATUS_NOT_ENOUGHT_WORKERS])->all();
-        foreach ($factories as $building) {
-            foreach ($building->proto->workers as $tWorker) {
-                $count = 0;
-                foreach ($building->workers as $pop) {
-                    if ($pop->class == $tWorker->pop_class_id) {
-                        $count += $pop->count;
-                    }
-                }
-                if ($count >= $tWorker->count*$building->size/2) {
-                    $building->status = Factory::STATUS_ACTIVE;
-                    $building->save();
-                    break;
-                }
-            }
-        }
-    }
-
     private function updateFactories()
     {
         $factories = Factory::find()->all();
-
+        /* @var $factories Factory[] */
         foreach ($factories as $factory) {
             $factory->calcEff();
+            $factory->updateVacansies();
+            $factory->updateStatus();
             $factory->save();
         }
     }
@@ -528,6 +451,7 @@ class UpdateHourlyController extends Controller
                 ->all();
         
         $factoriesPayed = [];
+        $factoriesNotPayed = [];
         
         foreach ($pops as $pop) {
             /* @var $pop Population */
@@ -553,8 +477,9 @@ class UpdateHourlyController extends Controller
                     $factoriesPayed[] = $pop->factory_id;
                 }
             } else {
-                $pop->factory->not_paying_salaries = 1;
-                $pop->factory->save();
+                if (!in_array($pop->factory_id, $factoriesNotPayed)) {
+                    $factoriesNotPayed[] = $pop->factory_id;
+                }
             }
             
         }
@@ -563,6 +488,13 @@ class UpdateHourlyController extends Controller
             Yii::$app->db->createCommand("UPDATE `".Factory::tableName()."` "
                     . "SET not_paying_salaries = 0 "
                     . "WHERE id IN (".implode(',', $factoriesPayed).")")
+                    ->execute();
+        }
+        
+        if (count($factoriesNotPayed)) {
+            Yii::$app->db->createCommand("UPDATE `".Factory::tableName()."` "
+                    . "SET not_paying_salaries = 1 "
+                    . "WHERE id IN (".implode(',', $factoriesNotPayed).")")
                     ->execute();
         }
         
