@@ -179,7 +179,7 @@ class Dealing extends MyModel
                             return false;
                         }
                         break;
-                    case "resurse":
+                    case "resource":
                         $store = $this->sender->getStorage($item['proto_id'],$item['quality']);
                         if ($store && $store->count >= $item['count']) {
                             $this->sender->delFromStorage($item['proto_id'],$item['count'],$item['quality']);
