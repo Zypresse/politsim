@@ -28,10 +28,10 @@ use Yii,
     app\models\ElectOrgLeaderRequest,
     app\models\ElectOrgLeaderVote,
     app\models\Place,
-    app\models\resurses\Resurse,
-    app\models\resurses\ResurseCost,
+    app\models\resources\Resource,
+    app\models\resources\ResourceCost,
     app\models\articles\proto\ArticleProto,
-    app\models\resurses\proto\ResurseProto,
+    app\models\resources\proto\ResourceProto,
     app\models\bills\Bill,
     app\models\bills\BillVote,
     app\models\bills\proto\BillProto,
@@ -146,19 +146,19 @@ class JsonController extends MyController {
         return $this->_r();
     }
 
-    public function actionRegionsResurses($id)
+    public function actionRegionsResources($id)
     {
         if ($id) {
-            $resurse = ResurseProto::findByPk($id);
-            if (is_null($resurse)) {
-                $this->error = "Resurse not found";
+            $resource = ResourceProto::findByPk($id);
+            if (is_null($resource)) {
+                $this->error = "Resource not found";
             } else {
                 $regions = Region::find()->with('diggingEffs')->all();
                 $this->result = [];
                 foreach ($regions as $region) {
                     $count = 0;
                     foreach ($region->diggingEffs as $de) {
-                        if ($de->resurse_proto_id === $resurse->id) {
+                        if ($de->resource_proto_id === $resource->id) {
                             $count = $de->k;
                             break;
                         }
@@ -1703,12 +1703,12 @@ class JsonController extends MyController {
         }
     }
     
-    public function actionGetBuildLineCost($resurse_proto_id, $distance)
+    public function actionGetBuildLineCost($resource_proto_id, $distance)
     {
         $distance = floatval($distance);
-        $resurse_proto_id = intval($resurse_proto_id);
+        $resource_proto_id = intval($resource_proto_id);
         
-        $this->result = Line::getPrice($resurse_proto_id, $distance);
+        $this->result = Line::getPrice($resource_proto_id, $distance);
         return $this->_r();
     }
     
@@ -1812,10 +1812,10 @@ class JsonController extends MyController {
         return $this->_rOk();
     }
     
-    public function actionSaveResurseCost($resurse_id, $cost, $type)
+    public function actionSaveResourceCost($resource_id, $cost, $type)
     {
-        if (intval($resurse_id) <= 0) {
-            return $this->_r("Invalid resurse ID");
+        if (intval($resource_id) <= 0) {
+            return $this->_r("Invalid resource ID");
         }
         
         if (floatval($cost) <= 0) {
@@ -1826,32 +1826,32 @@ class JsonController extends MyController {
             return $this->_r("Invalid type");
         }
         
-        $resurse = Resurse::findByPk($resurse_id);
-        if (is_null($resurse)) {
-            return $this->_r("Resurse not found");
+        $resource = Resource::findByPk($resource_id);
+        if (is_null($resource)) {
+            return $this->_r("Resource not found");
         }
         
-        if ($resurse->place->object->getPlaceType() !== Place::TYPE_FACTORY || $resurse->place->object->manager_uid !== $this->viewer_id) {
+        if ($resource->place->object->getPlaceType() !== Place::TYPE_FACTORY || $resource->place->object->manager_uid !== $this->viewer_id) {
             return $this->_r("Not allowed");
         }
         
         $params = [
-            'resurse_id' => $resurse->id,
+            'resource_id' => $resource->id,
             'holding_id' => null,
             'state_id' => null
         ];
         switch (intval($type)) {
             case 2:
-                $params['state_id'] = $resurse->getLocatedStateId();
+                $params['state_id'] = $resource->getLocatedStateId();
                 break;
             case 3:
-                $params['holding_id'] = $resurse->place->object->holding_id;
+                $params['holding_id'] = $resource->place->object->holding_id;
                 break;
         }
         
         $newparams = ['cost' => $cost];
         
-        $resCost = ResurseCost::findOrCreate($params, true, $newparams, $newparams);
+        $resCost = ResourceCost::findOrCreate($params, true, $newparams, $newparams);
         
         if ($resCost && $resCost->id) {
             return $this->_rOk();
@@ -1861,18 +1861,18 @@ class JsonController extends MyController {
         
     }
     
-    public function actionNewDealingResurseSelling($resurse_cost_id, $count, $unnp)
+    public function actionNewDealingResourceSelling($resource_cost_id, $count, $unnp)
     {
-        if (intval($resurse_cost_id) <= 0) {
-            return $this->_r("Invalid resurse cost ID");
+        if (intval($resource_cost_id) <= 0) {
+            return $this->_r("Invalid resource cost ID");
         }
         if (intval($unnp) <= 0) {
             return $this->_r("Invalid UNNP");
         }
         
-        $resCost = ResurseCost::findByPk($resurse_cost_id);
+        $resCost = ResourceCost::findByPk($resource_cost_id);
         if (is_null($resCost)) {
-            return $this->_r("Resurse cost not found");
+            return $this->_r("Resource cost not found");
         }
         
         $viewerUnnp = Unnp::findByPk($unnp);
@@ -1898,12 +1898,12 @@ class JsonController extends MyController {
         }
         
         $count = floatval($count);
-        if ($count <= 0 || $count > $resCost->resurse->count) {
-            return $this->_r("Вы не можете купить меньше 1 и больше {$resCost->resurse->count}");
+        if ($count <= 0 || $count > $resCost->resource->count) {
+            return $this->_r("Вы не можете купить меньше 1 и больше {$resCost->resource->count}");
         }
         
         $sum = $count * $resCost->cost;        
-        $transferCost = round($resCost->resurse->place->object->region->calcDist($viewer->region)*Region::TRANSFER_COST);
+        $transferCost = round($resCost->resource->place->object->region->calcDist($viewer->region)*Region::TRANSFER_COST);
         $sum += $transferCost;
         
         if ($sum > $viewer->getBalance()) {
@@ -1912,14 +1912,14 @@ class JsonController extends MyController {
         
         $dealing = new Dealing([
             'proto_id' => 4,
-            'from_unnp' => $resCost->resurse->place->object->unnp,
+            'from_unnp' => $resCost->resource->place->object->unnp,
             'to_unnp' => $viewer->unnp,
             'sum' => -1*$sum,
             'items' => json_encode([[
-                'type' => 'resurse',
+                'type' => 'resource',
                 'count' => $count,
-                'quality' => $resCost->resurse->quality,
-                'proto_id' => $resCost->resurse->proto_id
+                'quality' => $resCost->resource->quality,
+                'proto_id' => $resCost->resource->proto_id
             ]])
         ]);
         $dealing->accept();
@@ -1928,10 +1928,10 @@ class JsonController extends MyController {
         
     }
 
-    public function actionSaveAutobuySettings($resurse_id, $autobuy, $cost, $quality, $type)
+    public function actionSaveAutobuySettings($resource_id, $autobuy, $cost, $quality, $type)
     {
-        if (intval($resurse_id) <= 0) {
-            return $this->_r("Invalid resurse ID");
+        if (intval($resource_id) <= 0) {
+            return $this->_r("Invalid resource ID");
         }
         
         $autobuy = !!$autobuy;
@@ -1951,21 +1951,21 @@ class JsonController extends MyController {
             }
         }
         
-        $resurse = Resurse::findByPk($resurse_id);
-        if (is_null($resurse)) {
-            return $this->_r("Resurse not found");
+        $resource = Resource::findByPk($resource_id);
+        if (is_null($resource)) {
+            return $this->_r("Resource not found");
         }
 
-        if ($resurse->place->object->getPlaceType() !== Place::TYPE_FACTORY || $resurse->place->object->manager_uid !== $this->viewer_id) {
+        if ($resource->place->object->getPlaceType() !== Place::TYPE_FACTORY || $resource->place->object->manager_uid !== $this->viewer_id) {
             return $this->_r("Not allowed");
         }
         $settings = FactoryAutobuySettings::findOrCreate([
-            'factory_id' => $resurse->place->object->id,
-            'resurse_proto_id' => $resurse->proto_id                
+            'factory_id' => $resource->place->object->id,
+            'resource_proto_id' => $resource->proto_id                
         ],false,[
             'max_cost' => $cost,
             'min_quality' => $quality,
-            'count' => $resurse->place->object->kitSize($resurse->proto_id),
+            'count' => $resource->place->object->kitSize($resource->proto_id),
             'holding_id' => null,
             'state_id' => null
         ],false);
@@ -1973,10 +1973,10 @@ class JsonController extends MyController {
         if ($autobuy) {
             switch (intval($type)) {
                 case 2:
-                    $settings->state_id = $resurse->getLocatedStateId();
+                    $settings->state_id = $resource->getLocatedStateId();
                     break;
                 case 3:
-                    $settings->holding_id = $resurse->place->object->holding_id;
+                    $settings->holding_id = $resource->place->object->holding_id;
                     break;
             }
             $settings->save();

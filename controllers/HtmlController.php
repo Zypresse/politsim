@@ -8,7 +8,7 @@ use Yii,
     app\models\Dealing,
     app\models\Org,
     app\models\Region,
-    app\models\resurses\proto\ResurseProto,
+    app\models\resources\proto\ResourceProto,
     app\models\Party,
     app\models\State,
     app\models\Ideology,
@@ -115,12 +115,12 @@ class HtmlController extends MyController
         return $this->render("map-population", ['regions' => $regions]);
     }
 
-    public function actionMapResurses()
+    public function actionMapResources()
     {
         $regions  = Region::find()->all();
-        $resurses = ResurseProto::find()->where(['level' => 0])->all();
+        $resources = ResourceProto::find()->where(['level' => 0])->all();
 
-        return $this->render("map-resurses", ['regions' => $regions, 'resurses' => $resurses]);
+        return $this->render("map-resources", ['regions' => $regions, 'resources' => $resources]);
     }
 
     public function actionChartPeoples()
@@ -369,26 +369,26 @@ class HtmlController extends MyController
     public function actionMarket()
     {
         $statisticsOilWorldMining = StatisticsMining::find()->where([
-            'resurse_proto_id' => 1,
+            'resource_proto_id' => 1,
             'holding_id' => null,
             'state_id' => null,
             'region_id' => null,
         ])->orderBy('timestamp DESC')->limit(5)->all();
         
         $statisticsNaturalGasWorldMining = StatisticsMining::find()->where([
-            'resurse_proto_id' => 2,
+            'resource_proto_id' => 2,
             'holding_id' => null,
             'state_id' => null,
             'region_id' => null,
         ])->orderBy('timestamp DESC')->limit(5)->all();
         
         $statisticsOilWorldCosts = StatisticsCosts::find()->where([
-            'resurse_proto_id' => 1,
+            'resource_proto_id' => 1,
             'state_id' => null,
         ])->orderBy('timestamp DESC')->limit(5)->all();
         
         $statisticsNaturalGasWorldCosts = StatisticsCosts::find()->where([
-            'resurse_proto_id' => 2,
+            'resource_proto_id' => 2,
             'state_id' => null,
         ])->orderBy('timestamp DESC')->limit(5)->all();
         
@@ -423,11 +423,11 @@ class HtmlController extends MyController
         ]);
     }
     
-    public function actionMarketResurses()
+    public function actionMarketResources()
     {
-        $prototypes = ResurseProto::find()->all();
+        $prototypes = ResourceProto::find()->all();
         
-        return $this->render('market/resurses', [
+        return $this->render('market/resources', [
             'prototypes' => $prototypes,
             'user' => $this->getUser()
         ]);

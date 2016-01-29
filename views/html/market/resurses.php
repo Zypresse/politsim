@@ -5,7 +5,7 @@ use yii\grid\GridView,
     yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $prototypes app\models\resurses\proto\ResurseProto[] */
+/* @var $prototypes app\models\resources\proto\ResourceProto[] */
 /* @var $user app\models\User */
 
 $unnps = [];
@@ -18,57 +18,57 @@ $unnps = [];
                 <label for="#market-change-unnp-select" >Действовать от имени: </label>
                 <select id="market-change-unnp-select" >
                     <option disabled value="<?= $user->unnp ?>">Физическое лицо</option>
-                    <? if ($user->post && $user->post->org && $user->post->org->isExecutive()): ?>
+                    <?php if ($user->post && $user->post->org && $user->post->org->isExecutive()): ?>
                         <option disabled value="<?= $user->post->unnp ?>"><?= $user->post->ministry_name ? $user->post->ministry_name : $user->post->name . ' (' . $user->post->org->name . ')' ?></option>
-                    <? endif ?>
-                    <? if ($user->isOrgLeader()): ?>
+                    <?php endif ?>
+                    <?php if ($user->isOrgLeader()): ?>
                         <option disabled value="<?= $user->post->org->unnp ?>"><?= $user->post->org->name ?></option>
-                    <? endif ?>
-                    <? if ($user->isStateLeader()): ?>
+                    <?php endif ?>
+                    <?php if ($user->isStateLeader()): ?>
                         <option disabled value="<?= $user->state->unnp ?>"><?= $user->state->name ?></option>
-                    <? endif ?>
-                    <? /* if ($user->isRegionLeader()): ?>
+                    <?php endif ?>
+                    <?php /* if ($user->isRegionLeader()): ?>
                       <option disabled value="<?=$user->region->unnp?>"><?=$user->region->name?></option>
-                      <? endif */ ?>
-                    <? foreach ($user->holdings as $holding): ?>
+                    <?php endif */ ?>
+                    <?php foreach ($user->holdings as $holding): ?>
                         <option disabled value="<?= $holding->unnp ?>"><?= $holding->name ?></option>
-                    <? endforeach ?>
-                    <? foreach ($user->factories as $factory): $unnps[] = $factory->unnp; ?>
+                    <?php endforeach ?>
+                    <?php foreach ($user->factories as $factory): $unnps[] = $factory->unnp; ?>
                         <option value="<?= $factory->unnp ?>"><?= $factory->name ?></option>
-                    <? endforeach ?>
+                    <?php endforeach ?>
                 </select>
             </div>
             <h3>Рынок ресурсов</h3>
-            <? foreach ($prototypes as $i => $proto): ?>
-                <button class="btn btn-xs btn-default <? if ($i === 0) { ?>btn-lightblue<? } ?> resurses_market_btn" data-id="<?= $proto->id ?>" ><?= $proto->getHtmlName() ?></button>
-            <? endforeach ?>
+            <?php foreach ($prototypes as $i => $proto): ?>
+                <button class="btn btn-xs btn-default <? if ($i === 0) { ?>btn-lightblue<? } ?> resources_market_btn" data-id="<?= $proto->id ?>" ><?= $proto->getHtmlName() ?></button>
+            <?php endforeach ?>
         </div>
     </div>
     <div class="row" style="margin-top:10px">
-        <div class="col-md-12" id="resurses-market-body">
+        <div class="col-md-12" id="resources-market-body">
 
         </div>
     </div>
 </div>
 <script type="text/javascript">
     $(function () {
-        $('.resurses_market_btn').click(function () {
-            $('.resurses_market_btn').removeClass('btn-lightblue');
+        $('.resources_market_btn').click(function () {
+            $('.resources_market_btn').removeClass('btn-lightblue');
             $(this).addClass('btn-lightblue');
-            load_resurses_market($(this).data('id'));
-        })
+            load_resources_market($(this).data('id'));
+        });
 
         $('#market-change-unnp-select').change(function () {
-            var id = $('.resurses_market_btn.btn-lightblue').data('id');
-            load_resurses_market(id);
+            var id = $('.resources_market_btn.btn-lightblue').data('id');
+            load_resources_market(id);
         });
-        load_resurses_market(1);
-    })
+        load_resources_market(1);
+    });
 
-    function load_resurses_market(id) {
-        $('#resurses-market-body').empty();
-        get_html('market-resurses', {'resurse_proto_id': id, 'unnp': $('#market-change-unnp-select').val()}, function (data) {
-            $('#resurses-market-body').html(data);
-        })
+    function load_resources_market(id) {
+        $('#resources-market-body').empty();
+        get_html('market-resources', {'resource_proto_id': id, 'unnp': $('#market-change-unnp-select').val()}, function (data) {
+            $('#resources-market-body').html(data);
+        });
     }
 </script>

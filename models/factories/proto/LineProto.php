@@ -3,13 +3,13 @@
 namespace app\models\factories\proto;
 
 use app\models\objects\proto\UnmovableObjectProto,
-    app\models\resurses\Resurse;
+    app\models\resources\Resource;
 
 /**
  * This is the model class for table "lines_prototypes".
  *
  * @property integer $id
- * @property integer $resurse_proto_id
+ * @property integer $resource_proto_id
  * @property double $build_cost
  * @property string $class_name
  */
@@ -34,7 +34,7 @@ class LineProto extends UnmovableObjectProto
         
     public function getProto()
     {
-        return $this->hasOne(Resurse::className(), array('id' => 'resurse_proto_id'));
+        return $this->hasOne(Resource::className(), array('id' => 'resource_proto_id'));
     }
 
     /**
@@ -51,8 +51,8 @@ class LineProto extends UnmovableObjectProto
     public function rules()
     {
         return [
-            [['resurse_proto_id', 'build_cost', 'class_name'], 'required'],
-            [['resurse_proto_id'], 'integer'],
+            [['resource_proto_id', 'build_cost', 'class_name'], 'required'],
+            [['resource_proto_id'], 'integer'],
             [['build_cost'], 'number'],
             [['class_name'], 'string'],
             [['class_name'], 'unique']
@@ -66,7 +66,7 @@ class LineProto extends UnmovableObjectProto
     {
         return [
             'id' => 'ID',
-            'resurse_proto_id' => 'Resurse Proto ID',
+            'resource_proto_id' => 'Resource Proto ID',
             'class_name' => 'Class Name', 
         ];
     }

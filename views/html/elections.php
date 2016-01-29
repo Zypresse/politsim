@@ -1,4 +1,4 @@
-<?
+<?php
 
 use app\components\MyHtmlHelper;
 

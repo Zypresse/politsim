@@ -1,14 +1,14 @@
 <?php
 
-namespace app\models\resurses;
+namespace app\models\resources;
 
 use app\models\objects\MovableObject,
-    app\models\resurses\ResurseCost,
-    app\models\resurses\proto\ResurseProto,
+    app\models\resources\ResourceCost,
+    app\models\resources\proto\ResourceProto,
     app\models\Place;
 
 /**
- * This is the model class for table "resurses".
+ * This is the model class for table "resources".
  *
  * @property integer $id
  * @property integer $proto_id
@@ -16,18 +16,18 @@ use app\models\objects\MovableObject,
  * @property double $count
  * @property integer $quality from 1 to 10
  *
- * @property ResurseProto $proto
- * @property ResurseCost[] $costs
+ * @property ResourceProto $proto
+ * @property ResourceCost[] $costs
  * @property Place $place
  */
-class Resurse extends MovableObject
+class Resource extends MovableObject
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'resurses';
+        return 'resources';
     }
 
     /**
@@ -58,12 +58,12 @@ class Resurse extends MovableObject
     
     public function getProto()
     {
-        return $this->hasOne(ResurseProto::className(), array('id' => 'proto_id'));
+        return $this->hasOne(ResourceProto::className(), array('id' => 'proto_id'));
     }
     
     public function getCosts()
     {
-        return $this->hasMany(ResurseCost::className(), array('resurse_id' => 'id'));
+        return $this->hasMany(ResourceCost::className(), array('resource_id' => 'id'));
     }
     
     public function getLocatedStateId() {

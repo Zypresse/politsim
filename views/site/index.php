@@ -151,7 +151,7 @@ $this->title = 'Political Simulator';
                     <span>Партия</span>
                 </a>
             </li>
-            <li class="dark-nav map-politic_page map-resurses_page map-population_page">
+            <li class="dark-nav map-politic_page map-resources_page map-population_page">
                 <span class="glow"></span>
                 <a href="#AsEWSFDSS" class="accordion-toggle" data-toggle="collapse">
                     <?= MyHtmlHelper::icon('lg-icons/globe') ?>
@@ -170,7 +170,7 @@ $this->title = 'Political Simulator';
                         </a>
                     </li>
                     <li>
-                        <a href="#" onclick="load_page('map-resurses')">
+                        <a href="#" onclick="load_page('map-resources')">
                             <i class="icon-money"></i> Экономическая карта
                         </a>
                     </li>
@@ -219,7 +219,7 @@ $this->title = 'Political Simulator';
                     <li><a onclick="load_page('tv')" href="#">Телевиденье</a></li>-->
                 </ul>
             </li>
-            <li class="dark-nav holding-info_page my-buisness_page market_page market-factories_page market-forex_page market-stocks_page market-resurses_page factory-info_page">
+            <li class="dark-nav holding-info_page my-buisness_page market_page market-factories_page market-forex_page market-stocks_page market-resources_page factory-info_page">
                 <span class="glow"></span>
                 <a href="#aaasq2sdad" class="accordion-toggle" data-toggle="collapse">
                     <?= MyHtmlHelper::icon('lg-icons/business') ?>

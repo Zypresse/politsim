@@ -2,21 +2,21 @@
 
 namespace app\models\statistics;
 
-use app\models\resurses\proto\ResurseProto,
-    app\models\resurses\ResurseCost,
-    app\models\resurses\Resurse,
+use app\models\resources\proto\ResourceProto,
+    app\models\resources\ResourceCost,
+    app\models\resources\Resource,
     app\models\State;
 
 /**
  * This is the model class for table "statistics_costs".
  *
  * @property integer $id
- * @property integer $resurse_proto_id
+ * @property integer $resource_proto_id
  * @property integer $timestamp
  * @property double $value
  * @property integer $state_id
  * 
- * @property ResurseProto $resurseProto
+ * @property ResourceProto $resourceProto
  * @property State $state
  */
 class StatisticsCosts extends Statistics
@@ -35,8 +35,8 @@ class StatisticsCosts extends Statistics
     public function rules()
     {
         return [
-            [['resurse_proto_id', 'value'], 'required'],
-            [['resurse_proto_id', 'timestamp', 'state_id'], 'integer'],
+            [['resource_proto_id', 'value'], 'required'],
+            [['resource_proto_id', 'timestamp', 'state_id'], 'integer'],
             [['value'], 'number']
         ];
     }
@@ -48,16 +48,16 @@ class StatisticsCosts extends Statistics
     {
         return [
             'id' => 'ID',
-            'resurse_proto_id' => 'Resurse Proto ID',
+            'resource_proto_id' => 'Resource Proto ID',
             'timestamp' => 'Timestamp',
             'value' => 'Value',
             'state_id' => 'State ID',
         ];
     }
     
-    public function getResurseProto()
+    public function getResourceProto()
     {
-        return $this->hasOne(ResurseProto::className(), array('id' => 'resurse_proto_id'));
+        return $this->hasOne(ResourceProto::className(), array('id' => 'resource_proto_id'));
     }
         
     public function getState()
@@ -67,14 +67,14 @@ class StatisticsCosts extends Statistics
     
     public function updateValue()
     {
-        $cost = ResurseCost::find()
-            ->join('LEFT JOIN', Resurse::tableName(), Resurse::tableName().'.id = '.ResurseCost::tableName().'.resurse_id')
-            ->where([Resurse::tableName().'.proto_id'=>$this->resurse_proto_id])
-            ->andWhere(['>',Resurse::tableName().'.count',0])
+        $cost = ResourceCost::find()
+            ->join('LEFT JOIN', Resource::tableName(), Resource::tableName().'.id = '.ResourceCost::tableName().'.resource_id')
+            ->where([Resource::tableName().'.proto_id'=>$this->resource_proto_id])
+            ->andWhere(['>',Resource::tableName().'.count',0])
             ->andWhere(['holding_id'=>null])
             ->andWhere(['state_id'=>null])
-            ->orderBy(ResurseCost::tableName().'.cost ASC, '.Resurse::tableName().'.quality DESC')
-            ->groupBy(Resurse::tableName().'.place_id')
+            ->orderBy(ResourceCost::tableName().'.cost ASC, '.Resource::tableName().'.quality DESC')
+            ->groupBy(Resource::tableName().'.place_id')
             ->one();
         if (is_null($cost)) {
             $this->value = 0;

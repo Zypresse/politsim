@@ -6,7 +6,7 @@ use app\components\MyModel,
     app\models\factories\Factory,
     app\models\Population,
     app\models\Region,
-    app\models\resurses\Resurse,
+    app\models\resources\Resource,
     app\models\factories\Line,
     app\models\objects\canCollectObjects,
     app\components\TaxPayer;
@@ -73,7 +73,7 @@ class Place extends MyModel
             case static::TYPE_LINE:
                 return $this->hasOne(Line::className(), ['id' => 'object_id']);
             case static::TYPE_RESURSE:
-                return $this->hasOne(Resurse::className(), ['id' => 'object_id']);
+                return $this->hasOne(Resource::className(), ['id' => 'object_id']);
             default:
                 return null;
         }

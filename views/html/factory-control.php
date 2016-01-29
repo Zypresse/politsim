@@ -1,7 +1,7 @@
 <?php
 /* @var $factory app\models\factories\Factory */
 use app\components\MyHtmlHelper,
-    app\models\resurses\proto\ResurseProto;
+    app\models\resources\proto\ResourceProto;
 ?>
 <div class="container">
     <div class="row">
@@ -47,8 +47,8 @@ use app\components\MyHtmlHelper,
                                     <?php if (count($items)): ?>
                                         <i class="icon-<?=$isSender?"minus":"plus"?>"></i>
                                         <?php foreach ($items as $item): ?>
-                                        <?php if ($item->type === 'resurse'): ?>
-                                        <?=$item->count?> <?=ResurseProto::findByPk($item->proto_id)->icon?>
+                                        <?php if ($item->type === 'resource'): ?>
+                                        <?=$item->count?> <?=ResourceProto::findByPk($item->proto_id)->icon?>
                                         <?php endif ?>
                                         <?php endforeach ?>
                                     <?php else: ?>
@@ -80,7 +80,7 @@ use app\components\MyHtmlHelper,
                 </div>
                 <div class="box-content">
                     <table class="table table-normal">
-                        <?php if (count($factory->resurseCosts)): ?>
+                        <?php if (count($factory->resourceCosts)): ?>
                         <thead>
                             <tr>
                               <td>Ресурс</td>
@@ -89,9 +89,9 @@ use app\components\MyHtmlHelper,
                             </tr>
                         </thead>
                         <tbody>
-                        <?php foreach ($factory->resurseCosts as $cost): ?>
+                        <?php foreach ($factory->resourceCosts as $cost): ?>
                             <tr>
-                                <td><?= $cost->resurse->proto->icon ?> <?= $cost->resurse->proto->name ?></td>
+                                <td><?= $cost->resource->proto->icon ?> <?= $cost->resource->proto->name ?></td>
                                 <td><?= $cost->getHtmlType()?></td>
                                 <td><?= number_format($cost->cost, 2, '.', ' ') ?> <?= MyHtmlHelper::icon("money") ?></td>
                             </tr>
@@ -116,7 +116,7 @@ use app\components\MyHtmlHelper,
                 <?php if (count($factory->autobuySettings)): ?>
                 <?php foreach ($factory->autobuySettings as $settings): ?>
                     <p>
-                        Закупка <?=number_format($settings->count,0,'',' ')?> <?=$settings->resurseProto->icon?> в час
+                        Закупка <?=number_format($settings->count,0,'',' ')?> <?=$settings->resourceProto->icon?> в час
                         по цене не выше <?=MyHtmlHelper::moneyFormat($settings->max_cost)?>
                         качества не ниже <?=MyHtmlHelper::oneTen2Stars($settings->min_quality)?>
                         <? if ($settings->state_id): ?>
@@ -149,10 +149,10 @@ use app\components\MyHtmlHelper,
                             </tr>
                         </thead>
                         <tbody>
-                        <?php foreach ($factory->proto->resurses as $rpk): if ($rpk->resurseProto->isStorable()): ?>
+                        <?php foreach ($factory->proto->resources as $rpk): if ($rpk->resourceProto->isStorable()): ?>
                             <tr>
-                                <td><?= $rpk->resurseProto->icon ?> <?= $rpk->resurseProto->name ?></td>
-                                <td><?= number_format($factory->storageSize($rpk->resurseProto->id), 0, '', ' ') ?> <?= $rpk->resurseProto->icon ?></td>
+                                <td><?= $rpk->resourceProto->icon ?> <?= $rpk->resourceProto->name ?></td>
+                                <td><?= number_format($factory->storageSize($rpk->resourceProto->id), 0, '', ' ') ?> <?= $rpk->resourceProto->icon ?></td>
                             </tr>
                         <?php endif;
                         endforeach; ?>
@@ -205,8 +205,8 @@ use app\components\MyHtmlHelper,
                         <tbody>
                         <?php foreach ($factory->proto->import as $kit): ?>
                             <tr>
-                                <td><?= $kit->resurseProto->name ?> </td>
-                                <td><?= number_format($kit->count*$factory->size, 0, '', ' ') ?> <?= $kit->resurseProto->icon ?></td>
+                                <td><?= $kit->resourceProto->name ?> </td>
+                                <td><?= number_format($kit->count*$factory->size, 0, '', ' ') ?> <?= $kit->resourceProto->icon ?></td>
                             </tr>
                         <?php endforeach ?>
                         </tbody>
@@ -220,8 +220,8 @@ use app\components\MyHtmlHelper,
                         <tbody>
                         <?php foreach ($factory->proto->export as $kit): ?>
                             <tr>
-                                <td><?= $kit->resurseProto->name ?> </td>
-                                <td><?= number_format($kit->count*$factory->size, 0, '', ' ') ?> <?= $kit->resurseProto->icon ?></td>
+                                <td><?= $kit->resourceProto->name ?> </td>
+                                <td><?= number_format($kit->count*$factory->size, 0, '', ' ') ?> <?= $kit->resourceProto->icon ?></td>
                             </tr>
                         <?php endforeach ?>
                         </tbody>
@@ -280,8 +280,8 @@ use app\components\MyHtmlHelper,
                         Торговля <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu">
-                        <li><a href="#" onclick="$('#resurses_selling_first').modal();" >Продажа ресурсов</a></li>
-                        <li><a href="#" onclick="$('#resurses_autobuy_first').modal();" >Автозакупка ресурсов</a></li>
+                        <li><a href="#" onclick="$('#resources_selling_first').modal();" >Продажа ресурсов</a></li>
+                        <li><a href="#" onclick="$('#resources_autobuy_first').modal();" >Автозакупка ресурсов</a></li>
                     </ul>
                 </div>
                 <?php if ($factory->status === app\models\factories\Factory::STATUS_STOPPED): ?>
@@ -296,79 +296,79 @@ use app\components\MyHtmlHelper,
 
 
 
-<div style="display:none" class="modal fade" id="resurses_selling_first" tabindex="-1" role="dialog" aria-labelledby="resurses_selling_first_label" aria-hidden="true">
+<div style="display:none" class="modal fade" id="resources_selling_first" tabindex="-1" role="dialog" aria-labelledby="resources_selling_first_label" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h3 id="resurses_selling_first_label">Выставить на продажу</h3>
+                <h3 id="resources_selling_first_label">Выставить на продажу</h3>
             </div>
-            <div id="resurses_selling_first_body" class="modal-body">
+            <div id="resources_selling_first_body" class="modal-body">
                 <h3>Ресурсы:</h3>
-                <select id="resurse_proto_id_for_selling">
+                <select id="resource_proto_id_for_selling">
                 <?php foreach ($factory->proto->export as $kit): ?>
-                    <option value="<?=$kit->resurse_proto_id?>"><?= $kit->resurseProto->name ?></option>
+                    <option value="<?=$kit->resource_proto_id?>"><?= $kit->resourceProto->name ?></option>
                 <?php endforeach ?>
                 </select>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-green" onclick="load_modal('manager-factory-set-resurse-selling',{'factory_id':<?=$factory->id?>,'resurse_proto_id':$('#resurse_proto_id_for_selling').val()},'resurses_selling_second','resurses_selling_second_body')">Продолжить</button>
+                <button class="btn btn-green" onclick="load_modal('manager-factory-set-resource-selling',{'factory_id':<?=$factory->id?>,'resource_proto_id':$('#resource_proto_id_for_selling').val()},'resources_selling_second','resources_selling_second_body')">Продолжить</button>
                 <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
             </div>
         </div></div>
 </div>
 
-<div style="display:none" class="modal fade" id="resurses_selling_second" tabindex="-1" role="dialog" aria-labelledby="resurses_selling_second_label" aria-hidden="true">
+<div style="display:none" class="modal fade" id="resources_selling_second" tabindex="-1" role="dialog" aria-labelledby="resources_selling_second_label" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h3 id="resurses_selling_second_label">Выставить на продажу</h3>
+                <h3 id="resources_selling_second_label">Выставить на продажу</h3>
             </div>
-            <div id="resurses_selling_second_body" class="modal-body">
+            <div id="resources_selling_second_body" class="modal-body">
                 
             </div>
             <div class="modal-footer">
-                <button class="btn btn-green" onclick="json_request('save-resurse-cost',{'resurse_id':$('#resurse_for_selling_id').val(),'cost':$('#resurse_for_selling_cost').val(),'type':$('#form_resurse_selling_cost input[name=resurse_for_selling_type]:checked').val()})">Сохранить</button>
+                <button class="btn btn-green" onclick="json_request('save-resource-cost',{'resource_id':$('#resource_for_selling_id').val(),'cost':$('#resource_for_selling_cost').val(),'type':$('#form_resource_selling_cost input[name=resource_for_selling_type]:checked').val()})">Сохранить</button>
                 <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
             </div>
         </div></div>
 </div>
 
-<div style="display:none" class="modal fade" id="resurses_autobuy_first" tabindex="-1" role="dialog" aria-labelledby="resurses_autobuy_first_label" aria-hidden="true">
+<div style="display:none" class="modal fade" id="resources_autobuy_first" tabindex="-1" role="dialog" aria-labelledby="resources_autobuy_first_label" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h3 id="resurses_autobuy_first_label">Установка автозакупки</h3>
+                <h3 id="resources_autobuy_first_label">Установка автозакупки</h3>
             </div>
-            <div id="resurses_autobuy_first_body" class="modal-body">
+            <div id="resources_autobuy_first_body" class="modal-body">
                 <h3>Ресурсы:</h3>
-                <select id="resurse_proto_id_for_autobuy">
+                <select id="resource_proto_id_for_autobuy">
                 <?php foreach ($factory->proto->import as $kit): ?>
-                    <option value="<?=$kit->resurse_proto_id?>"><?= $kit->resurseProto->name ?></option>
+                    <option value="<?=$kit->resource_proto_id?>"><?= $kit->resourceProto->name ?></option>
                 <?php endforeach ?>
                 </select>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-green" onclick="load_modal('manager-factory-set-resurse-autobuy',{'factory_id':<?=$factory->id?>,'resurse_proto_id':$('#resurse_proto_id_for_autobuy').val()},'resurses_autobuy_second','resurses_autobuy_second_body')">Продолжить</button>
+                <button class="btn btn-green" onclick="load_modal('manager-factory-set-resource-autobuy',{'factory_id':<?=$factory->id?>,'resource_proto_id':$('#resource_proto_id_for_autobuy').val()},'resources_autobuy_second','resources_autobuy_second_body')">Продолжить</button>
                 <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
             </div>
         </div></div>
 </div>
 
-<div style="display:none" class="modal fade" id="resurses_autobuy_second" tabindex="-1" role="dialog" aria-labelledby="resurses_autobuy_second_label" aria-hidden="true">
+<div style="display:none" class="modal fade" id="resources_autobuy_second" tabindex="-1" role="dialog" aria-labelledby="resources_autobuy_second_label" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h3 id="resurses_autobuy_second_label">Установка автозакупки</h3>
+                <h3 id="resources_autobuy_second_label">Установка автозакупки</h3>
             </div>
-            <div id="resurses_autobuy_second_body" class="modal-body">
+            <div id="resources_autobuy_second_body" class="modal-body">
                 
             </div>
             <div class="modal-footer">
-                <button class="btn btn-green" onclick="json_request('save-autobuy-settings',{'resurse_id':$('#resurse_for_autobuy_id').val(),'autobuy':$('#resurse_autobuy_on').is(':checked')?1:0,'cost':$('#resurse_for_autobuy_cost').val(),'quality':$('#resurse_for_autobuy_quality').val(),'type':$('#form_resurse_autobuy_settings input[name=resurse_for_autobuy_type]:checked').val()})">Сохранить</button>
+                <button class="btn btn-green" onclick="json_request('save-autobuy-settings',{'resource_id':$('#resource_for_autobuy_id').val(),'autobuy':$('#resource_autobuy_on').is(':checked')?1:0,'cost':$('#resource_for_autobuy_cost').val(),'quality':$('#resource_for_autobuy_quality').val(),'type':$('#form_resource_autobuy_settings input[name=resource_for_autobuy_type]:checked').val()})">Сохранить</button>
                 <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
             </div>
         </div></div>

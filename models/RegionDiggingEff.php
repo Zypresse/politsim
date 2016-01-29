@@ -4,19 +4,19 @@ namespace app\models;
 
 use app\components\MyModel,
     app\models\Region,
-    app\models\resurses\proto\ResurseProto;
+    app\models\resources\proto\ResourceProto;
 
 /**
  * This is the model class for table "regions_digging_effectiveness".
  *
  * @property integer $id
  * @property integer $region_id
- * @property integer $resurse_proto_id
+ * @property integer $resource_proto_id
  * @property integer $group_id
  * @property double $k
  * 
  * @property Region $region
- * @property resurses\proto\ResurseProto $resurseProto
+ * @property resources\proto\ResourceProto $resourceProto
  */
 class RegionDiggingEff extends MyModel
 {
@@ -34,10 +34,10 @@ class RegionDiggingEff extends MyModel
     public function rules()
     {
         return [
-            [['region_id', 'resurse_proto_id', 'group_id', 'k'], 'required'],
-            [['region_id', 'resurse_proto_id', 'group_id'], 'integer'],
+            [['region_id', 'resource_proto_id', 'group_id', 'k'], 'required'],
+            [['region_id', 'resource_proto_id', 'group_id'], 'integer'],
             [['k'], 'number'], 
-            [['region_id', 'resurse_proto_id'], 'unique', 'targetAttribute' => ['region_id', 'resurse_proto_id'], 'message' => 'The combination of Region ID and Resurse Proto ID has already been taken.']
+            [['region_id', 'resource_proto_id'], 'unique', 'targetAttribute' => ['region_id', 'resource_proto_id'], 'message' => 'The combination of Region ID and Resource Proto ID has already been taken.']
         ];
     }
 
@@ -49,7 +49,7 @@ class RegionDiggingEff extends MyModel
         return [
             'id' => 'ID',
             'region_id' => 'Region ID',
-            'resurse_proto_id' => 'Resurse Proto ID',
+            'resource_proto_id' => 'Resource Proto ID',
             'group_id' => 'Group ID',
             'k' => 'K',
         ];
@@ -60,9 +60,9 @@ class RegionDiggingEff extends MyModel
         return $this->hasOne(Region::className(), array('id' => 'region_id'));
     }
     
-    public function getResurseProto()
+    public function getResourceProto()
     {
-        return $this->hasOne(ResurseProto::className(), array('id' => 'resurse_proto_id'));
+        return $this->hasOne(ResourceProto::className(), array('id' => 'resource_proto_id'));
     }
     
 }

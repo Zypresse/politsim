@@ -4,18 +4,18 @@ namespace app\models\factories\proto;
 
 use app\components\MyModel,
     app\models\factories\proto\FactoryProto,
-    app\models\resurses\proto\ResurseProto;
+    app\models\resources\proto\ResourceProto;
 
 /**
  * Набор ресурсов для работы завода. Таблица "factories_prototypes_kits".
  *
  * @property integer $id
- * @property integer $resurse_proto_id
+ * @property integer $resource_proto_id
  * @property integer $count
  * @property integer $direction Направление: 1 - потребляемые, 2 - производимые, 3 - блокируемые
  * @property integer $factory_proto_id
  * 
- * @property ResurseProto $resurseProto
+ * @property ResourceProto $resourceProto
  * @property FactoryProto $proto
  */
 class FactoryProtoKit extends MyModel
@@ -35,8 +35,8 @@ class FactoryProtoKit extends MyModel
     public function rules()
     {
         return [
-            [['resurse_proto_id', 'count', 'direction', 'factory_proto_id'], 'required'],
-            [['resurse_proto_id', 'count', 'direction', 'factory_proto_id'], 'integer']
+            [['resource_proto_id', 'count', 'direction', 'factory_proto_id'], 'required'],
+            [['resource_proto_id', 'count', 'direction', 'factory_proto_id'], 'integer']
         ];
     }
 
@@ -47,16 +47,16 @@ class FactoryProtoKit extends MyModel
     {
         return [
             'id'         => 'ID',
-            'resurse_proto_id' => 'Resurse ID',
+            'resource_proto_id' => 'Resource ID',
             'count'      => 'Count',
             'direction'  => '1 — in, 2 — out, 3 — blocked',
             'factory_proto_id'    => 'Type ID',
         ];
     }
 
-    public function getResurseProto()
+    public function getResourceProto()
     {
-        return $this->hasOne(ResurseProto::className(), array('id' => 'resurse_proto_id'));
+        return $this->hasOne(ResourceProto::className(), array('id' => 'resource_proto_id'));
     }
 
     public function getProto()

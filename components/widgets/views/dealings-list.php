@@ -4,7 +4,7 @@ use app\components\MyHtmlHelper,
     app\models\Dealing,
     app\models\Holding,
     app\models\factories\Factory,
-    app\models\resurses\proto\ResurseProto;
+    app\models\resources\proto\ResourceProto;
         
 
 /* @var $id string */
@@ -44,8 +44,8 @@ use app\components\MyHtmlHelper,
                             $factory = Factory::findByPk($item['factory_id']);
                             echo $factory->getHtmlName();
                         break;
-                        case 'resurse':
-                            $resProto = ResurseProto::findByPk($item['proto_id']);
+                        case 'resource':
+                            $resProto = ResourceProto::findByPk($item['proto_id']);
                             echo $item['count'].' '.MyHtmlHelper::icon($resProto->class_name);
                         break;
                     }

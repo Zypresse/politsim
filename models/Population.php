@@ -12,7 +12,7 @@ use app\components\TaxPayer,
     app\models\Religion,
     app\models\Ideology,
     app\models\factories\Factory,
-    app\models\resurses\ResurseCost;
+    app\models\resources\ResourceCost;
 
 /**
  * Минимальная группа населения. Таблица "population".
@@ -348,31 +348,31 @@ class Population extends MyModel implements TaxPayer {
     
     /**
      * 
-     * @param ResurseCost $resursesCosts
+     * @param ResourceCost $resourcesCosts
      * @param double $maxCount
      * @return double сколько было закуплено
      */
-    public function autobuy($resursesCosts, $maxCount)
+    public function autobuy($resourcesCosts, $maxCount)
     {
         $purchasedFood = 0;
-        foreach ($resursesCosts as $resurseCost) {
-            if ($resurseCost->resurse->count >= $maxCount) {
+        foreach ($resourcesCosts as $resourceCost) {
+            if ($resourceCost->resource->count >= $maxCount) {
                 $buy = $maxCount;
             } else {
-                $buy = $resurseCost->resurse->count;
+                $buy = $resourceCost->resource->count;
             }
-            $cost = $resurseCost->cost*$buy;
+            $cost = $resourceCost->cost*$buy;
             if ($this->getBalance() >= $cost) {
                 $dealing = new Dealing([
                     'proto_id' => 1,
-                    'from_unnp' => $resurseCost->resurse->place->object->unnp,
+                    'from_unnp' => $resourceCost->resource->place->object->unnp,
                     'to_unnp' => $this->unnp,
                     'sum' => -1*$cost,
                     'items' => json_encode([
                         [
-                            'type' => 'resurse',
-                            'proto_id' => $resurseCost->resurse->proto_id,
-                            'quality' => $resurseCost->resurse->quality,
+                            'type' => 'resource',
+                            'proto_id' => $resourceCost->resource->proto_id,
+                            'quality' => $resourceCost->resource->quality,
                             'count' => $buy
                         ]
                     ])

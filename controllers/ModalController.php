@@ -25,9 +25,9 @@ use app\components\MyController,
     app\models\Utr as Unnp,
     app\models\Ideology,
     app\models\factories\Factory,
-    app\models\resurses\Resurse,
-    app\models\resurses\ResurseCost,
-    app\models\resurses\proto\ResurseProto,
+    app\models\resources\Resource,
+    app\models\resources\ResourceCost,
+    app\models\resources\proto\ResourceProto,
     app\models\factories\FactoryAutobuySettings,
     app\models\Place;
 
@@ -303,7 +303,7 @@ class ModalController extends MyController {
         }
     }
 
-    public function actionRegionResurses($code)
+    public function actionRegionResources($code)
     {
         if ($code) {
             $region = Region::findByCode($code);
@@ -311,7 +311,7 @@ class ModalController extends MyController {
                 return $this->_r("Region not found");
             }
 
-            return $this->render("region-resurses", ['region' => $region]);
+            return $this->render("region-resources", ['region' => $region]);
         } else {
             return $this->_r("Invalid code");
         }
@@ -484,13 +484,13 @@ class ModalController extends MyController {
         ]);
     }
     
-    public function actionManagerFactorySetResurseSelling($factory_id, $resurse_proto_id)
+    public function actionManagerFactorySetResourceSelling($factory_id, $resource_proto_id)
     {        
         if (intval($factory_id) <= 0) {
             return $this->_r("Invalid factory ID");
         }
-        if (intval($resurse_proto_id) <= 0) {
-            return $this->_r("Invalid resurse prototype ID");
+        if (intval($resource_proto_id) <= 0) {
+            return $this->_r("Invalid resource prototype ID");
         }
         
         $factory = Factory::findByPk($factory_id);
@@ -502,27 +502,27 @@ class ModalController extends MyController {
             return $this->_r("Not allowed");
         }
         
-        $resurse = $factory->getStorage($resurse_proto_id);
-        if (is_null($resurse)) {
-            return $this->_r("Resurse not found");
+        $resource = $factory->getStorage($resource_proto_id);
+        if (is_null($resource)) {
+            return $this->_r("Resource not found");
         }
         
-        return $this->render('factory-set-resurse-selling',[
+        return $this->render('factory-set-resource-selling',[
             'factory' => $factory,
-            'resurse' => $resurse
+            'resource' => $resource
         ]);
     }
     
-    public function actionMarketResurses($resurse_proto_id, $unnp = false)
+    public function actionMarketResources($resource_proto_id, $unnp = false)
     {
         
-        if (intval($resurse_proto_id) <= 0) {
-            return $this->_r("Invalid resurse prototype ID");
+        if (intval($resource_proto_id) <= 0) {
+            return $this->_r("Invalid resource prototype ID");
         }
         
-        $resProto = ResurseProto::findByPk($resurse_proto_id);
+        $resProto = ResourceProto::findByPk($resource_proto_id);
         if (is_null($resProto)) {
-            return $this->_r("Resurse prototype not found");
+            return $this->_r("Resource prototype not found");
         }
         
         if (intval($unnp) > 0) {
@@ -541,12 +541,12 @@ class ModalController extends MyController {
             }
         }
         
-        $query = ResurseCost::find()
-                ->join('LEFT JOIN', Resurse::tableName(), Resurse::tableName().'.id = '.ResurseCost::tableName().'.resurse_id')
-                ->where([Resurse::tableName().'.proto_id' => $resProto->id]);
+        $query = ResourceCost::find()
+                ->join('LEFT JOIN', Resource::tableName(), Resource::tableName().'.id = '.ResourceCost::tableName().'.resource_id')
+                ->where([Resource::tableName().'.proto_id' => $resProto->id]);
         
         if ($resProto->isStorable()) {
-            $query = $query->andWhere(['>',Resurse::tableName().'.count',0]);
+            $query = $query->andWhere(['>',Resource::tableName().'.count',0]);
         }
         
         if (intval($unnp) > 0) {            
@@ -557,24 +557,24 @@ class ModalController extends MyController {
                     ->andWhere(['state_id'=>null]);
         }
         
-        $costs = $query->with('resurse')
-                ->with('resurse.place')
-                ->orderBy(ResurseCost::tableName().'.cost ASC, '.Resurse::tableName().'.quality DESC')
-                ->groupBy(Resurse::tableName().'.place_id')
+        $costs = $query->with('resource')
+                ->with('resource.place')
+                ->orderBy(ResourceCost::tableName().'.cost ASC, '.Resource::tableName().'.quality DESC')
+                ->groupBy(Resource::tableName().'.place_id')
                 ->all();
         
         // delete not working nonstorables
         if (!$resProto->isStorable()) {
             foreach ($costs as $i => $cost) {
-                /* @var $cost ResurseCost */
-                if ($cost->resurse->place->object->getPlaceType() === Place::TYPE_FACTORY && $cost->resurse->place->object->status !== Factory::STATUS_ACTIVE) {
+                /* @var $cost ResourceCost */
+                if ($cost->resource->place->object->getPlaceType() === Place::TYPE_FACTORY && $cost->resource->place->object->status !== Factory::STATUS_ACTIVE) {
                     unset($costs[$i]);
                 }
             }
             sort($costs);
         }
                             
-        return $this->render('market-resurses',[
+        return $this->render('market-resources',[
             'resProto' => $resProto,
             'costs' => $costs,
             'readOnly' => !(intval($unnp) > 0)
@@ -582,18 +582,18 @@ class ModalController extends MyController {
         
     }
     
-    public function actionResurseCostInfo($id, $unnp)
+    public function actionResourceCostInfo($id, $unnp)
     {
         if (intval($id) <= 0) {
-            return $this->_r("Invalid resurse cost ID");
+            return $this->_r("Invalid resource cost ID");
         }
         if (intval($unnp) <= 0) {
             return $this->_r("Invalid UNNP");
         }
         
-        $resCost = ResurseCost::findByPk($id);
+        $resCost = ResourceCost::findByPk($id);
         if (is_null($resCost)) {
-            return $this->_r("Resurse cost not found");
+            return $this->_r("Resource cost not found");
         }
         
         $viewerUnnp = Unnp::findByPk($unnp);
@@ -610,19 +610,19 @@ class ModalController extends MyController {
             return $this->_r("Not allowed");
         }
         
-        return $this->render('resurse-cost-info',[
+        return $this->render('resource-cost-info',[
             'resCost' => $resCost,
             'viewer' => $viewer
         ]);
     }
         
-    public function actionManagerFactorySetResurseAutobuy($factory_id, $resurse_proto_id)
+    public function actionManagerFactorySetResourceAutobuy($factory_id, $resource_proto_id)
     {        
         if (intval($factory_id) <= 0) {
             return $this->_r("Invalid factory ID");
         }
-        if (intval($resurse_proto_id) <= 0) {
-            return $this->_r("Invalid resurse prototype ID");
+        if (intval($resource_proto_id) <= 0) {
+            return $this->_r("Invalid resource prototype ID");
         }
         
         $factory = Factory::findByPk($factory_id);
@@ -634,18 +634,18 @@ class ModalController extends MyController {
             return $this->_r("Not allowed");
         }
         
-        $resurse = $factory->getStorage($resurse_proto_id);
-        if (is_null($resurse)) {
-            return $this->_r("Resurse not found");
+        $resource = $factory->getStorage($resource_proto_id);
+        if (is_null($resource)) {
+            return $this->_r("Resource not found");
         }
         
         $settings = FactoryAutobuySettings::findOrCreate([
             'factory_id' => $factory_id,
-            'resurse_proto_id' => $resurse_proto_id
+            'resource_proto_id' => $resource_proto_id
         ]);
-        return $this->render('factory-set-resurse-autobuy',[
+        return $this->render('factory-set-resource-autobuy',[
             'factory' => $factory,
-            'resurse' => $resurse,
+            'resource' => $resource,
             'settings' => $settings
         ]);
     }

@@ -2,7 +2,7 @@
 
 namespace app\models\statistics;
 
-use app\models\resurses\proto\ResurseProto,
+use app\models\resources\proto\ResourceProto,
     app\models\Holding,
     app\models\Region,
     app\models\State;
@@ -11,14 +11,14 @@ use app\models\resurses\proto\ResurseProto,
  * This is the model class for table "statistics_mining".
  *
  * @property integer $id
- * @property integer $resurse_proto_id
+ * @property integer $resource_proto_id
  * @property integer $timestamp
  * @property double $value
  * @property integer $holding_id
  * @property integer $region_id
  * @property integer $state_id
  * 
- * @property ResurseProto $resurseProto
+ * @property ResourceProto $resourceProto
  * @property Holding $holding
  * @property Region $region
  * @property State $state
@@ -39,8 +39,8 @@ class StatisticsMining extends Statistics
     public function rules()
     {
         return [
-            [['resurse_proto_id', 'value'], 'required'],
-            [['resurse_proto_id', 'timestamp', 'holding_id', 'region_id', 'state_id'], 'integer'],
+            [['resource_proto_id', 'value'], 'required'],
+            [['resource_proto_id', 'timestamp', 'holding_id', 'region_id', 'state_id'], 'integer'],
             [['value'], 'number']
         ];
     }
@@ -52,7 +52,7 @@ class StatisticsMining extends Statistics
     {
         return [
             'id' => 'ID',
-            'resurse_proto_id' => 'Resurse Proto ID',
+            'resource_proto_id' => 'Resource Proto ID',
             'timestamp' => 'Timestamp',
             'value' => 'Value',
             'holding_id' => 'Holding ID',
@@ -61,9 +61,9 @@ class StatisticsMining extends Statistics
         ];
     }
     
-    public function getResurseProto()
+    public function getResourceProto()
     {
-        return $this->hasOne(ResurseProto::className(), array('id' => 'resurse_proto_id'));
+        return $this->hasOne(ResourceProto::className(), array('id' => 'resource_proto_id'));
     }
     
     public function getHolding()

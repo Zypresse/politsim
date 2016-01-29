@@ -78,7 +78,7 @@ class Line extends UnmovableObject implements TaxPayer
             'id' => 'ID',
             'region1_id' => 'Region1 ID',
             'region2_id' => 'Region2 ID',
-            'resurse_proto_id' => 'Resurse Proto ID',
+            'resurse_proto_id' => 'Resource Proto ID',
             'holding_id' => 'Holding ID',
         ];
     }

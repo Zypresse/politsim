@@ -4,7 +4,7 @@ namespace app\models\factories;
 
 use app\components\MyModel,
     app\models\factories\Factory,
-    app\models\resurses\proto\ResurseProto,
+    app\models\resources\proto\ResourceProto,
     app\models\Holding,
     app\models\State;
 
@@ -13,7 +13,7 @@ use app\components\MyModel,
  *
  * @property integer $id
  * @property integer $factory_id
- * @property integer $resurse_proto_id
+ * @property integer $resource_proto_id
  * @property double $max_cost
  * @property integer $min_quality
  * @property double $count
@@ -21,7 +21,7 @@ use app\components\MyModel,
  * @property integer $state_id
  * 
  * @property Factory $factory
- * @property ResurseProto $resurseProto
+ * @property ResourceProto $resourceProto
  * @property Holding $holding
  * @property State $state
  */
@@ -41,8 +41,8 @@ class FactoryAutobuySettings extends MyModel
     public function rules()
     {
         return [
-            [['factory_id', 'resurse_proto_id', 'count'], 'required'],
-            [['factory_id', 'resurse_proto_id', 'holding_id', 'state_id', 'min_quality'], 'integer'],
+            [['factory_id', 'resource_proto_id', 'count'], 'required'],
+            [['factory_id', 'resource_proto_id', 'holding_id', 'state_id', 'min_quality'], 'integer'],
             [['max_cost', 'count'], 'number']
         ];
     }
@@ -55,7 +55,7 @@ class FactoryAutobuySettings extends MyModel
         return [
             'id' => 'ID',
             'factory_id' => 'Factory ID',
-            'resurse_proto_id' => 'Resurse Proto ID',
+            'resource_proto_id' => 'Resource Proto ID',
             'max_cost' => 'Max Cost',
             'min_quality' => 'Min Quality',
             'count' => 'Count',
@@ -64,9 +64,9 @@ class FactoryAutobuySettings extends MyModel
         ];
     }
     
-    public function getResurseProto()
+    public function getResourceProto()
     {
-        return $this->hasOne(ResurseProto::className(), array('id' => 'resurse_proto_id'));
+        return $this->hasOne(ResourceProto::className(), array('id' => 'resource_proto_id'));
     }
     
     public function getFactory()

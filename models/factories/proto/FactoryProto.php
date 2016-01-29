@@ -24,7 +24,7 @@ use app\models\objects\proto\UnmovableObjectProto,
  * @property string $class_name
  * 
  * @property Category $category Категория фабрик
- * @property Kit[] $resurses Набор всех ресурсов
+ * @property Kit[] $resources Набор всех ресурсов
  * @property Kit[] $export Производимый набор ресурсов
  * @property Kit[] $import Потребляемый набор ресурсов
  * @property Kit[] $used Используемый набор ресурсов
@@ -85,7 +85,7 @@ class FactoryProto extends UnmovableObjectProto
         return $this->hasOne(Category::className(), array('id' => 'category_id'));
     }
 
-    public function getResurses()
+    public function getResources()
     {
         return $this->hasMany(Kit::className(), array('factory_proto_id' => 'id'));
     }

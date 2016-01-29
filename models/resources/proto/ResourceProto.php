@@ -1,12 +1,12 @@
 <?php
 
-namespace app\models\resurses\proto;
+namespace app\models\resources\proto;
 
 use app\components\MyModel,
     app\components\MyHtmlHelper;
 
 /**
- * Тип ресурса. Таблица "resurses_prototypes".
+ * Тип ресурса. Таблица "resources_prototypes".
  *
  * @property integer $id
  * @property string $class_name Класс ресурса (напр. "Oil")
@@ -16,7 +16,7 @@ use app\components\MyModel,
  * 
  * @property string $icon
  */
-class ResurseProto extends MyModel
+class ResourceProto extends MyModel
 {
 
     /**
@@ -24,7 +24,7 @@ class ResurseProto extends MyModel
      */
     public static function tableName()
     {
-        return 'resurses_prototypes';
+        return 'resources_prototypes';
     }
 
     /**
@@ -91,7 +91,7 @@ class ResurseProto extends MyModel
     
     public function getIcon()
     {
-        return MyHtmlHelper::customIcon('resurses/'.$this->class_name,  $this->name);
+        return MyHtmlHelper::customIcon('resources/'.$this->class_name,  $this->name);
     }
 
 }

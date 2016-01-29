@@ -1,33 +1,33 @@
 <?php
 
-namespace app\models\resurses;
+namespace app\models\resources;
 
 use app\components\MyModel,
-    app\models\resurses\Resurse,
+    app\models\resources\Resource,
     app\models\Holding,
     app\models\State;
 
 /**
- * Ценники на ресурсы. Таблица "resurses_costs".
+ * Ценники на ресурсы. Таблица "resources_costs".
  *
  * @property integer $id
- * @property integer $resurse_id (не путать с resurse_proto_id)
+ * @property integer $resource_id (не путать с resource_proto_id)
  * @property double $cost Цена за единицу
  * @property integer $holding_id если установленно то продаётся только фабрикам этого холдинга
  * @property integer $state_id если установленно то продаётся только налогоплательщикам этой страны
  * 
- * @property Resurse $resurse
+ * @property Resource $resource
  * @property State $state
  * @property Holding $holding
  */
-class ResurseCost extends MyModel
+class ResourceCost extends MyModel
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'resurses_costs';
+        return 'resources_costs';
     }
 
     /**
@@ -36,8 +36,8 @@ class ResurseCost extends MyModel
     public function rules()
     {
         return [
-            [['resurse_id', 'cost'], 'required'],
-            [['resurse_id', 'holding_id', 'state_id'], 'integer'],
+            [['resource_id', 'cost'], 'required'],
+            [['resource_id', 'holding_id', 'state_id'], 'integer'],
             [['cost'], 'number']
         ];
     }
@@ -49,16 +49,16 @@ class ResurseCost extends MyModel
     {
         return [
             'id' => 'ID',
-            'resurse_id' => 'Resurse ID',
+            'resource_id' => 'Resource ID',
             'cost' => 'Cost',
             'holding_id' => 'Holding ID',
             'state_id' => 'State ID',
         ];
     }
     
-    public function getResurse()
+    public function getResource()
     {
-        return $this->hasOne(Resurse::className(), array('id' => 'resurse_id'));
+        return $this->hasOne(Resource::className(), array('id' => 'resource_id'));
     }
     
     public function getHolding()
@@ -89,11 +89,11 @@ class ResurseCost extends MyModel
      * @param int $stateId
      * @param double $count
      * 
-     * @return ResurseCost[] 
+     * @return ResourceCost[] 
      */
     public static function getBuyableFood($stateId, $count)
     {
-        return static::getBuyableResurses([
+        return static::getBuyableResources([
             9, // Зерно
             10, // Фруктовощи
             11, // Рыба
@@ -107,11 +107,11 @@ class ResurseCost extends MyModel
      * @param int $stateId
      * @param double $count
      * 
-     * @return ResurseCost[] 
+     * @return ResourceCost[] 
      */
     public static function getBuyableDress($stateId, $count)
     {
-        return static::getBuyableResurses([
+        return static::getBuyableResources([
             35 // одежда и обувь
         ], $stateId, $count);        
     }    
@@ -121,11 +121,11 @@ class ResurseCost extends MyModel
      * @param int $stateId
      * @param double $count
      * 
-     * @return ResurseCost[] 
+     * @return ResourceCost[] 
      */
     public static function getBuyableElecticity($stateId, $count)
     {
-        return static::getBuyableResurses([
+        return static::getBuyableResources([
             16 // электричество
         ], $stateId, $count);        
     }    
@@ -135,11 +135,11 @@ class ResurseCost extends MyModel
      * @param int $stateId
      * @param double $count
      * 
-     * @return ResurseCost[] 
+     * @return ResourceCost[] 
      */
     public static function getBuyableAlcohol($stateId, $count)
     {
-        return static::getBuyableResurses([
+        return static::getBuyableResources([
             36 // алкоголь
         ], $stateId, $count);        
     }    
@@ -149,11 +149,11 @@ class ResurseCost extends MyModel
      * @param int $stateId
      * @param double $count
      * 
-     * @return ResurseCost[] 
+     * @return ResourceCost[] 
      */
     public static function getBuyableFurniture($stateId, $count)
     {
-        return static::getBuyableResurses([
+        return static::getBuyableResources([
             37 // мебель
         ], $stateId, $count);        
     }    
@@ -164,26 +164,26 @@ class ResurseCost extends MyModel
      * @param int $stateId
      * @param double $count
      * 
-     * @return ResurseCost[] 
+     * @return ResourceCost[] 
      */
-    public static function getBuyableResurses($resProtoIds, $stateId, $count)
+    public static function getBuyableResources($resProtoIds, $stateId, $count)
     {
         $costs = static::find()
-                    ->join('LEFT JOIN', Resurse::tableName(), Resurse::tableName().'.id = '.static::tableName().'.resurse_id')
-                    ->where(['IN', Resurse::tableName().'.proto_id', $resProtoIds])
-                    ->andWhere(['>',Resurse::tableName().'.count',0])
+                    ->join('LEFT JOIN', Resource::tableName(), Resource::tableName().'.id = '.static::tableName().'.resource_id')
+                    ->where(['IN', Resource::tableName().'.proto_id', $resProtoIds])
+                    ->andWhere(['>',Resource::tableName().'.count',0])
                     ->andWhere(['holding_id'=>null])
                     ->andWhere(['or',['state_id'=>null],['state_id'=>$stateId]])
-                    ->with('resurse')
-                    ->orderBy('cost ASC, '.Resurse::tableName().'.quality DESC')
-                    ->groupBy(Resurse::tableName().'.place_id')
+                    ->with('resource')
+                    ->orderBy('cost ASC, '.Resource::tableName().'.quality DESC')
+                    ->groupBy(Resource::tableName().'.place_id')
                     ->all();
         
         $toBuyLeft = $count;
         $result = [];
         foreach ($costs as $cost) {
             /* @var $cost self */
-            $toBuyLeft -= $cost->resurse->count;
+            $toBuyLeft -= $cost->resource->count;
             $result[] = $cost;
             if ($toBuyLeft <= 0) {
                 break;

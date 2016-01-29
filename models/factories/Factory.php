@@ -10,8 +10,8 @@ use app\components\MyMathHelper,
     app\models\factories\proto\FactoryProtoKit,
     app\models\factories\FactoryWorkersSalary as WorkersSalary,
     app\models\factories\FactoryAutobuySettings as AutobuySettings,
-    app\models\resurses\Resurse,
-    app\models\resurses\ResurseCost,
+    app\models\resources\Resource,
+    app\models\resources\ResourceCost,
     app\models\objects\UnmovableObject,
     app\models\objects\canCollectObjects,
     app\models\Place,
@@ -30,7 +30,7 @@ use app\components\MyMathHelper,
  * @property integer $builded
  * @property integer $holding_id
  * @property integer $region_id
- * @property integer $status Статус работы: -1 - unbuilded, -2 - build stopped, 0 - undefined, 1 - active, 2 - stopped, 3 - not enought resurses, 4 - autostopped, 5 - not enought workers, 6 - not have license
+ * @property integer $status Статус работы: -1 - unbuilded, -2 - build stopped, 0 - undefined, 1 - active, 2 - stopped, 3 - not enought resources, 4 - autostopped, 5 - not enought workers, 6 - not have license
  * @property string $name
  * @property integer $size
  * @property integer $manager_uid
@@ -47,11 +47,11 @@ use app\components\MyMathHelper,
  * @property User $manager Управляющий
  * @property Population[] $workers Рабочие
  * @property WorkersSalary[] $salaries Установленные зарплаты рабочих
- * @property Resurse[] $storages Ресурсы на складе
+ * @property Resource[] $storages Ресурсы на складе
  * @property Vacansy[] $vacansies 
  * @property Vacansy[] $vacansiesWithSalaryAndCount Актуальнаые вакансии
  * @property Vacansy[] $vacansiesWithSalary Потенцальные вакансии
- * @property ResurseCost[] $resurseCosts
+ * @property ResourceCost[] $resourceCosts
  * @property AutobuySettings[] $autobuySettings
  */
 class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
@@ -215,17 +215,17 @@ class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
         return $this->hasMany(Vacansy::className(), array('factory_id' => 'id'))->where('salary > 0')->orderBy("salary DESC");
     }
     
-    public function getResurseCosts()
+    public function getResourceCosts()
     {
         $costs = [];
-        foreach ($this->content as $resurse) {
-            foreach ($resurse->costs as $resCost) {
+        foreach ($this->content as $resource) {
+            foreach ($resource->costs as $resCost) {
                 $costs[] = $resCost;
             }
         }
         return $costs;
-//        return $this->hasMany(ResurseCost::className(), array('resurse_id' => 'id'))
-//                ->viaTable('resurses',['id' => 'IAmPlace']);
+//        return $this->hasMany(ResourceCost::className(), array('resource_id' => 'id'))
+//                ->viaTable('resources',['id' => 'IAmPlace']);
     }
     
     public function getStatusName()
@@ -262,10 +262,10 @@ class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
         return $names[$this->status];
     }
     
-    public function kitSize($resurse_proto_id)
+    public function kitSize($resource_proto_id)
     {
         $kit = FactoryProtoKit::find()->where([
-            'resurse_proto_id' => $resurse_proto_id,
+            'resource_proto_id' => $resource_proto_id,
             'factory_proto_id' => $this->proto_id
         ])->one();
         if ($kit) {
@@ -275,20 +275,20 @@ class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
         }
     }
 
-    public function storageSize($resurse_proto_id)
+    public function storageSize($resource_proto_id)
     {
-        return $this->kitSize($resurse_proto_id)*24;
+        return $this->kitSize($resource_proto_id)*24;
     }
     
     /**
      * 
      * @param integer $proto_id
      * @param integer $quality
-     * @return Resurse
+     * @return Resource
      */
     public function getStorage($proto_id, $quality = 10)
     {
-        return Resurse::findOrCreate([
+        return Resource::findOrCreate([
                     'place_id' => $this->IAmPlace,
                     'proto_id' => $proto_id,
                     'quality' => $quality
@@ -298,11 +298,11 @@ class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
     /**
      * 
      * @param integer $proto_id
-     * @return Resurse[]
+     * @return Resource[]
      */
     public function getStorages($proto_id)
     {
-        return Resurse::find()->where([
+        return Resource::find()->where([
                     'place_id' => $this->IAmPlace,
                     'proto_id' => $proto_id
                 ])->orderBy('quality DESC')->all();
@@ -310,7 +310,7 @@ class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
     
     public function pushToStorage($proto_id, $count, $quality = 10) 
     {
-        $store = Resurse::findOrCreate([
+        $store = Resource::findOrCreate([
             'place_id' => $this->IAmPlace,
             'proto_id' => $proto_id,
             'quality' => $quality
@@ -330,7 +330,7 @@ class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
     
     public function delFromStorage($proto_id, $count, $quality = 10) 
     {
-        $store = Resurse::findOrCreate([
+        $store = Resource::findOrCreate([
             'place_id' => $this->IAmPlace,
             'proto_id' => $proto_id,
             'quality' => $quality
@@ -451,31 +451,31 @@ class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
             
             foreach ($this->autobuySettings as $settings) {
                 
-                $costs = ResurseCost::find()
-                        ->join('LEFT JOIN', Resurse::tableName(), Resurse::tableName().'.id = '.ResurseCost::tableName().'.resurse_id')
-                        ->where([Resurse::tableName().'.proto_id'=>$settings->resurse_proto_id])
-                        ->andWhere(['>',Resurse::tableName().'.count',0])
-                        ->andWhere(['>=',Resurse::tableName().'.quality',$settings->min_quality])
-                        ->andWhere(['<=',ResurseCost::tableName().'.cost',$settings->max_cost])
+                $costs = ResourceCost::find()
+                        ->join('LEFT JOIN', Resource::tableName(), Resource::tableName().'.id = '.ResourceCost::tableName().'.resource_id')
+                        ->where([Resource::tableName().'.proto_id'=>$settings->resource_proto_id])
+                        ->andWhere(['>',Resource::tableName().'.count',0])
+                        ->andWhere(['>=',Resource::tableName().'.quality',$settings->min_quality])
+                        ->andWhere(['<=',ResourceCost::tableName().'.cost',$settings->max_cost])
                         ->andWhere(['or',['holding_id'=>null],['holding_id'=>$this->holding_id]])
                         ->andWhere(['or',['state_id'=>null],['state_id'=>$this->getLocatedStateId()]])
-                        ->with('resurse')
-                        ->orderBy('cost ASC, '.Resurse::tableName().'.quality DESC')
-                        ->groupBy(Resurse::tableName().'.place_id')
+                        ->with('resource')
+                        ->orderBy('cost ASC, '.Resource::tableName().'.quality DESC')
+                        ->groupBy(Resource::tableName().'.place_id')
                         ->all();
                 $toBuyLeft = $settings->count;
                 foreach ($costs as $cost) {
-                    /* @var $cost ResurseCost */
-                    if ($settings->state_id && $cost->resurse->place->object->getLocatedStateId() !== $settings->state_id) {
+                    /* @var $cost ResourceCost */
+                    if ($settings->state_id && $cost->resource->place->object->getLocatedStateId() !== $settings->state_id) {
                         continue;
                     }
-                    if ($settings->holding_id && ($cost->resurse->place->object->getPlaceType() !== Place::TYPE_FACTORY || $cost->resurse->place->object->holding_id !== $settings->state_id)) {
+                    if ($settings->holding_id && ($cost->resource->place->object->getPlaceType() !== Place::TYPE_FACTORY || $cost->resource->place->object->holding_id !== $settings->state_id)) {
                         continue;
                     }
 
-                    $toBuy = min([$toBuyLeft,$cost->resurse->count]);                
+                    $toBuy = min([$toBuyLeft,$cost->resource->count]);                
                     $sum = $toBuy * $cost->cost;        
-                    $transferCost = round($cost->resurse->place->object->region->calcDist($this->region)*Region::TRANSFER_COST);
+                    $transferCost = round($cost->resource->place->object->region->calcDist($this->region)*Region::TRANSFER_COST);
                     $sum += $transferCost;  
 
                     if ($sum > $this->getBalance()) {
@@ -484,14 +484,14 @@ class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
                     
                     $dealing = new Dealing([
                         'proto_id' => 4,
-                        'from_unnp' => $cost->resurse->place->object->unnp,
+                        'from_unnp' => $cost->resource->place->object->unnp,
                         'to_unnp' => $this->unnp,
                         'sum' => -1*$sum,
                         'items' => json_encode([[
-                            'type' => 'resurse',
+                            'type' => 'resource',
                             'count' => $toBuy,
-                            'quality' => $cost->resurse->quality,
-                            'proto_id' => $cost->resurse->proto_id
+                            'quality' => $cost->resource->quality,
+                            'proto_id' => $cost->resource->proto_id
                         ]])
                     ]);
                     $dealing->accept();
@@ -514,7 +514,7 @@ class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
         // тут проверка на наличие ресурсов для производства            
         foreach ($this->proto->import as $kit) {
             $count = floor($kit->count * $this->size);                
-            $storages = $this->getStorages($kit->resurse_proto_id);
+            $storages = $this->getStorages($kit->resource_proto_id);
 
             $sum = 0;
             foreach ($storages as $store) {
@@ -533,12 +533,12 @@ class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
         // Теперь точно ресурсов хватает            
         foreach ($this->proto->import as $kit) {
             $count = floor($kit->count * $this->size);                
-            $storages = $this->getStorages($kit->resurse_proto_id);
+            $storages = $this->getStorages($kit->resource_proto_id);
 
             $deleted = 0;
             foreach ($storages as $store) {
                 $del = min([$store->count,$count-$deleted]);
-                $this->delFromStorage($kit->resurse_proto_id, $del, $store->quality);
+                $this->delFromStorage($kit->resource_proto_id, $del, $store->quality);
 
                 $deleted += $del;                    
                 $sumQualityResUsedForWork += $del*$store->quality;
@@ -555,8 +555,8 @@ class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
         foreach ($this->proto->export as $kit) {
             $count = floor($kit->count * $this->size * $this->eff_workers * $this->eff_region);
 
-            $this->pushToStorage($kit->resurse_proto_id, $count, $quality);
-            $result[$kit->resurse_proto_id] = $count;
+            $this->pushToStorage($kit->resource_proto_id, $count, $quality);
+            $result[$kit->resource_proto_id] = $count;
         }
         
         return $result;
@@ -646,7 +646,7 @@ class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
     }
 
     public function getContent() {
-        return $this->hasMany(Resurse::className(), ['place_id' => 'IAmPlace']);
+        return $this->hasMany(Resource::className(), ['place_id' => 'IAmPlace']);
     }
 
     private $_iAmPlace;

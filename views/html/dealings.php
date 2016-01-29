@@ -99,8 +99,8 @@ $mdl = $user->getMyDealingsList();
                         $factory = app\models\factories\Factory::findByPk($item['factory_id']);
                         echo $factory->getHtmlName();
                     break;
-                    case 'resurse':
-                        $resProto = app\models\resurses\proto\ResurseProto::findByPk($item['proto_id']);
+                    case 'resource':
+                        $resProto = app\models\resources\proto\ResurseProto::findByPk($item['proto_id']);
                         echo $item['count'].' '.$resProto->icon;
                     break;
                 }
