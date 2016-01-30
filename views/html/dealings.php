@@ -11,11 +11,14 @@ use yii\helpers\Html;
 <h1>Ваши сделки</h1>
 
 <h3>Предложения сделок:</h3>
-<? 
+<?php 
 $nadl = $user->getNotAcceptedDealingsList();
 if (count($nadl)) { ?>
 <table class="table">
-<? foreach ($nadl as $dealing) {
+<?php foreach ($nadl as $dealing) {
+        if (!$dealing->sender || !$dealing->recipient) {
+            continue;
+        }
     $items = json_decode($dealing->items,true);
     ?>
     <tr id="dealing_line<?=$dealing->id?>">
@@ -30,7 +33,15 @@ if (count($nadl)) { ?>
                 switch ($item['type']) {
                     case 'stock':
                         $holding = app\models\Holding::findByPk($item['holding_id']);
-                        echo MyHtmlHelper::formateNumberword($item['count'], "акций", "акция", "акции")." компании «".$holding->name."»";
+                        echo MyHtmlHelper::formateNumberword($item['count'], "акций", "акция", "акции")." компании «".$holding->getHtmlName()."»";
+                    break;
+                    case 'factory':
+                        $factory = \app\models\factories\Factory::findByPk($item['factory_id']);
+                        echo $factory->getHtmlName();
+                    break;
+                    case 'resource':
+                        $resProto = \app\models\resources\proto\ResourceProto::findByPk($item['proto_id']);
+                        echo $item['count'].' '.$resProto->icon;
                     break;
                 }
                 echo "</li>";
@@ -76,7 +87,11 @@ $mdl = $user->getMyDealingsList();
         <th>Деньги</th>
         <th>Вещи</th>
     </tr>
-    <?    foreach ($mdl as $dealing) {
+    <?php
+    foreach ($mdl as $dealing) {
+        if (!$dealing->sender || !$dealing->recipient) {
+            continue;
+        }
         $items = json_decode($dealing->items,true);
         ?>
     <tr>
@@ -93,14 +108,14 @@ $mdl = $user->getMyDealingsList();
                 switch ($item['type']) {
                     case 'stock':
                         $holding = app\models\Holding::findByPk($item['holding_id']);
-                        echo MyHtmlHelper::formateNumberword($item['count'], "акций", "акция", "акции")." компании «".$holding->name."»";
+                        echo MyHtmlHelper::formateNumberword($item['count'], "акций", "акция", "акции")." компании «".$holding->getHtmlName()."»";
                     break;
                     case 'factory':
-                        $factory = app\models\factories\Factory::findByPk($item['factory_id']);
+                        $factory = \app\models\factories\Factory::findByPk($item['factory_id']);
                         echo $factory->getHtmlName();
                     break;
                     case 'resource':
-                        $resProto = app\models\resources\proto\ResurseProto::findByPk($item['proto_id']);
+                        $resProto = \app\models\resources\proto\ResourceProto::findByPk($item['proto_id']);
                         echo $item['count'].' '.$resProto->icon;
                     break;
                 }
