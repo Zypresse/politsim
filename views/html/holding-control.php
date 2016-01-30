@@ -225,20 +225,27 @@ $userStock = $user->getShareholderStock($holding);
             <h4>Новое решение:</h4>
             <div class="btn-toolbar">
                 <div class="btn-group">
-                    <button onclick="$('#rename_holding_modal').modal();" class="btn btn-sm dropdown-toggle btn-lightblue">
+                    <button onclick="$('#rename_holding_modal').modal();" class="btn btn-lightblue">
                         Переименовать холдинг
                     </button>
                 </div>
                 <div class="btn-group">
-                    <button onclick="$('#set_main_office_modal').modal();" class="btn btn-sm dropdown-toggle btn-sea">
+                    <button onclick="$('#set_main_office_modal').modal();" class="btn btn-sea">
                         Установить главный офис
                     </button>
                 </div>
                 <div class="btn-group">
-                    <button onclick="$('#set_director_modal').modal();" class="btn btn-sm dropdown-toggle btn-green">
+                    <button onclick="$('#set_director_modal').modal();" class="btn btn-green">
                         Назначить директора
                     </button>
                 </div>
+                <?php if (!count($factories)): ?>
+                <div class="btn-group">
+                    <button onclick="json_request('new-holding-decision',{'holding_id':<?= $holding->id ?>, 'type': 14})" class="btn btn-red">
+                        Ликвидировать компанию
+                    </button>
+                </div>
+                <?php endif ?>
             </div>
         </div>
     </div>

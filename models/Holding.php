@@ -258,5 +258,22 @@ class Holding extends MyModel implements TaxPayer
         
         return false;
     }
+    
+    public function afterDelete()
+    {
+        foreach ($this->stocks as $stock) {
+            $stock->delete();
+        }
+        
+        foreach ($this->licenses as $license) {
+            $license->delete();
+        }
+        
+        foreach ($this->decisions as $decision) {
+            $decision->delete();
+        }
+        
+        return parent::afterDelete();
+    }
 
 }

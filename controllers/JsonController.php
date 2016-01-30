@@ -1443,6 +1443,9 @@ class JsonController extends MyController {
                             return $this->_r("Invalid fields aaa".  print_r($_REQUEST, true));
                         }
                         break;
+                    case HoldingDecision::DECISION_LIQUIDATECOMPANY:
+                        $decision->data = [];
+                        break;
                 }
                 $decision->data = json_encode($decision->data, JSON_UNESCAPED_UNICODE);
 
