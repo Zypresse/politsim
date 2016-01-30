@@ -6,7 +6,7 @@ use app\components\MyHtmlHelper;
     <a href="#">Инфо</a>
   </li>
   <li><a href="#" onclick="show_region_population()">Население</a></li>
-  <li><a href="#" onclick="show_region_resurses()">Ресурсы</a></li>
+  <li><a href="#" onclick="show_region_resources()">Ресурсы</a></li>
 </ul>
 <h1><?=htmlspecialchars($region->name)?></h1>
 <? if ($region->city) { ?><p>Столица: <?=htmlspecialchars($region->city)?></p><? } ?>
@@ -68,8 +68,8 @@ function show_region_population() {
     return false;
 }
 
-function show_region_resurses() {
-    load_modal('region-resurses',{'code':'<?=$region->code?>'},'region_info','region_info_body');
+function show_region_resources() {
+    load_modal('region-resources',{'code':'<?=$region->code?>'},'region_info','region_info_body');
     return false;
 }
 

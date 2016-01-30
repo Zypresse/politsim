@@ -4,7 +4,7 @@ use app\components\MyHtmlHelper;
 <ul class="nav nav-tabs">
   <li><a href="#" onclick="show_region(<?=$region->id?>)">Инфо</a></li>
   <li class="active"><a href="#">Население</a></li>
-  <li><a href="#" onclick="show_region_resurses()">Ресурсы</a></li>
+  <li><a href="#" onclick="show_region_resources()">Ресурсы</a></li>
 </ul>
 <h1><?=htmlspecialchars($region->name)?></h1>
 <h2>Состав населения</h2>
@@ -114,8 +114,8 @@ $(function(){
 })
 
 
-function show_region_resurses() {
-    load_modal('region-resurses',{'code':'<?=$region->code?>'},'region_info','region_info_body');
+function show_region_resources() {
+    load_modal('region-resources',{'code':'<?=$region->code?>'},'region_info','region_info_body');
     return false;
 }
 
