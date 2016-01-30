@@ -2028,7 +2028,7 @@ class JsonController extends MyController {
             return $this->_r("Not allowed");
         }
         
-        if ($this->user->state_id) {
+        if ($this->user->state_id !== $state->id) {
             $this->user->leaveState();
         }
         
