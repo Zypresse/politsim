@@ -227,6 +227,7 @@ $gft = null;
         </div>
     </div>
 </div>
+<?php if ($user->post->canCreateBills()): ?>
 <div style="display:none;" class="modal fade" id="new_zakon_select_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel123" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -263,6 +264,7 @@ $gft = null;
         </div>
     </div>
 </div>
+<?php endif ?>
 <div style="display:none;" class="modal fade" id="new_zakon_form_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel1234" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
