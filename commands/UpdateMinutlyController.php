@@ -16,18 +16,33 @@ use yii\console\Controller,
  */
 class UpdateMinutlyController extends Controller {
     
-    public function actionIndex() {
+    public function actionIndex($method = false, $debug = false) {
         
-        $this->updateBills();
-        
-        $this->updateHoldingDecisions();
-        
-        $this->updateBuildinds();   
-        
-        $this->updateFactoryVacansies();     
-        
-        $this->updateFactoryAuctions();
-                
+        if ($method) {            
+            $time = microtime(true);
+            $this->$method();
+            if ($debug) printf("{$method}: %f s.".PHP_EOL, microtime(true)-$time);
+        } else {
+            $time = microtime(true);
+            $this->updateBills();
+            if ($debug) printf("Updated bills: %f s.".PHP_EOL, microtime(true)-$time);
+
+            $time = microtime(true);
+            $this->updateHoldingDecisions();
+            if ($debug) printf("Updated holding decisions: %f s.".PHP_EOL, microtime(true)-$time);
+
+            $time = microtime(true);
+            $this->updateBuildinds();   
+            if ($debug) printf("Updated buildings builded: %f s.".PHP_EOL, microtime(true)-$time);
+
+            $time = microtime(true);
+            $this->updateFactoryVacansies();     
+            if ($debug) printf("Updated factory vacansies: %f s.".PHP_EOL, microtime(true)-$time);
+
+            $time = microtime(true);
+            $this->updateFactoryAuctions();
+            if ($debug) printf("Updated factory auctions: %f s.".PHP_EOL, microtime(true)-$time);
+        }                
     }
 
     /**
@@ -37,6 +52,7 @@ class UpdateMinutlyController extends Controller {
     {
         $bills = Bill::find()->where('accepted = 0 AND vote_ended <= '.time())->with('votes')->all();
         foreach ($bills as $bill) {
+            /* @var $bill Bill */
             if ($bill->dicktator) {
                 $bill->accept();
             } else {
@@ -66,6 +82,7 @@ class UpdateMinutlyController extends Controller {
     {
         $decisions = HoldingDecision::find()->where('accepted = 0')->with('votes')->all();
         foreach ($decisions as $decision) {
+            /* @var $decision HoldingDecision */
             $za = 0; $protiv = 0;
             foreach ($decision->votes as $vote) {
                 if ($vote->stock) {
