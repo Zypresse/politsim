@@ -258,5 +258,20 @@ class Holding extends MyModel implements TaxPayer
         
         return false;
     }
+    
+    public function calcCapital()
+    {       
+        $this->capital = 0.0;
+
+        // пока цена на акции 1 монета
+        $this->capital += 1* $this->getSumStocks();
+
+        // стоимость зданий как стоимость их постройки + деньги на счету
+        foreach ($this->factories as $factory) {
+            $this->capital += $factory->size * $factory->proto->build_cost + $factory->getBalance();
+        }
+
+        $this->capital += $this->balance;
+    }
 
 }

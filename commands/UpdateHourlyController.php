@@ -7,12 +7,10 @@ use Yii,
     yii\console\Controller,
     app\models\Region,
     app\models\State,
-    app\models\CoreCountryState,
     app\models\Party,        
     app\models\Holding,
     app\models\factories\Factory,
     app\models\Population,
-    app\models\User,
     app\models\Dealing,
     app\models\resources\Resource,
     app\models\resources\ResourceCost,
@@ -59,6 +57,10 @@ class UpdateHourlyController extends Controller
             $time = microtime(true);
             $this->updatePopWorkers();
             if ($debug) printf("Updated populations works: %f s.".PHP_EOL, microtime(true)-$time);
+            
+            $time = microtime(true);
+            $this->updatePopAnalogies();
+            if ($debug) printf("Updated populations analogies: %f s.".PHP_EOL, microtime(true)-$time);
             
             $time = microtime(true);
             $this->updateFactories();
@@ -114,13 +116,8 @@ class UpdateHourlyController extends Controller
     {
         $regions = Region::find()->all();
         foreach ($regions as $region) {
-            
-            $sumPop = (new Query())->from(Population::tableName())->where([
-                'region_id' => $region->id
-            ])->sum('count');
-            $sumUsers = User::find()->where(['region_id'=>$region->id])->count();
-            
-            $region->population = intval($sumPop) + intval($sumUsers);
+            /* @var $region Region */
+            $region->calcPopulation();
             $region->save();
         }
     }
@@ -132,32 +129,10 @@ class UpdateHourlyController extends Controller
     {
         $states = State::find()->with('regions')->with('regions.cores')->all();
         foreach ($states as $state) {
-            $state->population = 0;
-            $cores = [];
-            foreach ($state->regions as $region) {
-                $state->population += $region->population;
-                foreach ($region->cores as $core) {
-                    if (isset($cores[$core->id])) {
-                        $cores[$core->id]['count']++;
-                    } else {
-                        $cores[$core->id] = [
-                            'all' => intval($core->getRegions()->count()),
-                            'count' => 1
-                        ];
-                    }
-                }
-            }
-            foreach ($cores as $coreId => $info) {
-                $ar = ['percents' => $info['count']/$info['all']];
-                CoreCountryState::findOrCreate([
-                    'state_id' => $state->id,
-                    'core_id' => $coreId
-                ], true, $ar, $ar);
-            }
-            
-            $state->sum_star = intval((new Query())->from(User::tableName())->where([
-                'state_id' => $state->id
-            ])->sum('star'));
+            /* @var $state State */
+            $state->calcPopulation();
+            $state->calcSumStar();
+            $state->updateCores();
             
             if ($state->population === 0) {
                 $state->delete();
@@ -172,22 +147,11 @@ class UpdateHourlyController extends Controller
      */
     private function updateParties()
     {
-        $parties = Party::find()->all();
+        $parties = Party::find()->with('members')->all();
 
         foreach ($parties as $party) {
-            $party->star = 0;
-            $party->heart = 0;
-            $party->chart_pie = 0;
-            $k = 1;
-            foreach ($party->members as $user) {
-                $party->star += $user->star*$k;
-                $party->heart += $user->heart*$k;
-                $party->chart_pie += $user->chart_pie*$k;
-                $k *= 0.9;
-            }
-            $party->star = round($party->star);
-            $party->heart = round($party->heart);
-            $party->chart_pie = round($party->chart_pie);
+            /* @var $party Party */
+            $party->calcRating();
             
             if (count($party->members) === 0) {
                 $party->delete();
@@ -202,28 +166,17 @@ class UpdateHourlyController extends Controller
      */
     private function updateHoldings()
     {
-        $holdings = Holding::find()->all();
+        $holdings = Holding::find()->with('stocks')->with('factories')->with('factories.proto')->all();
         foreach ($holdings as $holding) {
-
+            /* @var $holding Holding */
+            
             foreach ($holding->stocks as $stock) {
                 if ($stock->count < 1) {
                     $stock->delete();
                 }
             }
             
-            $capital = 0.0;
-            
-            // пока цена на акции 1 монета
-            $capital += 1* $holding->getSumStocks();
-            
-            // стоимость зданий как стоимость их постройки + деньги на счету
-            foreach ($holding->factories as $factory) {
-                $capital += $factory->size * $factory->proto->build_cost + $factory->getBalance();
-            }
-            
-            $capital += $holding->balance;
-            
-            $holding->capital = $capital;
+            $holding->calcCapital();
             $holding->save();
         }
     }
@@ -260,6 +213,7 @@ class UpdateHourlyController extends Controller
                 } else {
                     $speed = round($speed);
                 }
+                $speed += mt_rand(0, ceil($speed/10)+1);
                 $studied = 0;
                 
                 foreach ($unworkers as $unworker) {
@@ -347,7 +301,7 @@ class UpdateHourlyController extends Controller
         foreach ($factories as $factory) {
             $factory->calcEff();
             $factory->updateVacansies();
-            $factory->updateStatus();
+            $factory->calcStatus();
             $factory->save();
         }
     }
@@ -517,7 +471,7 @@ class UpdateHourlyController extends Controller
             /* @var $pop Population */
             
             $pop->contentment = 0;
-            if ($pop->getBalance() <= 0.001) {
+            if ($pop->getBalance() <= 0.00001) {
                 continue;
             }
 

@@ -13,7 +13,9 @@ use app\components\TaxPayer,
     app\models\factories\Factory,
     app\models\Vacansy,
     app\models\RegionDiggingEff,
-    app\models\Stock;
+    app\models\Stock,
+    app\models\User,
+    yii\db\Query;
 
 /**
  * This is the model class for table "regions".
@@ -334,6 +336,16 @@ class Region extends MyModel implements TaxPayer
     public function isUserController($userId)
     {
         return false;
+    }
+    
+    public function calcPopulation()
+    {
+        $sumPop = (new Query())->from(Population::tableName())->where([
+            'region_id' => $this->id
+        ])->sum('count');
+        $sumUsers = User::find()->where(['region_id'=>$this->id])->count();
+
+        $this->population = intval($sumPop) + intval($sumUsers);
     }
 
 }

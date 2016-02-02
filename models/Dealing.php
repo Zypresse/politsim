@@ -137,6 +137,10 @@ class Dealing extends MyModel
     public function accept()
     {
         
+        if (is_null($this->sender) || is_null($this->recipient)) {
+            return false;
+        }
+        
         if ($this->sum) {
             if ($this->sender->getBalance()-1*$this->sum >= 0 &&
                 $this->recipient->getBalance()+$this->sum >= 0 ) {

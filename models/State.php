@@ -17,7 +17,8 @@ use app\components\TaxPayer,
     app\models\CoreCountryState,
     app\models\licenses\LicenseRule,
     app\models\licenses\proto\LicenseProto,
-    app\models\articles\Article;
+    app\models\articles\Article,
+    yii\db\Query;
 
 /**
  * Государство. Таблица "states".
@@ -330,6 +331,45 @@ class State extends MyModel implements TaxPayer
     public function isUserController($userId)
     {
         return $this->executiveOrg->leader->user->id === $userId;        
+    }
+    
+    public function calcPopulation()
+    {
+        $this->population = 0;
+        foreach ($this->regions as $region) {
+            $this->population += $region->population;
+        }
+    }
+    
+    public function updateCores()
+    {
+        $cores = [];
+        foreach ($this->regions as $region) {
+            foreach ($region->cores as $core) {
+                if (isset($cores[$core->id])) {
+                    $cores[$core->id]['count']++;
+                } else {
+                    $cores[$core->id] = [
+                        'all' => intval($core->getRegions()->count()),
+                        'count' => 1
+                    ];
+                }
+            }
+        }
+        foreach ($cores as $coreId => $info) {
+            $ar = ['percents' => $info['count']/$info['all']];
+            CoreCountryState::findOrCreate([
+                'state_id' => $this->id,
+                'core_id' => $coreId
+            ], true, $ar, $ar);
+        }
+    }
+    
+    public function calcSumStar()
+    {
+        $this->sum_star = intval((new Query())->from(User::tableName())->where([
+            'state_id' => $this->id
+        ])->sum('star'));
     }
 
 }

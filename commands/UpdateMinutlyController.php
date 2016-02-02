@@ -35,7 +35,7 @@ class UpdateMinutlyController extends Controller {
      */
     private function updateBills()
     {
-        $bills = Bill::find()->where('accepted = 0 AND vote_ended <= '.time())->all();
+        $bills = Bill::find()->where('accepted = 0 AND vote_ended <= '.time())->with('votes')->all();
         foreach ($bills as $bill) {
             if ($bill->dicktator) {
                 $bill->accept();
@@ -64,7 +64,7 @@ class UpdateMinutlyController extends Controller {
      */
     private function updateHoldingDecisions()
     {
-        $decisions = HoldingDecision::find()->where('accepted = 0')->all();
+        $decisions = HoldingDecision::find()->where('accepted = 0')->with('votes')->all();
         foreach ($decisions as $decision) {
             $za = 0; $protiv = 0;
             foreach ($decision->votes as $vote) {
@@ -91,9 +91,17 @@ class UpdateMinutlyController extends Controller {
     private function updateBuildinds()
     {
         // Окончание строительства
-        $buildings = Factory::find()->where('builded <= '.time().' AND status = '.Factory::STATUS_UNBUILDED)->all();
+        $buildings = Factory::find()->where('builded <= '.time().' AND status = '.Factory::STATUS_UNBUILDED)
+                ->with('proto')
+                ->with('proto.licenses')
+                ->with('proto.workers')
+                ->with('workers')
+                ->with('holding')
+                ->all();
         foreach ($buildings as $building) {
+            /* @var $building Factory */
             $building->status = 1;
+            $building->updateStatus();
             $building->save();
         }        
         unset($buildings);
@@ -106,7 +114,11 @@ class UpdateMinutlyController extends Controller {
     {
         
         // Проверка количества рабочих (размещение вакансий)
-        $buildings = Factory::find()->where('status = '.Factory::STATUS_NOT_ENOUGHT_WORKERS.' OR status = '.Factory::STATUS_ACTIVE)->all();
+        $buildings = Factory::find()->where('status = '.Factory::STATUS_NOT_ENOUGHT_WORKERS.' OR status = '.Factory::STATUS_ACTIVE)
+                ->with('proto')
+                ->with('proto.workers')
+                ->with('workers')
+                ->all();
         foreach ($buildings as $building) {
             
             //Vacansy::deleteAll("factory_id = {$building->id}");
@@ -157,9 +169,12 @@ class UpdateMinutlyController extends Controller {
     
     private function updateFactoryAuctions()
     {
-        $auctions = FactoryAuction::find()->where(['<=', 'date_end', time()])->andWhere(['closed' => 0])->all();
+        $auctions = FactoryAuction::find()->where(['<=', 'date_end', time()])->andWhere(['closed' => 0])
+                ->with('lastBet')
+                ->all();
         
         foreach ($auctions as $auction) {
+            /* @var $auction FactoryAuction */
             $auction->end();
         }
     }

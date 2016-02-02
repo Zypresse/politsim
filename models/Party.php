@@ -208,5 +208,22 @@ class Party extends MyModel implements TaxPayer
     {
         return $this->leader === $userId;
     }
+    
+    public function calcRating()
+    {
+        $this->star = 0;
+        $this->heart = 0;
+        $this->chart_pie = 0;
+        $k = 1.0;
+        foreach ($this->members as $user) {
+            $this->star += $user->star*$k;
+            $this->heart += $user->heart*$k;
+            $this->chart_pie += $user->chart_pie*$k;
+            $k *= 0.9;
+        }
+        $this->star = round($this->star);
+        $this->heart = round($this->heart);
+        $this->chart_pie = round($this->chart_pie);
+    }
 
 }

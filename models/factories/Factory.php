@@ -402,7 +402,7 @@ class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
         }
     }
 
-    public function updateStatus()
+    public function calcStatus()
     {
         if ($this->status < 0 || $this->status === self::STATUS_STOPPED || $this->status === self::STATUS_AUTOSTOPPED) {
             return;
