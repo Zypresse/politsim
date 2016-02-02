@@ -25,7 +25,9 @@ class DropStateleader extends BillProto {
             $bill->state->executiveOrg->leader->user->post_id = 0;
             $bill->state->executiveOrg->leader->user->save();
             $bill->state->executiveOrg->next_elect = time() + 48 * 60 * 60;
-            $bill->state->executiveOrg->save();
+            if (!$bill->state->executiveOrg->save()) {
+                var_dump($bill->state->executiveOrg->getErrors());
+            }
         }
 
         return parent::accept($bill);

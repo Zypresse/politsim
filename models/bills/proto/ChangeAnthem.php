@@ -25,7 +25,10 @@ class ChangeAnthem extends BillProto {
         if (MyHtmlHelper::isSoundCloudLink($data->new_anthem)) {
         
             $bill->state->anthem = $data->new_anthem;
-            $bill->state->save();
+            if (!$bill->state->save()) {
+                var_dump($bill->state->getErrors());
+                return false;
+            }
         
             return parent::accept($bill);
         } else {

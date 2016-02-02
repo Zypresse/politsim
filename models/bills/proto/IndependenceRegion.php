@@ -26,6 +26,10 @@ class IndependenceRegion extends BillProto {
         if ($region && $region->state_id === $bill->state_id) {
             $region->state_id = 0;
             $region->save();
+            if (!$region->save()) {
+                var_dump($region->getErrors());
+                return false;
+            }
         }
         
         return parent::accept($bill);

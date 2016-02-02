@@ -21,7 +21,10 @@ class ChangeColor extends BillProto {
         $data = json_decode($bill->data);
         
         $bill->state->color = $data->new_color;
-        $bill->state->save();
+        if (!$bill->state->save()) {
+            var_dump($bill->state->getErrors());
+            return false;
+        }
         
         return parent::accept($bill);
     }

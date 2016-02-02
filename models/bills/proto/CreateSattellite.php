@@ -50,6 +50,7 @@ class CreateSattellite extends BillProto {
             
             $region->state_id = $state->id;
             if (!$region->save()) {
+                var_dump($region->getErrors());
                 return false;
             }
 
@@ -60,6 +61,7 @@ class CreateSattellite extends BillProto {
             $state->legislature = $legislature->id;
 
             if (!$state->save()) {
+                var_dump($state->getErrors());
                 return false;
             }
 
@@ -69,7 +71,9 @@ class CreateSattellite extends BillProto {
                 foreach ($core->regions as $region) {
                     if ($region->state_id === $bill->state_id && !($region->isCapital())) {
                         $region->state_id = $state->id;
-                        $region->save();
+                        if (!$region->save()) {
+                            var_dump($region->getErrors());
+                        }
                     }
                 }
             }

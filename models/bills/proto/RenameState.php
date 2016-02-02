@@ -22,7 +22,10 @@ class RenameState extends BillProto {
 
         $bill->state->name = $data->new_name;
         $bill->state->short_name = $data->new_short_name;
-        $bill->state->save();
+        if (!$bill->state->save()) {
+            var_dump($bill->state->getErrors());
+            return false;
+        }
 
         return parent::accept($bill);
     }

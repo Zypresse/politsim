@@ -24,7 +24,10 @@ class ChangeFlag extends BillProto {
         
         if (MyHtmlHelper::isImageLink($data->new_flag)) {
             $bill->state->flag = $data->new_flag;
-            $bill->state->save();
+            if (!$bill->state->save()) {
+                var_dump($bill->state->getErrors());
+                return false;
+            }
 
             return parent::accept($bill);
         } else {

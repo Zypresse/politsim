@@ -25,7 +25,10 @@ class RenameOrg extends BillProto {
         $org = Org::findByPk($data->org_id);
         if ($org && $org->state_id === $bill->state_id) {
             $org->name = $data->new_name;
-            $org->save();
+            if (!$org->save()) {
+                var_dump($org->getErrors());
+                return false;
+            }
         }
 
         return parent::accept($bill);

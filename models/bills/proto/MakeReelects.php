@@ -26,7 +26,10 @@ class MakeReelects extends BillProto {
         $org = Org::findByPk($org_id);
         if ($org && $org->state_id === $bill->state_id) {
             $org->next_elect = time() + 48 * 60 * 60;
-            $org->save();
+            if (!$org->save()) {
+                var_dump($org->getErrors());
+                return false;
+            }
         }
 
         return parent::accept($bill);

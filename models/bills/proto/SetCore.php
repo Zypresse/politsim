@@ -28,7 +28,10 @@ class SetCore extends BillProto {
                 $c2s = $bill->state->getCoreCountryState($coreCountry);
                 if ($c2s && $c2s->percents > 0.5) {                
                     $bill->state->core_id = $data->core_id;
-                    $bill->state->save();
+                    if (!$bill->state->save()) {
+                        var_dump($bill->state->getErrors());
+                        return false;
+                    }
                 } else {
                     return false;
                 }

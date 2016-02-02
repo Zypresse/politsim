@@ -25,7 +25,10 @@ class ChangeCapital extends BillProto {
         $region = Region::findByPk($data->new_capital);
         if ($region && $region->state_id === $bill->state_id) {
             $bill->state->capital = $data->new_capital;
-            $bill->state->save();
+            if (!$bill->state->save()) {
+                var_dump($bill->state->getErrors());
+                return false;
+            }
         }
         
         return parent::accept($bill);

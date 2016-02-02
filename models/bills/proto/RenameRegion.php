@@ -25,7 +25,10 @@ class RenameRegion extends BillProto {
         $region = Region::findByPk($data->region_id);
         if ($region && $region->state_id === $bill->state_id) {
             $region->name = $data->new_name;
-            $region->save();
+            if (!$region->save()) {
+                var_dump($region->getErrors());
+                return false;
+            }
         }
         
         return parent::accept($bill);

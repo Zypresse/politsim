@@ -39,6 +39,7 @@ class ChangeLicenseRule extends BillProto {
         $sl->is_only_goverment = ($data->is_only_goverment ? 1 : 0);
         if (!$sl->save()) {
             var_dump($sl->getErrors());
+            return false;
         }
 
         return parent::accept($bill);

@@ -25,7 +25,10 @@ class FormLegislature extends BillProto {
         if (is_null($bill->state->legislatureOrg)) {
             $org = Org::generate($bill->state, Org::LEGISLATURE_PARLIAMENT10);
             $bill->state->legislature = $org->id;
-            $bill->state->save();
+            if (!$bill->state->save()) {
+                var_dump($bill->state->getErrors());
+                return false;
+            }
         }
 
         return parent::accept($bill);

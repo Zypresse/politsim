@@ -31,7 +31,10 @@ class ConstitutionUpdate extends BillProto {
         ]);
         
         $article->value = $data->article_value;
-        $article->save();
+        if (!$article->save()) {
+            var_dump($article->getErrors());
+            return false;
+        }
         $article->syncronize();
         
         return parent::accept($bill);
