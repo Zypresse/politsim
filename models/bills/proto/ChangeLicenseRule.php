@@ -26,9 +26,14 @@ class ChangeLicenseRule extends BillProto {
             'state_id' => $bill->state_id,
             'proto_id' => $data->license_proto_id
         ], false);
+        
+        $data->cost = floatval($data->cost);
+        $data->cost = $data->cost > 0 ? $data->cost : 0;
+        $data->cost_noncitizens = floatval($data->cost_noncitizens);
+        $data->cost_noncitizens = $data->cost_noncitizens > 0 ? $data->cost_noncitizens : 0;
 
-        $sl->cost = floatval($data->cost);
-        $sl->cost_noncitizens = floatval($data->cost_noncitizens);
+        $sl->cost = $data->cost;
+        $sl->cost_noncitizens = $data->cost_noncitizens;
         $sl->is_need_confirm = ($data->is_need_confirm ? 1 : 0);
         $sl->is_need_confirm_noncitizens = ($data->is_need_confirm_noncitizens ? 1 : 0);
         $sl->is_only_goverment = ($data->is_only_goverment ? 1 : 0);

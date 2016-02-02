@@ -147,6 +147,11 @@ class HoldingDecision extends MyModel {
      */
     const DECISION_TRANSFERMONEYBACK = 13;
     
+    /**
+     * Ликвидация компании
+     */
+    const DECISION_LIQUIDATECOMPANY = 14;
+    
     public function getHtml()
     {
         $data = json_decode($this->data);
@@ -192,6 +197,8 @@ class HoldingDecision extends MyModel {
             case HoldingDecision::DECISION_TRANSFERMONEYBACK:
                 $from = Utr::findByPk($data->unnp)->master;
                 return 'Перевод ' . MyHtmlHelper::moneyFormat($data->sum) . ' от ' . $from->getHtmlName();
+            case self::DECISION_LIQUIDATECOMPANY:
+                return 'Ликвидация компании';
         }
     }
 
@@ -414,6 +421,11 @@ class HoldingDecision extends MyModel {
                             }
                         }
                     }
+                }
+                break;
+            case self::DECISION_LIQUIDATECOMPANY:
+                if (intval($this->holding->getFactories()->count()) === 0) {
+                    $this->holding->delete();
                 }
                 break;
         }
