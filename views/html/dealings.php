@@ -23,9 +23,9 @@ if (count($nadl)) { ?>
     ?>
     <tr id="dealing_line<?=$dealing->id?>">
         <td><?= ($dealing->is_anonim) ? 'Неизвестный отправитель' : $dealing->sender->getHtmlName() ?></td>
-        <td><? if (intval($dealing->sum) !== 0) { ?><?= ($dealing->sum>0 ? 'Вы получите ' : 'Вы затратите ').  number_format(abs($dealing->sum),0,'',' ').' '.MyHtmlHelper::icon('money')?><? } ?></td>
+        <td><?php if (intval($dealing->sum) !== 0) { ?><?= ($dealing->sum>0 ? 'Вы получите ' : 'Вы затратите ').  number_format(abs($dealing->sum),0,'',' ').' '.MyHtmlHelper::icon('money')?><?php } ?></td>
         <td>
-            <? 
+            <?php
             if (is_array($items) && count($items)) {
                 echo "Вы получите: <ul>";
             foreach ($items as $item) {
@@ -54,7 +54,7 @@ if (count($nadl)) { ?>
             <button class="btn btn-red" onclick="decline_dealing(<?=$dealing->id?>)">Отказаться</button>
         </td>
     </tr>
-<? } ?>
+<?php } ?>
 </table>
 <script>
     function accept_dealing(id) {
@@ -71,12 +71,12 @@ if (count($nadl)) { ?>
         }
     }
 </script>
-<? } else {
+<?php } else {
  echo "<p>Нет предложений</p>";
 }?>
 
 <h3>Последние заключённые сделки</h3>
-<?
+<?php
 $mdl = $user->getMyDealingsList();
 ?>
 <table class="table">
@@ -125,7 +125,7 @@ $mdl = $user->getMyDealingsList();
             } ?>
         </td>
     </tr>
-    <? } ?>
+    <?php } ?>
 </table>
         </div>
     </div>
