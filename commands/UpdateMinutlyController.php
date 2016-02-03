@@ -118,7 +118,7 @@ class UpdateMinutlyController extends Controller {
         foreach ($buildings as $building) {
             /* @var $building Factory */
             $building->status = 1;
-            $building->updateStatus();
+            $building->calcStatus();
             $building->save();
         }        
         unset($buildings);
