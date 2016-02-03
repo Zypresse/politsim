@@ -3,7 +3,8 @@
 namespace app\models\tiles;
 
 use app\components\MyModel,
-    app\models\Region;
+    app\models\Region,
+    app\models\tiles\TileFactory;
 
 /**
  * Тайл карты. Шестиугольник шириной 0.1 градуса. Таблица "tiles".
@@ -100,4 +101,65 @@ class Tile extends MyModel
     {
         return $this->hasOne(Region::className(), array('id' => 'region_id'));
     }
+    
+    public function getW_lat()
+    {
+        return $this->center_lat;
+    }
+    
+    public function getW_lng()
+    {
+        return $this->center_lng + TileFactory::OUTER_RADIUS * -1;
+    }
+    
+    public function getE_lat()
+    {
+        return $this->center_lat;
+    }
+    
+    public function getE_lng()
+    {
+        return $this->center_lng + TileFactory::OUTER_RADIUS;
+    }
+    
+    public function getSe_lat()
+    {
+        return $this->center_lat + TileFactory::OUTER_RADIUS * -0.866 * TileFactory::correctLat($this->center_lat);
+    }
+    
+    public function getSe_lng()
+    {
+        return $this->center_lng + TileFactory::OUTER_RADIUS * 0.5;
+    }
+    
+    public function getSw_lat()
+    {
+        return $this->center_lat + TileFactory::OUTER_RADIUS * -0.866 * TileFactory::correctLat($this->center_lat);
+    }
+    
+    public function getSw_lng()
+    {
+        return $this->center_lng + TileFactory::OUTER_RADIUS * -0.5;
+    }
+    
+    public function getNw_lat()
+    {
+        return $this->center_lat + TileFactory::OUTER_RADIUS * 0.866 * TileFactory::correctLat($this->center_lat);
+    }
+    
+    public function getNw_lng()
+    {
+        return $this->center_lng + TileFactory::OUTER_RADIUS * -0.5;
+    }
+    
+    public function getNe_lat()
+    {
+        return $this->center_lat + TileFactory::OUTER_RADIUS * 0.866 * TileFactory::correctLat($this->center_lat);
+    }
+    
+    public function getNe_lng()
+    {
+        return $this->center_lng + TileFactory::OUTER_RADIUS * 0.5;
+    }
+    
 }
