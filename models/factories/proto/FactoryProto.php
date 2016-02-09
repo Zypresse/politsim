@@ -21,7 +21,7 @@ use app\models\objects\proto\UnmovableObjectProto,
  * @property integer $category_id
  * @property integer $can_build_npc
  * @property double $build_cost
- * @property string $class_name
+ * @property string $class
  * 
  * @property Category $category Категория фабрик
  * @property Kit[] $resources Набор всех ресурсов
@@ -36,7 +36,7 @@ class FactoryProto extends UnmovableObjectProto
 
     public static function instantiate($row)
     {
-        $className = "app\\models\\factories\\proto\\types\\{$row['class_name']}";
+        $className = "app\\models\\factories\\proto\\types\\{$row['class']}";
         return new $className($row);
     }
     
@@ -54,12 +54,12 @@ class FactoryProto extends UnmovableObjectProto
     public function rules()
     {
         return [
-            [['name', 'level', 'system_name', 'category_id', 'build_cost', 'class_name'], 'required'],
-            [['name', 'system_name', 'class_name'], 'string'],
+            [['name', 'level', 'system_name', 'category_id', 'build_cost', 'class'], 'required'],
+            [['name', 'system_name', 'class'], 'string'],
             [['level', 'category_id', 'can_build_npc'], 'integer'],
             [['build_cost'],'number'],
             [['build_cost'], 'number'],
-            [['class_name'], 'unique']
+            [['class'], 'unique']
         ];
     }
 
@@ -76,7 +76,7 @@ class FactoryProto extends UnmovableObjectProto
             'category_id' => 'Category ID',
             'can_build_npc' => 'Can Build Npc',
             'build_cost' => 'Build Cost',
-            'class_name' => 'Class Name',
+            'class' => 'Class Name',
         ];
     }
 
@@ -199,7 +199,7 @@ class FactoryProto extends UnmovableObjectProto
         }
         
         $factory = new Factory();
-        $factory->type_id = $this->id;
+        $factory->proto_id = $this->id;
         $factory->region_id = $region->id;
         $factory->holding_id = $holding->id;
         $factory->status = -1;
