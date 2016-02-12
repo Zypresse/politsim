@@ -22,7 +22,7 @@ if (count($nadl)) { ?>
     $items = json_decode($dealing->items,true);
     ?>
     <tr id="dealing_line<?=$dealing->id?>">
-        <td><?= ($dealing->is_anonim) ? 'Неизвестный отправитель' : $dealing->sender->getHtmlName() ?></td>
+        <td><?= ($dealing->is_anonim || is_null($dealing->sender)) ? 'Неизвестный отправитель' : $dealing->sender->getHtmlName() ?></td>
         <td><?php if (intval($dealing->sum) !== 0) { ?><?= ($dealing->sum>0 ? 'Вы получите ' : 'Вы затратите ').  number_format(abs($dealing->sum),0,'',' ').' '.MyHtmlHelper::icon('money')?><?php } ?></td>
         <td>
             <?php
@@ -33,11 +33,11 @@ if (count($nadl)) { ?>
                 switch ($item['type']) {
                     case 'stock':
                         $holding = app\models\Holding::findByPk($item['holding_id']);
-                        echo MyHtmlHelper::formateNumberword($item['count'], "акций", "акция", "акции")." компании «".$holding->getHtmlName()."»";
+                        echo $holding ? MyHtmlHelper::formateNumberword($item['count'], "акций", "акция", "акции")." компании «".$holding->getHtmlName()."»" : MyHtmlHelper::formateNumberword($item['count'], "каких-то акций", "какая-то акция", "какие-то акции");
                     break;
                     case 'factory':
                         $factory = \app\models\factories\Factory::findByPk($item['factory_id']);
-                        echo $factory->getHtmlName();
+                        echo $factory ? $factory->getHtmlName() : 'Какая-то фабрика';
                     break;
                     case 'resource':
                         $resProto = \app\models\resources\proto\ResourceProto::findByPk($item['proto_id']);
@@ -96,8 +96,8 @@ $mdl = $user->getMyDealingsList();
         ?>
     <tr>
         <td class="prettyDate" data-unixtime="<?=$dealing->time?>"><?=date('d-m-Y H:i',$dealing->time)?></td>
-        <td><?= ($dealing->is_anonim && !($dealing->sender->id === $user->id)) ? 'Неизвестный отправитель' : $dealing->sender->getHtmlName() ?></td>
-        <td><?= $dealing->recipient->getHtmlName() ?></td>
+        <td><?= (($dealing->is_anonim && !($dealing->sender->id === $user->id)) || is_null($dealing->sender)) ? 'Неизвестный отправитель' : $dealing->sender->getHtmlName() ?></td>
+        <td><?=  is_null($dealing->recipient) ? 'Неизвестный получатель' : $dealing->recipient->getHtmlName() ?></td>
         <td><?=$dealing->sum?> <?=MyHtmlHelper::icon('money')?></td>
         <td>
         <?php 
@@ -108,11 +108,11 @@ $mdl = $user->getMyDealingsList();
                 switch ($item['type']) {
                     case 'stock':
                         $holding = app\models\Holding::findByPk($item['holding_id']);
-                        echo MyHtmlHelper::formateNumberword($item['count'], "акций", "акция", "акции")." компании «".$holding->getHtmlName()."»";
+                        echo $holding ? MyHtmlHelper::formateNumberword($item['count'], "акций", "акция", "акции")." компании «".$holding->getHtmlName()."»" : MyHtmlHelper::formateNumberword($item['count'], "каких-то акций", "какая-то акция", "какие-то акции");
                     break;
                     case 'factory':
                         $factory = \app\models\factories\Factory::findByPk($item['factory_id']);
-                        echo $factory->getHtmlName();
+                        echo $factory ? $factory->getHtmlName() : 'Какая-то фабрика';
                     break;
                     case 'resource':
                         $resProto = \app\models\resources\proto\ResourceProto::findByPk($item['proto_id']);
