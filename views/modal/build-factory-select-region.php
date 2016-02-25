@@ -9,12 +9,12 @@
     <label class="control-label" for="#build-factory-modal-region-id">Место строительства</label>
     <div class="controls">
         <select id="build-factory-modal-region-id">
-        <? foreach ($regions as $i => $region): ?>
-            <? if ($i == 0 || $regions[$i - 1]->state_id != $region->state_id): ?>
+        <?php foreach ($regions as $i => $region): ?>
+            <?php if ($i == 0 || $regions[$i - 1]->state_id != $region->state_id): ?>
                 <?= ($i) ? '</optgroup>' : '' ?><optgroup label="<?= ($region->state) ? $region->state->name : 'Ничейные регионы' ?>">
-            <? endif ?>
+            <?php endif ?>
             <option value="<?= $region->id ?>" <?= ((!$holding->region_id && $region->state_id === $holding->state_id && $region->isCapital()) || $region->id === $holding->region_id) ? "selected='selected'" : '' ?>><?= $region->name ?></option>
-        <? endforeach ?>
+        <?php endforeach ?>
         </select>
     </div>
 </div>

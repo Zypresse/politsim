@@ -24,7 +24,7 @@ use yii\helpers\Html;
         </tr>
     </thead>
     <tbody>
-<? if (count($user->stocks)) {
+<?php if (count($user->stocks)) {
     foreach ($user->stocks as $stock): if ($stock->holding): ?>
                 <tr>
                     <td><a href="#" onclick="load_page('holding-info', {'id':<?= $stock->holding_id ?>})"><?= $stock->holding->name ?></a></td>
@@ -32,10 +32,10 @@ use yii\helpers\Html;
                     <td>≈ <?= number_format($stock->getCost(), 0, '', ' ') ?> <?= MyHtmlHelper::icon('money') ?></td>
                     <td><?= Html::a("Управление", "#", ['class' => 'btn btn-primary', 'onclick' => 'load_page("holding-info",{"id":' . $stock->holding_id . '})']) ?></td>
                 </tr>
-    <? endif; endforeach;
+    <?php endif; endforeach;
 } else { ?>
             <tr><td colspan="4">Не владеет акциями</td></tr>
-        <? } ?>
+        <?php } ?>
     </tbody>
 </table>
 
@@ -51,7 +51,7 @@ use yii\helpers\Html;
         </tr>
     </thead>
     <tbody>
-        <? if (count($user->factories)) {
+        <?php if (count($user->factories)) {
             foreach ($user->factories as $factory) { ?>
                 <tr>
                     <td><?= MyHtmlHelper::a($factory->name, "load_page('factory-info',{'id':{$factory->id}})") ?></td>
@@ -60,29 +60,29 @@ use yii\helpers\Html;
                     <td><?= $factory->statusName ?></td>
                     <td><?= Html::a("Управление", "#", ['class' => 'btn btn-primary', 'onclick' => 'load_page("factory-info",{"id":' . $factory->id . '})']) ?></td>
                 </tr>
-            <? }
+            <?php }
         } else { ?>
             <tr><td colspan="5">Не управляет ни одним обьектом</td></tr>
-<? } ?>
+<?php } ?>
     </tbody>
 </table>
 <?php 
     $inHomeland = ($user->region && $user->region->state_id === $user->state_id);
 ?>
-<? if ($user->region && $user->region->state && $user->state_id) { ?>
-    <? if ($inHomeland) : ?>
-        <? if ($user->state->allow_register_holdings): ?>
+<?php if ($user->region && $user->region->state && $user->state_id) { ?>
+    <?php if ($inHomeland) : ?>
+        <?php if ($user->state->allow_register_holdings): ?>
             <p><button class="btn btn-green btn-sm" onclick="$('#create_holding_dialog').modal()">Создать акционерное общество</button></p>
-        <? else: ?>
+        <?php else: ?>
             <p>Регистрировать компании в вашей стране запрещено.</p>
-        <? endif ?>
-    <? else: ?>
-        <? if ($user->region->state->allow_register_holdings_noncitizens): ?>
+        <?php endif ?>
+    <?php else: ?>
+        <?php if ($user->region->state->allow_register_holdings_noncitizens): ?>
             <p><button class="btn btn-green btn-sm" onclick="$('#create_holding_dialog').modal()">Создать акционерное общество</button></p>
-        <? else: ?>
+        <?php else: ?>
             <p>Иностранцам запрещено регистрировать компании в этой стране.</p>
-        <? endif ?>
-    <? endif ?>
+        <?php endif ?>
+    <?php endif ?>
     <div style="display:none" class="modal fade" id="create_holding_dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
                     <div class="modal-content">
@@ -102,24 +102,24 @@ use yii\helpers\Html;
                         <input type="text" id="new_holding_capitalisation" value="<?=($inHomeland ? $user->region->state->register_holdings_mincap : $user->region->state->register_holdings_noncitizens_mincap)?>"> <?=MyHtmlHelper::icon('money')?>
                     </div>
                     <p class="help-inline">
-                        <? if ($inHomeland) : ?>
+                        <?php if ($inHomeland) : ?>
                             Начальная капитализация не должна быть меньше чем <?=MyHtmlHelper::moneyFormat($user->region->state->register_holdings_mincap)?>
-                            <? if ($user->region->state->register_holdings_maxcap > 0): ?>
+                            <?php if ($user->region->state->register_holdings_maxcap > 0): ?>
                             <br> Начальная капитализация не должна быть больше чем <?=MyHtmlHelper::moneyFormat($user->region->state->register_holdings_maxcap)?>
-                            <? endif ?>
-                        <? else: ?>
+                            <?php endif ?>
+                        <?php else: ?>
                             Начальная капитализация не должна быть меньше чем <?=MyHtmlHelper::moneyFormat($user->region->state->register_holdings_noncitizens_mincap)?>
-                            <? if ($user->region->state->register_holdings_noncitizens_maxcap > 0): ?>
+                            <?php if ($user->region->state->register_holdings_noncitizens_maxcap > 0): ?>
                             <br> Начальная капитализация не должна быть больше чем <?=MyHtmlHelper::moneyFormat($user->region->state->register_holdings_noncitizens_maxcap)?>
-                            <? endif ?>
-                        <? endif ?>
+                            <?php endif ?>
+                        <?php endif ?>
                     </p>
                 </div>
-            <? if ($inHomeland) : ?>
+            <?php if ($inHomeland) : ?>
                 <p>Гос. пошлина: <?= MyHtmlHelper::moneyFormat($user->region->state->register_holdings_cost) ?></p>
-            <? else: ?>
+            <?php else: ?>
                 <p>Гос. пошлина для иностранцев: <?= MyHtmlHelper::moneyFormat($user->region->state->register_holdings_noncitizens_cost) ?></p>
-            <? endif ?>
+            <?php endif ?>
                 <p>Всего вам нужно заплатить: <span id="new_holding_sum_cost"></span> <?=MyHtmlHelper::icon('money')?></p>
             </div>
             <div class="modal-footer">
@@ -153,7 +153,7 @@ use yii\helpers\Html;
         updateNewHoldingCost();
     });
 </script>
-<? } ?>
+<?php } ?>
 
 <script type="text/javascript">        
     $(function () {

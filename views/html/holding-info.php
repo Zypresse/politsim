@@ -13,8 +13,8 @@ use app\components\MyHtmlHelper;
             <h1><?=htmlspecialchars($holding->name)?></h1>
             <p>Директор: <?= $holding->director ? $holding->director->getHtmlName() : '<em>не назначен</em>' ?></p>
             <p>Примерная капитализация: <span class="status-success"><?=MyHtmlHelper::aboutNumber($holding->capital)?> <?=MyHtmlHelper::icon('money')?></span></p>
-            <? if ($holding->state) { ?><p>Компания зарегистрирована в государстве <?=$holding->state->getHtmlName()?></p><? } ?>
-            <? if ($holding->region) { ?><p>Компания имеет головной офис в городе <?=$holding->region->getCityHtmlName()?></p><? } ?>
+            <?php if ($holding->state) { ?><p>Компания зарегистрирована в государстве <?=$holding->state->getHtmlName()?></p><?php } ?>
+            <?php if ($holding->region) { ?><p>Компания имеет головной офис в городе <?=$holding->region->getCityHtmlName()?></p><?php } ?>
         </div>
     </div>
     <div class="row">
@@ -27,7 +27,7 @@ use app\components\MyHtmlHelper;
                 </div>
                 <div class="box-content">    
                     <table class="table table-normal">
-                    <? if (count($factories)): ?>
+                    <?php if (count($factories)): ?>
                         <thead>
                             <tr>
                                 <td>Предприятие</td>
@@ -35,18 +35,18 @@ use app\components\MyHtmlHelper;
                             </tr>
                         </thead>
                         <tbody>
-                            <? foreach ($factories as $factory): ?>
+                            <?php foreach ($factories as $factory): ?>
                             <tr>
                                 <td><?=$factory->getHtmlName()?></td>
                                 <td><?=$factory->region->getHtmlName()?></td>
                             </tr>
-                            <? endforeach ?>
-                    <? else: ?>
+                            <?php endforeach ?>
+                    <?php else: ?>
                         <tbody>
                             <tr>
                                 <td>Компания не владеет недвижимостью</td>
                             </tr>
-                    <? endif ?>
+                    <?php endif ?>
                         </tbody>
                     </table>
                 </div>

@@ -19,27 +19,27 @@ use app\components\MyHtmlHelper;
         <th title="Возраст">❤</th>
         <th>Число</th>
     </tr>
-<? foreach ($people_by_class as $group) { ?>
+<?php foreach ($people_by_class as $group) { ?>
 <tr>
 <td><?=$group['name']?></td>
 <td>
-<a href="javascript:return false;" rel="popover" class="diagramm" data-content="<table class='table'><? foreach ($group['ideologies'] as $ideology) { ?><tr><td style='background-color:<?=$ideology['color']?>; width:20px;'> &nbsp; </td><td><?=$ideology['name']?></td><td><?=$ideology['percents']?>%</td></tr><? } ?></table>" data-original-title="Идеологии" ><span class="pie-colours-1"><? $i = 0; foreach ($group['ideologies'] as $ideology) { ?><?=$i ? ',' : ''?><?=$ideology['percents']?><? $i++; } ?></span></a>
+<a href="javascript:return false;" rel="popover" class="diagramm" data-content="<table class='table'><?php foreach ($group['ideologies'] as $ideology) { ?><tr><td style='background-color:<?=$ideology['color']?>; width:20px;'> &nbsp; </td><td><?=$ideology['name']?></td><td><?=$ideology['percents']?>%</td></tr><?php } ?></table>" data-original-title="Идеологии" ><span class="pie-colours-1"><?php $i = 0; foreach ($group['ideologies'] as $ideology) { ?><?=$i ? ',' : ''?><?=$ideology['percents']?><?php $i++; } ?></span></a>
 </td>
 <td>
-<a href="javascript:return false;" rel="popover" class="diagramm" data-content="<table class='table'><? foreach ($group['sex'] as $sex) { ?><tr><td style='background-color:<?=$sex['color']?>; width:20px;'> &nbsp; </td><td><?=$sex['name']?></td><td><?=$sex['percents']?>%</td></tr><? } ?></table>" data-original-title="Пол" ><span class="pie-colours-2"><? $i = 0; foreach ($group['sex'] as $sex) { ?><?=$i ? ',' : ''?><?=$sex['percents']?><? $i++; } ?></span></a>
+<a href="javascript:return false;" rel="popover" class="diagramm" data-content="<table class='table'><?php foreach ($group['sex'] as $sex) { ?><tr><td style='background-color:<?=$sex['color']?>; width:20px;'> &nbsp; </td><td><?=$sex['name']?></td><td><?=$sex['percents']?>%</td></tr><?php } ?></table>" data-original-title="Пол" ><span class="pie-colours-2"><?php $i = 0; foreach ($group['sex'] as $sex) { ?><?=$i ? ',' : ''?><?=$sex['percents']?><?php $i++; } ?></span></a>
 </td>
 <td>
-<a href="javascript:return false;" rel="popover" class="diagramm" data-content="<table class='table'><? foreach ($group['nations'] as $nation) { ?><tr><td style='background-color:<?=$nation['color']?>; width:20px;'> &nbsp; </td><td><?=$nation['name']?></td><td><?=$nation['percents']?>%</td></tr><? } ?></table>" data-original-title="Национальность" ><span class="pie-colours-3"><? $i = 0; foreach ($group['nations'] as $nation) { ?><?=$i ? ',' : ''?><?=$nation['percents']?><? $i++; } ?></span></a>
+<a href="javascript:return false;" rel="popover" class="diagramm" data-content="<table class='table'><?php foreach ($group['nations'] as $nation) { ?><tr><td style='background-color:<?=$nation['color']?>; width:20px;'> &nbsp; </td><td><?=$nation['name']?></td><td><?=$nation['percents']?>%</td></tr><?php } ?></table>" data-original-title="Национальность" ><span class="pie-colours-3"><?php $i = 0; foreach ($group['nations'] as $nation) { ?><?=$i ? ',' : ''?><?=$nation['percents']?><?php $i++; } ?></span></a>
 </td>
 <td>
-<a href="javascript:return false;" rel="popover" class="diagramm" data-content="<table class='table'><? foreach ($group['religions'] as $religion) { ?><tr><td style='background-color:<?=$religion['color']?>; width:20px;'> &nbsp; </td><td><?=$religion['name']?></td><td><?=$religion['percents']?>%</td></tr><? } ?></table>" data-original-title="Религия" ><span class="pie-colours-5"><? $i = 0; foreach ($group['religions'] as $religion) { ?><?=$i ? ',' : ''?><?=$religion['percents']?><? $i++; } ?></span></a>
+<a href="javascript:return false;" rel="popover" class="diagramm" data-content="<table class='table'><?php foreach ($group['religions'] as $religion) { ?><tr><td style='background-color:<?=$religion['color']?>; width:20px;'> &nbsp; </td><td><?=$religion['name']?></td><td><?=$religion['percents']?>%</td></tr><?php } ?></table>" data-original-title="Религия" ><span class="pie-colours-5"><?php $i = 0; foreach ($group['religions'] as $religion) { ?><?=$i ? ',' : ''?><?=$religion['percents']?><?php $i++; } ?></span></a>
 </td>
 <td>
-<a href="javascript:return false;" rel="popover" class="diagramm" data-content="<table class='table'><? foreach ($group['age'] as $age) { ?><tr><td style='background-color:<?=$age['color']?>; width:20px;'> &nbsp; </td><td><?=$age['name']?></td><td><?=$age['percents']?>%</td></tr><? } ?></table>" data-original-title="Возраст" ><span class="pie-colours-4"><? $i = 0; foreach ($group['age'] as $age) { ?><?=$i ? ',' : ''?><?=$age['percents']?><? $i++; } ?></span></a>
+<a href="javascript:return false;" rel="popover" class="diagramm" data-content="<table class='table'><?php foreach ($group['age'] as $age) { ?><tr><td style='background-color:<?=$age['color']?>; width:20px;'> &nbsp; </td><td><?=$age['name']?></td><td><?=$age['percents']?>%</td></tr><?php } ?></table>" data-original-title="Возраст" ><span class="pie-colours-4"><?php $i = 0; foreach ($group['age'] as $age) { ?><?=$i ? ',' : ''?><?=$age['percents']?><?php $i++; } ?></span></a>
 </td>
 <td><?=MyHtmlHelper::formateNumberword($group['count'],'h')?></td>
 </tr>
-<? } ?>
+<?php } ?>
 </table>
 <h4>Все группы: <button class="btn btn-xs btn-default" id="show_all_groups_population">Показать</button></h4>
 <table class="table" id="all_groups_population" style="display: none">
@@ -54,11 +54,11 @@ use app\components\MyHtmlHelper;
     <!--<th></th>-->
     <th>Число</th>
 </tr>
-<? foreach ($people as $group) { ?>
+<?php foreach ($people as $group) { ?>
 <tr style="font-size: 70%">
     <td><?=$group->id?></td>
     <td><?=$group->classinfo->name?></td>
-    <td><? if ($group->sex) { ?>м<? } else { ?>ж<? } ?></td>
+    <td><?php if ($group->sex) { ?>м<?php } else { ?>ж<?php } ?></td>
     <td><?=$group->nationinfo->name?></td>
     <td><?=$group->ideologyinfo->name?></td>
     <td><?=$group->religioninfo->name?></td>
@@ -66,7 +66,7 @@ use app\components\MyHtmlHelper;
     <!--<td><?=$group->factory_id?></td>-->
     <td><?=MyHtmlHelper::formateNumberword($group->count,'человек','человек','человека')?></td>
 </tr>
-<? } ?>
+<?php } ?>
 </table>
 
 
@@ -84,27 +84,27 @@ $(function(){
     })
 
 	$(".pie-colours-1").peity("pie", {
-	  fill: [<? $j = 0; foreach ($people_by_class as $group) { ?><?=$j ? ',' : ''?><? $i = 0; foreach ($group['ideologies'] as $ideology) { ?><?=$i ? ',' : ''?>"<?=$ideology['color']?>"<? $i++; } ?><? $j++; } ?>],
+	  fill: [<?php $j = 0; foreach ($people_by_class as $group) { ?><?=$j ? ',' : ''?><?php $i = 0; foreach ($group['ideologies'] as $ideology) { ?><?=$i ? ',' : ''?>"<?=$ideology['color']?>"<?php $i++; } ?><?php $j++; } ?>],
 	  width: 20,
 	  height:20
 	})
 	$(".pie-colours-2").peity("pie", {
-	  fill: [<? $j = 0; foreach ($people_by_class as $group) { ?><?=$j ? ',' : ''?><? $i = 0; foreach ($group['sex'] as $sex) { ?><?=$i ? ',' : ''?>"<?=$sex['color']?>"<? $i++; } ?><? $j++; } ?>],
+	  fill: [<?php $j = 0; foreach ($people_by_class as $group) { ?><?=$j ? ',' : ''?><?php $i = 0; foreach ($group['sex'] as $sex) { ?><?=$i ? ',' : ''?>"<?=$sex['color']?>"<?php $i++; } ?><?php $j++; } ?>],
 	  width: 20,
 	  height:20
 	})
 	$(".pie-colours-3").peity("pie", {
-	  fill: [<? $j = 0; foreach ($people_by_class as $group) { ?><?=$j ? ',' : ''?><? $i = 0; foreach ($group['nations'] as $nation) { ?><?=$i ? ',' : ''?>"<?=$nation['color']?>"<? $i++; } ?><? $j++; } ?>],
+	  fill: [<?php $j = 0; foreach ($people_by_class as $group) { ?><?=$j ? ',' : ''?><?php $i = 0; foreach ($group['nations'] as $nation) { ?><?=$i ? ',' : ''?>"<?=$nation['color']?>"<?php $i++; } ?><?php $j++; } ?>],
 	  width: 20,
 	  height:20
 	})
 	$(".pie-colours-4").peity("pie", {
-	  fill: [<? $j = 0; foreach ($people_by_class as $group) { ?><?=$j ? ',' : ''?><? $i = 0; foreach ($group['age'] as $age) { ?><?=$i ? ',' : ''?>"<?=$age['color']?>"<? $i++; } ?><? $j++; } ?>],
+	  fill: [<?php $j = 0; foreach ($people_by_class as $group) { ?><?=$j ? ',' : ''?><?php $i = 0; foreach ($group['age'] as $age) { ?><?=$i ? ',' : ''?>"<?=$age['color']?>"<?php $i++; } ?><?php $j++; } ?>],
 	  width: 20,
 	  height:20
 	})
 	$(".pie-colours-5").peity("pie", {
-	  fill: [<? $j = 0; foreach ($people_by_class as $group) { ?><?=$j ? ',' : ''?><? $i = 0; foreach ($group['religions'] as $religion) { ?><?=$i ? ',' : ''?>"<?=$religion['color']?>"<? $i++; } ?><? $j++; } ?>],
+	  fill: [<?php $j = 0; foreach ($people_by_class as $group) { ?><?=$j ? ',' : ''?><?php $i = 0; foreach ($group['religions'] as $religion) { ?><?=$i ? ',' : ''?>"<?=$religion['color']?>"<?php $i++; } ?><?php $j++; } ?>],
 	  width: 20,
 	  height:20
 	})

@@ -1,15 +1,12 @@
-<?
-    use app\components\MyHtmlHelper;
-?>
 <h3>Переименование города</h3>
 <form class="form-horizontal">
 	<div class="control-group">	
 		<label class="control-label" for="bill_region_id" >Город</label>
 		<div class="controls">
 			<select class="bill_field" id="bill_region_id" name="region_id">
-		 	<? foreach ($user->state->regions as $region): ?>
+		 	<?php foreach ($user->state->regions as $region): ?>
 		 		<option value="<?=$region->code?>"><?=$region->city?></option>
-		 	<? endforeach ?>
+		 	<?php endforeach ?>
 			</select>
 	 	</div>
         </div>

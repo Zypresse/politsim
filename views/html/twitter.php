@@ -1,5 +1,4 @@
-<?
-
+<?php 
 use app\components\MyHtmlHelper;
 
 $own = ($viewer_id === $user->id);
@@ -23,7 +22,7 @@ $own = ($viewer_id === $user->id);
                 </div>
             </div>
         </div>
-        <? if (!$user->twitter_nickname && $own) { ?>
+        <?php if (!$user->twitter_nickname && $own) { ?>
             <div style="display:none" class="modal fade" id="set_twitter_nickname" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -42,7 +41,7 @@ $own = ($viewer_id === $user->id);
                     </div>
                 </div>
             </div>
-        <? } ?>
+        <?php } ?>
         <div class="row" style="margin-left:0">
             <div class="col-md-3">
                 <p>
@@ -50,11 +49,11 @@ $own = ($viewer_id === $user->id);
                         <img class="img-polaroid" style="vertical-align: top;" src="<?= $user->photo_big ?>" alt=''>
                     </a></p>
                 <h4><a href="#" onclick="load_page('profile', {'uid':<?= $user->id ?>});"><?= htmlspecialchars($user->name) ?></a></h4>
-                <? if ($user->twitter_nickname) { ?><h5 style="color:#333">@<?= $user->twitter_nickname ?></h5><? } ?>
+                <?php if ($user->twitter_nickname) { ?><h5 style="color:#333">@<?= $user->twitter_nickname ?></h5><?php } ?>
                 <p><i class="icon-user"></i> <strong><?= MyHtmlHelper::formateNumberword($user->getTwitterSubscribersCount(), '</strong> подписчиков', '</strong> подписчик', '</strong> подписчика') ?></p>
-                <? if ($user->region) { ?><p><i class="icon-map-marker"></i> <?= htmlspecialchars($user->region->name) ?> </p><? } ?>
+                <?php if ($user->region) { ?><p><i class="icon-map-marker"></i> <?= htmlspecialchars($user->region->name) ?> </p><?php } ?>
             </div>
-            <div class="col-md-4" id="twitter_user_feed"><? if ($own) { ?>
+            <div class="col-md-4" id="twitter_user_feed"><?php if ($own) { ?>
                     <h5>Выберите, о чём написать:</h5>
                     <p>
                         <button class="btn btn-default btn-sm" onclick="load_modal('tweet-about-human', {}, 'tweet_about_human', 'tweet_about_human_body');">О человеке</button>
@@ -68,30 +67,30 @@ $own = ($viewer_id === $user->id);
                     <button class="btn btn-blue btn-xs" type="submit" onclick="if ($('#new_message').val())
                                     json_request('tweet', {'text': $('#new_message').val()})">Отправить</button>
                     <br>
-                <? } else { ?>
+                <?php } else { ?>
                     <button class="btn btn-block btn-red" onclick="load_page('twitter')">Вернуться свой профиль</button>
-                <? } ?>
+                <?php } ?>
                 <h4>Последние посты <small>(всего <?= $user->getTweetsCount() ?>)</small></h4>
-                <? foreach ($tweets as $i => $tweet) { ?>
-                    <div class="tweet <? if ($i === count($tweets) - 1) { ?>last<? } ?>">
+                <?php foreach ($tweets as $i => $tweet) { ?>
+                    <div class="tweet <?php if ($i === count($tweets) - 1) { ?>last<?php } ?>">
                         <strong><a href="#" onclick="load_page('twitter', {'uid':<?= $user->id ?>})"><?= htmlspecialchars($user->name) ?></a></strong> <span class="date prettyDate" data-unixtime="<?= $tweet->date ?>"><?= date('d-M-Y H:i', $tweet->date) ?></span>
-                        <? if ($tweet->originalUser) { ?><p class="date">Репост от <a href="#" onclick="load_page('twitter', {'uid':<?= $tweet->original ?>})"><?= htmlspecialchars($tweet->originalUser->name) ?></a></p><? } ?>
+                        <?php if ($tweet->originalUser) { ?><p class="date">Репост от <a href="#" onclick="load_page('twitter', {'uid':<?= $tweet->original ?>})"><?= htmlspecialchars($tweet->originalUser->name) ?></a></p><?php } ?>
                         <p><?= MyHtmlHelper::parseTwitterLinks($tweet->text) ?></p>
-                        <p class="tweet-footer"><? if ($tweet->uid !== $viewer_id && !$own && $tweet->original !== $viewer_id) { ?><a href="#" class="btn btn-xs btn-default repost" data-id="<?= $tweet->id ?>" title="Репост"><i class="icon-repeat"></i></a><? } else { ?><i class="icon-repeat"></i><? } ?> <?= MyHtmlHelper::formateNumberword($tweet->retweets, 'репостов', 'репост', 'репоста') ?> <? if ($own) { ?><button class="btn btn-red btn-sm delete delete_tweet" title="Удалить" data-id="<?= $tweet->id ?>" >X</button><? } ?></p>
+                        <p class="tweet-footer"><?php if ($tweet->uid !== $viewer_id && !$own && $tweet->original !== $viewer_id) { ?><a href="#" class="btn btn-xs btn-default repost" data-id="<?= $tweet->id ?>" title="Репост"><i class="icon-repeat"></i></a><?php } else { ?><i class="icon-repeat"></i><?php } ?> <?= MyHtmlHelper::formateNumberword($tweet->retweets, 'репостов', 'репост', 'репоста') ?> <?php if ($own) { ?><button class="btn btn-red btn-sm delete delete_tweet" title="Удалить" data-id="<?= $tweet->id ?>" >X</button><?php } ?></p>
                     </div>
-                <? } ?>
+                <?php } ?>
                 <button class="btn btn-block btn-default" id="update_user_feed" data-time="<?= $timeFeedGenerated ?>" data-offset="3" data-uid="<?= $user->id ?>" >Далее</button>
             </div>
             <div class="col-md-4" id="twitter_popular_feed">
                 <h4>Популярные посты</h4>
-                <? foreach ($feed as $i => $tweet) { ?>
-                    <div class="tweet <? if ($i === count($feed) - 1) { ?>last<? } ?>">
-                        <a href="#" onclick="load_page('twitter', {'uid':<?= $tweet->uid ?>})"><strong><?= htmlspecialchars($tweet->user->name) ?></strong><? if ($tweet->user->twitter_nickname): ?> @<?= $tweet->user->twitter_nickname ?><? endif ?></a> <span class="date prettyDate" data-unixtime="<?= $tweet->date ?>"><?= date('d-M-Y H:i', $tweet->date) ?></span>
-                        <? if ($tweet->originalUser) { ?><p class="date">Репост от <a href="#" onclick="load_page('twitter', {'uid':<?= $tweet->original ?>})"><?= htmlspecialchars($tweet->originalUser->name) ?></a></p><? } ?>
+                <?php foreach ($feed as $i => $tweet) { ?>
+                    <div class="tweet <?php if ($i === count($feed) - 1) { ?>last<?php } ?>">
+                        <a href="#" onclick="load_page('twitter', {'uid':<?= $tweet->uid ?>})"><strong><?= htmlspecialchars($tweet->user->name) ?></strong><?php if ($tweet->user->twitter_nickname): ?> @<?= $tweet->user->twitter_nickname ?><?php endif ?></a> <span class="date prettyDate" data-unixtime="<?= $tweet->date ?>"><?= date('d-M-Y H:i', $tweet->date) ?></span>
+                        <?php if ($tweet->originalUser) { ?><p class="date">Репост от <a href="#" onclick="load_page('twitter', {'uid':<?= $tweet->original ?>})"><?= htmlspecialchars($tweet->originalUser->name) ?></a></p><?php } ?>
                         <p><?= MyHtmlHelper::parseTwitterLinks($tweet->text) ?></p>
-                        <p class="tweet-footer"><? if ($tweet->uid !== $viewer_id && $tweet->original !== $viewer_id) { ?><a href="#" class="btn btn-xs btn-default repost" title="Репост" data-id="<?= $tweet->id ?>"><i class="icon-repeat"></i></a><? } else { ?><i class="icon-repeat"></i><? } ?> <?= MyHtmlHelper::formateNumberword($tweet->retweets, 'репостов', 'репост', 'репоста') ?></p>
+                        <p class="tweet-footer"><?php if ($tweet->uid !== $viewer_id && $tweet->original !== $viewer_id) { ?><a href="#" class="btn btn-xs btn-default repost" title="Репост" data-id="<?= $tweet->id ?>"><i class="icon-repeat"></i></a><?php } else { ?><i class="icon-repeat"></i><?php } ?> <?= MyHtmlHelper::formateNumberword($tweet->retweets, 'репостов', 'репост', 'репоста') ?></p>
                     </div>
-                <? } ?>
+                <?php } ?>
                 <button class="btn btn-block btn-default" id="update_feed" data-time="<?= $timeFeedGenerated ?>" data-offset="5" >Далее</button>
             </div></div>
 
@@ -120,7 +119,7 @@ $own = ($viewer_id === $user->id);
             }
 
             $(function () {
-<? if ($own) { ?>
+<?php if ($own) { ?>
                     $('#set_twitter_nickname').modal();
 
                     $('#save_nickname').click(function () {
@@ -131,7 +130,7 @@ $own = ($viewer_id === $user->id);
                             alert('Ник должен содержать только латинские буквы и быть от 4 до 20 знаков в длину');
                     });
 
-<? } ?>
+<?php } ?>
 
                 $('#update_feed').click(function () {
                     $(this).attr("disabled", "disabled");

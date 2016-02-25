@@ -15,12 +15,12 @@ use app\components\MyHtmlHelper,
             <p><strong>Лицевой счёт:</strong> <?=MyHtmlHelper::moneyFormat($factory->balance)?></p>
             <p>
                 <strong>Статус:</strong> <?= $factory->statusName ?> 
-                <? if ($factory->status < 0) { ?>
+                <?php if ($factory->status < 0) { ?>
                     (запланированная дата окончания строительства: 
                     <span class="formatDate" data-unixtime="<?= $factory->builded ?>">
                         <?= date('d-M-Y H:i', $factory->builded) ?>
                     </span>)
-                <? } ?>
+                <?php } ?>
             </p>
         </div>
         <div class="col-md-5">
@@ -119,12 +119,12 @@ use app\components\MyHtmlHelper,
                         Закупка <?=number_format($settings->count,0,'',' ')?> <?=$settings->resourceProto->icon?> в час
                         по цене не выше <?=MyHtmlHelper::moneyFormat($settings->max_cost)?>
                         качества не ниже <?=MyHtmlHelper::oneTen2Stars($settings->min_quality)?>
-                        <? if ($settings->state_id): ?>
+                        <?php if ($settings->state_id): ?>
                             только у налогоплательщиков страны <?=$settings->state->getHtmlName()?>
-                        <? endif ?>
-                        <? if ($settings->holding_id): ?>
+                        <?php endif ?>
+                        <?php if ($settings->holding_id): ?>
                             только у предприятий компании <?=$settings->holding->getHtmlName()?>
-                        <? endif ?>
+                        <?php endif ?>
                     </p>
                 <?php endforeach ?>
                 <?php else: ?>

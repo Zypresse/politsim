@@ -1,6 +1,5 @@
-<?
-
-use yii\helpers\Html;
+<?php 
+    use yii\helpers\Html;
 ?>
 <h3>Смена гимна</h3>
 <form class="form-horizontal">

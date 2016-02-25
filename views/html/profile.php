@@ -18,44 +18,44 @@ use app\components\MyHtmlHelper;
             </div>
         </div>
         <div class="col-md-9">
-            <h1><?= htmlspecialchars($user->name) ?> <? if ($is_own) { ?><small>(это вы)</small><? } ?></h1>
-            <? if ($user->ideology || $is_own):  ?>
+            <h1><?= htmlspecialchars($user->name) ?> <?php if ($is_own) { ?><small>(это вы)</small><?php } ?></h1>
+            <?php if ($user->ideology || $is_own):  ?>
                 <p>
                     <i class="icon-flag"></i>
-                <? if ($user->ideology) : ?>
+                <?php if ($user->ideology) : ?>
                     Придерживается идеологии «<?= $user->ideology->name ?>»
-                <? endif ?>
-                <? if ($is_own): ?>
-                    <button onclick="load_modal('change-ideology', {}, 'change_ideology_modal', 'change_ideology_modal_body')" class="btn btn-<? if ($user->ideology) { ?>default<? } else { ?>lightblue<? } ?> btn-xs"><? if ($user->ideology) { ?>Сменить<? } else { ?>Выбрать<? } ?> идеологию</button>
-                <? endif ?>
+                <?php endif ?>
+                <?php if ($is_own): ?>
+                    <button onclick="load_modal('change-ideology', {}, 'change_ideology_modal', 'change_ideology_modal_body')" class="btn btn-<?php if ($user->ideology) { ?>default<?php } else { ?>lightblue<?php } ?> btn-xs"><?php if ($user->ideology) { ?>Сменить<?php } else { ?>Выбрать<?php } ?> идеологию</button>
+                <?php endif ?>
                 </p>
-            <? endif ?>
-            <p><i class="icon-group"></i> <? if ($user->party) { ?>
+            <?php endif ?>
+            <p><i class="icon-group"></i> <?php if ($user->party) { ?>
                     Состоит в партии <?=$user->party->getHtmlName()?>
-                <? } else { ?>
-                    <? if ($user->sex === 1) { ?>Беспартийная<? } else { ?>Беспартийный<? } ?>
-                <? } ?></p>
-            <p><i class="icon-globe"></i> <? if ($user->state) { ?>
-                    <? if ($user->sex === 1) { ?>Гражданка<? } else { ?>Гражданин<? } ?> государства <?=$user->state->getHtmlName()?>
-                <? } else { ?>
-                    <? if ($user->sex === 1) { ?>Гражданка<? } else { ?>Гражданин<? } ?> мира
-                <? } ?></p>
-            <? if ($user->region) { ?><p><i class="icon-map-marker"></i> Живет в регионе <?=$user->region->getHtmlName()?></p><? } ?>
-            <? if ($user->post) { ?><p><i class="icon-briefcase"></i> Занимает пост &laquo;<?= htmlspecialchars($user->post->name) ?>&raquo;<? if ($user->post->org) { ?> в организации <?=$user->post->org->getHtmlName()?></p><? } ?><? } ?>
-            <? if (count($user->medales)) { ?><p>
+                <?php } else { ?>
+                    <?php if ($user->sex === 1) { ?>Беспартийная<?php } else { ?>Беспартийный<?php } ?>
+                <?php } ?></p>
+            <p><i class="icon-globe"></i> <?php if ($user->state) { ?>
+                    <?php if ($user->sex === 1) { ?>Гражданка<?php } else { ?>Гражданин<?php } ?> государства <?=$user->state->getHtmlName()?>
+                <?php } else { ?>
+                    <?php if ($user->sex === 1) { ?>Гражданка<?php } else { ?>Гражданин<?php } ?> мира
+                <?php } ?></p>
+            <?php if ($user->region) { ?><p><i class="icon-map-marker"></i> Живет в регионе <?=$user->region->getHtmlName()?></p><?php } ?>
+            <?php if ($user->post) { ?><p><i class="icon-briefcase"></i> Занимает пост &laquo;<?= htmlspecialchars($user->post->name) ?>&raquo;<?php if ($user->post->org) { ?> в организации <?=$user->post->org->getHtmlName()?></p><?php } ?><?php } ?>
+            <?php if (count($user->medales)) { ?><p>
                 <h4>Значки:</h4>
-                <? foreach ($user->medales as $medale) { ?>
+                <?php foreach ($user->medales as $medale) { ?>
                     <a href="#" rel="popover" class="medale" data-content="<?= htmlspecialchars($medale->proto->desc) ?>" data-original-title="<?= htmlspecialchars($medale->proto->name) ?>" ><img src="<?= $medale->proto->image ?>" alt="<?= htmlspecialchars($medale->proto->name) ?>" class="img-polaroid" ></a> 
-                <? } ?>
+                <?php } ?>
                 </p>
                 <script type="text/javascript">
                     $(function () {
                         $('.medale').popover({'placement': 'top'});
                     })
                 </script>
-            <? } ?>
+            <?php } ?>
 
-            <? if (!$is_own) { ?>
+            <?php if (!$is_own) { ?>
                 <div class="btn-toolbar">
                     <div class="btn-group">
                         <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
@@ -141,9 +141,9 @@ use app\components\MyHtmlHelper;
                                         <label class="control-label" for="#holding_id">Компания</label>
                                         <div class="controls">
                                             <select id="holding_id" >
-                                                <? foreach ($viewer->stocks as $stock): if ($stock->holding): ?>
+                                                <?php foreach ($viewer->stocks as $stock): if ($stock->holding): ?>
                                                         <option value="<?= $stock->holding_id ?>"><?= $stock->holding->name ?> (<?= number_format($stock->count, 0, '', ' ') ?>)</option>
-                                                    <? endif;
+                                                    <?php endif;
                                                 endforeach;
                                                 ?>
                                             </select>
@@ -263,11 +263,11 @@ use app\components\MyHtmlHelper;
                     }
 
                 </script>
-<? } ?>
+<?php } ?>
         </div>
     </div>
 </div>
-<? if ($is_own): ?>
+<?php if ($is_own): ?>
 <div style="display:none" class="modal fade" id="change_ideology_modal" tabindex="-1" role="dialog" aria-labelledby="change_ideology_modal_label" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -285,4 +285,4 @@ use app\components\MyHtmlHelper;
         </div>
     </div>
 </div>
-<? endif ?>
+<?php endif ?>

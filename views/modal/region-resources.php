@@ -9,11 +9,11 @@ use app\components\MyHtmlHelper;
   <li class="active"><a href="#">Ресурсы</a></li>
 </ul>
 <h1><?=htmlspecialchars($region->name)?></h1>
-<? /* if ($region->state_id) { ?><p><? if ($region->isCapital()) { ?>Столица государства<? } else { ?>Принадлежит государству<? } ?> &laquo;<a href='#' onclick="$('.modal-backdrop').hide(); load_page('state-info',{'id':<?=$region->state_id?>});" ><?=htmlspecialchars($region->state->name)?></a>&raquo;</p><? } */ ?>
+<?php /* if ($region->state_id) { ?><p><?php if ($region->isCapital()) { ?>Столица государства<?php } else { ?>Принадлежит государству<?php } ?> &laquo;<a href='#' onclick="$('.modal-backdrop').hide(); load_page('state-info',{'id':<?=$region->state_id?>});" ><?=htmlspecialchars($region->state->name)?></a>&raquo;</p><?php } */ ?>
 <h3>Эффективность добычи ресурсов в этом регионе</h3>
 <ul class="res-list" >
-    <? foreach ($region->diggingEffs as $de): ?>
-        <li <? 
+    <?php foreach ($region->diggingEffs as $de): ?>
+        <li <?php 
         	switch ($de->group_id) {
         		case 1:
         			echo 'style="background-color:#A89B71"';
@@ -29,7 +29,7 @@ use app\components\MyHtmlHelper;
         			break;
         	}
         ?> ><?=$de->resourceProto->icon?> <?=$de->resourceProto->name?> — <?=MyHtmlHelper::zeroOne2Stars($de->k)?></li>
-    <? endforeach ?>
+    <?php endforeach ?>
 </ul>
 
 <script>

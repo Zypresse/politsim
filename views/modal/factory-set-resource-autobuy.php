@@ -69,10 +69,10 @@ use app\components\MyHtmlHelper;
     
     function updateQualityStars(quality) {
         var texts = [
-        <? for ($i = 0; $i <= 10; $i++): ?>
+        <?php for ($i = 0; $i <= 10; $i++): ?>
             <?=($i?',':'')?>
             '<?=MyHtmlHelper::oneTen2Stars($i)?>'
-        <? endfor ?>
+        <?php endfor ?>
         ];
         
         $('#resource_for_autobuy_quality_stars').html(texts[quality]);

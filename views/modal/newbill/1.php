@@ -1,6 +1,3 @@
-<?
-    use app\components\MyHtmlHelper;
-?>
 <h3>Переименование страны</h3>
 <form class="form-horizontal">
 	<div class="control-group">	

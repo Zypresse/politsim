@@ -141,7 +141,6 @@ class ModalController extends MyController {
             if (is_null($bill_type)) {
                 return $this->_r("Bill type not found");
             }
-            $fields = BillProtoField::find()->where(['proto_id' => $id])->all();
 
             $user = $this->getUser();
             if (is_null($user->state)) {

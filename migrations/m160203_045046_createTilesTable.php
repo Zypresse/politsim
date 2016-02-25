@@ -1,7 +1,6 @@
 <?php
 
-use yii\db\Migration,
-    app\models\tiles\TileFactory;
+use yii\db\Migration;
 
 class m160203_045046_createTilesTable extends Migration
 {

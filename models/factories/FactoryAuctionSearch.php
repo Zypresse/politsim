@@ -107,11 +107,11 @@ class FactoryAuctionSearch extends FactoryAuction
             'winner_unnp' => $this->winner_unnp,
         ]);
         
-        $query->joinWith(['factory' => function ($q) {
+        $query->joinWith(['factory' => function (ActiveDataProvider $q) {
             $q->where(Factory::tableName().'.name LIKE "%' . $this->factoryName . '%"');
-        }])->joinWith(['factory.holding' => function ($q) {
+        }])->joinWith(['factory.holding' => function (ActiveDataProvider $q) {
             $q->where(Holding::tableName().'.name LIKE "%' . $this->holdingName . '%"');
-        }])->joinWith(['factory.region' => function ($q) {
+        }])->joinWith(['factory.region' => function (ActiveDataProvider $q) {
             $q->where(Region::tableName().'.name LIKE "%' . $this->regionName. '%"');
         }]);
 

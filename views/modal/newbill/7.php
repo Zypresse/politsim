@@ -1,14 +1,15 @@
-<?
-    use app\components\MyHtmlHelper,
-        app\models\articles\proto\ArticleProto;
+<?php     
+
+    use app\models\articles\proto\ArticleProto;
+    
 ?>
 <p>Внесение поправки в конституцию</p>
 <form class="form-horizontal">
     <div class="control-group">
         <select class="bill_field" id="bill_article_proto_id" name="article_proto_id">
-            <? foreach (ArticleProto::find()->where(['hide' => 0])->all() as $type) { ?>
+            <?php foreach (ArticleProto::find()->where(['hide' => 0])->all() as $type) { ?>
             <option value="<?=$type->id?>"><?=$type->name?></option>
-            <? } ?>
+            <?php } ?>
         </select>
     </div>
     <div class="control-group" id="goverment_field_value_block">

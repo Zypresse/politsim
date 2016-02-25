@@ -9,9 +9,9 @@
             <h4>Эффективность добычи ресурсов по регионам</h4>
             <p>
                 Выберите ресурс:
-                <? foreach ($resources as $i => $res) { ?>
-                    <button class="btn btn-xs btn-default <? if ($i === 0) { ?>btn-lightblue<? } ?> economic_map_btn" data-id="<?= $res->id ?>" ><?=$res->icon?></button>
-                <? } ?>
+                <?php foreach ($resources as $i => $res) { ?>
+                    <button class="btn btn-xs btn-default <?php if ($i === 0) { ?>btn-lightblue<?php } ?> economic_map_btn" data-id="<?= $res->id ?>" ><?=$res->icon?></button>
+                <?php } ?>
             </p>
             <div id="mapdiv" style="width: 100%; height: 500px;background-color:#EEEEEE; "></div>
         </div>
@@ -31,7 +31,7 @@
 
     });
     function set_regions_names() {
-<? foreach ($regions as $i => $region) { ?>map.regions['<?= $region->code ?>'].config.name = '<?= htmlspecialchars($region->name) ?><? if ($region->state) { ?> (<?= htmlspecialchars($region->state->short_name) ?>)<? } ?>';<? } ?>
+<?php foreach ($regions as $i => $region) { ?>map.regions['<?= $region->code ?>'].config.name = '<?= htmlspecialchars($region->name) ?><?php if ($region->state) { ?> (<?= htmlspecialchars($region->state->short_name) ?>)<?php } ?>';<?php } ?>
     }
 
     function load_resources_map(resource) {

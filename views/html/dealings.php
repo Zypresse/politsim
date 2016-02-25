@@ -1,7 +1,6 @@
 <?php
 
 use app\components\MyHtmlHelper;
-use yii\helpers\Html;
 
 ?>
 

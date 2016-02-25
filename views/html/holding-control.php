@@ -1,8 +1,7 @@
 <?php
 
 use app\components\MyHtmlHelper,
-    app\models\HoldingDecision,
-    app\models\Utr;
+    app\models\HoldingDecision;
 
 /* @var $user app\models\User */
 /* @var $holding app\models\Holding */
@@ -26,12 +25,14 @@ $userStock = $user->getShareholderStock($holding);
                     Внести деньги на счёт
                 </button>
             </p>
-            <? if ($holding->state): ?>
+            <?php if ($holding->state): ?>
                 <p>Компания зарегистрирована в государстве <?= $holding->state->getHtmlName() ?></p>
-            <? else: ?>
+            <?php else: ?>
                 <p class="status-error">Компания зарегистрирована в несущесвующем ныне государстве!</p>
-            <? endif ?>
-            <? if ($holding->region) { ?><p>Компания имеет головной офис в городе <?= $holding->region->getCityHtmlName() ?></p><? } ?>
+            <?php endif ?>
+            <?php if ($holding->region): ?>
+                <p>Компания имеет головной офис в городе <?= $holding->region->getCityHtmlName() ?></p>
+            <?php endif ?>
         </div>
     </div>
     <div class="row">
@@ -50,12 +51,12 @@ $userStock = $user->getShareholderStock($holding);
                                 <td>Пакет акций</td>
                             </tr>
                         </thead>
-                        <? foreach ($holding->stocks as $stock): ?>
+                        <?php foreach ($holding->stocks as $stock): ?>
                             <tr>
                                 <td><?= $stock->master->getHtmlName() ?></td>
                                 <td style="text-align:center"><?= MyHtmlHelper::formateNumberword($stock->count, 'акций', 'акция', 'акции') ?> (<?= round($stock->getPercents(), 2) ?>%)</td>
                             </tr>
-                        <? endforeach ?>
+                        <?php endforeach ?>
                     </table>
                 </div>
             </div>
@@ -76,24 +77,24 @@ $userStock = $user->getShareholderStock($holding);
                 </div>
                 <div class="box-content">    
                     <table class="table table-normal">
-                        <? if (count($licenses)): ?>
+                        <?php if (count($licenses)): ?>
                             <thead>
                                 <tr>
                                     <td>Вид деятельности</td>
                                     <td>Государство</td>
                                 </tr>
                             </thead>
-                            <? foreach ($licenses as $license): ?>
+                            <?php foreach ($licenses as $license): ?>
                                 <tr>
                                     <td><?= $license->proto->name ?></td>
                                     <td><?= $license->state->getHtmlName() ?></td>
                                 </tr>
-                            <? endforeach ?>
-                        <? else: ?>
+                            <?php endforeach ?>
+                        <?php else: ?>
                             <tr>
                                 <td>Компания не обладает лицензией ни на один вид деятельности</td>
                             </tr>
-                        <? endif ?>
+                        <?php endif ?>
                     </table>
                 </div>
             </div>
@@ -116,7 +117,7 @@ $userStock = $user->getShareholderStock($holding);
                 </div>
                 <div class="box-content">    
                     <table class="table table-normal">
-                        <? if (count($factories)): ?>
+                        <?php if (count($factories)): ?>
                             <thead>
                                 <tr>
                                     <td>Предприятие</td>
@@ -127,7 +128,7 @@ $userStock = $user->getShareholderStock($holding);
                                 </tr>
                             </thead>
                             <tbody>
-                                <? foreach ($factories as $factory): ?>
+                                <?php foreach ($factories as $factory): ?>
                                     <tr>
                                         <td><?= $factory->getHtmlName() ?></td>
                                         <td><?= $factory->region->getHtmlName() ?></td>
@@ -155,13 +156,13 @@ $userStock = $user->getShareholderStock($holding);
                                             </div>
                                         </td>
                                     </tr>
-                                <? endforeach ?>
-                            <? else: ?>
+                                <?php endforeach ?>
+                            <?php else: ?>
                             <tbody>
                                 <tr>
                                     <td>Компания не владеет недвижимостью</td>
                                 </tr>
-                            <? endif ?>
+                            <?php endif ?>
                         </tbody>
                     </table>
                 </div>
@@ -171,9 +172,9 @@ $userStock = $user->getShareholderStock($holding);
     <div class="row">
         <div class="col-md-12">
             <h3>Решения на голосовании:</h3>
-            <? if (count($holding->decisions)) { ?>
+            <?php if (count($holding->decisions)) { ?>
                 <table class="table">
-                    <?
+                    <?php
                     foreach ($holding->decisions as $decision) {
                         $data = json_decode($decision->data);
                         ?>
@@ -182,7 +183,7 @@ $userStock = $user->getShareholderStock($holding);
                                 <?= $decision->getHtml() ?>
                             </td>
                             <td style="width:250px">
-                                <?
+                                <?php
                                 $za = 0;
                                 $protiv = 0;
                                 foreach ($decision->votes as $vote) {
@@ -196,7 +197,7 @@ $userStock = $user->getShareholderStock($holding);
                                 <span class="status-success"><?= round($za, 2) ?>% акций ЗА</span>, <span class="status-error"><?= round($protiv, 2) ?>% акций ПРОТИВ</span>
                             </td>
                             <td style="width:200px">
-                                <?
+                                <?php
                                 $allreadyVoted = false;
                                 foreach ($decision->votes as $vote) {
                                     if ($vote->stock_id === $userStock->id) {
@@ -209,18 +210,18 @@ $userStock = $user->getShareholderStock($holding);
                                     ?>
                                     <button class="btn btn-green" onclick="vote_for_decision(<?= $decision->id ?>, 1)">ЗА</button>
                                     <button class="btn btn-red" onclick="vote_for_decision(<?= $decision->id ?>, 2)">ПРОТИВ</button>
-                                    <?
+                                    <?php
                                 }
                                 ?>
                             </td>
                         </tr>        
-                        <?
+                        <?php
                     }
                     ?>
                 </table>
-            <? } else { ?>
+            <?php } else { ?>
                 <p>Нет решений на голосовании</p>
-            <? } ?>
+            <?php } ?>
 
             <h4>Новое решение:</h4>
             <div class="btn-toolbar">
@@ -368,11 +369,11 @@ $userStock = $user->getShareholderStock($holding);
                     <label class="control-label" for="#new_manager_uid">Новый управляющий:</label>
                     <div class="controls">
                         <select id="new_manager_uid">
-                        <? foreach ($holding->stocks as $stock): ?>
-                        <? if ($stock->master->getUnnpType() === Utr::TYPE_USER): ?>
+                        <?php foreach ($holding->stocks as $stock): ?>
+                        <?php if ($stock->master->getUnnpType() === Utr::TYPE_USER): ?>
                             <option value="<?=$stock->master->id?>"><?=$stock->master->name?></option>
-                        <? endif ?>
-                        <? endforeach ?>
+                        <?php endif ?>
+                        <?php endforeach ?>
                         </select>
                     </div>
                 </div>
@@ -395,11 +396,11 @@ $userStock = $user->getShareholderStock($holding);
                     <label class="control-label" for="#new_director_uid">Новый директор:</label>
                     <div class="controls">
                         <select id="new_director_uid">
-                            <? foreach ($holding->stocks as $stock): ?>
-                            <? if ($stock->master->getUnnpType() === Utr::TYPE_USER): ?>
+                            <?php foreach ($holding->stocks as $stock): ?>
+                            <?php if ($stock->master->getUnnpType() === Utr::TYPE_USER): ?>
                                 <option value='<?=$stock->master->id?>'><?=$stock->master->name?></option>
-                            <? endif ?>
-                            <? endforeach ?>
+                            <?php endif ?>
+                            <?php endforeach ?>
                         </select>
                     </div>
                 </div>
@@ -495,12 +496,12 @@ $userStock = $user->getShareholderStock($holding);
                     <label class="control-label" for="#new_main_office_id">Обьект</label>
                     <div class="controls">
                         <select id="new_main_office_id">
-                            <?
+                            <?php
                             foreach ($factories as $factory) {
                                 if ($factory->proto_id == 4) {
                                     ?>
                                     <option value="<?= $factory->id ?>"><?= $factory->name ?> (<?= $factory->region->name ?>)</option>
-                                    <?
+                                    <?php
                                 }
                             }
                             ?>

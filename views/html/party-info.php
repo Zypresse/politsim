@@ -1,11 +1,10 @@
 <?php
 
 /**
- * @global \app\models\User $user;
+ * @var \app\models\User $user;
  */
-use app\components\MyHtmlHelper,
-    app\models\Org,
-    app\models\ElectOrgLeaderRequest;
+use app\components\MyHtmlHelper;
+
 ?>
 
 <div class="container">
@@ -22,14 +21,14 @@ use app\components\MyHtmlHelper,
             <p>Партия зарегистрирована в государстве <?=$party->state->getHtmlName()?></p>
             <p><strong>Идеология</strong>: <?= htmlspecialchars($party->ideologyInfo->name) ?></p>
             <p><strong>Лидер партии</strong>:
-                <? if ($party->leaderInfo) { ?>
+                <?php if ($party->leaderInfo) { ?>
                     <?=$party->leaderInfo->getHtmlName()?>
                     <span class="star"><?= $party->leaderInfo->star ?> <?= MyHtmlHelper::icon('star') ?></span>
                     <span class="heart"><?= $party->leaderInfo->heart ?> <?= MyHtmlHelper::icon('heart') ?></span>
                     <span class="chart_pie"><?= $party->leaderInfo->chart_pie ?> <?= MyHtmlHelper::icon('chart_pie') ?></span>
-                <? } else { ?>
+                <?php } else { ?>
                     не назначен
-                <? } ?>
+                <?php } ?>
             </p>
         </div>
     </div>
@@ -37,14 +36,14 @@ use app\components\MyHtmlHelper,
         <div class="col-md-12">
             <strong>Список членов партии:</strong> <input type="button" class="btn btn-default btn-xs" id="members_show" value="Показать">
             <ul id="members_list" >
-                <? foreach ($party->members as $player) { ?>
+                <?php foreach ($party->members as $player) { ?>
                     <li>
                         <?=$player->getHtmlName()?>
                         <span class="star"><?= $player->star ?> <?= MyHtmlHelper::icon('star') ?></span>
                         <span class="heart"><?= $player->heart ?> <?= MyHtmlHelper::icon('heart') ?></span>
                         <span class="chart_pie"><?= $player->chart_pie ?> <?= MyHtmlHelper::icon('chart_pie') ?></span>
                     </li>
-                <? } ?>
+                <?php } ?>
             </ul>
             <script type="text/javascript">
                 $('#members_show').click(function () {
@@ -60,8 +59,7 @@ use app\components\MyHtmlHelper,
 
             <h3>Действия</h3>
             <div class="btn-toolbar">
-                <?
-                if ($user->isPartyLeader() && $user->party_id === $party->id) {
+                <?php                 if ($user->isPartyLeader() && $user->party_id === $party->id) {
                     $emptyPosts = [];
                     if ($user->state && $user->state->legislatureOrg)
                         foreach ($user->state->legislatureOrg->posts as $post) {
@@ -89,11 +87,11 @@ use app\components\MyHtmlHelper,
                         <ul class="dropdown-menu">
                             <li><a href="#" onclick="rename_party(<?= $party->id ?>)" >Переименовать партию</a></li>
                             <li><a href="#" onclick="change_party_logo(<?= $party->id ?>)" >Сменить эмблему партии</a></li>
-                            <? if (count($emptyPosts)) { ?><li><a href="#" onclick="$('#party-reserve-post-set').modal()">Назначить на зарезервированный пост</a></li><? } ?>
-                            <? if ($isNeedRequestForSpeaker) { ?><li><a href="#" onclick="$('#party-request-to-speaker-elections').modal()">Подать заявку от партии на пост <?= $user->state->legislatureOrg->leader->name ?></a></li><? } ?>
+                            <?php if (count($emptyPosts)) { ?><li><a href="#" onclick="$('#party-reserve-post-set').modal()">Назначить на зарезервированный пост</a></li><?php } ?>
+                            <?php if ($isNeedRequestForSpeaker) { ?><li><a href="#" onclick="$('#party-request-to-speaker-elections').modal()">Подать заявку от партии на пост <?= $user->state->legislatureOrg->leader->name ?></a></li><?php } ?>
                         </ul>
                     </div>
-                    <? if (count($emptyPosts)) { ?>
+                    <?php if (count($emptyPosts)) { ?>
                         <div style="display:none" class="modal fade" id="party-reserve-post-set" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
@@ -108,9 +106,9 @@ use app\components\MyHtmlHelper,
                                                 <label class="control-label" for="#prps_post_id">Пост</label>
                                                 <div class="controls">
                                                     <select id="prps_post_id">
-                                                        <? foreach ($emptyPosts as $post) { ?>
+                                                        <?php foreach ($emptyPosts as $post) { ?>
                                                             <option value="<?= $post->id ?>"><?= $post->name ?></option>
-                                                        <? } ?>
+                                                        <?php } ?>
                                                     </select>
                                                 </div>
                                             </div>
@@ -118,11 +116,11 @@ use app\components\MyHtmlHelper,
                                                 <label class="control-label" for="#prps_user_id">Человек</label>
                                                 <div class="controls">
                                                     <select id="prps_user_id">
-                                                        <? foreach ($party->members as $member) {
+                                                        <?php foreach ($party->members as $member) {
                                                             if (!$member->post_id) {
                                                                 ?>
                                                                 <option value="<?= $member->id ?>"><?= $member->name ?></option>
-                                                            <? }
+                                                            <?php }
                                                         }
                                                         ?>
                                                     </select>
@@ -137,8 +135,8 @@ use app\components\MyHtmlHelper,
                                 </div>
                             </div>
                         </div>
-    <? } ?>
-    <? if ($isNeedRequestForSpeaker) { ?>
+    <?php } ?>
+    <?php if ($isNeedRequestForSpeaker) { ?>
                         <div style="display:none" class="modal fade" id="party-request-to-speaker-elections" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
@@ -153,11 +151,11 @@ use app\components\MyHtmlHelper,
                                                 <label class="control-label" for="#user_id">Человек</label>
                                                 <div class="controls">
                                                     <select id="pesr_user_id">
-                                                        <? foreach ($party->members as $member) {
+                                                        <?php foreach ($party->members as $member) {
                                                             if (is_null($member->post) || $member->post->org_id === $user->state->legislature) {
                                                                 ?>
                                                                 <option value="<?= $member->id ?>"><?= $member->name ?></option>
-            <? }
+            <?php }
         }
         ?>
                                                     </select>
@@ -172,7 +170,7 @@ use app\components\MyHtmlHelper,
                                 </div>
                             </div>
                         </div>
-    <? } ?>
+    <?php } ?>
                     <script type="text/javascript">
 
                         function rename_party(id) {
@@ -196,9 +194,9 @@ use app\components\MyHtmlHelper,
                         }
 
                     </script>
-<? } ?>
+<?php } ?>
 
-                    <? if ($party->id === $user->party_id) { ?>
+                    <?php if ($party->id === $user->party_id) { ?>
 
                     <div class="btn-group">
                         <button class="btn btn-sm dropdown-toggle btn-red" onclick="if (confirm('Вы действительно хотите выйти из партии?')) {
@@ -208,7 +206,7 @@ use app\components\MyHtmlHelper,
                         </button>
                     </div>
 
-<? } elseif (!$user->party_id && $user->state_id === $party->state_id) { ?>
+<?php } elseif (!$user->party_id && $user->state_id === $party->state_id) { ?>
 
                     <div class="btn-group">
                         <button class="btn btn-sm dropdown-info btn-green" onclick="json_request('join-party', {'party_id':<?= $party->id ?>})">
@@ -217,7 +215,7 @@ use app\components\MyHtmlHelper,
                     </div>
 
                 </div>
-<? } ?>
+<?php } ?>
         </div>
     </div>
 </div>

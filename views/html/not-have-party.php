@@ -11,21 +11,20 @@ use app\components\MyHtmlHelper,
     <div class="row">
         <div class="col-md-12">
             <h4>Вы не состоите ни в одной партии</h4>
-<?
+<?php
 if ($user->state) {
     ?>
                 <div class="btn-group">
-                <?
-                if ($user->state->allow_register_parties) {
+                <?php                 if ($user->state->allow_register_parties) {
                     ?>
                         <button class="btn btn-sm dropdown-toggle btn-green" onclick="$('#create_party').modal();" >
                             Создать партию
                         </button>
-        <?
+        <?php
     } else {
         ?>
                         <p>В вашем государстве запрещено регистрировать партии</p>    
-                        <?
+                        <?php
                     }
                     ?>
 
@@ -60,12 +59,11 @@ if ($user->state) {
                                         <label class="control-label" for="#party_ideology">Идеология</label>
                                         <div class="controls">
                                             <select id="party_ideology" >
-    <?
-    $ideologies = Ideology::find()->all();
+    <?php     $ideologies = Ideology::find()->all();
     foreach ($ideologies as $ideology) {
         ?>
                                                     <option value="<?= $ideology->id ?>"><?= htmlspecialchars($ideology->name) ?></option>
-                                                <? } ?>
+                                                <?php } ?>
                                             </select>
                                         </div>
                                     </div>
@@ -105,10 +103,8 @@ if ($user->state) {
         }
     </script>
 
-    <?
-} else {
+    <?php } else {
     ?>
     <p>Вы не имеете гражданства и не можете зарегистрировать партию</p>    
-    <?
-}
+    <?php }
 ?>

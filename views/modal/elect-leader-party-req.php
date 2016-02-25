@@ -1,9 +1,9 @@
 <p><strong>Выборы лидера организации <?=htmlspecialchars($org->name)?></strong></p>
 <p>Выберите кандидата на должность «<?=htmlspecialchars($org->leader->name)?>»: 
 <select class="candidat" id="candidat<?=$org->id?>">
-<? foreach ($user->party->members as $member) { ?>
+<?php foreach ($user->party->members as $member) { ?>
 	<option value="<?=$member->id?>"><?=htmlspecialchars($member->name)?></option>
-<? } ?>
+<?php } ?>
 </select>
 <!--{% if child_orgs.length %}<p>Есть организации, лидер которых выбирается вместе с ним:
 <ul>
@@ -33,5 +33,5 @@ send_elect_request = function() {
 	/*{% for child_org in child_orgs %}
 	json_request('elect_request',{'org_id':{{ child_org.id }},'leader':1,'candidat':$('#candidat{{ child_org.id }}').val()});
 	{% endfor %}*/
-}
+};
 </script>

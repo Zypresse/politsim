@@ -2,8 +2,7 @@
 
 namespace app\models\bills\proto;
 
-use app\models\articles\Article,
-    app\models\articles\proto\ArticleProto;
+use app\models\articles\Article;
 
 /**
  * Внести поправку в конституцию

@@ -45,7 +45,7 @@ class Line extends UnmovableObject implements TaxPayer
         return false;
     }
     
-    public static function getPrice($distance)
+    public function getPrice($distance)
     {
         return $distance * $this->proto->build_cost;
     }

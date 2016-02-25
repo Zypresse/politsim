@@ -20,8 +20,6 @@ class FormLegislature extends BillProto {
             return $bill->delete();
         }
 
-        $data = json_decode($bill->data);
-
         if (is_null($bill->state->legislatureOrg)) {
             $org = Org::generate($bill->state, Org::LEGISLATURE_PARLIAMENT10);
             $bill->state->legislature = $org->id;

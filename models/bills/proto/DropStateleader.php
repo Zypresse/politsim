@@ -19,8 +19,6 @@ class DropStateleader extends BillProto {
             return $bill->delete();
         }
 
-        $data = json_decode($bill->data);
-
         if ($bill->state->executiveOrg->leader->user) {
             $bill->state->executiveOrg->leader->user->post_id = 0;
             $bill->state->executiveOrg->leader->user->save();

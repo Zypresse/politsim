@@ -19,9 +19,9 @@
         <label class="control-label" for="#goverment_form">Форма правления:</label>
         <div class="controls">
           <select id="goverment_form">
-    <? foreach ($forms as $form) { ?>
+    <?php foreach ($forms as $form) { ?>
         <option value="<?=$form['id']?>"  ><?=$form['name']?></option>
-    <? } ?>
+    <?php } ?>
     </select>
         </div>
       </div>

@@ -1,6 +1,3 @@
-<?
-    use app\components\MyHtmlHelper;
-?>
 <h3>Создание страны-сателлита</h3>
 <form class="form-horizontal">
 	<div class="control-group">	
@@ -19,18 +16,18 @@
 		<label class="control-label" for="bill_region_id" >Столица</label>
 		<div class="controls">
 			<select class="bill_field" id="bill_region_id" name="new_capital">
-		 	<? foreach ($user->state->regions as $region): ?>
-                            <? if ($region->id != $user->state->capital): ?>
+		 	<?php foreach ($user->state->regions as $region): ?>
+                            <?php if ($region->id != $user->state->capital): ?>
 		 		<option value="<?=$region->id?>"><?=$region->city?> (<?=$region->name?>)</option>
-                            <? endif ?>
-		 	<? endforeach ?>
+                            <?php endif ?>
+		 	<?php endforeach ?>
 			</select>
 	 	</div>
         </div>
         <div class="control-group">	
 		<label class="control-label" for="core_id" >Территории</label>
 		<div class="controls">
-                    <? 
+                    <?php 
                         $cores = [['Не выделять',[]]];
                         foreach ($user->state->regions as $region) {
                             if ($region->id != $user->state->capital) {
@@ -48,12 +45,12 @@
 //                        var_dump($cores);
                     ?>                    
                     <select class="bill_field" id="core_id" name="core_id">
-                    <? 
+                    <?php 
                         foreach ($cores as $id => $core): 
                             list($name,$regions) = $core;
                     ?>
                         <option data-regions-list="<?=implode(", ",$regions)?>" value="<?=$id?>"><?=$name?></option>
-                    <? endforeach ?>
+                    <?php endforeach ?>
                     </select>
                     <div id="cores_info" style="display: none">
                         Новому государству так же отойдут следующие регионы: <span id="satellit_region_list" ></span>

@@ -11,7 +11,6 @@ class m160209_063927_insertShops extends Migration
 {
     
     private $toSave = [];
-    private $transaction;
 
     public function safeUp()
     {

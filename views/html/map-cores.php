@@ -1,5 +1,4 @@
-<?
-
+<?php 
     use yii\helpers\Html,
         app\models\CoreCountry;
 
@@ -12,11 +11,11 @@
         <div class="col-md-12">
 <h4>Карта претензий</h4>
 <div class="btn-group">
-    <? foreach ($cores as $core) { ?>
+    <?php foreach ($cores as $core) { ?>
   <button class="btn btn-sm dropdown-toggle btn-default" onclick="show_cores<?=$core->id?>()" >
       <?=Html::img('/img/cores/'.$core->id.'.png',['alt'=>$core->name,'title'=>$core->name]);?>
   </button>
-    <? } ?>
+    <?php } ?>
 </div>
 <br>
 <div id="mapdiv" style="width: 100%; height: 500px;background-color:#EEEEEE; "></div> </div>
@@ -55,7 +54,7 @@ $('#mapdiv').vectorMap({
 	      regions: [{
 	        attribute: 'fill',
 	        values: {
-            <? foreach ($regions as $i => $region) {  if ($i) echo ",";  $color = '#eee'; echo "'{$region->code}': '{$color}'"; } ?>
+            <?php foreach ($regions as $i => $region) {  if ($i) echo ",";  $color = '#eee'; echo "'{$region->code}': '{$color}'"; } ?>
             }
 	      }]
 	    },
@@ -85,26 +84,25 @@ set_regions_names();
 
 });
  function set_regions_names() {
-  <? foreach ($regions as $i => $region) { ?>map.regions['<?=$region->code?>'].config.name = '<?=htmlspecialchars($region->name)?>';<? } ?>
+  <?php foreach ($regions as $i => $region) { ?>map.regions['<?=$region->code?>'].config.name = '<?=htmlspecialchars($region->name)?>';<?php } ?>
  }
- <?
-    
+ <?php     
     foreach ($cores as $core) { ?>
         function show_cores<?=$core->id?>() {
             map.removeAllMarkers();
-            <? foreach ($core->regions as $region) { ?>
+            <?php foreach ($core->regions as $region) { ?>
                 map.addMarker("core_region<?=$region->id?>",{ latLng: [<?=$region->lat?>,<?=$region->lng?>], name: "<?=$region->name?>", image: '/img/cores/<?=$core->id?>.png', style: {width:16,height:16} });
-            <? } ?>
+            <?php } ?>
                 map.series.regions[0].setValues({
-                    <? foreach ($regions as $i => $region) { ?>
+                    <?php foreach ($regions as $i => $region) { ?>
                         <?=($i?',':'')?> '<?=$region->code?>':'#eee'
-                    <? } ?>
-                    <? foreach ($core->states as $state) { ?>
-                    <? foreach ($state->regions as $i => $region) { ?>
+                    <?php } ?>
+                    <?php foreach ($core->states as $state) { ?>
+                    <?php foreach ($state->regions as $i => $region) { ?>
                         , '<?=$region->code?>':'<?=$state->color?>'
-                    <? }} ?>
+                    <?php }} ?>
                 });
         }
-    <? } ?>
+    <?php } ?>
 
 </script>

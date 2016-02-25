@@ -1,15 +1,14 @@
-<? switch ($gft->type) {
+<?php switch ($gft->type) {
     case "checkbox":
         ?>
         <input <?=($gfv->value)?'checked="checked"':''?> type="checkbox" class="bill_field" id="bill_article_value" name="article_value">
-        <?
-
+        <?php 
         break;
     case "integer":
     case "number":
         ?>
         <input value="<?=$gfv->value?>" type="number" class="bill_field" id="bill_article_value" name="article_value">
-        <? break;
+        <?php break;
     case "org_dest_members":
         ?>
         <select class="bill_field" id="bill_article_value" name="article_value">
@@ -18,7 +17,7 @@
             <option <?=($gfv->value=="nation_party_vote")?'selected="selected"':''?> value="nation_party_vote">Голосование населения за партии</option>
             <option <?=($gfv->value=="nation_one_party_vote")?'selected="selected"':''?> value="nation_one_party_vote">Голосование населения за членов единственной партии</option>
         </select>
-        <? break;
+        <?php break;
     case "org_dest_leader":
         ?>
         <select class="bill_field" id="bill_article_value" name="article_value">
@@ -29,8 +28,8 @@
 <!--            <option <?=($gfv->value=="dest_by_stateleader")?'selected="selected"':''?> value="dest_by_stateleader">Назначаются главой государства</option>-->
             <option <?=($gfv->value=="org_vote")?'selected="selected"':''?> value="org_vote">Голосование членов этой же организации</option>
         </select>
-        <? break;
+        <?php break;
     default: ?>
         <input value="<?=$gfv->value?>" type="text" class="bill_field" id="bill_article_value" name="article_value">
-        <? break;
+        <?php break;
 } ?>

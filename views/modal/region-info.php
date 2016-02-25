@@ -9,10 +9,10 @@ use app\components\MyHtmlHelper;
   <li><a href="#" onclick="show_region_resources()">Ресурсы</a></li>
 </ul>
 <h1><?=htmlspecialchars($region->name)?></h1>
-<? if ($region->city) { ?><p>Столица: <?=htmlspecialchars($region->city)?></p><? } ?>
-<? if ($region->state) { ?>
-<p><? if ($region->isCapital()) { ?>Столица государства<? } else { ?>Принадлежит государству<? } ?> &laquo;<a href='#' onclick="$('.modal-backdrop').hide(); load_page('state-info',{'id':<?=$region->state_id?>});" ><?=htmlspecialchars($region->state->name)?></a>&raquo;</p>
-<p><? if ($user->region_id == $region->id) { ?>Вы живёте здесь.<? } ?></p>
+<?php if ($region->city) { ?><p>Столица: <?=htmlspecialchars($region->city)?></p><?php } ?>
+<?php if ($region->state) { ?>
+<p><?php if ($region->isCapital()) { ?>Столица государства<?php } else { ?>Принадлежит государству<?php } ?> &laquo;<a href='#' onclick="$('.modal-backdrop').hide(); load_page('state-info',{'id':<?=$region->state_id?>});" ><?=htmlspecialchars($region->state->name)?></a>&raquo;</p>
+<p><?php if ($user->region_id == $region->id) { ?>Вы живёте здесь.<?php } ?></p>
 <!--<div class="btn-toolbar">
 	<div class="btn-group">
   <button class="btn btn-sm dropdown-toggle btn-red" data-toggle="dropdown">
@@ -24,11 +24,11 @@ use app\components\MyHtmlHelper;
     <li><a href="#">Вооруженное восстание</a></li>
   </ul>
 </div>-->
-<? } else { ?>
+<?php } else { ?>
 <p>В этом регионе царит анархия</p>
- <? if ($user->region_id === $region->id) { ?>
+ <?php if ($user->region_id === $region->id) { ?>
 <div class="btn-toolbar">
-  <button class="btn btn-green" <? if ($user->state_id) { ?> disabled="disabled" title="Вы не можете создать государство, имея гражданство другого государства" <? } ?> id="create_state_btn" >
+  <button class="btn btn-green" <?php if ($user->state_id) { ?> disabled="disabled" title="Вы не можете создать государство, имея гражданство другого государства" <?php } ?> id="create_state_btn" >
     Основать государство
   </button>
 
@@ -51,13 +51,13 @@ use app\components\MyHtmlHelper;
     });
   </script>
 </div>
-<? }} ?>
- <? if ($user->region_id !== $region->id) { ?>
+<?php }} ?>
+ <?php if ($user->region_id !== $region->id) { ?>
 <div class="btn-group">
   <button class="btn btn-sm btn-blue" onclick="json_request('move-to',{'id':'<?=$region->id?>'},true); setTimeout(function(){load_page('profile')},200)">
     Переехать сюда
   </button>
-</div><? } ?>
+</div><?php } ?>
 <p>Население: <?=MyHtmlHelper::formateNumberword($region->population,'человек','человек','человека')?></p>
 
 

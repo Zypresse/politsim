@@ -9,5 +9,5 @@
 <script>
 send_elect_request = function() {
 	json_request('elect-request',{'org_id':<?=$org->id?>,'leader':0});
-}
+};
 </script>
