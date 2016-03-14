@@ -1,7 +1,8 @@
 <?php
 
 use app\components\MyHtmlHelper,
-    app\models\HoldingDecision;
+    app\models\HoldingDecision,
+    app\models\Utr;
 
 /* @var $user app\models\User */
 /* @var $holding app\models\Holding */

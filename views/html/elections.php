@@ -104,18 +104,19 @@ foreach ($user->requests as $request) {
                         <?php } ?>
 
                         <?php if (count($state->executiveOrg->requests)) { ?><strong>Список подавших заявку на выборы:</strong>
-                            <ul>
-                                <?php foreach ($state->executiveOrg->requests as $request) { ?>
+                        <ul>
+                            <?php foreach ($state->executiveOrg->requests as $request) { ?>
                                 <li>
-                                    <?=$request->party->getHtmlName()?>
+                                    <?= $request->party->getHtmlName() ?>
                                 </li>
                             <?php } ?>
-                            </ul>
-                        <?php } else { ?>
-                            <strong>Никто ещё не подал заявку на выборы</strong>
-                        <?php } ?>
+                        </ul>
+                    <?php } else { ?>
+                        <strong>Никто ещё не подал заявку на выборы</strong>
+                    <?php } ?>
                     </p><br>
-                <?php } } ?>
+                <?php }
+            } ?>
 
             <?php if ($state->executiveOrg && $state->executiveOrg->isLeaderElected()) { ?>
                 <?php if ($state->executiveOrg->isGoingElects()) { ?>
@@ -129,7 +130,8 @@ foreach ($user->requests as $request) {
                 <?php } else { ?>
                     <p>Следующие выборы лидера организации «<a href="#" onclick="load_page('org-info', {'id':<?= $state->executive ?>});"><?= htmlspecialchars($state->executiveOrg->name) ?></a>» пройдут с <span class="formatDate" data-unixtime="<?= $state->executiveOrg->next_elect - 24 * 60 * 60 ?>"><?= date('d-M-Y H:i', $state->executiveOrg->next_elect - 24 * 60 * 60) ?></span> по <span class="formatDate" data-unixtime="<?= $state->executiveOrg->next_elect ?>"><?= date('d-M-Y H:i', $state->executiveOrg->next_elect) ?></span><br>
                         <?php if ($is_citizen && !$requests['el']) {
-                            if ($state->executiveOrg->leader_dest === 'nation_party_vote' && $user->isPartyLeader()) { ?>
+                            if ($state->executiveOrg->leader_dest === 'nation_party_vote' && $user->isPartyLeader()) {
+                                ?>
                                 <button class="btn btn-blue" onclick="elect_request(<?= $state->executive ?>, 1)">Подать заявку на выборы от партии</button>
                             <?php } elseif ($state->executiveOrg->leader_dest === 'nation_individual_vote') { ?>
                                 <button class="btn btn-blue" onclick="elect_request(<?= $state->executive ?>, 1)">Подать заявку на выборы</button>
@@ -140,22 +142,23 @@ foreach ($user->requests as $request) {
                         <?php } ?>
 
                         <?php if (count($state->executiveOrg->lrequests)) { ?><strong>Список подавших заявку на выборы:</strong><ul><?php foreach ($state->executiveOrg->lrequests as $request) { ?>
-                                <li><?=$request->user->getHtmlName()?> <?php if ($state->executiveOrg->leader_dest === 'nation_party_vote') { ?>(<?= $request->user->party->getHtmlShortName()?>)<?php } ?></li>
-                            <?php } ?></ul><?php } else { ?><strong>Никто ещё не подал заявку на выборы</strong><?php } ?>
-                    </p><br><?php } } ?>
+                                <li><?= $request->user->getHtmlName() ?> <?php if ($state->executiveOrg->leader_dest === 'nation_party_vote') { ?>(<?= $request->user->party->getHtmlShortName() ?>)<?php } ?></li>
+            <?php } ?></ul><?php } else { ?><strong>Никто ещё не подал заявку на выборы</strong><?php } ?>
+                    </p><br><?php }
+} ?>
 
 
 
-            <?php if ($state->legislatureOrg && $state->legislatureOrg->isElected()) { ?>
-                <?php if ($state->legislatureOrg->isGoingElects()) { ?>
+<?php if ($state->legislatureOrg && $state->legislatureOrg->isElected()) { ?>
+                    <?php if ($state->legislatureOrg->isGoingElects()) { ?>
                     <p>
                         Сейчас идут выборы в огранизацию «<a href="#" onclick="load_page('org-info', {'id':<?= $state->legislature ?>});"><?= htmlspecialchars($state->legislatureOrg->name) ?></a>» и будут длиться до <span class="formatDate" data-unixtime="<?= $state->legislatureOrg->next_elect ?>"><?= date('d-M-Y H:i', $state->legislatureOrg->next_elect) ?></span><br>
                         <?php if ($is_citizen) { ?>
                             <button <?php if ($votes['l']) { ?>disabled="disabled" title="Вы уже проголосовали"<?php } ?> class="btn btn-primary" onclick="elect_vote(<?= $state->legislature ?>, 0)">Проголосовать</button>
-                        <?php } ?>
+                    <?php } ?>
                         <button class="btn btn-lightblue" onclick="elect_exitpolls(<?= $state->legislature ?>, 0)">Результаты эксит-поллов</button><br>
                     </p><br>
-                <?php } else { ?>
+                    <?php } else { ?>
                     <p>Следующие выборы в огранизацию «<a href="#" onclick="load_page('org-info', {'id':<?= $state->legislature ?>});"><?= htmlspecialchars($state->legislatureOrg->name) ?></a>» пройдут с <span class="formatDate" data-unixtime="<?= $state->legislatureOrg->next_elect - 24 * 60 * 60 ?>"><?= date('d-M-Y H:i', $state->legislatureOrg->next_elect - 24 * 60 * 60) ?></span> по <span class="formatDate" data-unixtime="<?= $state->legislatureOrg->next_elect ?>"><?= date('d-M-Y H:i', $state->legislatureOrg->next_elect) ?></span><br>
                         <?php if ($state->legislatureOrg->dest === 'nation_party_vote' && $is_citizen && $user->isPartyLeader() && !$requests['l']) { ?>
                             <button class="btn btn-blue" onclick="elect_request(<?= $state->legislature ?>, 0)">Подать заявку на выборы от партии</button><br>
@@ -165,40 +168,45 @@ foreach ($user->requests as $request) {
                         <?php } ?>
 
                         <?php if (count($state->legislatureOrg->requests)) { ?><strong>Список подавших заявку на выборы:</strong><ul><?php foreach ($state->legislatureOrg->requests as $request) { ?>
-                                <?php if ($request->party) { ?><li><?=$request->party->getHtmlName()?></li><?php } else {
-                    $request->delete();
-                } ?>
+                                <?php if ($request->party) { ?><li><?= $request->party->getHtmlName() ?></li><?php
+                                    } else {
+                                        $request->delete();
+                                    }
+                                    ?>
             <?php } ?></ul><?php } else { ?><strong>Никто ещё не подал заявку на выборы</strong><?php } ?>
-                    </p><br><?php } } ?>
+                    </p><br><?php }
+} ?>
 
 
 
 
-<?php if ($state->legislatureOrg && $state->legislatureOrg->isLeaderElected()) { ?>
+                <?php if ($state->legislatureOrg && $state->legislatureOrg->isLeaderElected()) { ?>
                     <?php if ($state->legislatureOrg->isGoingElects()) { ?>
                     <p>
                         Сейчас идут выборы лидера огранизации «<a href="#" onclick="load_page('org-info', {'id':<?= $state->legislature ?>});"><?= htmlspecialchars($state->legislatureOrg->name) ?></a>» и будут длиться до <span class="formatDate" data-unixtime="<?= $state->legislatureOrg->next_elect ?>"><?= date('d-M-Y H:i', $state->legislatureOrg->next_elect) ?></span><br>
-                        <?php if ($is_citizen) { ?>
+                    <?php if ($is_citizen) { ?>
                             <button <?php if ($votes['ll']) { ?>disabled="disabled" title="Вы уже проголосовали"<?php } ?> class="btn btn-primary" onclick="elect_vote(<?= $state->legislature ?>, 1)">Проголосовать</button>
-                    <?php } ?>
+                        <?php } ?>
                         <button class="btn btn-lightblue" onclick="elect_exitpolls(<?= $state->legislature ?>, 1)">Результаты эксит-поллов</button><br>
                     </p><br>
                     <?php } else { ?>
                     <p>Следующие выборы лидера организации «<a href="#" onclick="load_page('org-info', {'id':<?= $state->legislature ?>});"><?= htmlspecialchars($state->legislatureOrg->name) ?></a>» пройдут с <span class="formatDate" data-unixtime="<?= $state->legislatureOrg->next_elect - 24 * 60 * 60 ?>"><?= date('d-M-Y H:i', $state->legislatureOrg->next_elect - 24 * 60 * 60) ?></span> по <span class="formatDate" data-unixtime="<?= $state->legislatureOrg->next_elect ?>"><?= date('d-M-Y H:i', $state->legislatureOrg->next_elect) ?></span><br>
                         <?php if ($is_citizen && !$requests['ll']) {
-                            if ($state->legislatureOrg->leader_dest === 'nation_party_vote' && $user->isPartyLeader()) { ?>
+                            if ($state->legislatureOrg->leader_dest === 'nation_party_vote' && $user->isPartyLeader()) {
+                                ?>
                                 <button class="btn btn-blue" onclick="elect_request(<?= $state->legislature ?>, 1)">Подать заявку на выборы от партии</button>
                             <?php } elseif ($state->legislatureOrg->leader_dest === 'nation_individual_vote') { ?>
                                 <button class="btn btn-blue" onclick="elect_request(<?= $state->legislature ?>, 1)">Подать заявку на выборы</button>
                             <?php } ?><br><?php } ?>
                         <?php if ($requests['ll'] && ($user->isPartyLeader() || $state->legislatureOrg->leader_dest === 'nation_individual_vote')) { ?>
                             <button class="btn btn-red" onclick="drop_elect_request(<?= $state->legislature ?>, 1)">Отозвать заявку на выборы</button><br>
-                        <?php } ?>
+        <?php } ?>
 
         <?php if (count($state->legislatureOrg->lrequests)) { ?><strong>Список подавших заявку на выборы:</strong><ul><?php foreach ($state->legislatureOrg->lrequests as $request) { ?>
-                                <li><?=$request->user->getHtmlName()?> <?php if ($state->legislatureOrg->leader_dest === 'nation_party_vote') { ?>(<?= $request->user->party->getHtmlShortName() ?>)<?php } ?></li>
+                                <li><?= $request->user->getHtmlName() ?> <?php if ($state->legislatureOrg->leader_dest === 'nation_party_vote') { ?>(<?= $request->user->party->getHtmlShortName() ?>)<?php } ?></li>
             <?php } ?></ul><?php } else { ?><strong>Никто ещё не подал заявку на выборы</strong><?php } ?>
-                    </p><?php } } ?>
+                    </p><?php }
+} ?>
         </div>
     </div>
 </div>
