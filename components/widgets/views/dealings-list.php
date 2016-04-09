@@ -38,11 +38,11 @@ use app\components\MyHtmlHelper,
                     switch ($item['type']) {
                         case 'stock':
                             $holding = Holding::findByPk($item['holding_id']);
-                            echo MyHtmlHelper::formateNumberword($item['count'], "акций", "акция", "акции")." компании «".$holding->getHtmlName()."»";
+                            echo $holding ? MyHtmlHelper::formateNumberword($item['count'], "акций", "акция", "акции")." компании «".$holding->getHtmlName()."»" : MyHtmlHelper::formateNumberword($item['count'], "каких-то акций", "какая-то акция", "какие-то акции");
                         break;
                         case 'factory':
                             $factory = Factory::findByPk($item['factory_id']);
-                            echo $factory->getHtmlName();
+                            echo $factory ? $factory->getHtmlName() : 'Какая-то фабрика';
                         break;
                         case 'resource':
                             $resProto = ResourceProto::findByPk($item['proto_id']);

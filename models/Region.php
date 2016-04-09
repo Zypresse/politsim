@@ -128,24 +128,6 @@ class Region extends MyModel implements TaxPayer
         ];
     }
 
-    /**
-     * Список пограничных регионов
-     * @return Region[]
-     */
-    /** @TODO wtf delete this shit */
-    public function getBorders()
-    {
-        $b = [];
-        if ($this->b) {
-            $models = Region::find(['condition' => 'code IN (' . implode(",", $this->b) . ')'])->all();
-            foreach ($models as $model) {
-                $b[$model->code] = $model->name;
-            }
-        }
-
-        return $b;
-    }
-
     private $_bordersArray = null;
     /**
      * Список пограничных регионов
@@ -156,7 +138,10 @@ class Region extends MyModel implements TaxPayer
         if (is_null($this->_bordersArray)) {
             $this->b = explode(",", $this->b);
             if ($this->b) {
-                $this->_bordersArray = Region::findBySql('SELECT * FROM '.$this->tableName().' WHERE code IN (\'' . implode("','", $this->b) . '\') ORDER BY state_id')->all();
+                $this->_bordersArray = Region::findBySql('SELECT * FROM :tableName WHERE code IN (:neighborsIds) ORDER BY state_id', [
+                    ':tableName' => static::tableName(),
+                    ':neighborsIds' => "'".implode("','", $this->b)."'"
+                ])->all();
             } else {
                 $this->_bordersArray = [];
             }

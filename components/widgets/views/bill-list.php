@@ -1,5 +1,4 @@
-<?
-
+<?php 
 use app\models\articles\proto\ArticleProto,
     app\models\licenses\proto\LicenseProto,
     app\models\Region,
@@ -9,10 +8,9 @@ use app\models\articles\proto\ArticleProto,
     yii\helpers\Html;
 ?>
 <dl id="<?= $id ?>" style="<?= $style ?>" >
-    <? foreach ($bills as $bill) { ?>
+    <?php foreach ($bills as $bill) { ?>
         <dt><?= htmlspecialchars($bill->proto->name) ?> <br><ul>
-        <?
-        $data = json_decode($bill->data, true);
+        <?php         $data = json_decode($bill->data, true);
         if (is_array($data)) {
             foreach ($data as $key => $value) {
                 foreach ($bill->proto->fields as $field) {
@@ -24,8 +22,7 @@ use app\models\articles\proto\ArticleProto,
                 ?>
                     <li style="font-size:80%">
                         <?= htmlspecialchars($name) ?> — 
-                        <?
-                        switch ($key) {
+                        <?php                         switch ($key) {
                             case 'cost':
                             case 'cost_noncitizens':
                             case 'money':
@@ -126,17 +123,16 @@ use app\models\articles\proto\ArticleProto,
                         }
                         ?>
                         &laquo;<span class="dynamic_field" data-type="<?= $key ?>"><?= $value ?></span>&raquo;</li>
-                <? }
+                <?php }
             } ?>
         </ul></dt>
-        <dd><? if ($bill->creatorUser) { ?>Предложил<? if (intval($bill->creatorUser->sex) === 1) { ?>а<? } ?> <a href="#" onclick="load_page('profile', {'uid':<?= $bill->creatorUser->id ?>})"><?= htmlspecialchars($bill->creatorUser->name) ?></a><? } ?> <span class="formatDate" data-unixtime="<?= $bill->created ?>"><?= date("d-M-Y H:i", $bill->created) ?></span><br>
-            <? if ($bill->accepted) { ?>
+        <dd><?php if ($bill->creatorUser) { ?>Предложил<?php if (intval($bill->creatorUser->sex) === 1) { ?>а<?php } ?> <a href="#" onclick="load_page('profile', {'uid':<?= $bill->creatorUser->id ?>})"><?= htmlspecialchars($bill->creatorUser->name) ?></a><?php } ?> <span class="formatDate" data-unixtime="<?= $bill->created ?>"><?= date("d-M-Y H:i", $bill->created) ?></span><br>
+            <?php if ($bill->accepted) { ?>
                 Вступил в силу <span class="formatDate" data-unixtime="<?= $bill->accepted ?>"><?= date("d-M-Y H:i", $bill->accepted) ?></span>
-            <? } else { ?>
+            <?php } else { ?>
                 Голосование продлится до <span class="formatDate" data-unixtime="<?= $bill->vote_ended ?>"><?= date("d-M-Y H:i", $bill->vote_ended) ?></span>
-            <? } ?><br>
-            <?
-            if ($showVoteButtons || !$bill->accepted) {
+            <?php } ?><br>
+            <?php             if ($showVoteButtons || !$bill->accepted) {
                 $allreadyVoted = false;
                 $za = 0;
                 $protiv = 0;
@@ -155,21 +151,20 @@ use app\models\articles\proto\ArticleProto,
                 }
                 ?>
                 Результаты голосования: <span style="color:green"><?= $za ?> за</span>, <span style="color:red"><?= $protiv ?> против</span>, <?= $vozder ?> воздержались.<br>
-                <?
-                if ($user && !(is_null($user->post)) && $user->post->canVoteForBills() && $showVoteButtons && $user->state_id === $bill->state_id) {
+                <?php                 if ($user && !(is_null($user->post)) && $user->post->canVoteForBills() && $showVoteButtons && $user->state_id === $bill->state_id) {
                     if (!$allreadyVoted) {
                         ?>
                         <button onclick="voteForBill(<?= $bill->id ?>, 1)" style="color:green">За</button> <button onclick="voteForBill(<?= $bill->id ?>, 2)" style="color:red">Против</button> <button onclick="voteForBill(<?= $bill->id ?>, 0)" style="color:#080808">Воздержаться</button>
-                    <? } else { ?>
+                    <?php } else { ?>
                         <?= $allreadyVoted->variant === 1 ? '<span style="color:green">Вы проголосовали ЗА законопроект</span>' : ($allreadyVoted->variant === 2 ? '<span style="color:red">Вы проголосовали ПРОТИВ законопроекта</span>' : 'Вы воздержались от голосования по данному законопроекту'); ?>
-                    <? }
+                    <?php }
                 }
                 if ($user && $user->post->canVetoBills()) {
                     ?>
                     <button class="btn btn-danger btn-small" onclick="json_request('veto-bill', {'id':<?= $bill->id ?>})" >Наложить вето</button>
-            <? }
+            <?php }
         }
         ?>
         </dd>
-<? } ?>
+<?php } ?>
 </dl>

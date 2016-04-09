@@ -9,18 +9,16 @@ use app\components\MyHtmlHelper;
     <label class="control-label" for="#new_license_state_id">Государство</label>
     <div class="controls">            
         <select id="new_license_state_id">
-<?
-foreach ($states as $state):
+<?php foreach ($states as $state):
     ?>
-                <option <? if ($state->id === $holding->state_id): ?> selected="selected" <? endif ?> id="state_option<?= $state->id ?>" value="<?= $state->id ?>" ><?= $state->name ?></option>       
-            <? endforeach ?>
+                <option <?php if ($state->id === $holding->state_id): ?> selected="selected" <?php endif ?> id="state_option<?= $state->id ?>" value="<?= $state->id ?>" ><?= $state->name ?></option>       
+            <?php endforeach ?>
         </select>
     </div>
     <label class="control-label" for="#new_license_id">Лицензия</label>
     <div class="controls">
         <select id="new_license_id">
-<?
-$state = ($holding->state) ? $holding->state : $states[0];
+<?php $state = ($holding->state) ? $holding->state : $states[0];
 foreach ($licenses as $license) {
     $stateLicense = null;
     $allowed = true;
@@ -55,7 +53,7 @@ foreach ($licenses as $license) {
     }
     ?>
                 <option id="license_option<?= $license->id ?>" value="<?= $license->id ?>" data-text="<?= $text ?>"><?= $license->name ?></option>      
-            <? }
+            <?php }
             ?>
         </select>
     </div>

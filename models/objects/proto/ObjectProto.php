@@ -9,25 +9,25 @@ use app\components\MyModel;
  *
  * @property integer $id
  * @property string $name
- * @property string $class_name
+ * @property string $class
  */
 abstract class ObjectProto extends MyModel
 {
-        
+    /*
     public static function instantiate($row)
     {
-        return new $row['class_name'];
+        return new $row['class'];
     }
     
     public function init()
     {
-        $this->class_name = static::class;
+        $this->class = static::class;
         parent::init();
     }
         
     public function beforeSave($insert)
     {
-        $this->class_name = static::class;
+        $this->class = static::class;
         return parent::beforeSave($insert);
-    }
+    }*/
 }

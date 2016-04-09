@@ -34,6 +34,6 @@ $transferCost = round($resCost->resource->place->object->region->calcDist($viewe
     $(function() {
         $('#resource_selling_dealing_count').change(updateResSelDealSum).keyup(updateResSelDealSum);
         updateResSelDealSum();
-    })
+    });
     
 </script>

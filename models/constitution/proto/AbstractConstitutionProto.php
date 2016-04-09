@@ -2,6 +2,8 @@
 
 namespace app\models\constitution\proto;
 
+use app\models\articles\proto\ArticleProto;
+
 /**
  * Description of AbstractConstitutionProto
  *
@@ -11,10 +13,10 @@ abstract class AbstractConstitutionProto {
     
     /**
      * 
-     * @param \app\models\GovermentFieldType $articleProto
+     * @param ArticleProto $articleProto
      * @return string
      */
-    public static function getArticleValue($articleProto) {
+    public static function getArticleValue(ArticleProto $articleProto) {
         return $articleProto->default_value;
     }
     

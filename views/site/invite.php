@@ -1,5 +1,7 @@
 <?php
-use yii\widgets\ActiveForm;
+
+    use yii\widgets\ActiveForm;
+
 ?>
 <header>
     <div class="container">
@@ -9,13 +11,13 @@ use yii\widgets\ActiveForm;
 <div class="container">
     <div class="row">
         <div class="span6">
-            <? if ($model->getErrors()): ?>
+            <?php if ($model->getErrors()): ?>
             <ul style="color:red">
-                <? foreach ($model->getErrors()['imageFile'] as $error): ?>
+                <?php foreach ($model->getErrors()['imageFile'] as $error): ?>
                 <li><?=$error?></li>
-                <? endforeach ?>
+                <?php endforeach ?>
             </ul>
-            <? endif ?>
+            <?php endif ?>
             <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]) ?>
 
                 <?= $form->field($model, 'imageFile')->fileInput() ?>

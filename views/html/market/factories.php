@@ -2,7 +2,8 @@
 
 use yii\grid\GridView,
     app\components\MyHtmlHelper,
-    yii\helpers\Html;
+    yii\helpers\Html,
+    app\models\factories\Factory;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\factories\FactoryAuctionSearch */
@@ -19,24 +20,24 @@ $unnps = [];
                 <label for="#market-change-unnp-select" >Действовать от имени: </label>
                 <select id="market-change-unnp-select" >
                     <option disabled value="<?= $user->unnp ?>">Физическое лицо</option>
-                    <? if ($user->post && $user->post->org && $user->post->org->isExecutive()): ?>
+                    <?php if ($user->post && $user->post->org && $user->post->org->isExecutive()): ?>
                         <option disabled value="<?= $user->post->unnp ?>"><?= $user->post->ministry_name ? $user->post->ministry_name : $user->post->name . ' (' . $user->post->org->name . ')' ?></option>
-                    <? endif ?>
-                    <? if ($user->isOrgLeader()): ?>
+                    <?php endif ?>
+                    <?php if ($user->isOrgLeader()): ?>
                         <option disabled value="<?= $user->post->org->unnp ?>"><?= $user->post->org->name ?></option>
-                    <? endif ?>
-                    <? if ($user->isStateLeader()): ?>
+                    <?php endif ?>
+                    <?php if ($user->isStateLeader()): ?>
                         <option disabled value="<?= $user->state->unnp ?>"><?= $user->state->name ?></option>
-                    <? endif ?>
-                    <? /* if ($user->isRegionLeader()): ?>
+                    <?php endif ?>
+                    <?php /* if ($user->isRegionLeader()): ?>
                       <option disabled value="<?=$user->region->unnp?>"><?=$user->region->name?></option>
-                      <? endif */ ?>
-                    <? foreach ($user->holdings as $holding): $unnps[] = $holding->unnp; ?>
+                    <?php endif */ ?>
+                    <?php foreach ($user->holdings as $holding): $unnps[] = $holding->unnp; ?>
                         <option value="<?= $holding->unnp ?>"><?= $holding->name ?></option>
-                    <? endforeach ?>
-                    <? foreach ($user->factories as $factory): ?>
+                    <?php endforeach ?>
+                    <?php foreach ($user->factories as $factory): ?>
                         <option disabled value="<?= $factory->unnp ?>"><?= $factory->name ?></option>
-                    <? endforeach ?>
+                    <?php endforeach ?>
                 </select>
             </div>
             <h3>Рынок недвижимости</h3>
@@ -53,48 +54,48 @@ $unnps = [];
                     [
                         'attribute' => 'factoryName',
                         'label' => 'Предприятие',
-                        'content' => function($model) {
+                        'content' => function(Factory $model) {
                             return $model->factory->proto->name . " «" . MyHtmlHelper::a($model->factoryName, "load_page('factory-info',{'id':" . $model->factory_id . "})") . "»";
                         }
                     ],
                     [
                         'attribute' => 'holdingName',
                         'label' => 'Продавец',
-                        'content' => function($model) {
+                        'content' => function(Factory $model) {
                             return MyHtmlHelper::a($model->factory->holding->name, "load_page('holding-info',{'id':" . $model->factory->holding_id . "})");
                         }
                     ],
                     [
                         'attribute' => 'regionName',
                         'label' => 'Местоположение',
-                        'content' => function($model) {
+                        'content' => function(Factory $model) {
                             return $model->factory->region->getHtmlName();// MyHtmlHelper::a($model->factory->region->name, "show_region({$model->factory->region->id})") . ( $model->factory->region->state ? " (" . MyHtmlHelper::a($model->factory->region->state->short_name, "load_page('state-info',{'id':" . $model->factory->region->state_id . "})") . ")" : '');
                         }
                     ],
                     [
                         'attribute' => 'current_price',
                         'label' => 'Текущая цена',
-                        'content' => function($model) {
+                        'content' => function(Factory $model) {
                             return MyHtmlHelper::moneyFormat($model->current_price);
                         }
                     ],
                     [
                         'attribute' => 'end_price',
                         'label' => 'Стоп-цена',
-                        'content' => function($model) {
+                        'content' => function(Factory $model) {
                             return ($model->end_price) ? MyHtmlHelper::moneyFormat($model->end_price) : "<em>не установлена</em>";
                         }
                     ],
                     [
                         'attribute' => 'date_end',
                         'label' => 'Завершение',
-                        'content' => function($model) {
+                        'content' => function(Factory $model) {
                             return ($model->date_end > time()) ? MyHtmlHelper::timeFormatFuture($model->date_end) : "завершён";
                         }
                     ],
                     [
                         'label' => 'Действия',
-                        'content' => function($model) {
+                        'content' => function(Factory $model) {
                             return Html::button('Ставка', [
                                         'class' => 'btn btn-sm btn-gold btn-bet hide-on-unnp' . $model->factory->holding->unnp . ($model->lastBet ? ' hide-on-unnp' . $model->lastBet->holding->unnp : ''),
                                         'onclick' => 'load_modal("factory-auction-info",{"id":' . $model->id . ',"unnp":parseInt($("#market-change-unnp-select").val())},"factory_auction_info","factory_auction_info_body")'
@@ -137,11 +138,11 @@ $unnps = [];
         $('#market-factories-table th a').click(function () {
             $.get($(this).attr('href'), function (data) {
                 $('#row1').html(data);
-            })
+            });
             return false;
         });
 
         $('#market-change-unnp-select').change(updateButtons);
         updateButtons();
-    })
+    });
 </script>

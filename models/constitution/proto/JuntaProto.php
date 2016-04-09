@@ -38,7 +38,7 @@ abstract class JuntaProto extends AbstractConstitutionProto {
     ];
 
 
-    public static function getArticleValue($articleProto) {
+    public static function getArticleValue(ArticleProto $articleProto) {
         return static::$values[$articleProto->id];
     }
     

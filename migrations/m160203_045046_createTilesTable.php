@@ -1,7 +1,6 @@
 <?php
 
-use yii\db\Migration,
-    app\models\tiles\TileFactory;
+use yii\db\Migration;
 
 class m160203_045046_createTilesTable extends Migration
 {
@@ -21,7 +20,7 @@ class m160203_045046_createTilesTable extends Migration
         ]);
         
         $this->createIndex('coords', 'tiles', ['x','y'], true);
-        
+        /*
         for ($x = -866; $x <= 866; $x++) {
             for ($y = -1200; $y <= 1200; $y++) {
                 $tile = TileFactory::generate($x, $y);
@@ -31,7 +30,7 @@ class m160203_045046_createTilesTable extends Migration
                 }
                 echo "Saved tile {$x}x{$y}".PHP_EOL;
             }
-        }
+        }*/
     }
 
     public function down()

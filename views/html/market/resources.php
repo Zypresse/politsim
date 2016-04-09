@@ -1,9 +1,5 @@
 <?php
 
-use yii\grid\GridView,
-    app\components\MyHtmlHelper,
-    yii\helpers\Html;
-
 /* @var $this yii\web\View */
 /* @var $prototypes app\models\resources\proto\ResourceProto[] */
 /* @var $user app\models\User */
@@ -40,7 +36,7 @@ $unnps = [];
             </div>
             <h3>Рынок ресурсов</h3>
             <?php foreach ($prototypes as $i => $proto): ?>
-                <button class="btn btn-xs btn-default <? if ($i === 0) { ?>btn-lightblue<? } ?> resources_market_btn" data-id="<?= $proto->id ?>" ><?= $proto->getHtmlName() ?></button>
+                <button class="btn btn-xs btn-default <?php if ($i === 0) { ?>btn-lightblue<?php } ?> resources_market_btn" data-id="<?= $proto->id ?>" ><?= $proto->getHtmlName() ?></button>
             <?php endforeach ?>
         </div>
     </div>

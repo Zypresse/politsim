@@ -11,7 +11,7 @@
     var region, map;
 
     function set_regions_names() {
-<? foreach ($regions as $i => $region) { ?>map.regions['<?= $region->code ?>'].config.name = '<?= htmlspecialchars($region->name) ?><? if ($region->state) { ?> (<?= htmlspecialchars($region->state->short_name) ?>)<? } ?>';<? } ?>
+<?php foreach ($regions as $i => $region) { ?>map.regions['<?= $region->code ?>'].config.name = '<?= htmlspecialchars($region->name) ?><?php if ($region->state) { ?> (<?= htmlspecialchars($region->state->short_name) ?>)<?php } ?>';<?php } ?>
       }
       $(function () {
 
@@ -21,9 +21,9 @@
               map.remove();
 
           regions = {};
-<? foreach ($regions as $i => $region) { ?>
+<?php foreach ($regions as $i => $region) { ?>
               regions['<?= $region->code ?>'] = <?= $region->population ?>;
-<? } ?>
+<?php } ?>
 
           $('#mapdiv').vectorMap({
               map: 'map' + localStorage.getItem("MAP_VERSION"),

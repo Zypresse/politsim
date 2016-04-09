@@ -2,9 +2,9 @@
 
 <h3>Привязаны аккаунты в следющих соцсетях:</h3>
 <ul>
-<? foreach ($user->accounts as $acc): ?>
+<?php foreach ($user->accounts as $acc): ?>
     <li><?=$acc->source?> (id <?=$acc->source_id?>)</li>
-<? endforeach ?>
+<?php endforeach ?>
 </ul>
     
 <h3>Привязать ещё один аккаунт</h3>

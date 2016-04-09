@@ -8,25 +8,25 @@
             <span class="pull-right">
                 <!-- Tabs -->
                 <ul class="nav panel-tabs">
-                    <? foreach ($factoryCategories as $i => $factoryCat) { ?>
+                    <?php foreach ($factoryCategories as $i => $factoryCat) { ?>
                     <li class="<?=($i != 5)?'':'active'?>"><a href="#tab<?=$i?>" data-toggle="tab"><?=Html::img("/img/factory-types/{$factoryCat->id}.png",['alt'=>$i,'title'=>$factoryCat->name])?></a></li>
-                    <? } ?>
+                    <?php } ?>
                 </ul>
             </span>
         </div>
         <div class="panel-body">
             <div class="tab-content">
-                <? foreach ($factoryCategories as $i => $factoryCat) { ?>
+                <?php foreach ($factoryCategories as $i => $factoryCat) { ?>
                     <div class="tab-pane <?=($i != 5)?'':'active'?>" id="tab<?=$i?>">
                         <h3><?=$factoryCat->name?></h3>
-                        <? foreach($factoryCat->protos as $facType) { ?>
+                        <?php foreach($factoryCat->protos as $facType) { ?>
                             <p>
                                 <input data-workersSize="<?=$facType->sumNeedWorkers?>" data-buildCost="<?=$facType->build_cost?>" class="elect_vote_radio" type="radio" name="new_factory_type" value="<?=$facType->id?>" id="new_factory_type<?=$facType->id?>">
                                 <label style="display: inline-block;" for="new_factory_type<?=$facType->id?>"><?=$facType->name?></label>
                             </p>
-                        <? } ?>
+                        <?php } ?>
                     </div>
-                <? } ?>
+                <?php } ?>
             </div>
         </div>
     </div>

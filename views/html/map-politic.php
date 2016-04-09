@@ -38,8 +38,7 @@
                 regions: [{
                         attribute: 'fill',
                         values: {
-<?
-foreach ($regions as $i => $region) {
+<?php foreach ($regions as $i => $region) {
     if ($i)
         echo ",";
     $color = $region->state ? $region->state->color : '#eee';
@@ -69,7 +68,7 @@ foreach ($regions as $i => $region) {
 
     });
     function set_regions_names() {
-<? foreach ($regions as $i => $region) { ?>map.regions['<?= $region->code ?>'].config.name = '<?= htmlspecialchars($region->name) ?><? if ($region->state) { ?> (<?= htmlspecialchars($region->state->short_name) ?>)<? } ?>';<? } ?>
+<?php foreach ($regions as $i => $region) { ?>map.regions['<?= $region->code ?>'].config.name = '<?= htmlspecialchars($region->name) ?><?php if ($region->state) { ?> (<?= htmlspecialchars($region->state->short_name) ?>)<?php } ?>';<?php } ?>
     }
 
 </script>

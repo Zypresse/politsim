@@ -12,12 +12,12 @@ use app\components\MyHtmlHelper;
             <p><strong>Управляющий:</strong> <?= $factory->manager ? $factory->manager->getHtmlName() : "не назначен" ?></p>
             <p>
                 <strong>Статус:</strong> <?= $factory->statusName ?> 
-                <? if ($factory->status < 0) { ?>
+                <?php if ($factory->status < 0) { ?>
                     (запланированная дата окончания строительства: 
                     <span class="formatDate" data-unixtime="<?= $factory->builded ?>">
                         <?= date('d-M-Y H:i', $factory->builded) ?>
                     </span>)
-                <? } ?>
+                <?php } ?>
             </p>
         </div>
     </div>
@@ -38,14 +38,14 @@ use app\components\MyHtmlHelper;
                             </tr>
                         </thead>
                         <tbody>
-                            <? foreach ($factory->proto->workers as $tWorker) { ?>
+                            <?php foreach ($factory->proto->workers as $tWorker) { ?>
                                 <tr>
                                     <td><?= $tWorker->popClass->name ?></td>
                                     <td style="text-align: center;"><?= $factory->getWorkersCountByClass($tWorker->pop_class_id) ?></td>
                                     <td style="text-align: center;"><?= $factory->getNeedWorkersCountByClass($tWorker->pop_class_id) ?></td>
                                     <td style="text-align: center;"><?= $factory->getSalaryByClass($tWorker->pop_class_id) ?> <?= MyHtmlHelper::icon('money') ?></td>
                                 </tr>
-                            <? } ?>
+                            <?php } ?>
                         </tbody>
                     </table>
                 </div>

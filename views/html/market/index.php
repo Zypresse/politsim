@@ -1,9 +1,8 @@
 <?php
 
-use app\components\MyHtmlHelper;
-
 /* @var $this yii\web\View */
 /* @var $user app\models\User */
+
 ?>
 <div class="container">
     <div class="row">
@@ -41,9 +40,9 @@ use app\components\MyHtmlHelper;
 
         worldMiningChart.draw(google.visualization.arrayToDataTable([
             ['Время', 'Нефть', 'Газ'],
-            <? foreach ($statisticsWorldMining['Oil'] as $i => $oilStat): $gasStat = $statisticsWorldMining['NaturalGas'][$i];?>
+            <?php foreach ($statisticsWorldMining['Oil'] as $i => $oilStat): $gasStat = $statisticsWorldMining['NaturalGas'][$i];?>
                 <?=$i?',':''?>["<?=date("H:i",$oilStat->timestamp)?>", <?=$oilStat->value?>, <?=$gasStat->value?>]
-            <? endforeach ?>
+            <?php endforeach ?>
         ]), {            
             colors: [Theme.colors.red, Theme.colors.blue],
             legend: {position: 'top'}
@@ -53,9 +52,9 @@ use app\components\MyHtmlHelper;
 
         worldPricesChart.draw(google.visualization.arrayToDataTable([
             ['Время', 'Нефть', 'Газ'],
-            <? foreach ($statisticsWorldCosts['Oil'] as $i => $oilStat): $gasStat = $statisticsWorldCosts['NaturalGas'][$i];?>
+            <?php foreach ($statisticsWorldCosts['Oil'] as $i => $oilStat): $gasStat = $statisticsWorldCosts['NaturalGas'][$i];?>
                 <?=$i?',':''?>["<?=date("H:i",$oilStat->timestamp)?>", <?=$oilStat->value?>, <?=$gasStat->value?>]
-            <? endforeach ?>
+            <?php endforeach ?>
         ]), {            
             colors: [Theme.colors.red, Theme.colors.blue],
             legend: {position: 'top'}

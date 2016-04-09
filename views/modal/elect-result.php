@@ -9,10 +9,10 @@ $data = json_decode($result->data);
 <p>Явка: <?=MyHtmlHelper::formateNumberword($data->yavka_people,'h')?> (<?=$data->yavka_percents?>%)</p>
 <p>Результаты:</p>
 <ul>
-    <? foreach ($data->results as $res) { 
+    <?php foreach ($data->results as $res) { 
         if ($result->leader) {?>
-    <li><a href="#" onclick="load_page('profile',{'uid':<?=$res->uid?>})"><?=$res->name?></a> (<? if ($res->party_id) { ?><a href="#" onclick="load_page('party-info',{'id':<?=$res->party_id?>})"><?} ?><?=isset($res->party_short_name) ? $res->party_short_name : $res->party_name?><? if ($res->party_id) { ?></a><?} ?>) — <?=MyHtmlHelper::formateNumberword($res->votes_population,'голосов','голос','голоса')?> (<?=$res->votes_percents?>%)</li>
-        <? } else { ?>
+    <li><a href="#" onclick="load_page('profile',{'uid':<?=$res->uid?>})"><?=$res->name?></a> (<?php if ($res->party_id) { ?><a href="#" onclick="load_page('party-info',{'id':<?=$res->party_id?>})"><?php } ?><?=isset($res->party_short_name) ? $res->party_short_name : $res->party_name?><?php if ($res->party_id) { ?></a><?php } ?>) — <?=MyHtmlHelper::formateNumberword($res->votes_population,'голосов','голос','голоса')?> (<?=$res->votes_percents?>%)</li>
+        <?php } else { ?>
     <li><a href="#" onclick="load_page('party-info',{'id':<?=$res->id?>})"><?=$res->name?></a> — <?=MyHtmlHelper::formateNumberword($res->votes_population,'голосов','голос','голоса')?> (<?=$res->votes_percents?>%)</li>
-    <? }} ?>
+    <?php }} ?>
 </ul>

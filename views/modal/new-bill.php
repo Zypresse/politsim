@@ -1,21 +1,23 @@
-<?
-use app\components\MyHtmlHelper;
+<?php 
+
+    use app\components\MyHtmlHelper;
+    
 ?>
 <p>Новый законопроект, предлагающий &laquo;<?=htmlspecialchars($bill_type->name)?>&raquo;</p>
 <form class="form-horizontal">
-<? foreach ($fields as $field) { ?>
+<?php foreach ($fields as $field) { ?>
 <div class="control-group">
 	
 		<label class="control-label" for="bill<?=$bill_type->id?>_<?=$field->system_name?>" ><?=htmlspecialchars($field->name)?></label>
 
 		 <div class="controls">
-	<? switch ($field->type) {
+	<?php switch ($field->type) {
 		 case 'string': ?>
 		 <input type="text" class="bill_field" id="bill<?=$bill_type->id?>_<?=$field->system_name?>" name="<?=$field->system_name?>" >
-		 <? break;
+		 <?php break;
 		 case 'number': ?>
 		 <input type="number" class="bill_field" id="bill<?=$bill_type->id?>_<?=$field->system_name?>" name="<?=$field->system_name?>" onchange="$(this).val($(this).val() < 0 ? 0 : parseInt($(this).val()))" >
-		 <? break;
+		 <?php break;
 		 case 'color': ?>
 		 <input type="text" class="bill_field" id="bill<?=$bill_type->id?>_<?=$field->system_name?>" name="<?=$field->system_name?>">
 		 <script type="text/javascript" src="/js/spectrum.js"></script>
@@ -51,70 +53,70 @@ use app\components\MyHtmlHelper;
 			});
 		 })
 		 </script>
-		 <? break;
+		 <?php break;
 		 case 'money': ?>
                  <input type="number" class="bill_field" value="0" id="bill<?=$bill_type->id?>_<?=$field->system_name?>" name="<?=$field->system_name?>" onchange="$(this).val($(this).val() < 0 ? 0 : parseInt($(this).val()))" > <?=MyHtmlHelper::icon('money')?>
-		 <? break;
+		 <?php break;
 		 case 'regions':
 		 case 'regions_all': ?>
 		 <select class="bill_field" id="bill<?=$bill_type->id?>_<?=$field->system_name?>" name="<?=$field->system_name?>">
-		 	<? foreach ($additional_data['regions'] as $region) { ?>
+		 	<?php foreach ($additional_data['regions'] as $region) { ?>
 		 	<option value="<?=$region->code?>"><?=$region->name?></option>
-		 	<? } ?>
+		 	<?php } ?>
 		 </select>
-		 <? break;
+		 <?php break;
 		 case 'cities':
 		 case 'cities_all': ?>
 		 <select class="bill_field" id="bill<?=$bill_type->id?>_<?=$field->system_name?>" name="<?=$field->system_name?>">
-		 	<? foreach ($additional_data['regions'] as $region) { ?>
+		 	<?php foreach ($additional_data['regions'] as $region) { ?>
 		 	<option value="<?=$region->code?>"><?=$region->city?></option>
-		 	<? } ?>
+		 	<?php } ?>
 		 </select>
-		 <? break;
+		 <?php break;
                  case 'elected_variants': if (sizeof($additional_data['elected_variants'])) { ?>
 		 <select class="bill_field" id="bill<?=$bill_type->id?>_<?=$field->system_name?>" name="<?=$field->system_name?>">
-		 	<? foreach ($additional_data['elected_variants'] as $type) { ?>
+		 	<?php foreach ($additional_data['elected_variants'] as $type) { ?>
 		 	<option value="<?=$type['key']?>"><?=$type['name']?></option>
-		 	<? } ?>
+		 	<?php } ?>
 		 </select>
-                 <? } break;
+                 <?php } break;
 		 case 'cores': if (sizeof($additional_data['cores'])) { ?>
 		 <select class="bill_field" id="bill<?=$bill_type->id?>_<?=$field->system_name?>" name="<?=$field->system_name?>">
-		 	<? foreach ($additional_data['cores'] as $i => $type) { ?>
-                        <? if (is_object($type)) { ?><option value="<?=$type->id?>"><?=$type->name?></option><? } else { ?><option value="<?=$i?>"><?=$type?></option><? } ?>
-		 	<? } ?>
+		 	<?php foreach ($additional_data['cores'] as $i => $type) { ?>
+                        <?php if (is_object($type)) { ?><option value="<?=$type->id?>"><?=$type->name?></option><?php } else { ?><option value="<?=$i?>"><?=$type?></option><?php } ?>
+		 	<?php } ?>
 		 </select>
-                 <? } break;
+                 <?php } break;
 		 case 'legislature_types': ?>
 		 <select class="bill_field" id="bill<?=$bill_type->id?>_<?=$field->system_name?>" name="<?=$field->system_name?>">
-		 	<? foreach ($additional_data['legislature_types'] as $type) { ?>
+		 	<?php foreach ($additional_data['legislature_types'] as $type) { ?>
 		 	<option value="<?=$type['id']?>"><?=$type['display_name']?></option>
-		 	<? } ?>
+		 	<?php } ?>
 		 </select>
-		 <? break;
+		 <?php break;
 		 case 'goverment_field_types': ?>
 		 <select onchange="change_fields()" class="bill_field" id="bill<?=$bill_type->id?>_<?=$field->system_name?>" name="<?=$field->system_name?>">
-		 	<? foreach ($additional_data['goverment_field_types'] as $type) { ?>
+		 	<?php foreach ($additional_data['goverment_field_types'] as $type) { ?>
 		 	<option value="<?=$type->id?>"><?=$type->name?></option>
-		 	<? } ?>
+		 	<?php } ?>
 		 </select>
-		 <? break;
+		 <?php break;
 		 case 'goverment_field_value': ?>
-		 		<? switch ($additional_data['goverment_field_types'][0]->type) {
+		 		<?php switch ($additional_data['goverment_field_types'][0]->type) {
 		 			case "checkbox": ?>
 				  <input type="checkbox" class="bill_field" id="bill<?=$bill_type->id?>_<?=$field->system_name?>" name="<?=$field->system_name?>">
-				<? break;
+				<?php break;
 					case "integer":
                                         case "number": ?>
 					<input type="number" class="bill_field" id="bill<?=$bill_type->id?>_<?=$field->system_name?>" name="<?=$field->system_name?>">
-				<? break;
+				<?php break;
 					case "org_dest_members": ?>
 					<select class="bill_field" id="bill<?=$bill_type->id?>_<?=$field->system_name?>" name="<?=$field->system_name?>">
 						<option value="dest_by_leader">Назначаются напрямую лидером</option>
 						<option value="nation_party_vote">Голосование населения за партии</option>
 						<option value="nation_one_party_vote">Голосование населения за членов единственной партии</option>
 					</select>
-				<? break;
+				<?php break;
 					case "org_dest_leader": ?>
 					<select class="bill_field" id="bill<?=$bill_type->id?>_<?=$field->system_name?>" name="<?=$field->system_name?>">
 						<option value="unlimited">Пожизненно</option>
@@ -123,53 +125,52 @@ use app\components\MyHtmlHelper;
 						<!--<option value="other_org_vote">Голосуют члены другой организации</option>-->
 						<option value="org_vote">Голосуют члены этой же организации</option>
 					</select>
-				<? break; default: ?>
+				<?php break; default: ?>
 				  <input type="text" class="bill_field" id="bill<?=$bill_type->id?>_<?=$field->system_name?>" name="<?=$field->system_name?>">
-				<? break; } ?>
+				<?php break; } ?>
 		 	
-		 <? break;
+		 <?php break;
                  case 'checkbox':
                 ?>
                     <input type="checkbox" value="1" class="bill_field" id="bill<?=$bill_type->id?>_<?=$field->system_name?>" name="<?=$field->system_name?>">
-                <?   
+                <?php   
                  break;
                 case 'licenses':
                 ?>
                 <select class="bill_field" id="bill<?=$bill_type->id?>_<?=$field->system_name?>" name="<?=$field->system_name?>">
-		 	<? foreach ($additional_data['licenses'] as $license) { ?>
+		 	<?php foreach ($additional_data['licenses'] as $license) { ?>
 		 	<option value="<?=$license->id?>"><?=$license->name?></option>
-		 	<? } ?>
+		 	<?php } ?>
 		 </select>
-                <?
-                    break;
+                <?php                     break;
                 case 'orgs': if (sizeof($additional_data['orgs'])) { 
                 ?>
                 <select class="bill_field" id="bill<?=$bill_type->id?>_<?=$field->system_name?>" name="<?=$field->system_name?>">
-		 	<? foreach ($additional_data['orgs'] as $org) { ?>
+		 	<?php foreach ($additional_data['orgs'] as $org) { ?>
 		 	<option value="<?=$org->id?>"><?=$org->name?></option>
-		 	<? } ?>
+		 	<?php } ?>
 		 </select>
-                <? }
+                <?php }
                     break;
 		 default: ?>
 		 	<input type="text" class="bill_field" id="bill<?=$bill_type->id?>_<?=$field->system_name?>" name="<?=$field->system_name?>" >
-		 <? break; 
+		 <?php break; 
 		 } ?>
 		 </div>
 	
 </div>
-<? } ?>
+<?php } ?>
 
 </form>
 
 <script>
 	bill_id = <?=$bill_type->id?>;
-<? if (isset($additional_data['goverment_field_types'])) { ?>
+<?php if (isset($additional_data['goverment_field_types'])) { ?>
 	function change_fields() {
 		var a = {
-		<? foreach ($additional_data['goverment_field_types'] as $i => $type) { ?>
+		<?php foreach ($additional_data['goverment_field_types'] as $i => $type) { ?>
 	 	<?=$i ? ',' : ''?><?=$type->id?>:'<?=$type->type?>'
-	 	<? } ?>
+	 	<?php } ?>
 		}
 
 		var type = $('#bill<?=$bill_type->id?>_goverment_field_type').val();
@@ -194,5 +195,5 @@ use app\components\MyHtmlHelper;
 		}
 
 	}
-<? } ?>
+<?php } ?>
 </script>
