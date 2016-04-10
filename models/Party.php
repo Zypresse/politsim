@@ -188,6 +188,11 @@ class Party extends MyModel implements TaxPayer
     {
         return MyHtmlHelper::a($this->name, "load_page('party-info',{'id':{$this->id}})");
     }
+    
+    public function getHtmlShortName()
+    {
+        return MyHtmlHelper::a($this->short_name, "load_page('party-info',{'id':{$this->id}})");
+	}
 
     public function getTaxStateId()
     {

@@ -4,7 +4,8 @@
  * @var \app\models\User $user;
  */
 use app\components\MyHtmlHelper,
-    app\models\Org;
+    app\models\Org,
+	app\models\ElectOrgLeaderRequest;
 
 ?>
 

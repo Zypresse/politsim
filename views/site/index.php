@@ -13,7 +13,7 @@ $this->title = 'Political Simulator';
                     <h1>Political Simulator</h1>
                     <p class="subtitle">Мультиплеерный реалистичный симулятор геополитики и бизнеса.</p>
                     <p>Следите за обновлениями в социальных сетях: <a href="https://plus.google.com/110425397057830817568" rel="publisher" target="_blank">Google+</a>, <a href="https://vk.com/politsim" target="_blank">VK</a></p>
-                    <!--<p>Так же рекомендуется к прочтению: <a href="http://blog.politsim.net">официальный блог разработки</a>, <a href="http://wiki.politsim.net">вики по игре</a>.</p>-->
+                    <p>Так же рекомендуется к прочтению: <a href="http://blog.politsim.net">официальный блог разработки</a>, <a href="http://wiki-politsim.lazzyteam.pw">вики по игре</a>.</p>
                 </div>
                 <div class="col-md-6">
                     <h3>Вход через соц. сети:</h3>
@@ -91,10 +91,10 @@ $this->title = 'Political Simulator';
             </div>
         </div>
     </nav>
-    <div class="sidebar-background show_on_load">
+    <div class="sidebar-background navbar-collapse-primary show_on_load">
         <div class="primary-sidebar-background"></div>
     </div>
-    <div class="primary-sidebar show_on_load">
+    <div class="primary-sidebar navbar-collapse-primary show_on_load" style="z-index:999" >
         <div class="sparkline-box side">
             <div class="sparkline-row">
                 <h4 class="dark-green"><span>Счёт</span>  <strong id="head_money"></strong> <?=MyHtmlHelper::icon('money')?></h4> 
