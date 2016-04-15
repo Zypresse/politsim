@@ -8,6 +8,7 @@ use app\models\objects\proto\UnmovableObjectProto,
     app\models\factories\proto\FactoryProtoWorker as Worker,
     app\models\factories\proto\FactoryProtoLicense as License,
     app\models\factories\Factory,
+    app\models\resources\proto\ResourceProto,
     app\models\Region,
     app\models\Holding;
 
@@ -30,6 +31,8 @@ use app\models\objects\proto\UnmovableObjectProto,
  * @property Kit[] $used Используемый набор ресурсов
  * @property Worker[] $workers Используемые наборы рабочих
  * @property License[] $licenses Необходимые лицензии
+ * @property ResourceProto[] $resourcesForBuy
+ * @property ResourceProto[] $resourcesForSell
  */
 class FactoryProto extends UnmovableObjectProto
 {
@@ -117,8 +120,17 @@ class FactoryProto extends UnmovableObjectProto
     
     public function getLicenses()
     {
-        return $this->hasMany(License::className(), ['id' => 'license_proto_id'])
-                ->viaTable(License::tableName(), ['factory_proto_id' => 'id']);
+        throw new yii\base\Exception("Method ".static::className()."::getLicenses() not overrided!");
+    }    
+   
+    public function getResourcesForBuy()
+    {
+        throw new yii\base\Exception("Method ".static::className()."::getResourcesForBuy() not overrided!");
+    }    
+    
+    public function getResourcesForSell()
+    {
+        throw new yii\base\Exception("Method ".static::className()."::getResourcesForSell() not overrided!");
     }
     
     /**
