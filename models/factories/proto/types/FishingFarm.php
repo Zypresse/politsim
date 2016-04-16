@@ -3,7 +3,8 @@
 namespace app\models\factories\proto\types;
 
 use app\models\factories\proto\FactoryProto,
-    app\models\licenses\proto\LicenseProto;
+    app\models\licenses\proto\LicenseProto,
+    app\models\resources\proto\types\Fish;
 
 /**
  * Description of FishingFarm
@@ -12,6 +13,12 @@ use app\models\factories\proto\FactoryProto,
  */
 class FishingFarm extends FactoryProto 
 {
+
+    public function getId()
+    {
+        return 37;
+    }
+
     public function getLicenses()
     {
         return [
@@ -28,5 +35,17 @@ class FishingFarm extends FactoryProto
     public function getRegionEff($region)
     {
         return $region->getDiggingEff(11)->k;
+    }
+
+    public function getResourcesForBuy()
+    {
+        return [];
+    }    
+    
+    public function getResourcesForSell()
+    {
+        return [
+            new Fish
+        ];
     }
 }

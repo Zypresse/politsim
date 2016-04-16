@@ -3,7 +3,9 @@
 namespace app\models\factories\proto\types;
 
 use app\models\factories\proto\FactoryProto,
-    app\models\licenses\proto\LicenseProto;
+    app\models\licenses\proto\LicenseProto,
+    app\models\resources\proto\types\Meat,
+    app\models\resources\proto\types\Wool;
 
 /**
  * ну вы понели, отсылка к Оруэллу, илитность, все дела
@@ -12,6 +14,11 @@ use app\models\factories\proto\FactoryProto,
  */
 class AnimalFarm extends FactoryProto {
     
+    public function getId()
+    {
+        return 13;
+    }
+
     public function getLicenses()
     {
         return [
@@ -28,6 +35,19 @@ class AnimalFarm extends FactoryProto {
     public function getRegionEff($region)
     {
         return $region->getDiggingEff(12)->k;
+    }
+
+    public function getResourcesForBuy()
+    {
+        return [];
+    }    
+    
+    public function getResourcesForSell()
+    {
+        return [
+            new Meat,
+            new Wool
+        ];
     }
     
 }

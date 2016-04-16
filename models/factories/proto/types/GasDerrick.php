@@ -2,7 +2,9 @@
 
 namespace app\models\factories\proto\types;
 
-use app\models\licenses\proto\LicenseProto;
+use app\models\licenses\proto\LicenseProto,
+    app\models\resources\proto\types\Electricity,
+    app\models\resources\proto\types\NaturalGas;
 
 /**
  * Description of GasDerrick
@@ -11,6 +13,11 @@ use app\models\licenses\proto\LicenseProto;
  */
 class GasDerrick extends Mine {
     
+    public function getId()
+    {
+        return 5;
+    }
+
     public function getLicenses()
     {
         return [
@@ -27,6 +34,20 @@ class GasDerrick extends Mine {
     public function getRegionEff($region)
     {
         return $region->getDiggingEff(2)->k;
+    }
+
+    public function getResourcesForBuy()
+    {
+        return [
+            new Electricity
+        ];
+    }    
+    
+    public function getResourcesForSell()
+    {
+        return [
+            new NaturalGas
+        ];
     }
     
 }

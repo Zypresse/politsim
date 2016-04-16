@@ -2,7 +2,8 @@
 
 namespace app\models\factories\proto\types;
 
-use app\models\factories\proto\types\Shop;
+use app\models\factories\proto\types\Shop,
+    app\models\resources\proto\types\Furniture;
 
 /**
  * Description of FurnitureShop
@@ -11,4 +12,23 @@ use app\models\factories\proto\types\Shop;
  */
 class FurnitureShop extends Shop {
     
+	public function getId()
+	{
+		return 41;
+	}
+
+    public function getResourcesForBuy()
+    {
+        return [
+            new Furniture
+        ];
+    }    
+    
+    public function getResourcesForSell()
+    {
+        return [
+            new Furniture
+        ];
+    }
+
 }

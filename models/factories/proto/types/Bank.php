@@ -12,6 +12,11 @@ use app\models\factories\proto\FactoryProto,
  */
 class Bank extends FactoryProto {
     
+	public function getId()
+	{
+		return 3;
+	}
+
     public function getLicenses()
     {
         return [
@@ -19,6 +24,16 @@ class Bank extends FactoryProto {
                 'id' => 13
             ])
         ];
+    }
+
+    public function getResourcesForBuy()
+    {
+        return [];
+    }    
+    
+    public function getResourcesForSell()
+    {
+        return [];
     }
     
 }

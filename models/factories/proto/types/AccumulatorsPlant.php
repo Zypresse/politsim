@@ -15,6 +15,12 @@ use app\models\factories\proto\FactoryProto,
  */
 class AccumulatorsPlant extends FactoryProto
 {
+
+    public function getId()
+    {
+        return 11;
+    }
+
     public function getLicenses()
     {
         return [

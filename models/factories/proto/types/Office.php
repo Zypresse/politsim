@@ -9,6 +9,22 @@ use app\models\factories\proto\FactoryProto;
  *
  * @author ilya
  */
-class Office extends FactoryProto {
-        
+class Office extends FactoryProto
+{
+
+	public function getId()
+	{
+		return 4;
+	}
+
+    public function getResourcesForBuy()
+    {
+        return [];
+    }    
+    
+    public function getResourcesForSell()
+    {
+        return [];
+    }
+
 }

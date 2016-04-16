@@ -3,7 +3,8 @@
 namespace app\models\factories\proto\types;
 
 use app\models\factories\proto\FactoryProto,
-    app\models\licenses\proto\LicenseProto;
+    app\models\licenses\proto\LicenseProto,
+    app\models\resources\proto\types\Fruits;
 
 /**
  * Фруктовый сад
@@ -12,6 +13,11 @@ use app\models\factories\proto\FactoryProto,
  */
 class FruitFarm extends FactoryProto {
     
+    public function getId()
+    {
+        return 19;
+    }
+
     public function getLicenses()
     {
         return [
@@ -28,6 +34,18 @@ class FruitFarm extends FactoryProto {
     public function getRegionEff($region)
     {
         return $region->getDiggingEff(10)->k;
+    }
+
+    public function getResourcesForBuy()
+    {
+        return [];
+    }    
+    
+    public function getResourcesForSell()
+    {
+        return [
+            new Fruits
+        ];
     }
     
 }

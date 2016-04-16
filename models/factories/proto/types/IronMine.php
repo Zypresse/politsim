@@ -2,7 +2,9 @@
 
 namespace app\models\factories\proto\types;
 
-use app\models\licenses\proto\LicenseProto;
+use app\models\licenses\proto\LicenseProto,
+    app\models\resources\proto\types\Electricity,
+    app\models\resources\proto\types\FOre;
 
 /**
  * Шахта железной руды
@@ -11,6 +13,11 @@ use app\models\licenses\proto\LicenseProto;
  */
 class IronMine extends Mine {
     
+    public function getId()
+    {
+        return 22;
+    }
+
     public function getLicenses()
     {
         return [
@@ -29,4 +36,18 @@ class IronMine extends Mine {
         return $region->getDiggingEff(5)->k;
     }
     
+    public function getResourcesForBuy()
+    {
+        return [
+            new Electricity
+        ];
+    }    
+    
+    public function getResourcesForSell()
+    {
+        return [
+            new FOre
+        ];
+    }
+
 }

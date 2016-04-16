@@ -2,7 +2,9 @@
 
 namespace app\models\factories\proto\types;
 
-use app\models\licenses\proto\LicenseProto;
+use app\models\licenses\proto\LicenseProto,
+    app\models\resources\proto\types\Coal,
+    app\models\resources\proto\types\Electricity;
 
 /**
  * Description of CoalMine
@@ -11,6 +13,11 @@ use app\models\licenses\proto\LicenseProto;
  */
 class CoalMine extends Mine {
     
+    public function getId()
+    {
+        return 9;
+    }
+
     public function getLicenses()
     {
         return [
@@ -27,6 +34,20 @@ class CoalMine extends Mine {
     public function getRegionEff($region)
     {
         return $region->getDiggingEff(3)->k;
+    }
+
+    public function getResourcesForBuy()
+    {
+        return [
+            new Electricity
+        ];
+    }    
+    
+    public function getResourcesForSell()
+    {
+        return [
+            new Coal
+        ];
     }
     
 }
