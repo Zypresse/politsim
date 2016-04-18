@@ -18,11 +18,11 @@ AppAsset::register($this);
         <title><?= Html::encode($this->title) ?></title>
 <?php $this->head() ?>
     </head>
-    <body>
+    <body class="skin-black sidebar-mini wysihtml5-supported">
 
         <?php $this->beginBody() ?>
         <img src="/img/ajax-loader.gif" id="spinner" style="display:none" />
-        <div>
+        <div class="wrapper">
             <?= $content ?>
         </div>
         <footer class='footer'>

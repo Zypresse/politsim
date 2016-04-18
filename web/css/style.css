@@ -406,9 +406,15 @@ dd {
     margin-top: 0px !important;
 }
 
-#topmenu .dropdown li {
+#topmenu .treeview-menu li {
     font-size: small;
 }
+
+#topmenu li a img {
+    width: 24px;    
+    margin-right: 10px;
+}
+
 
 /*Panel tabs*/
 
