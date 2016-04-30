@@ -91,42 +91,15 @@ class Auth extends MyModel
      */
     public static function signUp($source, $attributes)
     {
-        switch ($source) {
-            case 'google':
-                $user = new User([
-                    'name' => $attributes['displayName'],
-                    'sex' => User::stringGenderToSex($attributes['gender']),
-                    'photo' => $attributes['image']['url'],
-                    'photo_big' => preg_replace("/sz=50/", "/sz=400", $attributes['image']['url']),
-                    'money' => 200000                    
-                ]);
-                break;
-            case 'facebook':
-                $user = new User([
-                    'name' => $attributes['name'],
-                    'sex' => User::stringGenderToSex($attributes['gender']),
-                    'photo' => "http://graph.facebook.com/{$attributes['id']}/picture",
-                    'photo_big' => "http://graph.facebook.com/{$attributes['id']}/picture?width=400&height=800",
-                    'money' => 100000                    
-                ]);
-                break;
-            case 'vkontakte':
-            case 'vkapp':
-                $user = new User([
-                    'name' => $attributes['first_name'] . ' ' . $attributes['last_name'],
-                    'sex' => intval($attributes['sex']),
-                    'photo' => $attributes['photo_50'],
-                    'photo_big' => (isset($attributes['photo_400_orig'])) ? $attributes['photo_400_orig'] : $attributes['photo_big'],
-                    'money' => 100000                    
-                ]);
-                break;
-
-        }
+        $user = new User([
+            'money' => 1000000,
+            'party_id' => 0,
+            'state_id' => 0,
+            'post_id' => 0,
+            'region_id' => 0
+        ]);
         
-        $user->party_id = 0;
-        $user->state_id = 0;
-        $user->post_id = 0;
-        $user->region_id = 0;
+        $this->updateUserInfo($source, $attributes);
         
         $transaction = $user->getDb()->beginTransaction();
         if ($user->save()) {
@@ -147,4 +120,40 @@ class Auth extends MyModel
             return $user;
         }
     }
+    
+    public function updateUserInfo($source, $attributes, $save = false)
+    {
+        switch ($source) {
+            case 'google':
+                $this->user->load([
+                    'name' => $attributes['displayName'],
+                    'sex' => User::stringGenderToSex($attributes['gender']),
+                    'photo' => $attributes['image']['url'],
+                    'photo_big' => preg_replace("/sz=50/", "/sz=400", $attributes['image']['url'])               
+                ],'');
+                break;
+            case 'facebook':
+                $this->user->load([
+                    'name' => $attributes['name'],
+                    'sex' => User::stringGenderToSex($attributes['gender']),
+                    'photo' => "http://graph.facebook.com/{$attributes['id']}/picture",
+                    'photo_big' => "http://graph.facebook.com/{$attributes['id']}/picture?width=400&height=800"
+                ],'');
+                break;
+            case 'vkontakte':
+            case 'vkapp':
+                $this->user->load([
+                    'name' => $attributes['first_name'] . ' ' . $attributes['last_name'],
+                    'sex' => intval($attributes['sex']),
+                    'photo' => $attributes['photo_50'],
+                    'photo_big' => (isset($attributes['photo_400_orig'])) ? $attributes['photo_400_orig'] : $attributes['photo_big']
+                ],'');
+                break;
+        }
+        
+        if ($save) {
+            $this->user->save();
+        }
+    }
+    
 }

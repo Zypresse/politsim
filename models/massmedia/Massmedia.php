@@ -2,7 +2,8 @@
 
 namespace app\models\massmedia;
 
-use Yii;
+use Yii,
+    app\components\MyModel;
 
 /**
  * This is the model class for table "massmedia".
@@ -19,7 +20,7 @@ use Yii;
  * @property integer $religionId
  * @property integer $ideologyId
  */
-class Massmedia extends \app\components\MyModel
+class Massmedia extends MyModel
 {
     /**
      * @inheritdoc
