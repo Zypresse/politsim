@@ -41,6 +41,7 @@ class m160425_231300_addMassMediaAndEventsAndPopRequests extends Migration
             'id' => 'INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT',
             'title' => 'TEXT NOT NULL',
             'text' => 'TEXT NOT NULL',
+            'massmediaId' => 'INTEGER NOT NULL',
             'authorId' => 'INTEGER DEFAULT NULL',
             'eventId' => 'INTEGER DEFAULT NULL',
             'popRequestId' => 'INTEGER DEFAULT NULL',

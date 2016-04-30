@@ -19,7 +19,8 @@ use Yii,
     app\models\factories\FactoryAuction,
     app\models\factories\FactoryAuctionSearch,
     app\models\statistics\StatisticsMining,
-    app\models\statistics\StatisticsCosts;
+    app\models\statistics\StatisticsCosts,
+    app\models\massmedia\Massmedia;
 
 class HtmlController extends MyController
 {
@@ -430,6 +431,17 @@ class HtmlController extends MyController
         return $this->render('market/resources', [
             'prototypes' => $prototypes,
             'user' => $this->getUser()
+        ]);
+    }
+    
+    public function actionNewspapers()
+    {
+        $newspapers = Massmedia::findNewspapers()->all();
+        $states = State::find()->orderBy('name')->all();
+        
+        return $this->render('newspapers/list', [
+            'newspapers' => $newspapers,
+            'states' => $states
         ]);
     }
         

@@ -205,8 +205,12 @@ $this->title = 'Political Simulator';
                             <i class="fa fa-twitter"></i> Соц. сети
                         </a>
                     </li>
-                    <!--<li><a onclick="load_page('newspapers')" href="#">Пресса</a></li>
-                    <li><a onclick="load_page('radio')" href="#">Радио</a></li>
+                    <li>
+                        <a onclick="load_page('newspapers')" href="#">
+                            <i class="fa fa-newspaper-o"></i> Пресса
+                        </a>
+                    </li>
+<!--                    <li><a onclick="load_page('radio')" href="#">Радио</a></li>
                     <li><a onclick="load_page('tv')" href="#">Телевиденье</a></li>-->
                 </ul>
             </li>

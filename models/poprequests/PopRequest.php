@@ -3,7 +3,9 @@
 namespace app\models\poprequests;
 
 use Yii,
-    app\components\MyModel;
+    app\components\MyModel,
+    app\models\poprequests\proto\PopRequestProto,
+    app\models\events\Event;
 
 /**
  * Запросы населения. Таблица "pop_requests".
@@ -46,5 +48,15 @@ class PopRequest extends MyModel
             'eventId' => 'Event ID',
             'data' => 'Data',
         ];
+    }
+    
+    public function getEvent()
+    {
+        return $this->hasOne(Event::className(), array('id' => 'eventId'));
+    }
+    
+    public function getProto()
+    {
+        return PopRequestProto::instantiateById($this->protoId);
     }
 }

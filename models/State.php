@@ -303,9 +303,13 @@ class State extends MyModel implements TaxPayer
         return $this->balance;
     }
 
-    public function getHtmlName()
+    public function getHtmlName($link = true)
     {
-        return MyHtmlHelper::a(\yii\helpers\Html::img($this->flag,['style'=>'max-width:16px;max-height:12px']), "load_page('state-info',{'id':{$this->id}})").' '.MyHtmlHelper::a($this->name, "load_page('state-info',{'id':{$this->id}})");
+        if ($link) {
+            return MyHtmlHelper::a(\yii\helpers\Html::img($this->flag,['style'=>'max-width:16px;max-height:12px']), "load_page('state-info',{'id':{$this->id}})").' '.MyHtmlHelper::a($this->name, "load_page('state-info',{'id':{$this->id}})");
+        } else {
+            return \yii\helpers\Html::img($this->flag,['style'=>'max-width:16px;max-height:12px']).' '.$this->name;
+        }
     }
 
     public function getHtmlShortName()
