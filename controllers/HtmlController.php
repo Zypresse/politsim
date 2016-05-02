@@ -434,14 +434,16 @@ class HtmlController extends MyController
         ]);
     }
     
-    public function actionNewspapers()
+    public function actionNewspapers($stateId = 0)
     {
         $newspapers = Massmedia::findNewspapers()->all();
-        $states = State::find()->orderBy('name')->all();
+        $states = State::find()->orderBy('name')->all();        
+        $selectedState = $stateId ? State::findOne($stateId) : null;
         
         return $this->render('newspapers/list', [
             'newspapers' => $newspapers,
-            'states' => $states
+            'states' => $states,
+            'selectedState' => $selectedState
         ]);
     }
         

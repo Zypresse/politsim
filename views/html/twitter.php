@@ -43,17 +43,60 @@ $own = ($viewer_id === $user->id);
             </div>
         <?php } ?>
         <div class="row" style="margin-left:0">
-            <div class="col-md-3">
-                <p>
-                    <a  href="#" onclick="load_page('profile', {'uid':<?= $user->id ?>});">
-                        <img class="img-polaroid" style="vertical-align: top;" src="<?= $user->photo_big ?>" alt=''>
-                    </a></p>
-                <h4><a href="#" onclick="load_page('profile', {'uid':<?= $user->id ?>});"><?= htmlspecialchars($user->name) ?></a></h4>
-                <?php if ($user->twitter_nickname) { ?><h5 style="color:#333">@<?= $user->twitter_nickname ?></h5><?php } ?>
-                <p><i class="icon-user"></i> <strong><?= MyHtmlHelper::formateNumberword($user->getTwitterSubscribersCount(), '</strong> подписчиков', '</strong> подписчик', '</strong> подписчика') ?></p>
-                <?php if ($user->region) { ?><p><i class="icon-map-marker"></i> <?= htmlspecialchars($user->region->name) ?> </p><?php } ?>
-            </div>
-            <div class="col-md-4" id="twitter_user_feed"><?php if ($own) { ?>
+            
+            <div class="col-md-5">
+                <div class="twPc-div">
+    <a class="twPc-bg twPc-block"></a>
+
+	<div>
+            <?php /*
+		<div class="twPc-button">
+            <!-- Twitter Button | you can get from: https://about.twitter.com/tr/resources/buttons#follow -->
+            <a href="https://twitter.com/mertskaplan" class="twitter-follow-button" data-show-count="false" data-size="large" data-show-screen-name="false" data-dnt="true">Follow @mertskaplan</a>
+            <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+            <!-- Twitter Button -->   
+		</div>
+                */ ?>
+                <a href="#" title="<?=$user->name?>" onclick="load_page('profile', {'uid':<?= $user->id ?>});" class="twPc-avatarLink">
+                    <img alt="Mert Salih Kaplan" src="<?= $user->photo ?>" class="twPc-avatarImg">
+		</a>
+
+		<div class="twPc-divUser">
+			<div class="twPc-divName">
+				<a href="#" onclick="load_page('profile', {'uid':<?= $user->id ?>});" ><?=$user->name?></a>
+			</div>
+                        <?php if ($user->twitter_nickname): ?>
+			<span>
+				<a href="#">@<span><?=$user->twitter_nickname?></span></a>
+			</span>
+                        <?php endif ?>
+		</div>
+
+		<div class="twPc-divStats">
+			<ul class="twPc-Arrange">
+				<li class="twPc-ArrangeSizeFit">
+                                    <a href="#" title="<?=MyHtmlHelper::formateNumberword($user->getTweetsCount(),'постов','пост','поста')?>">
+                                        <span class="twPc-StatLabel twPc-block"><i class="fa fa-twitter"></i> Посты</span>
+                                        <span class="twPc-StatValue"><?=$user->getTweetsCount()?></span>
+                                    </a>
+				</li>
+				<li class="twPc-ArrangeSizeFit">
+                                    <a href="#" title="">
+                                        <span class="twPc-StatLabel twPc-block"><i class="fa fa-map-marker"></i> Местоположение</span>
+                                        <span class="twPc-StatValue"><?=$user->region ? $user->region->city : ''?></span>
+                                    </a>
+				</li>
+				<li class="twPc-ArrangeSizeFit">
+					<a href="#" title="<?=MyHtmlHelper::formateNumberword($user->getTwitterSubscribersCount(),'подписчиков','подписчик','подписчика')?>">
+						<span class="twPc-StatLabel twPc-block"><i class="fa fa-user"></i> Подписчики</span>
+						<span class="twPc-StatValue"><?=$user->getTwitterSubscribersCount()?></span>
+					</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
+            <?php if ($own) { ?>
                     <h5>Выберите, о чём написать:</h5>
                     <p>
                         <button class="btn btn-default btn-sm" onclick="load_modal('tweet-about-human', {}, 'tweet_about_human', 'tweet_about_human_body');">О человеке</button>
@@ -81,7 +124,7 @@ $own = ($viewer_id === $user->id);
                 <?php } ?>
                 <button class="btn btn-block btn-default" id="update_user_feed" data-time="<?= $timeFeedGenerated ?>" data-offset="3" data-uid="<?= $user->id ?>" >Далее</button>
             </div>
-            <div class="col-md-4" id="twitter_popular_feed">
+            <div class="col-md-5" id="twitter_popular_feed">
                 <h4>Популярные посты</h4>
                 <?php foreach ($feed as $i => $tweet) { ?>
                     <div class="tweet <?php if ($i === count($feed) - 1) { ?>last<?php } ?>">
