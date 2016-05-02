@@ -107,4 +107,37 @@ class MassmediaPost extends MyModel
     {
         return $this->getVotes()->where(['userId' => $user->id])->count() > 0;
     }
+    
+    /**
+     * 
+     * @param User $user
+     * @param integer $direction -1/0/+1
+     */
+    public function vote(User $user, $direction = 0)
+    {
+        $vote = new MassmediaPostVote([
+            'massmediaPostId' => $this->id,
+            'userId' => $user->id,
+            'direction' => $direction
+        ]);
+        
+        if ($vote->save()) {
+            if ($vote->direction > 0) {
+                $this->votesPlus++;
+                $this->rating++;
+                $this->massmedia->rating++;
+            } elseif ($vote->direction < 0) {
+                $this->votesMinus++;
+                $this->rating--;
+                $this->massmedia->rating--;
+            }
+            if ($this->save()) {
+                return $this->massmedia->save();
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
 }

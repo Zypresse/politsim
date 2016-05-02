@@ -34,7 +34,8 @@ class m160425_231300_addMassMediaAndEventsAndPopRequests extends Migration
             'popClassId' => 'INTEGER DEFAULT NULL',
             'regionId' => 'INTEGER DEFAULT NULL',
             'religionId' => 'INTEGER DEFAULT NULL',
-            'ideologyId' => 'INTEGER DEFAULT NULL'
+            'ideologyId' => 'INTEGER DEFAULT NULL',
+            'rating' => 'INTEGER DEFAULT 0'
         ]);
         
         $this->createTable('massmedia_posts', [

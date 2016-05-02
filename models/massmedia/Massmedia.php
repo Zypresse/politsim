@@ -28,6 +28,7 @@ use Yii,
  * @property integer $regionId
  * @property integer $religionId
  * @property integer $ideologyId
+ * @property integer $rating
  * 
  * @property MassmediaProto $proto
  * @property Holding $holding
@@ -57,7 +58,7 @@ class Massmedia extends MyModel
         return [
             [['name', 'protoId', 'holdingId', 'directorId', 'stateId'], 'required'],
             [['name'], 'string'],
-            [['protoId', 'holdingId', 'directorId', 'stateId', 'partyId', 'popClassId', 'regionId', 'religionId', 'ideologyId'], 'integer'],
+            [['protoId', 'holdingId', 'directorId', 'stateId', 'partyId', 'popClassId', 'regionId', 'religionId', 'ideologyId', 'rating'], 'integer'],
         ];
     }
 
@@ -78,6 +79,7 @@ class Massmedia extends MyModel
             'regionId' => 'Region ID',
             'religionId' => 'Religion ID',
             'ideologyId' => 'Ideology ID',
+            'rating' => 'Rating',
         ];
     }
     

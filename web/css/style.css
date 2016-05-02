@@ -30,10 +30,15 @@ body {
 }
 
 .star,.heart,.chart_pie {
-    background-color:#3D3D3D;
-    border:5px solid #2A303E;
-    border-radius: 10px;
+    background-color: #3D3D3D;
+    border-radius: 6px;
     font-family: Verdana;
+    font-size: smaller;
+    padding: 2px 4px;
+}
+
+.star > img, .heart > img, .chart_pie > img {
+    width: 10px;
 }
 
 .level {
@@ -414,8 +419,14 @@ dd {
     width: 24px;    
     margin-right: 10px;
 }
+.sidebar-mini.sidebar-collapse .sidebar-menu > li:hover > a > span:not(.pull-right),
+.sidebar-mini.sidebar-collapse .sidebar-menu > li:hover > .treeview-menu {
+    width: 270px;
+}
 
-
+.sidebar-menu > li > a {
+    padding: 12px 0 12px 12px;
+}
 /*Panel tabs*/
 
 .tab-content > .tab-pane {
