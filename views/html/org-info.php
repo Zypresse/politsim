@@ -6,7 +6,7 @@ use app\components\MyHtmlHelper,
     yii\helpers\Html;
 ?>
 
-<div class="container">
+<section class="content">
     <div class="row">
         <div class="col-md-12">
             <h1><?= htmlspecialchars($org->name) ?></h1>
@@ -132,4 +132,4 @@ use app\components\MyHtmlHelper,
             </script>
         </div>
     </div>
-</div>
+</section>

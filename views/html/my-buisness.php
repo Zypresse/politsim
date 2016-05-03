@@ -9,7 +9,7 @@ use yii\helpers\Html;
 
 /* @var $user app\models\User */
 ?>
-<div class="container">
+<section class="content">
     <div class="row">
         <div class="col-md-12">
 <h1>Управление бизнесом</h1>
@@ -72,13 +72,13 @@ use yii\helpers\Html;
 <?php if ($user->region && $user->region->state && $user->state_id) { ?>
     <?php if ($inHomeland) : ?>
         <?php if ($user->state->allow_register_holdings): ?>
-            <p><button class="btn btn-green btn-sm" onclick="$('#create_holding_dialog').modal()">Создать акционерное общество</button></p>
+            <p><button class="btn btn-success btn-sm" onclick="$('#create_holding_dialog').modal()">Создать акционерное общество</button></p>
         <?php else: ?>
             <p>Регистрировать компании в вашей стране запрещено.</p>
         <?php endif ?>
     <?php else: ?>
         <?php if ($user->region->state->allow_register_holdings_noncitizens): ?>
-            <p><button class="btn btn-green btn-sm" onclick="$('#create_holding_dialog').modal()">Создать акционерное общество</button></p>
+            <p><button class="btn btn-success btn-sm" onclick="$('#create_holding_dialog').modal()">Создать акционерное общество</button></p>
         <?php else: ?>
             <p>Иностранцам запрещено регистрировать компании в этой стране.</p>
         <?php endif ?>
@@ -124,12 +124,13 @@ use yii\helpers\Html;
             </div>
             <div class="modal-footer">
                 <button type="submit" onclick="if ($('#holding_name').val() && $('#new_holding_capitalisation').val()) json_request('create-holding', {'name': $('#holding_name').val(),'capital':$('#new_holding_capitalisation').val()})" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Создать</button>
-                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+                <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Закрыть</button>
             </div>
                     </div></div>
     </div>
     </div>
 </div>
+</section>
 <script type="text/javascript">
     
     var updateNewHoldingCost = function(){

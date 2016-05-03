@@ -4,7 +4,7 @@
 /* @var $user app\models\User */
 
 ?>
-<div class="container">
+<section class="content">
     <div class="row">
         <div class="col-md-12">
             <?= $this->render('_menu', ['active' => 0]) ?>
@@ -33,7 +33,7 @@
             </div>
         </div>
     </div>
-</div>
+</section>
 <script type="text/javascript">
     $(function () {
         var worldMiningChart = new google.visualization.ColumnChart($('#world_mining')[0]);

@@ -3,20 +3,20 @@
 /* @var $resources app\models\resources\proto\ResourceProto[] */
 
 ?>
-<div class="container">
+<section class="content">
     <div class="row">
         <div class="col-md-12">
             <h4>Эффективность добычи ресурсов по регионам</h4>
             <p>
                 Выберите ресурс:
                 <?php foreach ($resources as $i => $res) { ?>
-                    <button class="btn btn-xs btn-default <?php if ($i === 0) { ?>btn-lightblue<?php } ?> economic_map_btn" data-id="<?= $res->id ?>" ><?=$res->icon?></button>
+                    <button class="btn btn-xs btn-default <?php if ($i === 0) { ?>btn-info<?php } ?> economic_map_btn" data-id="<?= $res->id ?>" ><?=$res->icon?></button>
                 <?php } ?>
             </p>
             <div id="mapdiv" style="width: 100%; height: 500px;background-color:#EEEEEE; "></div>
         </div>
     </div>
-</div>
+</section>
 <script>
     var region, map;
     $(function () {
@@ -24,8 +24,8 @@
         load_resources_map(1);
 
         $('.economic_map_btn').click(function () {
-            $('.economic_map_btn').removeClass('btn-lightblue');
-            $(this).addClass('btn-lightblue');
+            $('.economic_map_btn').removeClass('btn-info');
+            $(this).addClass('btn-info');
             load_resources_map($(this).data('id'));
         })
 

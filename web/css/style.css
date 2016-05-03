@@ -133,14 +133,9 @@ body {
     float: right;
 }
 
-select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input {
-    height:25px;
-}
-
 .navbar .brand:hover {
     color: white;
 }
-
 
 #region_list,#members_list,#posts_list {
     display: none;
@@ -253,7 +248,8 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
 */
 
 h1,h2,h3,h4,h5,h6  {
-    line-height: 30px;
+    line-height: 30px;    
+    margin: 0 0 10px;
 }
 h4 {
     font-size: 20px;
@@ -552,11 +548,12 @@ dd {
 }
 
 .avarar-container {
-    margin: 10px 0;
+    margin: 0 0 10px;
     text-align: center;
-    padding: 10px 0;
+    padding: 10px;
     border-radius: 10px;
-    position:relative;
+    position: relative;
+    background-color: #222d32;
 }
 
 .img-polaroid {
@@ -621,12 +618,10 @@ dd {
     border: 1px solid #e1e8ed;
     border-radius: 6px;
     height: 200px;
-    max-width: 340px; // orginal twitter width: 290px;
+    max-width: 100%; // orginal twitter width: 290px;
 }
-.twPc-bg {
-    background-image: url("https://pbs.twimg.com/profile_banners/50988711/1384539792/600x200");
-    background-position: 0 50%;
-    background-size: 100% auto;
+.twPc-bg {    
+    background-color: #222d32;
     border-bottom: 1px solid #e1e8ed;
     border-radius: 4px 4px 0 0;
     height: 95px;
@@ -699,6 +694,7 @@ ul.twPc-Arrange {
     display: table-cell;
     padding: 0;
     vertical-align: top;
+    text-align: center;
 }
 .twPc-ArrangeSizeFit a:hover {
     text-decoration: none;

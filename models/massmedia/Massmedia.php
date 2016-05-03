@@ -10,6 +10,8 @@ use Yii,
     app\models\State,
     app\models\Party,
     app\models\PopClass,
+    app\models\PopNation,
+    app\models\Population,
     app\models\Region,
     app\models\Religion,
     app\models\Ideology;
@@ -25,9 +27,11 @@ use Yii,
  * @property integer $stateId
  * @property integer $partyId
  * @property integer $popClassId
+ * @property integer $popNationId
  * @property integer $regionId
  * @property integer $religionId
  * @property integer $ideologyId
+ * @property integer $coverage
  * @property integer $rating
  * 
  * @property MassmediaProto $proto
@@ -36,6 +40,7 @@ use Yii,
  * @property State $state
  * @property Party $party
  * @property PopClass $popClass
+ * @property PopNation $popNation
  * @property Region $region
  * @property Religion $religion
  * @property Ideology $ideology
@@ -58,7 +63,7 @@ class Massmedia extends MyModel
         return [
             [['name', 'protoId', 'holdingId', 'directorId', 'stateId'], 'required'],
             [['name'], 'string'],
-            [['protoId', 'holdingId', 'directorId', 'stateId', 'partyId', 'popClassId', 'regionId', 'religionId', 'ideologyId', 'rating'], 'integer'],
+            [['protoId', 'holdingId', 'directorId', 'stateId', 'partyId', 'popClassId', 'popNationId', 'regionId', 'religionId', 'ideologyId', 'rating', 'coverage'], 'integer'],
         ];
     }
 
@@ -76,10 +81,12 @@ class Massmedia extends MyModel
             'stateId' => 'State ID',
             'partyId' => 'Party ID',
             'popClassId' => 'Pop Class ID',
+            'popNationId' => 'Pop Nation ID',
             'regionId' => 'Region ID',
             'religionId' => 'Religion ID',
             'ideologyId' => 'Ideology ID',
             'rating' => 'Rating',
+            'coverage' => 'Coverage',
         ];
     }
     
@@ -101,6 +108,11 @@ class Massmedia extends MyModel
     public function getPopClass()
     {
         return $this->hasOne(PopClass::className(), array('id' => 'popClassId'));
+    }
+    
+    public function getPopNation()
+    {
+        return $this->hasOne(PopNation::className(), array('id' => 'popNationId'));
     }
     
     public function getRegion()
@@ -131,5 +143,50 @@ class Massmedia extends MyModel
     public static function findNewspapers()
     {
         return static::find()->where(['protoId' => 1]);
+    }
+    
+    public function calcCoverage($save = false)
+    {
+        $query = Population::find();
+        
+        if ($this->popClassId) {
+            $query = $query->andWhere([
+                'class' => $this->popClassId
+            ]);
+        }
+        
+        if ($this->popNationId) {
+            $query = $query->andWhere([
+                'nation' => $this->popNationId
+            ]);
+        }
+        
+        if ($this->ideologyId) {
+            $query = $query->andWhere([
+                'ideology' => $this->ideologyId
+            ]);
+        }
+        
+        if ($this->religionId) {
+            $query = $query->andWhere([
+                'religion' => $this->religionId
+            ]);
+        }
+        
+        if ($this->regionId) {
+            $query = $query->andWhere([
+                'region_id' => $this->regionId
+            ]);
+        } else {
+            $query = $query->andWhere('region_id IN (SELECT id FROM regions WHERE state_id = :sid)',[
+                ':sid' => $this->stateId
+            ]);
+        }
+        
+        $this->coverage = intval($query->sum('count'));
+        
+        if ($save) {
+            return $this->save();
+        }
     }
 }

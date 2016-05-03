@@ -436,7 +436,7 @@ class HtmlController extends MyController
     
     public function actionNewspapers($stateId = 0)
     {
-        $newspapers = Massmedia::findNewspapers()->all();
+        $newspapers = Massmedia::findNewspapers()->orderBy('rating', 'DESC')->all();
         $states = State::find()->orderBy('name')->all();        
         $selectedState = $stateId ? State::findOne($stateId) : null;
         

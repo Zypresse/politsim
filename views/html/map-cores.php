@@ -6,7 +6,7 @@
     
 ?>
 
-<div class="container">
+<section class="content">
     <div class="row">
         <div class="col-md-12">
 <h4>Карта претензий</h4>
@@ -21,7 +21,7 @@
 <div id="mapdiv" style="width: 100%; height: 500px;background-color:#EEEEEE; "></div> </div>
 
     </div>
-</div>
+</section>
 <script>
 var region,map;
 $(function(){

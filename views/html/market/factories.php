@@ -3,7 +3,8 @@
 use yii\grid\GridView,
     app\components\MyHtmlHelper,
     yii\helpers\Html,
-    app\models\factories\Factory;
+    app\models\factories\Factory,
+    app\models\factories\FactoryAuction;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\factories\FactoryAuctionSearch */
@@ -12,7 +13,7 @@ use yii\grid\GridView,
 
 $unnps = [];
 ?>
-<div class="container">
+<section class="content">
     <div class="row">
         <div class="col-md-12">
             <?= $this->render('_menu', ['active' => 4]) ?>
@@ -54,50 +55,50 @@ $unnps = [];
                     [
                         'attribute' => 'factoryName',
                         'label' => 'Предприятие',
-                        'content' => function(Factory $model) {
+                        'content' => function(FactoryAuction $model) {
                             return $model->factory->proto->name . " «" . MyHtmlHelper::a($model->factoryName, "load_page('factory-info',{'id':" . $model->factory_id . "})") . "»";
                         }
                     ],
                     [
                         'attribute' => 'holdingName',
                         'label' => 'Продавец',
-                        'content' => function(Factory $model) {
+                        'content' => function(FactoryAuction $model) {
                             return MyHtmlHelper::a($model->factory->holding->name, "load_page('holding-info',{'id':" . $model->factory->holding_id . "})");
                         }
                     ],
                     [
                         'attribute' => 'regionName',
                         'label' => 'Местоположение',
-                        'content' => function(Factory $model) {
+                        'content' => function(FactoryAuction $model) {
                             return $model->factory->region->getHtmlName();// MyHtmlHelper::a($model->factory->region->name, "show_region({$model->factory->region->id})") . ( $model->factory->region->state ? " (" . MyHtmlHelper::a($model->factory->region->state->short_name, "load_page('state-info',{'id':" . $model->factory->region->state_id . "})") . ")" : '');
                         }
                     ],
                     [
                         'attribute' => 'current_price',
                         'label' => 'Текущая цена',
-                        'content' => function(Factory $model) {
+                        'content' => function(FactoryAuction $model) {
                             return MyHtmlHelper::moneyFormat($model->current_price);
                         }
                     ],
                     [
                         'attribute' => 'end_price',
                         'label' => 'Стоп-цена',
-                        'content' => function(Factory $model) {
+                        'content' => function(FactoryAuction $model) {
                             return ($model->end_price) ? MyHtmlHelper::moneyFormat($model->end_price) : "<em>не установлена</em>";
                         }
                     ],
                     [
                         'attribute' => 'date_end',
                         'label' => 'Завершение',
-                        'content' => function(Factory $model) {
+                        'content' => function(FactoryAuction $model) {
                             return ($model->date_end > time()) ? MyHtmlHelper::timeFormatFuture($model->date_end) : "завершён";
                         }
                     ],
                     [
                         'label' => 'Действия',
-                        'content' => function(Factory $model) {
+                        'content' => function(FactoryAuction $model) {
                             return Html::button('Ставка', [
-                                        'class' => 'btn btn-sm btn-gold btn-bet hide-on-unnp' . $model->factory->holding->unnp . ($model->lastBet ? ' hide-on-unnp' . $model->lastBet->holding->unnp : ''),
+                                        'class' => 'btn btn-sm btn-primary btn-bet hide-on-unnp' . $model->factory->holding->unnp . ($model->lastBet ? ' hide-on-unnp' . $model->lastBet->holding->unnp : ''),
                                         'onclick' => 'load_modal("factory-auction-info",{"id":' . $model->id . ',"unnp":parseInt($("#market-change-unnp-select").val())},"factory_auction_info","factory_auction_info_body")'
                             ]);
                         }
@@ -119,14 +120,14 @@ $unnps = [];
                         <p>Загрузка…</p>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
-                        <!--<button class="btn btn-blue">Save changes</button>-->
+                        <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+                        <!--<button class="btn btn-primary">Save changes</button>-->
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</section>
 <script type="text/javascript">
     function updateButtons() {
         var unnp = parseInt($('#market-change-unnp-select').val());

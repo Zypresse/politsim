@@ -14,14 +14,61 @@ $statesArray = ArrayHelper::map($states, 'id', 'name');
 $statesArray[0] = 'Все страны';
 
 ?>
-<div class="container">
+<section class="content">
     <div class="row" style="margin-top: 10px">
+        <div class="col-md-7">
+            <h4><?=($selectedState ? "Обзор прессы:<br>".$selectedState->getHtmlName() : "Обзор мировой прессы")?></h4>
+        </div>
         <div class="col-md-5 ui-widget">
             <label to="combobox">По стране: </label>
             <?=Html::dropDownList('stateId', $selectedState ? $selectedState->id : 0, $statesArray, ['id' => 'combobox'])?>
         </div>
     </div>
-</div>  
+    <div class="row">
+        <?php foreach ($newspapers as $newspaper): ?>
+        <div class="col-md-6">
+            <div class="info-box bg-gray-light">
+                <span class="info-box-icon"><i class="fa fa-newspaper-o"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">
+                        <span class="label-info" style='border-radius: 5px' title="Охват аудитории" >
+                            &nbsp;<?=number_format($newspaper->coverage, 0, '', ' ')?> <i class="fa fa-user"></i>&nbsp;
+                        </span>
+                        &nbsp;
+                        <span class="label-success" style='border-radius: 5px' title="Рейтинг" >
+                            &nbsp;<?=number_format($newspaper->rating, 0, '', ' ')?> <i class="fa fa-star"></i>&nbsp;
+                        </span>
+                    </span>
+                    <span class="info-box-number"><?=$newspaper->name?></span>
+                    <span class="progress-description"><?=$newspaper->holding ? $newspaper->holding->name : 'Независимая газета'?></span>
+                </div><!-- /.info-box-content -->
+            </div><!-- /.info-box -->
+        </div>
+        <?php endforeach ?>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <button id="create-newspaper-button" class="btn btn-primary btn-flat">Создать газету</button>
+        </div>
+    </div>
+</section>
+<div style="display:none" class="modal fade" id="create-newspaper-modal" tabindex="-1" role="dialog" aria-labelledby="create-newspaper-modal-label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="create-newspaper-modal-label">Создание газеты</h3>
+            </div>
+            <div id="create-newspaper-modal-body" class="modal-body">
+                <p>Загрузка…</p>
+            </div>
+            <div class="modal-footer">
+                <button id="create-newspaper-send-button" class="btn btn-primary">Создать</button>
+                <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
   (function( $ ) {
     $.widget( "custom.combobox", {
@@ -158,6 +205,14 @@ $statesArray[0] = 'Все страны';
         select: function(){
             load_page('newspapers', {'stateId':$(this).val()});
         }
+    });
+    
+    $("#create-newspaper-button").click(function(){
+        load_modal('create-newspaper',{},'create-newspaper-modal','create-newspaper-modal-body');
+    });
+    
+    $('#create-newspaper-send-button').click(function(){
+        json_request('create-massmedia', $('#create-newspaper-form').serializeObject());
     });
   });
 </script>

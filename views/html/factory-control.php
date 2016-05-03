@@ -3,7 +3,7 @@
 use app\components\MyHtmlHelper,
     app\models\resources\proto\ResourceProto;
 ?>
-<div class="container">
+<section class="content">
     <div class="row">
         <div class="col-md-7">
             <h2><?= $factory->proto->name ?> &laquo;<?= htmlspecialchars($factory->name) ?>&raquo;</h2>
@@ -26,11 +26,11 @@ use app\components\MyHtmlHelper,
         <div class="col-md-5">
             <div class="box" style="margin-top: 10px">
                 <div class="box-header">
-                    <span class="title"><i class="icon-money"></i> Финансы</span>
+                    <span class="box-title"><i class="fa fa-money"></i> Финансы</span>
 
-                    <ul class="box-toolbar">
-                        <li><button class="btn btn-xs btn-lightblue" onclick="load_modal('factory-dealings',{'id':<?=$factory->id?>},'factory_dealings','factory_dealings_body')">Все сделки</button></li>
-                    </ul>
+                    <div class="box-tools pull-right">
+                        <button class="btn btn-xs btn-info" onclick="load_modal('factory-dealings',{'id':<?=$factory->id?>},'factory_dealings','factory_dealings_body')">Все сделки</button>
+                    </div>
                 </div>
                 <div class="box-content">    
                     <table class="table table-normal">
@@ -42,10 +42,10 @@ use app\components\MyHtmlHelper,
                                 $items = json_decode($dealing->items);
                             ?>
                             <tr>
-                                <td><i class="icon-time"></i> <span class="formatDateCustom" data-timeformat="HH:mm" data-unixtime="<?=$dealing->time?>"><?=date("H:i",$dealing->time)?></span></td>
+                                <td><i class="fa fa-time"></i> <span class="formatDateCustom" data-timeformat="HH:mm" data-unixtime="<?=$dealing->time?>"><?=date("H:i",$dealing->time)?></span></td>
                                 <td>
                                     <?php if (count($items)): ?>
-                                        <i class="icon-<?=$isSender?"minus":"plus"?>"></i>
+                                        <i class="fa fa-<?=$isSender?"minus":"plus"?>"></i>
                                         <?php foreach ($items as $item): ?>
                                         <?php if ($item->type === 'resource'): ?>
                                         <?=$item->count?> <?=ResourceProto::findByPk($item->proto_id)->icon?>
@@ -60,9 +60,9 @@ use app\components\MyHtmlHelper,
                                     <?php endif ?>
                                 </td>
                             <?php if ($d > 0): ?>
-                                <td class="status-success"><i class="icon-arrow-up"></i> <?=MyHtmlHelper::moneyFormat($d)?></td>
+                                <td class="status-success"><i class="fa fa-arrow-up"></i> <?=MyHtmlHelper::moneyFormat($d)?></td>
                             <?php else: ?>
-                                <td class="status-error"><i class="icon-arrow-down"></i> <?=MyHtmlHelper::moneyFormat($d)?></td>
+                                <td class="status-error"><i class="fa fa-arrow-down"></i> <?=MyHtmlHelper::moneyFormat($d)?></td>
                             <?php endif ?>
                             </tr>
                         <?php endforeach ?>
@@ -76,7 +76,7 @@ use app\components\MyHtmlHelper,
         <div class="col-md-7">
             <div class="box">
                 <div class="box-header">
-                    <span class="title"><i class="icon-money"></i> Настройки продажи</span>
+                    <span class="box-title"><i class="fa fa-money"></i> Настройки продажи</span>
                 </div>
                 <div class="box-content">
                     <table class="table table-normal">
@@ -110,7 +110,7 @@ use app\components\MyHtmlHelper,
         <div class="col-md-5">
             <div class="box">
                 <div class="box-header">
-                    <span class="title"><i class="icon-money"></i> Автозакупка</span>
+                    <span class="box-title"><i class="fa fa-money"></i> Автозакупка</span>
                 </div>
                 <div class="box-content padded">
                 <?php if (count($factory->autobuySettings)): ?>
@@ -128,7 +128,13 @@ use app\components\MyHtmlHelper,
                     </p>
                 <?php endforeach ?>
                 <?php else: ?>
-                    <p>Автозакупка отключена</p>
+                    <table class="table table-normal">
+                        <tr>
+                            <td class="text-center">
+                                Автозакупка отключена
+                            </td>
+                        </tr>
+                    </table>
                 <?php endif ?>
                 </div>
             </div>
@@ -138,7 +144,7 @@ use app\components\MyHtmlHelper,
         <div class="col-md-4">
             <div class="box">
                 <div class="box-header">
-                    <span class="title"><i class="icon-home"></i> Размеры складов</span>
+                    <span class="box-title"><i class="fa fa-home"></i> Размеры складов</span>
                 </div>
                 <div class="box-content">
                     <table class="table table-normal">
@@ -164,7 +170,7 @@ use app\components\MyHtmlHelper,
         <div class="col-md-5">
             <div class="box">
                 <div class="box-header">
-                    <span class="title"><i class="icon-home"></i> Ресурсы на складах</span>
+                    <span class="box-title"><i class="fa fa-home"></i> Ресурсы на складах</span>
                 </div>
                 <div class="box-content">
                     <table class="table table-normal">
@@ -192,7 +198,7 @@ use app\components\MyHtmlHelper,
         <div class="col-md-3">
             <div class="box">
                 <div class="box-header">
-                    <span class="title"><i class="icon-cog"></i> Производство (в час)</span>
+                    <span class="box-title"><i class="fa fa-cog"></i> Производство <small>(в час)</small></span>
                 </div>
                 <div class="box-content">
                     <table class="table table-normal">
@@ -235,7 +241,7 @@ use app\components\MyHtmlHelper,
         <div class="col-md-12">
             <div class="box">
                 <div class="box-header">
-                    <span class="title"><i class="icon-group"></i> Работники</span>
+                    <span class="box-title"><i class="fa fa-group"></i> Работники</span>
                 </div>
                 <div class="box-content">
                     <table class="table table-normal">
@@ -268,7 +274,7 @@ use app\components\MyHtmlHelper,
             <h3>Управление</h3>
             <div class="btn-toolbar">
                 <div class="btn-group">
-                    <button class="btn dropdown-toggle btn-lightblue" data-toggle="dropdown">
+                    <button class="btn dropdown-toggle btn-info" data-toggle="dropdown">
                         Персонал <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu">
@@ -276,7 +282,7 @@ use app\components\MyHtmlHelper,
                     </ul>
                 </div>
                 <div class="btn-group">
-                    <button class="btn dropdown-toggle btn-green" data-toggle="dropdown">
+                    <button class="btn dropdown-toggle btn-success" data-toggle="dropdown">
                         Торговля <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu">
@@ -285,14 +291,14 @@ use app\components\MyHtmlHelper,
                     </ul>
                 </div>
                 <?php if ($factory->status === app\models\factories\Factory::STATUS_STOPPED): ?>
-                <button class="btn btn-green" onclick="if (confirm('Вы действительно возобновить работу предприятия?')) {json_request('manager-factory-start-work',{'id':<?=$factory->id?>})}">Возобновить работу</button>
+                <button class="btn btn-success" onclick="if (confirm('Вы действительно возобновить работу предприятия?')) {json_request('manager-factory-start-work',{'id':<?=$factory->id?>})}">Возобновить работу</button>
                 <?php else: ?>
-                <button class="btn btn-red" onclick="if (confirm('Вы действительно хотите уволить всех рабочих и остановить работу?')) {json_request('manager-factory-stop-work',{'id':<?=$factory->id?>})}">Остановить работу</button>
+                <button class="btn btn-danger" onclick="if (confirm('Вы действительно хотите уволить всех рабочих и остановить работу?')) {json_request('manager-factory-stop-work',{'id':<?=$factory->id?>})}">Остановить работу</button>
                 <?php endif ?>
             </div>
         </div>
     </div>
-</div>
+</section>
 
 
 
@@ -312,8 +318,8 @@ use app\components\MyHtmlHelper,
                 </select>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-green" onclick="load_modal('manager-factory-set-resource-selling',{'factory_id':<?=$factory->id?>,'resource_proto_id':$('#resource_proto_id_for_selling').val()},'resources_selling_second','resources_selling_second_body')">Продолжить</button>
-                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+                <button class="btn btn-success" onclick="load_modal('manager-factory-set-resource-selling',{'factory_id':<?=$factory->id?>,'resource_proto_id':$('#resource_proto_id_for_selling').val()},'resources_selling_second','resources_selling_second_body')">Продолжить</button>
+                <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Закрыть</button>
             </div>
         </div></div>
 </div>
@@ -329,8 +335,8 @@ use app\components\MyHtmlHelper,
                 
             </div>
             <div class="modal-footer">
-                <button class="btn btn-green" onclick="json_request('save-resource-cost',{'resource_id':$('#resource_for_selling_id').val(),'cost':$('#resource_for_selling_cost').val(),'type':$('#form_resource_selling_cost input[name=resource_for_selling_type]:checked').val()})">Сохранить</button>
-                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+                <button class="btn btn-success" onclick="json_request('save-resource-cost',{'resource_id':$('#resource_for_selling_id').val(),'cost':$('#resource_for_selling_cost').val(),'type':$('#form_resource_selling_cost input[name=resource_for_selling_type]:checked').val()})">Сохранить</button>
+                <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Закрыть</button>
             </div>
         </div></div>
 </div>
@@ -351,8 +357,8 @@ use app\components\MyHtmlHelper,
                 </select>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-green" onclick="load_modal('manager-factory-set-resource-autobuy',{'factory_id':<?=$factory->id?>,'resource_proto_id':$('#resource_proto_id_for_autobuy').val()},'resources_autobuy_second','resources_autobuy_second_body')">Продолжить</button>
-                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+                <button class="btn btn-success" onclick="load_modal('manager-factory-set-resource-autobuy',{'factory_id':<?=$factory->id?>,'resource_proto_id':$('#resource_proto_id_for_autobuy').val()},'resources_autobuy_second','resources_autobuy_second_body')">Продолжить</button>
+                <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Закрыть</button>
             </div>
         </div></div>
 </div>
@@ -368,8 +374,8 @@ use app\components\MyHtmlHelper,
                 
             </div>
             <div class="modal-footer">
-                <button class="btn btn-green" onclick="json_request('save-autobuy-settings',{'resource_id':$('#resource_for_autobuy_id').val(),'autobuy':$('#resource_autobuy_on').is(':checked')?1:0,'cost':$('#resource_for_autobuy_cost').val(),'quality':$('#resource_for_autobuy_quality').val(),'type':$('#form_resource_autobuy_settings input[name=resource_for_autobuy_type]:checked').val()})">Сохранить</button>
-                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+                <button class="btn btn-success" onclick="json_request('save-autobuy-settings',{'resource_id':$('#resource_for_autobuy_id').val(),'autobuy':$('#resource_autobuy_on').is(':checked')?1:0,'cost':$('#resource_for_autobuy_cost').val(),'quality':$('#resource_for_autobuy_quality').val(),'type':$('#form_resource_autobuy_settings input[name=resource_for_autobuy_type]:checked').val()})">Сохранить</button>
+                <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Закрыть</button>
             </div>
         </div></div>
 </div>
@@ -406,8 +412,8 @@ use app\components\MyHtmlHelper,
                 </dl>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-green" onclick="save_salaries()">Сохранить</button>
-                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+                <button class="btn btn-success" onclick="save_salaries()">Сохранить</button>
+                <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Закрыть</button>
             </div>
         </div></div>
 </div>
@@ -423,7 +429,7 @@ use app\components\MyHtmlHelper,
                 
             </div>
             <div class="modal-footer">
-                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+                <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Закрыть</button>
             </div>
         </div></div>
 </div>

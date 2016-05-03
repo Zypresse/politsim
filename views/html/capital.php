@@ -3,7 +3,7 @@
 use app\components\MyHtmlHelper;
 
 ?>
-<div class="container">
+<section class="content">
     <div class="row">
         <div class="col-md-12">
             <h3>Капитал пользователя по имени <?= htmlspecialchars($user->name) ?></h3>
@@ -40,4 +40,4 @@ use app\components\MyHtmlHelper;
             </table>
         </div>
     </div>
-</div>
+</section>

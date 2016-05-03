@@ -231,15 +231,15 @@ class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
     public function getStatusName()
     {
         $names = [
-            -2 => '<span class="status-error"><i class="icon-stop"></i> Строительство прекращено</span>',
-            -1 => '<span class="status-info"><i class="icon-spinner"></i> Идёт строительство</span>',
-            0 => '<span class="status-pending"><i class="icon-question-sign"></i> Неизвестен</span>',
-            1 => '<span class="status-success"><i class="icon-play"></i> Работает</span>',
-            2 => '<span class="status-error"><i class="icon-stop"></i> Работа остановлена</span>',
-            3 => '<span class="status-error"><i class="icon-warning-sign"></i> Работа остановлена по причине нехватки ресурсов</span>',
-            4 => '<span class="status-error"><i class="icon-pause"></i> Работа остановлена автоматически</span>',
-            5 => '<span class="status-error"><i class="icon-warning-sign"></i> Работа остановлена по причине нехватки работников</span>',
-            6 => '<span class="status-error"><i class="icon-warning-sign"></i> Работа остановлена по причине отстутствия необходимой лицензии</span>'
+            -2 => '<span class="text-danger">&nbsp;<i class="fa fa-stop"></i> Строительство прекращено&nbsp;</span>',
+            -1 => '<span class="text-info">&nbsp;<i class="fa fa-spinner"></i> Идёт строительство&nbsp;</span>',
+            0 => '<span class="text-info">&nbsp;<i class="fa fa-question"></i> Неизвестен&nbsp;</span>',
+            1 => '<span class="text-success">&nbsp;<i class="fa fa-play"></i> Работает&nbsp;</span>',
+            2 => '<span class="text-danger">&nbsp;<i class="fa fa-stop"></i> Работа остановлена&nbsp;</span>',
+            3 => '<span class="text-danger">&nbsp;<i class="fa fa-exclamation-triangle"></i> Работа остановлена по причине нехватки ресурсов&nbsp;</span>',
+            4 => '<span class="text-danger">&nbsp;<i class="fa fa-pause"></i> Работа остановлена автоматически&nbsp;</span>',
+            5 => '<span class="text-danger">&nbsp;<i class="fa fa-exclamation-triangle"></i> Работа остановлена по причине нехватки работников&nbsp;</span>',
+            6 => '<span class="text-danger">&nbsp;<i class="fa fa-exclamation-triangle"></i> Работа остановлена по причине отстутствия необходимой лицензии&nbsp;</span>'
         ];
         
         return $names[$this->status];
@@ -248,15 +248,15 @@ class Factory extends UnmovableObject implements TaxPayer, canCollectObjects
     public function getStatusShortName()
     {
         $names = [
-            -2 => '<span class="status-error"><i class="icon-stop" title="Строительство прекращено"></i></span>',
-            -1 => '<span class="status-info"><i class="icon-spinner" title="Идёт строительство"></i></span>',
-            0 => '<span class="status-pending"><i class="icon-question-sign" title="Неизвестен"></i></span>',
-            1 => '<span class="status-success"><i class="icon-play" title="Работает"></i></span>',
-            2 => '<span class="status-error"><i class="icon-stop" title="Работа остановлена"></i></span>',
-            3 => '<span class="status-error"><i class="icon-warning-sign" title="Работа остановлена по причине нехватки ресурсов"></i></span>',
-            4 => '<span class="status-error"><i class="icon-pause" title="Работа остановлена автоматически"></i></span>',
-            5 => '<span class="status-error"><i class="icon-warning-sign" title="Работа остановлена по причине нехватки работников"></i></span>',
-            6 => '<span class="status-error"><i class="icon-warning-sign" title="Работа остановлена по причине отстутствия необходимой лицензии"></i></span>'
+            -2 => '<span class="text-danger">&nbsp;<i class="fa fa-stop" title="Строительство прекращено"></i>&nbsp;</span>',
+            -1 => '<span class="text-info">&nbsp;<i class="fa fa-spinner" title="Идёт строительство"></i>&nbsp;</span>',
+            0 => '<span class="text-info">&nbsp;<i class="fa fa-question" title="Неизвестен"></i>&nbsp;</span>',
+            1 => '<span class="text-success">&nbsp;<i class="fa fa-play" title="Работает"></i>&nbsp;</span>',
+            2 => '<span class="text-danger">&nbsp;<i class="fa fa-stop" title="Работа остановлена"></i>&nbsp;</span>',
+            3 => '<span class="text-danger">&nbsp;<i class="fa fa-exclamation-triangle" title="Работа остановлена по причине нехватки ресурсов"></i>&nbsp;</span>',
+            4 => '<span class="text-danger">&nbsp;<i class="fa fa-pause" title="Работа остановлена автоматически"></i>&nbsp;</span>',
+            5 => '<span class="text-danger">&nbsp;<i class="fa fa-exclamation-triangle" title="Работа остановлена по причине нехватки работников"></i>&nbsp;</span>',
+            6 => '<span class="text-danger">&nbsp;<i class="fa fa-exclamation-triangle" title="Работа остановлена по причине отстутствия необходимой лицензии"></i>&nbsp;</span>'
         ];
         
         return $names[$this->status];

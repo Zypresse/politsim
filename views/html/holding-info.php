@@ -7,7 +7,7 @@ use app\components\MyHtmlHelper;
 
 ?>
 
-<div class="container">
+<section class="content">
     <div class="row">
         <div class="col-md-12">
             <h1><?=htmlspecialchars($holding->name)?></h1>
@@ -21,7 +21,7 @@ use app\components\MyHtmlHelper;
         <div class="col-md-8">
             <div class="box">
                 <div class="box-header">
-                    <span class="title">
+                    <span class="box-title">
                         <i class="icon-building"></i> Недвижимость
                     </span>
                 </div>
@@ -53,4 +53,4 @@ use app\components\MyHtmlHelper;
             </div>
         </div>
     </div>
-</div>
+</section>

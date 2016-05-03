@@ -1,9 +1,10 @@
 <?php
 
 use app\components\MyHtmlHelper;
+
 ?>
 
-<div class="container">
+<section class="content">
     <div class="row">
         <div class="col-md-3">
             <div class="avarar-container box" >
@@ -122,8 +123,8 @@ use app\components\MyHtmlHelper;
                                 </form>
                             </div>
                             <div class="modal-footer">
-                                <button onclick="send_money()" class="btn btn-green" data-dismiss="modal" aria-hidden="true">Передать</button>
-                                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+                                <button onclick="send_money()" class="btn btn-success" data-dismiss="modal" aria-hidden="true">Передать</button>
+                                <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Закрыть</button>
                             </div>
                         </div>
                     </div>
@@ -170,8 +171,8 @@ use app\components\MyHtmlHelper;
                                 </form>
                             </div>
                             <div class="modal-footer">
-                                <button onclick="create_stocks_dealing()" class="btn btn-green" data-dismiss="modal" aria-hidden="true">Создать</button>
-                                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+                                <button onclick="create_stocks_dealing()" class="btn btn-success" data-dismiss="modal" aria-hidden="true">Создать</button>
+                                <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Закрыть</button>
                             </div>
                         </div>
                     </div>
@@ -266,7 +267,7 @@ use app\components\MyHtmlHelper;
 <?php } ?>
         </div>
     </div>
-</div>
+</section>
 <?php if ($is_own): ?>
 <div style="display:none" class="modal fade" id="change_ideology_modal" tabindex="-1" role="dialog" aria-labelledby="change_ideology_modal_label" aria-hidden="true">
     <div class="modal-dialog">
@@ -279,8 +280,8 @@ use app\components\MyHtmlHelper;
 
             </div>
             <div class="modal-footer">
-                <button onclick="json_request('change-ideology', {'id': $('#new_ideology_id').val()})" class="btn btn-green" data-dismiss="modal" aria-hidden="true">Сохранить</button>
-                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+                <button onclick="json_request('change-ideology', {'id': $('#new_ideology_id').val()})" class="btn btn-success" data-dismiss="modal" aria-hidden="true">Сохранить</button>
+                <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Закрыть</button>
             </div>
         </div>
     </div>

@@ -29,7 +29,10 @@ use app\components\MyController,
     app\models\resources\ResourceCost,
     app\models\resources\proto\ResourceProto,
     app\models\factories\FactoryAutobuySettings,
-    app\models\Place;
+    app\models\Place,
+    app\models\Religion,
+    app\models\PopClass,
+    app\models\PopNation;
 
 class ModalController extends MyController {
 
@@ -731,4 +734,33 @@ class ModalController extends MyController {
         
     }
     
+    public function actionCreateNewspaper()
+    {
+        $user = $this->user;
+        
+        $currentState = $user->region ? $user->region->state : null;
+        if (!$currentState) {
+            return $this->_r("Невозможно создать газету, находясь на этой территории");
+        }
+        $holdings = $user->holdings;
+        if (!count($holdings)) {
+            return $this->_r("Невозможно создать газету, не будучи директором ни одной компании");
+        }
+        $popClasses = PopClass::find()->all();
+        $popNations = PopNation::find()->all();
+        $religions = Religion::find()->all();
+        $ideologies = Ideology::find()->orderBy('d')->all();
+        $regions = Region::find()->with('state')->orderBy('state_id')->all();
+                
+        return $this->render('newspapers/create', [
+            'user' => $user,
+            'currentState' => $currentState,
+            'holdings' => $holdings,
+            'popClasses' => $popClasses,
+            'popNations' => $popNations,
+            'religions' => $religions,
+            'ideologies' => $ideologies,
+            'regions' => $regions
+        ]);
+    }
 }

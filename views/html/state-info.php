@@ -16,7 +16,7 @@ $KN = [
 
 $show_create_party = isset($_GET['show_create_party']);
 ?>
-<div class="container">
+<section class="content">
     <div class="row">
         <div class="col-md-4">
             <div class="box" style="margin-top: 10px">
@@ -121,7 +121,7 @@ $show_create_party = isset($_GET['show_create_party']);
 
         <div class="btn-toolbar">
             <div class="btn-group">
-                <button class="btn dropdown-toggle btn-lightblue" data-toggle="dropdown">
+                <button class="btn dropdown-toggle btn-info" data-toggle="dropdown">
                     Гражданство <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu">
@@ -156,7 +156,7 @@ $show_create_party = isset($_GET['show_create_party']);
             <?php if (!$state->executiveOrg || !$state->executiveOrg->leader || !$state->executiveOrg->leader->user): ?>
             
             <div class="btn-group">
-                <button class="btn btn-red" onclick="json_request('seize-power', {'state_id':<?= $state->id ?>})" >
+                <button class="btn btn-danger" onclick="json_request('seize-power', {'state_id':<?= $state->id ?>})" >
                     Захватить власть
                 </button>
             </div>
@@ -202,12 +202,12 @@ $show_create_party = isset($_GET['show_create_party']);
                         <label class="checkbox">
                           <input type="checkbox"> Check me out
                         </label>
-                        <button type="submit" class="btn btn-green">Submit</button>-->
+                        <button type="submit" class="btn btn-success">Submit</button>-->
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true" onclick="create_party()">Создать</button>
-                    <?php if (!$show_create_party): ?><button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button><?php endif ?>
+                    <?php if (!$show_create_party): ?><button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Закрыть</button><?php endif ?>
                 </div>
             </div>
             <script type="text/javascript">
@@ -243,4 +243,4 @@ $show_create_party = isset($_GET['show_create_party']);
 
         </script>
     </div>
-</div>
+</section>

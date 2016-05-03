@@ -43,7 +43,10 @@ use Yii,
     app\models\factories\FactoryAutobuySettings,
     app\models\factories\Line,
     app\models\factories\proto\FactoryProto,
-    app\models\factories\proto\LineProto;
+    app\models\factories\proto\LineProto,
+    app\models\licenses\License,
+    app\models\licenses\proto\LicenseProto,
+    app\models\massmedia\Massmedia;
 
 class JsonController extends MyController {
 
@@ -2072,6 +2075,72 @@ class JsonController extends MyController {
         $user->save();
         
         return $this->_rOk();
+    }
+    
+    public function actionIsHoldingHaveLicense($holding_id, $state_id, $license_proto_code)
+    {
+        $lp = LicenseProto::findByCode($license_proto_code);
+        if (is_null($lp)) {
+            return $this->_r("License prototype not found");
+        }
+        
+        if (License::find()->where([
+            'holding_id' => $holding_id,
+            'state_id' => $state_id,
+            'proto_id' => $lp->id
+        ])->count()) {
+            $this->result = true;
+        } else {
+            $this->result = false;
+        }
+        return $this->_r(false);
+    }
+    
+    public function actionIsMassmediaNameRegistered($name)
+    {
+        if (Massmedia::find()->where([
+            'name' => $name
+        ])->count()) {
+            $this->result = false;
+        } else {
+            $this->result = true;
+        }
+        return $this->_r(false);
+    }
+    
+    public function actionCreateMassmedia()
+    {
+        $holding = Holding::findByPk(Yii::$app->request->get('holdingId'));
+        if (!$holding || !$holding->isUserController($this->viewer_id)) {
+            var_dump($holding);
+            return $this->_r('Invalid holding ID');
+        }
+        
+        $massmedia = new Massmedia();
+        
+        $massmedia->load([
+            'stateId' => $this->user->currentStateId,
+            'directorId' => $this->user->id,
+            'name' => Yii::$app->request->get('name'),
+            'protoId' => Yii::$app->request->get('protoId'),
+            'holdingId' => Yii::$app->request->get('holdingId'),
+            'partyId' => Yii::$app->request->get('partyId') ? Yii::$app->request->get('partyId') : null,
+            'popClassId' => Yii::$app->request->get('popClassId') ? Yii::$app->request->get('popClassId') : null,
+            'popNationId' => Yii::$app->request->get('popNationId') ? Yii::$app->request->get('popNationId') : null,
+            'regionId' => Yii::$app->request->get('regionId') ? Yii::$app->request->get('regionId') : null,
+            'religionId' => Yii::$app->request->get('religionId') ? Yii::$app->request->get('religionId') : null,
+            'ideologyId' => Yii::$app->request->get('ideologyId') ? Yii::$app->request->get('ideologyId') : null,
+            'rating' => 0
+        ],'');
+        
+        $massmedia->calcCoverage();
+                
+        if ($massmedia->save()) {
+            $this->result = $massmedia->id;
+            return $this->_r();
+        } else {
+            return $this->_r($massmedia->getErrors());
+        }
     }
     
 }

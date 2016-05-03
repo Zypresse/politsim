@@ -10,7 +10,8 @@ use app\models\objects\proto\UnmovableObjectProto,
     app\models\factories\Factory,
     app\models\resources\proto\ResourceProto,
     app\models\Region,
-    app\models\Holding;
+    app\models\Holding,
+    yii\base\Exception;
 
 /**
  * Тип фабрики. Таблица "factories_prototypes".
@@ -120,17 +121,17 @@ class FactoryProto extends UnmovableObjectProto
     
     public function getLicenses()
     {
-        throw new yii\base\Exception("Method ".static::className()."::getLicenses() not overrided!");
+        throw new Exception("Method ".static::className()."::getLicenses() not overrided!");
     }    
    
     public function getResourcesForBuy()
     {
-        throw new yii\base\Exception("Method ".static::className()."::getResourcesForBuy() not overrided!");
+        throw new Exception("Method ".static::className()."::getResourcesForBuy() not overrided!");
     }    
     
     public function getResourcesForSell()
     {
-        throw new yii\base\Exception("Method ".static::className()."::getResourcesForSell() not overrided!");
+        throw new Exception("Method ".static::className()."::getResourcesForSell() not overrided!");
     }
     
     /**
@@ -199,10 +200,10 @@ class FactoryProto extends UnmovableObjectProto
             $size = 127;
         }
         if (is_null($region)) {
-            throw new \yii\base\Exception("Undefined region");
+            throw new Exception("Undefined region");
         }
         if (is_null($holding)) {
-            throw new \yii\base\Exception("Undefined holding");
+            throw new Exception("Undefined holding");
         }
         
         if ($holding->capital < $this->build_cost) {

@@ -2,7 +2,7 @@
 
 use app\components\MyHtmlHelper;
 ?>
-<div class="container">
+<section class="content">
     <div class="row">
         <div class="col-md-12">
             <h3><?= $factory->proto->name ?> &laquo;<?= htmlspecialchars($factory->name) ?>&raquo;</h3>
@@ -25,7 +25,7 @@ use app\components\MyHtmlHelper;
         <div class="col-md-6">
             <div class="box">
                 <div class="box-header">
-                    <span class="title"><i class="icon-group"></i> Работники</span>
+                    <span class="box-title"><i class="icon-group"></i> Работники</span>
                 </div>
                 <div class="box-content">    
                     <table class="table table-normal">
@@ -52,4 +52,4 @@ use app\components\MyHtmlHelper;
             </div>
         </div>
     </div>
-</div>
+</section>

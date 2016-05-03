@@ -32,9 +32,11 @@ class m160425_231300_addMassMediaAndEventsAndPopRequests extends Migration
             'stateId' => 'INTEGER NOT NULL',
             'partyId' => 'INTEGER DEFAULT NULL',
             'popClassId' => 'INTEGER DEFAULT NULL',
+            'popNationId' => 'INTEGER DEFAULT NULL',
             'regionId' => 'INTEGER DEFAULT NULL',
             'religionId' => 'INTEGER DEFAULT NULL',
             'ideologyId' => 'INTEGER DEFAULT NULL',
+            'coverage' => 'INTEGER DEFAULT 0',
             'rating' => 'INTEGER DEFAULT 0'
         ]);
         

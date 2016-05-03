@@ -3,7 +3,7 @@
 use app\components\MyHtmlHelper;
 
 ?>
-<div class="container">
+<section class="content">
     <div class="row">
         <div class="col-md-12">
             <h1>Рейтинг игроков</h1>
@@ -28,7 +28,7 @@ use app\components\MyHtmlHelper;
             </table>
         </div>
     </div>
-</div>
+</section>
 <script>
     $(function () {
         $('#chart_peoples').tablePagination({'rowsPerPage': 10});

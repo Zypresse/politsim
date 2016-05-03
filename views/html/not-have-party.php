@@ -7,7 +7,7 @@
 use app\components\MyHtmlHelper,
     app\models\Ideology;
 ?>
-<div class="container">
+<section class="content">
     <div class="row">
         <div class="col-md-12">
             <h4>Вы не состоите ни в одной партии</h4>
@@ -17,7 +17,7 @@ if ($user->state) {
                 <div class="btn-group">
                 <?php                 if ($user->state->allow_register_parties) {
                     ?>
-                        <button class="btn btn-sm dropdown-toggle btn-green" onclick="$('#create_party').modal();" >
+                        <button class="btn btn-sm dropdown-toggle btn-success" onclick="$('#create_party').modal();" >
                             Создать партию
                         </button>
         <?php
@@ -77,18 +77,17 @@ if ($user->state) {
                                     <!--<label class="checkbox">
                                       <input type="checkbox"> Check me out
                                     </label>
-                                    <button type="submit" class="btn btn-green">Submit</button>-->
+                                    <button type="submit" class="btn btn-success">Submit</button>-->
                                 </form>
                             </div>
                             <div class="modal-footer">
                                 <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true" onclick="create_party()">Создать</button>
-                                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+                                <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Закрыть</button>
                             </div>
                         </div></div>
                 </div>
             </div>
         </div>
-    </div>
     <script type="text/javascript">
         function create_party() {
 
@@ -108,3 +107,4 @@ if ($user->state) {
     <p>Вы не имеете гражданства и не можете зарегистрировать партию</p>    
     <?php }
 ?>
+</section>

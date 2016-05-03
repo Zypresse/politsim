@@ -17,24 +17,24 @@ $maxBet = min([$auction->end_price ? $auction->end_price : INF,$master->getBalan
 
 <h5>Условия аукциона:</h5>
 <p>Стартовая цена: <?=MyHtmlHelper::moneyFormat($auction->start_price)?></p>
-<? if ($auction->end_price): ?>
+<?php if ($auction->end_price): ?>
     <p>Стоп-цена: <?=MyHtmlHelper::moneyFormat($auction->end_price)?></p>
-<? endif ?>
+<?php endif ?>
 
 <h5>Ставки:</h5>
-<? if (count($auction->bets)): ?>
+<?php if (count($auction->bets)): ?>
 <ul>
-    <? foreach ($auction->bets as $bet): ?>
+    <?php foreach ($auction->bets as $bet): ?>
         <li><?=MyHtmlHelper::moneyFormat($bet->bet)?>  <?=$bet->holding->getHtmlName()?></li>
-    <? endforeach ?>
+    <?php endforeach ?>
 </ul>
-<? else: ?>
+<?php else: ?>
 <p>Пока не сделано ни одной ставки</p>
-<? endif ?>
+<?php endif ?>
 
-<? if ($auction->lastBet && $auction->lastBet->holding_id === $master->id): ?>
+<?php if ($auction->lastBet && $auction->lastBet->holding_id === $master->id): ?>
 <p style="color:green">Ваша ставка последняя за этот лот</p>
-<? else: ?>
+<?php else: ?>
 <h5>Действия:</h5>
 <div class="row">
     <div class="span4">
@@ -45,23 +45,23 @@ $maxBet = min([$auction->end_price ? $auction->end_price : INF,$master->getBalan
                     <?=MyHtmlHelper::icon('money')?>
                 </td>
                 <td>
-                    <button class="btn btn-default" id="make_bet" >
+                    <button class="btn btn-primary" id="make_bet" >
                       Сделать ставку
                     </button>
                 </td>
             </tr>
-            <? if ($auction->end_price): ?>
+            <?php if ($auction->end_price): ?>
                 <tr>
                     <td style="text-align: right" >
                         <?=MyHtmlHelper::moneyFormat($auction->end_price)?>
                     </td>
                     <td>
-                        <button class="btn btn-gold" id="make_end_bet" title="Купить лот не дожидаясь конца аукциона, заплатив стоп-цену" >
+                        <button class="btn btn-warning" id="make_end_bet" title="Купить лот не дожидаясь конца аукциона, заплатив стоп-цену" >
                             Выкупить лот
                         </button>
                     </td>
                 </tr>
-            <? endif ?>
+            <?php endif ?>
         </table>
     </div>
 </div>
@@ -76,7 +76,7 @@ $maxBet = min([$auction->end_price ? $auction->end_price : INF,$master->getBalan
         if (size > <?=$maxBet?>) {
             $('#bet_size').val(<?=$maxBet?>);
         }
-    }
+    };
     
     $(function(){
         $('#bet_size').keyup(updateBetSize);
@@ -88,7 +88,7 @@ $maxBet = min([$auction->end_price ? $auction->end_price : INF,$master->getBalan
             } else {
                 json_request('factory-market-bet',{'unnp':<?=$master->unnp?>, 'auction_id':<?=$auction->id?>, 'bet_size':<?=intval($auction->end_price)?>});
             }
-        })
+        });
 
         $('#make_bet').click(function(){
             var size = parseFloat($('#bet_size').val());
@@ -98,8 +98,8 @@ $maxBet = min([$auction->end_price ? $auction->end_price : INF,$master->getBalan
             } else {
                 json_request('factory-market-bet',{'unnp':<?=$master->unnp?>, 'auction_id':<?=$auction->id?>, 'bet_size':size});
             }
-        })
-    })
+        });
+    });
     
 </script>
-<? endif ?>
+<?php endif ?>

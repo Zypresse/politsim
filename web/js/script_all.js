@@ -306,7 +306,7 @@ function json_request(page, params, noReload, noError, callback) {
     };
 
     request('/json/'+page,params,'json',function(result){
-        if (result.result === 'ok') {
+        if (result.result !== 'error') {
             if (!noReload) {
                 reload_page(100);
             }

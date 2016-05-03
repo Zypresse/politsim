@@ -7,7 +7,8 @@ use yii\console\Controller,
     app\models\HoldingDecision,
     app\models\factories\Factory,
     app\models\factories\FactoryAuction,
-    app\models\Vacansy;
+    app\models\Vacansy,
+    app\models\massmedia\Massmedia;
 
 /**
  * Update all, crontab minutly
@@ -42,6 +43,10 @@ class UpdateMinutlyController extends Controller {
             $time = microtime(true);
             $this->updateFactoryAuctions();
             if ($debug) printf("Updated factory auctions: %f s.".PHP_EOL, microtime(true)-$time);
+
+            $time = microtime(true);
+            $this->updateMassmedia();
+            if ($debug) printf("Updated massmedia: %f s.".PHP_EOL, microtime(true)-$time);
         }                
     }
 
@@ -110,7 +115,6 @@ class UpdateMinutlyController extends Controller {
         // Окончание строительства
         $buildings = Factory::find()->where('builded <= '.time().' AND status = '.Factory::STATUS_UNBUILDED)
                 ->with('proto')
-                ->with('proto.licenses')
                 ->with('proto.workers')
                 ->with('workers')
                 ->with('holding')
@@ -193,6 +197,15 @@ class UpdateMinutlyController extends Controller {
         foreach ($auctions as $auction) {
             /* @var $auction FactoryAuction */
             $auction->end();
+        }
+    }
+    
+    private function updateMassmedia()
+    {
+        $massmedias = Massmedia::find()->all();
+        
+        foreach ($massmedias as $massmedia) {
+            $massmedia->calcCoverage(true);
         }
     }
     

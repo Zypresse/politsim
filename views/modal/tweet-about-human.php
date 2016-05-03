@@ -1,4 +1,10 @@
-<p><input type="text"  id="human_nickname" placeholder="Никнейм человека" ><button class="btn btn-lightblue" id="check_nickname">Проверить</button></p>
+<form>
+<div class="input-group">
+    <input id="human_nickname" placeholder="Никнейм человека" class="form-control" type="text">
+    <span class="input-group-btn">
+      <button id="check_nickname" type="button" class="btn btn-info btn-flat">Проверить</button>
+    </span>
+</div>
 <div id="human_info"></div>
 <input type="hidden" id="human_uid">
 <p><select id="new_tweet_type">
@@ -11,7 +17,7 @@
       placeholder="Введите ваше сообщение" rows="5" class="socnet-textarea"></textarea>
       </p>
       <span id="symbols_count_about_human" class="pull-right" >140 символов осталось</span>
-
+</form>
 <script>
 var check_nickname = function(callback){
       if ($('#human_nickname').val()) {

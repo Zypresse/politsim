@@ -11,7 +11,7 @@ use app\components\MyHtmlHelper,
 
 $userStock = $user->getShareholderStock($holding);
 ?>
-<div class="container">
+<section class="content">
     <div class="row">
         <div class="col-md-12">
             <h1><?= htmlspecialchars($holding->name) ?></h1>
@@ -19,10 +19,10 @@ $userStock = $user->getShareholderStock($holding);
             <p>Капитализация: <?= MyHtmlHelper::moneyFormat($holding->capital) ?></p>
             <p>
                 Баланс лицевого счёта: <?= MyHtmlHelper::moneyFormat($holding->balance) ?>
-                <button onclick="$('#stock_dividents_modal').modal();" class="btn btn-xs dropdown-toggle btn-green">
+                <button onclick="$('#stock_dividents_modal').modal();" class="btn btn-xs dropdown-toggle btn-success">
                     Выплатить дивиденты
                 </button>
-                <button onclick="$('#insert_money_modal').modal();" class="btn btn-xs dropdown-toggle btn-blue">
+                <button onclick="$('#insert_money_modal').modal();" class="btn btn-xs dropdown-toggle btn-primary">
                     Внести деньги на счёт
                 </button>
             </p>
@@ -40,8 +40,8 @@ $userStock = $user->getShareholderStock($holding);
         <div class="col-md-6">
             <div class="box">
                 <div class="box-header">
-                    <span class="title">
-                        <i class="icon-group"></i> Акционеры
+                    <span class="box-title">
+                        <i class="fa fa-group"></i> Акционеры
                     </span>
                 </div>
                 <div class="box-content">    
@@ -65,16 +65,14 @@ $userStock = $user->getShareholderStock($holding);
         <div class="col-md-6">
             <div class="box">
                 <div class="box-header">
-                    <span class="title">
-                        <i class="icon-legal"></i> Лицензии
+                    <span class="box-title">
+                        <i class="fa fa-legal"></i> Лицензии
                     </span>
-                    <ul class="box-toolbar">
-                        <li>
-                            <button onclick="load_modal('holding-new-license',{'holding_id':<?=$holding->id?>},'new_license_modal','new_license_modal_body')" class="btn btn-xs dropdown-toggle btn-green">
-                                Получить лицензию
-                            </button>
-                        </li>
-                    </ul>
+                    <div class="box-tools pull-right">
+                        <button onclick="load_modal('holding-new-license',{'holding_id':<?=$holding->id?>},'new_license_modal','new_license_modal_body')" class="btn btn-xs dropdown-toggle btn-success">
+                            Получить лицензию
+                        </button>
+                    </div>
                 </div>
                 <div class="box-content">    
                     <table class="table table-normal">
@@ -105,16 +103,14 @@ $userStock = $user->getShareholderStock($holding);
         <div class="col-md-12">
             <div class="box">
                 <div class="box-header">
-                    <span class="title">
-                        <i class="icon-building"></i> Недвижимость
+                    <span class="box-title">
+                        <i class="fa fa-building"></i> Недвижимость
                     </span>
-                    <ul class="box-toolbar">
-                        <li>
-                            <button class="btn btn-xs btn-green" onclick="load_modal('build-factory-select-region',{'holding_id':<?=$holding->id?>},'build-factory-modal','build-factory-modal-body')" >
-                                Построить новое предприятие
-                            </button>
-                        </li>
-                    </ul>
+                    <div class="box-tools pull-right">
+                        <button class="btn btn-xs btn-success" onclick="load_modal('build-factory-select-region',{'holding_id':<?=$holding->id?>},'build-factory-modal','build-factory-modal-body')" >
+                            Построить новое предприятие
+                        </button>
+                    </div>
                 </div>
                 <div class="box-content">    
                     <table class="table table-normal">
@@ -138,20 +134,20 @@ $userStock = $user->getShareholderStock($holding);
                                         <td style="text-align: center">
                                             <div class="btn-toolbar">
                                                 <div class="btn-group">
-                                                    <button title="Переименовать" class="btn btn-xs btn-lightblue" onclick="$('#factory_id_for_rename').val(<?=$factory->id?>); $('#factory_new_name').val('<?=$factory->name?>'); $('#rename_factory_modal').modal();" >
-                                                        <i class="icon-edit"></i>
+                                                    <button title="Переименовать" class="btn btn-xs btn-info" onclick="$('#factory_id_for_rename').val(<?=$factory->id?>); $('#factory_new_name').val('<?=$factory->name?>'); $('#rename_factory_modal').modal();" >
+                                                        <i class="fa fa-edit"></i>
                                                     </button>
-                                                    <button title="Выставить на продажу" class="btn btn-xs btn-gold" onclick="$('#factory_id_for_sell').val(<?=$factory->id?>); $('#sell_factory_modal').modal();" >
-                                                        <i class="icon-money"></i>
+                                                    <button title="Выставить на продажу" class="btn btn-xs btn-danger" onclick="$('#factory_id_for_sell').val(<?=$factory->id?>); $('#sell_factory_modal').modal();" >
+                                                        <i class="fa fa-money"></i>
                                                     </button>
-                                                    <button title="Назначить управляющего" class="btn btn-xs btn-gray" onclick="$('#new_manager_factory').val(<?=$factory->id?>);$('#set_manager_modal').modal();" >
-                                                        <i class="icon-user"></i>
+                                                    <button title="Назначить управляющего" class="btn btn-xs btn-primary" onclick="$('#new_manager_factory').val(<?=$factory->id?>);$('#set_manager_modal').modal();" >
+                                                        <i class="fa fa-user"></i>
                                                     </button>
-                                                    <button title="Внести деньги на счёт" class="btn btn-xs btn-brown" onclick="$('#transfer_inner_factory_unnp').val(<?=$factory->unnp?>); $('#transfer_money_inner_modal').modal();" >
-                                                        <i class="icon-money"></i>
+                                                    <button title="Внести деньги на счёт" class="btn btn-xs btn-warning" onclick="$('#transfer_inner_factory_unnp').val(<?=$factory->unnp?>); $('#transfer_money_inner_modal').modal();" >
+                                                        <i class="fa fa-money"></i>
                                                     </button>
-                                                    <button title="Вывести деньги со счёта" class="btn btn-xs btn-green" onclick="$('#transfer_outer_factory_unnp').val(<?=$factory->unnp?>); $('#transfer_money_outer_modal').modal();" >
-                                                        <i class="icon-money"></i>
+                                                    <button title="Вывести деньги со счёта" class="btn btn-xs btn-success" onclick="$('#transfer_outer_factory_unnp').val(<?=$factory->unnp?>); $('#transfer_money_outer_modal').modal();" >
+                                                        <i class="fa fa-money"></i>
                                                     </button>
                                                 </div>
                                             </div>
@@ -209,8 +205,8 @@ $userStock = $user->getShareholderStock($holding);
                                     echo "<span class='status-success'>Вы уже проголосовали</span>";
                                 } else {
                                     ?>
-                                    <button class="btn btn-green" onclick="vote_for_decision(<?= $decision->id ?>, 1)">ЗА</button>
-                                    <button class="btn btn-red" onclick="vote_for_decision(<?= $decision->id ?>, 2)">ПРОТИВ</button>
+                                    <button class="btn btn-success" onclick="vote_for_decision(<?= $decision->id ?>, 1)">ЗА</button>
+                                    <button class="btn btn-danger" onclick="vote_for_decision(<?= $decision->id ?>, 2)">ПРОТИВ</button>
                                     <?php
                                 }
                                 ?>
@@ -227,23 +223,23 @@ $userStock = $user->getShareholderStock($holding);
             <h4>Новое решение:</h4>
             <div class="btn-toolbar">
                 <div class="btn-group">
-                    <button onclick="$('#rename_holding_modal').modal();" class="btn btn-lightblue">
+                    <button onclick="$('#rename_holding_modal').modal();" class="btn btn-info">
                         Переименовать холдинг
                     </button>
                 </div>
                 <div class="btn-group">
-                    <button onclick="$('#set_main_office_modal').modal();" class="btn btn-sea">
+                    <button onclick="$('#set_main_office_modal').modal();" class="btn btn-primary">
                         Установить главный офис
                     </button>
                 </div>
                 <div class="btn-group">
-                    <button onclick="$('#set_director_modal').modal();" class="btn btn-green">
+                    <button onclick="$('#set_director_modal').modal();" class="btn btn-success">
                         Назначить директора
                     </button>
                 </div>
                 <?php if (!count($factories)): ?>
                 <div class="btn-group">
-                    <button onclick="json_request('new-holding-decision',{'holding_id':<?= $holding->id ?>, 'type': 14})" class="btn btn-red">
+                    <button onclick="json_request('new-holding-decision',{'holding_id':<?= $holding->id ?>, 'type': 14})" class="btn btn-danger">
                         Ликвидировать компанию
                     </button>
                 </div>
@@ -251,7 +247,7 @@ $userStock = $user->getShareholderStock($holding);
             </div>
         </div>
     </div>
-</div>
+</section>
 <div style="display:none;" class="modal fade" id="new_license_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel123" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -264,7 +260,7 @@ $userStock = $user->getShareholderStock($holding);
             </div>
             <div class="modal-footer">
                 <button class="btn btn-primary" data-dismiss="modal"  onclick="get_new_license(<?= $holding->id ?>)">Получить</button>
-                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+                <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Закрыть</button>
             </div>
         </div></div>
 </div>
@@ -286,7 +282,7 @@ $userStock = $user->getShareholderStock($holding);
             </div>
             <div class="modal-footer">
                 <button class="btn btn-primary" data-dismiss="modal"  onclick="insert_money(<?= $holding->id ?>)">Внести</button>
-                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+                <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Закрыть</button>
             </div>
         </div></div>
 </div>
@@ -308,7 +304,7 @@ $userStock = $user->getShareholderStock($holding);
             </div>
             <div class="modal-footer">
                 <button class="btn btn-primary" data-dismiss="modal"  onclick="pay_dividents(<?= $holding->id ?>)">Выплатить</button>
-                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+                <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Закрыть</button>
             </div>
         </div></div>
 </div>
@@ -331,7 +327,7 @@ $userStock = $user->getShareholderStock($holding);
             </div>
             <div class="modal-footer">
                 <button class="btn btn-primary" data-dismiss="modal"  onclick="transfer_money_inner(<?= $holding->id ?>)">Перевести</button>
-                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+                <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Закрыть</button>
             </div>
         </div></div>
 </div>
@@ -354,7 +350,7 @@ $userStock = $user->getShareholderStock($holding);
             </div>
             <div class="modal-footer">
                 <button class="btn btn-primary" data-dismiss="modal"  onclick="transfer_money_outer(<?= $holding->id ?>)">Перевести</button>
-                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+                <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Закрыть</button>
             </div>
         </div></div>
 </div>
@@ -381,7 +377,7 @@ $userStock = $user->getShareholderStock($holding);
             </div>
             <div class="modal-footer">
                 <button class="btn btn-primary" data-dismiss="modal"  onclick="json_request('new-holding-decision', {'holding_id':<?= $holding->id ?>, 'factory_id': $('#new_manager_factory').val(), 'uid': $('#new_manager_uid').val(), 'type': 6})">Назначить</button>
-                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+                <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Закрыть</button>
             </div>
         </div></div>
 </div>
@@ -408,7 +404,7 @@ $userStock = $user->getShareholderStock($holding);
             </div>
             <div class="modal-footer">
                 <button class="btn btn-primary" data-dismiss="modal"  onclick="json_request('new-holding-decision', {'holding_id':<?= $holding->id ?>, 'uid': $('#new_director_uid').val(), 'type': <?= HoldingDecision::DECISION_SETDIRECTOR ?>})">Назначить</button>
-                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+                <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Закрыть</button>
             </div>
         </div></div>
 </div>
@@ -429,7 +425,7 @@ $userStock = $user->getShareholderStock($holding);
             </div>
             <div class="modal-footer">
                 <button class="btn btn-primary" data-dismiss="modal"  onclick="rename_holding(<?= $holding->id ?>)">Переименовать</button>
-                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+                <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Закрыть</button>
             </div>
         </div></div>
 </div>
@@ -452,7 +448,7 @@ $userStock = $user->getShareholderStock($holding);
             </div>
             <div class="modal-footer">
                 <button class="btn btn-primary" data-dismiss="modal"  onclick="rename_factory()">Переименовать</button>
-                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+                <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Закрыть</button>
             </div>
         </div></div>
 </div>
@@ -479,7 +475,7 @@ $userStock = $user->getShareholderStock($holding);
             </div>
             <div class="modal-footer">
                 <button class="btn btn-primary" data-dismiss="modal"  onclick="sell_factory()">Выставить на продажу</button>
-                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+                <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Закрыть</button>
             </div>
         </div>
     </div>
@@ -512,7 +508,7 @@ $userStock = $user->getShareholderStock($holding);
             </div>
             <div class="modal-footer">
                 <button class="btn btn-primary" data-dismiss="modal"  onclick="set_main_office()">Установить</button>
-                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+                <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Закрыть</button>
             </div>
         </div>
     </div>
@@ -530,7 +526,7 @@ $userStock = $user->getShareholderStock($holding);
             </div>
             <div class="modal-footer">
                 <button id="build-factory-modal-main-btn" class="btn btn-primary" data-dismiss="modal" >Установить</button>
-                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+                <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Закрыть</button>
             </div>
         </div>
     </div>

@@ -42,7 +42,7 @@ class AppAsset extends AssetBundle
         'js/icheck.js',
         'js/jquery.peity.min.js',
         'js/jquery-dateFormat.min.js',
-        'js/jquery.steps.min.js',
+        'js/serialize-object.js',
         '//vk.com/js/api/xd_connection.js',
         '//www.google.com/jsapi?autoload={\'modules\':[{\'name\':\'visualization\',\'version\':\'1\',\'packages\':[\'corechart\']}]}',
         '//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js',

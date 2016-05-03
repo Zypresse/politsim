@@ -6,7 +6,7 @@
 
 $unnps = [];
 ?>
-<div class="container">
+<section class="content">
     <div class="row">
         <div class="col-md-12">
             <?= $this->render('_menu', ['active' => 2]) ?>
@@ -36,7 +36,7 @@ $unnps = [];
             </div>
             <h3>Рынок ресурсов</h3>
             <?php foreach ($prototypes as $i => $proto): ?>
-                <button class="btn btn-xs btn-default <?php if ($i === 0) { ?>btn-lightblue<?php } ?> resources_market_btn" data-id="<?= $proto->id ?>" ><?= $proto->getHtmlName() ?></button>
+                <button class="btn btn-xs btn-default <?php if ($i === 0) { ?>btn-info<?php } ?> resources_market_btn" data-id="<?= $proto->id ?>" ><?= $proto->getHtmlName() ?></button>
             <?php endforeach ?>
         </div>
     </div>
@@ -45,17 +45,17 @@ $unnps = [];
 
         </div>
     </div>
-</div>
+</section>
 <script type="text/javascript">
     $(function () {
         $('.resources_market_btn').click(function () {
-            $('.resources_market_btn').removeClass('btn-lightblue');
-            $(this).addClass('btn-lightblue');
+            $('.resources_market_btn').removeClass('btn-info');
+            $(this).addClass('btn-info');
             load_resources_market($(this).data('id'));
         });
 
         $('#market-change-unnp-select').change(function () {
-            var id = $('.resources_market_btn.btn-lightblue').data('id');
+            var id = $('.resources_market_btn.btn-info').data('id');
             load_resources_market(id);
         });
         load_resources_market(1);

@@ -12,7 +12,7 @@ use app\components\MyHtmlHelper,
 $gft = null;
 ?>
 
-<div class="container">
+<section class="content">
     <div class="row">
         <div class="col-md-12">
             <h1>Личный кабинет</h1>
@@ -36,7 +36,7 @@ $gft = null;
                             <td>
                                 <strong><?= $player->name ?></strong>
                                 <?php if ($player->can_delete): ?>
-                                <button class="btn btn-red" onclick="delete_post(<?= $player->id ?>)" style="float:right;">Удалить</button>
+                                <button class="btn btn-danger" onclick="delete_post(<?= $player->id ?>)" style="float:right;">Удалить</button>
                                 <?php endif ?>
                             </td>
                             <td>
@@ -48,11 +48,11 @@ $gft = null;
                                 <span class="chart_pie"><?= $player->user->chart_pie ?> <?= MyHtmlHelper::icon('chart_pie') ?></span>
 
                                 <?php if ($user->post->org->dest === 'dest_by_leader' && $player->id !== $user->post->org->leader_post): ?>
-                                <button class="btn btn-red" onclick="drop_from_post(<?= $player->id ?>)">Сместить с поста</button>
+                                <button class="btn btn-danger" onclick="drop_from_post(<?= $player->id ?>)">Сместить с поста</button>
                                 <?php endif ?>
                                 <?php else: ?>
                                 <?php if ($user->post->org->dest === 'dest_by_leader'): ?>
-                                <button class="btn btn-green" onclick="naznach(<?= $player->id ?>)">Назначить</button>
+                                <button class="btn btn-success" onclick="naznach(<?= $player->id ?>)">Назначить</button>
                                 <?php else: ?>
                                 Не назначен
                                 <?php endif ?>
@@ -145,7 +145,7 @@ $gft = null;
                         <td><?=$stock->holding->getHtmlName()?></td>
                         <td><?= MyHtmlHelper::formateNumberword($stock->count, "акций", "акция", "акции") ?> (<?= round($stock->getPercents(), 2) ?>%)</td>
                         <td>≈ <?= MyHtmlHelper::moneyFormat($stock->getCost()) ?></td>
-                        <td><?= Html::a("Управление", "#", ['class' => 'btn btn-green', 'onclick' => 'load_page("holding-control",{"id":' . $stock->holding_id . '})']) ?></td>
+                        <td><?= Html::a("Управление", "#", ['class' => 'btn btn-success', 'onclick' => 'load_page("holding-control",{"id":' . $stock->holding_id . '})']) ?></td>
                     </tr>
                     <?php endforeach ?>
                 </tbody>
@@ -160,7 +160,7 @@ $gft = null;
             <div class="btn-toolbar">
                 <?php if ($user->post->org->leader_post === $user->post_id): ?>
 
-                <button class="btn dropdown-toggle btn-blue" data-toggle="dropdown">
+                <button class="btn dropdown-toggle btn-primary" data-toggle="dropdown">
                     Управление организацией <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu">
@@ -169,30 +169,30 @@ $gft = null;
                 <?php endif ?>
 
                 <?php if ($user->isStateLeader() && $user->state->leader_can_drop_legislature && $user->state->legislatureOrg): ?>
-                <button class="btn btn-red" onclick="if (confirm('Вы действительно хотите распустить организацию «<?= $user->state->legislatureOrg->name ?>»?')) { json_request('drop-legislature'); }" >
+                <button class="btn btn-danger" onclick="if (confirm('Вы действительно хотите распустить организацию «<?= $user->state->legislatureOrg->name ?>»?')) { json_request('drop-legislature'); }" >
                     Распустить парламент
                 </button>
                 <?php endif ?>
                 <?php if ($user->post->canCreateBills()):
                     $isDicktator = !!($user->isOrgLeader() && $user->post->org->leader_can_make_dicktator_bills);
                 ?>
-                <button class="btn btn-green" onclick="new_zakon_modal()" >
+                <button class="btn btn-success" onclick="new_zakon_modal()" >
                     Новый закон
                 </button>
                 <?php endif ?>
                 <?php if ($user->isOrgLeader() && $user->post->org->leader_dest === Org::DEST_UNLIMITED): ?>
-                <button class="btn btn-red" onclick="load_modal('set-successor',{},'set-successor-modal','set-successor-modal-body')" >
+                <button class="btn btn-danger" onclick="load_modal('set-successor',{},'set-successor-modal','set-successor-modal-body')" >
                     Передать должность наследнику
                 </button>
                 <?php else: ?>
-                <button class="btn btn-red" onclick="self_drop_from_post()" >
+                <button class="btn btn-danger" onclick="self_drop_from_post()" >
                     Уволиться
                 </button>
                 <?php endif ?>
             </div>
         </div>
     </div>
-</div>
+</section>
 
 <div style="display:none;" class="modal fade" id="set-successor-modal" tabindex="-1" role="dialog" aria-labelledby="set-successor-modal-label" aria-hidden="true">
     <div class="modal-dialog" style="width: 800px;">
@@ -205,7 +205,7 @@ $gft = null;
                 <p>Загрузка…</p>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Отмена</button>
+                <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Отмена</button>
             </div>
         </div>
     </div>
@@ -221,8 +221,8 @@ $gft = null;
                 <p>Загрузка…</p>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
-                <!--<button class="btn btn-green">Save changes</button>-->
+                <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+                <!--<button class="btn btn-success">Save changes</button>-->
             </div>
         </div>
     </div>
@@ -258,8 +258,8 @@ $gft = null;
                 </select>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-green" onclick="new_zakon_form_modal()">Выбрать</button>
-                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+                <button class="btn btn-success" onclick="new_zakon_form_modal()">Выбрать</button>
+                <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Закрыть</button>
             </div>
         </div>
     </div>
@@ -276,8 +276,8 @@ $gft = null;
                 Загрузка...
             </div>
             <div class="modal-footer">
-                <button class="btn btn-green" id="send_new_zakon">Отправить</button>
-                <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+                <button class="btn btn-success" id="send_new_zakon">Отправить</button>
+                <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Закрыть</button>
             </div>
         </div>
     </div>

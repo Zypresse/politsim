@@ -429,6 +429,11 @@ class User extends MyModel implements TaxPayer, IdentityInterface {
     {
         return MyHtmlHelper::a(Html::img($this->photo,['style'=>'width:20px']), "load_page('profile',{'id':{$this->id}})")." ".MyHtmlHelper::a($this->name, "load_page('profile',{'id':{$this->id}})");
     }
+    
+    public function getCurrentStateId()
+    {
+        return $this->region ? $this->region->state_id : 0;
+    }
 
     public function getTaxStateId()
     {

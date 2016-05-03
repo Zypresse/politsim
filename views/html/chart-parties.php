@@ -5,7 +5,7 @@ use app\components\MyHtmlHelper;
 /* @var $parties app\models\Party[] */
 
 ?>
-<div class="container">
+<section class="content">
     <div class="row">
         <div class="col-md-12">
             <h1>Рейтинг партий</h1>
@@ -36,7 +36,7 @@ use app\components\MyHtmlHelper;
             </table>
         </div>
     </div>
-</div>
+</section>
 <script>
     $(function () {
         $('#chart_parties').tablePagination({'rowsPerPage': 10});
