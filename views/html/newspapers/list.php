@@ -24,7 +24,7 @@ $statesArray[0] = 'Все страны';
             <?=Html::dropDownList('stateId', $selectedState ? $selectedState->id : 0, $statesArray, ['id' => 'combobox'])?>
         </div>
     </div>
-    <div class="row">
+    <div class="row" style="margin-top: 20px">
         <?php foreach ($newspapers as $newspaper): ?>
         <div class="col-md-6">
             <div class="info-box bg-gray-light">
