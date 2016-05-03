@@ -12,10 +12,15 @@ use app\models\factories\proto\FactoryProto;
 class Office extends FactoryProto
 {
 
-	public function getId()
-	{
-		return 4;
-	}
+    public function getId()
+    {
+            return 4;
+    }
+    
+    public function getLicenses()
+    {
+        return [];
+    }   
 
     public function getResourcesForBuy()
     {
