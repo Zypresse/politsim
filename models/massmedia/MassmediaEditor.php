@@ -104,4 +104,14 @@ class MassmediaEditor extends MyModel
             'rules' => 255
         ]);
     }
+    
+    /**
+     * 
+     * @param integer $permission
+     * @return boolean
+     */
+    public function isHavePermission($permission)
+    {
+        return !!($this->rules & $permission);
+    }
 }

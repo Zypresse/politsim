@@ -2,11 +2,13 @@
 
 namespace app\controllers;
 
-use app\components\MyController,
+use Yii,
+    app\components\MyController,
     yii\helpers\ArrayHelper,
     app\models\Region,
     app\models\Post,
     app\models\User,
+    app\models\UserSearch,
     app\models\Org,
     app\models\State,
     app\models\ElectRequest,
@@ -32,7 +34,8 @@ use app\components\MyController,
     app\models\Place,
     app\models\Religion,
     app\models\PopClass,
-    app\models\PopNation;
+    app\models\PopNation,
+    app\models\massmedia\Massmedia;
 
 class ModalController extends MyController {
 
@@ -763,4 +766,22 @@ class ModalController extends MyController {
             'regions' => $regions
         ]);
     }
+    
+    public function actionAddEditor($massmediaId)
+    {
+        $massmedia = Massmedia::findByPk($massmediaId);
+        if (is_null($massmedia)) {
+            return $this->_r("Invalid massmedia ID");
+        }
+        
+        $searchModel = new UserSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('massmedia/add-editor', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+            'massmedia' => $massmedia
+        ]);
+    }
+    
 }

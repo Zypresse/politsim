@@ -193,7 +193,7 @@ $this->title = 'Political Simulator';
                     </li>
                 </ul>
             </li>
-            <li class="treeview twitter_page newspapers_page radio_page tv_page">
+            <li class="treeview twitter_page newspapers_page newspaper_page radio_page tv_page">
                 <a href="#" >
                     <?= MyHtmlHelper::icon('lg-icons/news') ?>
                     <span>СМИ</span>
@@ -284,16 +284,20 @@ $this->title = 'Political Simulator';
              data-ad-format="auto">
         </ins>
     </div>
-    <div style="display:none" class="modal" id="settings_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            <h3 id="myModalLabel">Настройки авторизации</h3>
-        </div>
-        <div id="settings_modal_body" class="modal-body">
-            
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+    <div style="display:none" class="modal fade" id="settings_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3 id="myModalLabel">Настройки авторизации</h3>
+                </div>
+                <div id="settings_modal_body" class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+                </div>
+            </div>
         </div>
     </div>
     <div style="display:none;" class="modal fade" id="region_info" tabindex="-1" role="dialog" aria-labelledby="region_info_label" aria-hidden="true">
@@ -307,8 +311,7 @@ $this->title = 'Political Simulator';
                     <p>Загрузка…</p>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-red" data-dismiss="modal" aria-hidden="true">Закрыть</button>
-                    <!--<button class="btn btn-green">Save changes</button>-->
+                    <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Закрыть</button>
                 </div>
             </div>
         </div>

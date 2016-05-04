@@ -722,3 +722,11 @@ ul.twPc-Arrange {
 #page_content .newspaper-box a:hover {
     text-decoration: underline;
 }
+
+.massmedia-add-editor-search {
+    margin-bottom: 20px;
+}
+
+.massmedia-add-editor-table tr td:nth-child(2) {
+    min-width: 150px;
+}

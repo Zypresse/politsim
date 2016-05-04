@@ -337,12 +337,48 @@ function get_html(page, params, callback, noError) {
 }
 
 function load_modal(page,params,modalId,bodyId) {
+    bodyId = bodyId ? bodyId : modalId + '-body';
     $('#'+bodyId).html('<br><br><br>Загрузка...<br><br><br><br><br>');
     get_html(page,params,function(d){
         $('#'+bodyId).html(d);
         $('#'+modalId).modal();        
         prettyDates();
+        subscribeLinksInModal(modalId, bodyId);
     })
+}
+
+function subscribeLinksInModal(modalId, bodyId) {
+    
+    $('#'+bodyId).off('submit');
+    $('#'+bodyId).off('click');
+    
+    $('#'+bodyId).on('submit','form', function(){
+        var action = $(this).attr('action').split('/');
+        return makeActionInModal(action, $(this).serializeObject(), modalId, bodyId);
+    });
+    
+    $('#'+bodyId).on('click','a[href!=#]', function(){
+        var action = $(this).attr('href').split('/');
+        return makeActionInModal(action, {}, modalId, bodyId);
+    });
+}
+
+function makeActionInModal(action, data, modalId, bodyId) {
+    var actionType = action[1];
+    var actionMethod = action[2];
+    switch (actionType) {
+        case 'modal':
+            load_modal(actionMethod,data,modalId,bodyId);
+            break;
+        case 'html':
+            load_page(actionMethod,data);
+            break;
+        case 'json':
+            json_request(actionMethod,data);
+            break;
+    }
+
+    return false;
 }
 
 

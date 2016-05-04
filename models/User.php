@@ -154,7 +154,7 @@ class User extends MyModel implements TaxPayer, IdentityInterface {
     {
         return [
             'id' => 'ID',
-            'name' => 'Name',
+            'name' => 'Имя',
             'photo' => 'Photo',
             'photo_big' => 'Photo Big',
             'last_vote' => 'Last Vote',
