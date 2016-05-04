@@ -124,6 +124,9 @@ class MassmediaEditor extends MyModel
             }
             $this->rules = $sum;
         }
+        if (!$this->rules) {
+            $this->rules = 0;
+        }
         return parent::beforeValidate();
     }
 }

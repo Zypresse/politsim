@@ -35,6 +35,9 @@ use app\models\User,
                 </div>
                 <div class="box-content">    
                     <ul>
+                        <?php if ($newspaper->state): ?>
+                        <li><?=$newspaper->state->getHtmlName()?></li>
+                        <?php endif ?>
                         <?php if ($newspaper->region): ?>
                         <li><?=$newspaper->region->getHtmlName()?></li>
                         <?php endif ?>
@@ -50,8 +53,8 @@ use app\models\User,
                         <?php if ($newspaper->ideology): ?>
                         <li><?=$newspaper->ideology->name?></li>
                         <?php endif ?>
-                    </table>
-                </div
+                    </ul>
+                </div>
                 <div class="box-footer">
                     <p class="text-info text-center">
                         Охват: <?=MyHtmlHelper::formateNumberword($newspaper->coverage, 'h')?> <i class="fa fa-user"></i>
@@ -59,25 +62,32 @@ use app\models\User,
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="box">
-                    <div class="box-header">
-                        <span class="box-title">
-                            <i class="fa fa-user"></i> Редакция
-                        </span>
-                    </div>
-                    <div class="box-content">
-                        <table class="table table-normal">
-                        <?php foreach ($newspaper->editors as $editor): ?>
-                            <tr>
-                                <td><?=$editor->customName ? $editor->customName : ($editor->userId === $newspaper->directorId ? 'Главный редактор' : 'Редактор')?></td>
-                                <td><?=$editor->user->getHtmlName()?></td>
-                            </tr>
-                        <?php endforeach ?>
-                        </table>
-                    </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="box">
+                <div class="box-header">
+                    <span class="box-title">
+                        <i class="fa fa-user"></i> Редакция
+                    </span>
                 </div>
+                <div class="box-content">
+                    <table class="table table-normal">
+                    <?php foreach ($newspaper->publicEditors as $editor): ?>
+                        <tr>
+                            <td><?=$editor->customName ? $editor->customName : ($editor->userId === $newspaper->directorId ? 'Главный редактор' : 'Редактор')?></td>
+                            <td><?=$editor->user->getHtmlName()?></td>
+                        </tr>
+                    <?php endforeach ?>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="btn-group">
+                <a href="#" onclick="load_page('newspaper-feed',{id:<?=$newspaper->id?>})" class="btn btn-info">Посмотреть статьи</a>
             </div>
         </div>
     </div>

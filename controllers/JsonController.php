@@ -47,7 +47,9 @@ use Yii,
     app\models\licenses\License,
     app\models\licenses\proto\LicenseProto,
     app\models\massmedia\Massmedia,
-    app\models\massmedia\MassmediaEditor;
+    app\models\massmedia\MassmediaEditor,
+    app\models\massmedia\MassmediaPost,
+    app\models\massmedia\MassmediaPostVote;
 
 class JsonController extends MyController {
 
@@ -2209,6 +2211,63 @@ class JsonController extends MyController {
             return $this->_rOk();
         } else {
             return $this->_r($rule->getErrors());
+        }
+    }
+    
+    public function actionNewspaperPost()
+    {
+        $id = Yii::$app->request->post('id');
+        
+        $massmedia = Massmedia::findByPk($id);
+        if (is_null($massmedia)) {
+            return $this->_r("Invalid massmedia ID");
+        }
+        
+        if (!$massmedia->isEditor($this->viewer_id)) {
+            return $this->_r("Not allowed. Code 1");
+        }
+        
+        $viewerRule = $massmedia->getEditorRules($this->viewer_id);
+        if (!$viewerRule || !$viewerRule->isHavePermission(MassmediaEditor::RULE_POST)) {
+            return $this->_r("Not allowed. Code 2/3");
+        }
+        
+        $post = new MassmediaPost([
+            'massmediaId' => $massmedia->id,
+            'authorId' => $this->viewer_id,            
+        ]);
+        $post->load(Yii::$app->request->post());        
+        if ($post->save()) {
+            return $this->_rOk();
+        } else {
+            return $this->_r($post->getErrors());
+        }
+    }
+    
+    public function actionMassmediaPostVote($id, $direction)
+    {        
+        $post = MassmediaPost::findByPk($id);
+        if (is_null($post)) {
+            return $this->_r("Invalid post ID");
+        }
+        
+        if ($post->isUserVoted($this->user)) {
+            return $this->_r("Not allowed");
+        }
+        
+        if ($direction > 0) {
+            $direction = 1;
+        } elseif ($direction < 0) {
+            $direction = -1;
+        } else {
+            $direction = 0;
+        }
+        
+        
+        if ($post->vote($this->user, $direction)) {
+            return $this->_rOk();
+        } else {
+            return $this->_r($post->errors);
         }
     }
     

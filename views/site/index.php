@@ -193,7 +193,7 @@ $this->title = 'Political Simulator';
                     </li>
                 </ul>
             </li>
-            <li class="treeview twitter_page newspapers_page newspaper_page radio_page tv_page">
+            <li class="treeview twitter_page newspapers_page newspaper_page newspaper-new-post_page newspaper-feed_page radio_page tv_page">
                 <a href="#" >
                     <?= MyHtmlHelper::icon('lg-icons/news') ?>
                     <span>СМИ</span>

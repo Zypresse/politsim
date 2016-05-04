@@ -52,6 +52,7 @@ use Yii,
  * @property Religion $religion
  * @property Ideology $ideology
  * @property MassmediaEditor[] $editors
+ * @property MassmediaEditor[] $publicEditors
  * @property MassmediaPost[] $posts
  * 
  * @property Population[] $audience
@@ -109,6 +110,11 @@ class Massmedia extends MyModel //implements TaxPayer
     public function getEditors()
     {
         return $this->hasMany(MassmediaEditor::className(), array('massmediaId' => 'id'));
+    }
+    
+    public function getPublicEditors()
+    {
+        return $this->hasMany(MassmediaEditor::className(), array('massmediaId' => 'id'))->where(['hide' => 0]);
     }
     
     public function getPosts()

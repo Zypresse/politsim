@@ -20,7 +20,8 @@ use Yii,
     app\models\factories\FactoryAuctionSearch,
     app\models\statistics\StatisticsMining,
     app\models\statistics\StatisticsCosts,
-    app\models\massmedia\Massmedia;
+    app\models\massmedia\Massmedia,
+    app\models\massmedia\MassmediaEditor;
 
 class HtmlController extends MyController
 {
@@ -477,6 +478,46 @@ class HtmlController extends MyController
                 'user' => $this->user
             ]);
         }
+    }
+    
+    public function actionNewspaperNewPost($id)
+    {
+        /* @var $newspaper Massmedia */
+        $newspaper = Massmedia::find()
+                        ->where(['id' => $id])
+                        ->with('editors')
+                        ->with('editors.user')
+                        ->one();
+        if (is_null($newspaper)) {
+            return $this->_r("Massmedia not found");
+        }
+        if (!$newspaper->isEditor($this->viewer_id)
+            || !$newspaper->getEditorRules($this->viewer_id)->isHavePermission(MassmediaEditor::RULE_POST)) {
+            return $this->_r("Not allowed");
+        }
+            
+        return $this->render('newspapers/post', [                
+            'newspaper' => $newspaper,
+            'user' => $this->user
+        ]);       
+    }
+    
+    public function actionNewspaperFeed($id)
+    {
+        /* @var $newspaper Massmedia */
+        $newspaper = Massmedia::findByPk($id);
+        if (is_null($newspaper)) {
+            return $this->_r("Massmedia not found");
+        }
+        
+        $posts = $newspaper->getPosts()->orderBy('created DESC')->all();
+        
+        return $this->render('newspapers/feed', [                
+            'newspaper' => $newspaper,
+            'user' => $this->user,
+            'posts' => $posts
+        ]);       
+        
     }
         
 }

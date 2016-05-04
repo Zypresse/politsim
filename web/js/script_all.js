@@ -175,8 +175,9 @@ function show_custom_error(text) {
     $("#spinner").fadeOut("fast");
 }
 
-function request(pageUrl,postParams,requestType,callback,noError)
+function request(pageUrl,postParams,requestType,callback,noError,method)
 {
+    method = method || 'GET';
     noError = noError || false;
     postParams = postParams || {};
     postParams.viewer_id = viewer_id;
@@ -185,6 +186,7 @@ function request(pageUrl,postParams,requestType,callback,noError)
     $("#spinner").fadeIn("fast");
     $('#error_block').slideUp();
     $.ajax({
+        method: method,
         dataType: requestType,
         url: pageUrl,
         data: postParams,
@@ -297,7 +299,7 @@ function reload_page(time) {
 }
 
 
-function json_request(page, params, noReload, noError, callback) {
+function json_request(page, params, noReload, noError, callback, method) {
     params = params || {};
     noReload = noReload || false;
     noError = noError || false;
@@ -314,7 +316,11 @@ function json_request(page, params, noReload, noError, callback) {
                 callback(result);
             }
         }
-    },noError);
+    },noError,method);
+}
+
+function json_post_request(page, params, noReload, noError, callback) {
+    return json_request(page, params, noReload, noError, callback, 'POST');
 }
 
 function get_json(page, params, callback, noError) {

@@ -425,9 +425,9 @@ class User extends MyModel implements TaxPayer, IdentityInterface {
         return $this->money;
     }
 
-    public function getHtmlName()
+    public function getHtmlName($showImg = true)
     {
-        return MyHtmlHelper::a(Html::img($this->photo,['style'=>'width:20px']), "load_page('profile',{'id':{$this->id}})")." ".MyHtmlHelper::a($this->name, "load_page('profile',{'id':{$this->id}})");
+        return ($showImg ? MyHtmlHelper::a(Html::img($this->photo,['style'=>'width:20px']), "load_page('profile',{'id':{$this->id}})")." " : '').MyHtmlHelper::a($this->name, "load_page('profile',{'id':{$this->id}})");
     }
     
     public function getCurrentStateId()

@@ -47,7 +47,7 @@ class MassmediaPost extends MyModel
     public function rules()
     {
         return [
-            [['title', 'text', 'created'], 'required'],
+            [['title', 'text'], 'required'],
             [['title', 'text'], 'string'],
             [['massmediaId', 'authorId', 'eventId', 'popRequestId', 'votesPlus', 'votesMinus', 'rating', 'created'], 'integer']
         ];
@@ -111,6 +111,16 @@ class MassmediaPost extends MyModel
     /**
      * 
      * @param User $user
+     * @return MassmediaPostVote
+     */
+    public function getUserVote(User $user)
+    {
+        return $this->getVotes()->where(['userId' => $user->id])->one();
+    }
+    
+    /**
+     * 
+     * @param User $user
      * @param integer $direction -1/0/+1
      */
     public function vote(User $user, $direction = 0)
@@ -139,5 +149,14 @@ class MassmediaPost extends MyModel
         } else {
             return false;
         }
+    }
+    
+    public function beforeSave($insert)
+    {
+        if ($insert) {
+            $this->created = time();
+        }
+        
+        return parent::beforeSave($insert);
     }
 }

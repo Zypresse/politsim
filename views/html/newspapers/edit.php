@@ -35,8 +35,11 @@ use app\models\User,
                         <i class="fa fa-group"></i> Аудитория
                     </span>
                 </div>
-                <div class="box-content">    
+                <div class="box-body">    
                     <ul>
+                        <?php if ($newspaper->state): ?>
+                        <li><?=$newspaper->state->getHtmlName()?></li>
+                        <?php endif ?>
                         <?php if ($newspaper->region): ?>
                         <li><?=$newspaper->region->getHtmlName()?></li>
                         <?php endif ?>
@@ -52,8 +55,8 @@ use app\models\User,
                         <?php if ($newspaper->ideology): ?>
                         <li><?=$newspaper->ideology->name?></li>
                         <?php endif ?>
-                    </table>
-                </div
+                    </ul>
+                </div>
                 <div class="box-footer">
                     <p class="text-info text-center">
                         Охват: <?=MyHtmlHelper::formateNumberword($newspaper->coverage, 'h')?> <i class="fa fa-user"></i>
@@ -61,49 +64,59 @@ use app\models\User,
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="box">
-                    <div class="box-header">
-                        <span class="box-title">
-                            <i class="fa fa-user"></i> Редакция
-                        </span>
-                        <?php if ($rules->isHavePermission(MassmediaEditor::RULE_SET_EDITORS)): ?>
-                        <div class="box-tools pull-right">
-                            <button id="add-editor-button" class="btn btn-xs btn-success">Добавить</button>
-                        </div>
-                        <?php endif ?>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <span class="box-title">
+                        <i class="fa fa-user"></i> Редакция
+                    </span>
+                    <?php if ($rules->isHavePermission(MassmediaEditor::RULE_SET_EDITORS)): ?>
+                    <div class="box-tools pull-right">
+                        <button id="add-editor-button" class="btn btn-xs btn-success">
+                            <i class="fa fa-plus"></i> Назначить редактора
+                        </button>
                     </div>
-                    <div class="box-content">
-                        <table class="table table-normal">
-                            <thead>
-                                <tr>
-                                    <th>Должность</th>
-                                    <th>Имя</th>
-                                    <th><i class="fa fa-newspaper-o" title="Посты"></i></th>
-                                    <th><i class="fa fa-star" title="Рейтинг"></i></th>
-                                    <th>Действия</th>
-                                </tr>
-                            </thead>
-                        <?php foreach ($newspaper->editors as $editor): ?>
-                            <tr>
-                                <td><?=$editor->customName ? $editor->customName : ($editor->userId === $newspaper->directorId ? 'Главный редактор' : 'Редактор')?></td>
-                                <td><?=$editor->user->getHtmlName()?></td>
-                                <td><?=$editor->posts?></td>
-                                <td><?=$editor->rating?></td>
-                                <td>
-                                    <div class="btn-group">
-                                        <?php if ($editor->userId !== $newspaper->directorId): ?>
-                                        <button class="btn btn-danger btn-xs fire-editor-button" data-user-id="<?=$editor->userId?>" ><i class="fa fa-trash"></i> Уволить</button>
-                                        <?php endif ?>
-                                        <button class="btn btn-info btn-xs rule-edit-button" data-user-id="<?=$editor->userId?>" ><i class="fa fa-cog"></i> Изменить</button>
-                                    </div>
-                                </td>
-                            </tr>
-                        <?php endforeach ?>
-                        </table>
-                    </div>
+                    <?php endif ?>
                 </div>
+                <div class="box-body" >
+                    <table class="table table-normal">
+                        <thead>
+                            <tr>
+                                <th>Должность</th>
+                                <th>Имя</th>
+                                <th><i class="fa fa-newspaper-o" title="Посты"></i></th>
+                                <th><i class="fa fa-star" title="Рейтинг"></i></th>
+                                <th style="min-width:70px"></th>
+                            </tr>
+                        </thead>
+                    <?php foreach ($newspaper->editors as $editor): ?>
+                        <tr>
+                            <td><?=$editor->customName ? $editor->customName : ($editor->userId === $newspaper->directorId ? 'Главный редактор' : 'Редактор')?></td>
+                            <td><?=$editor->user->getHtmlName()?></td>
+                            <td class="text-center"><?=$editor->posts?></td>
+                            <td class="text-center"><?=$editor->rating?></td>
+                            <td class="text-center">
+                                <div class="btn-group">
+                                    <?php if ($editor->userId !== $newspaper->directorId): ?>
+                                    <button class="btn btn-danger btn-xs fire-editor-button" data-user-id="<?=$editor->userId?>" title="Уволить" ><i class="fa fa-trash"></i></button>
+                                    <?php endif ?>
+                                    <button class="btn btn-info btn-xs rule-edit-button" data-user-id="<?=$editor->userId?>" title="Изменить" ><i class="fa fa-gears"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php endforeach ?>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="btn-group">
+                <a href="#" onclick="load_page('newspaper-feed',{id:<?=$newspaper->id?>})" class="btn btn-info">Посмотреть статьи</a>
+                <a href="#" onclick="load_page('newspaper-new-post',{id:<?=$newspaper->id?>})" class="btn btn-success">Написать новый пост</a>
             </div>
         </div>
     </div>

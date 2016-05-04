@@ -46,6 +46,7 @@ class AppAsset extends AssetBundle
         '//vk.com/js/api/xd_connection.js',
         '//www.google.com/jsapi?autoload={\'modules\':[{\'name\':\'visualization\',\'version\':\'1\',\'packages\':[\'corechart\']}]}',
         '//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js',
+        '//cdn.ckeditor.com/4.5.7/standard/ckeditor.js',
         'js/script_all.js',
     ];
     public $depends = [

@@ -104,7 +104,7 @@ $userStock = $user->getShareholderStock($holding);
             <div class="box">
                 <div class="box-header">
                     <span class="box-title">
-                        <i class="fa fa-building"></i> Недвижимость
+                        <i class="fa fa-industry"></i> Недвижимость
                     </span>
                     <div class="box-tools pull-right">
                         <button class="btn btn-xs btn-success" onclick="load_modal('build-factory-select-region',{'holding_id':<?=$holding->id?>},'build-factory-modal','build-factory-modal-body')" >
