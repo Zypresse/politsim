@@ -39,8 +39,8 @@ $statesArray[0] = 'Все страны';
                             &nbsp;<?=number_format($newspaper->rating, 0, '', ' ')?> <i class="fa fa-star"></i>&nbsp;
                         </span>
                     </span>
-                    <span class="info-box-number"><?=$newspaper->name?></span>
-                    <span class="progress-description"><?=$newspaper->holding ? $newspaper->holding->name : 'Независимая газета'?></span>
+                    <span class="info-box-number"><?=$newspaper->getHtmlName()?></span>
+                    <span class="progress-description"><?=$newspaper->holding ? $newspaper->holding->getHtmlName() : 'Независимая газета'?></span>
                 </div><!-- /.info-box-content -->
             </div><!-- /.info-box -->
         </div>

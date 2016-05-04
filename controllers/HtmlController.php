@@ -451,5 +451,18 @@ class HtmlController extends MyController
             'selectedState' => $selectedState
         ]);
     }
+
+	public function actionNewspaper($id)
+	{
+		$newspaper = Massmedia::findByPK($id);
+		if (is_null($newspaper)) {
+			return $this->_r("Massmedia not found");
+		}
+		
+		return $this->render('newspapers/view', [
+			'newspaper' => $newspaper,
+			'user' => $this->user
+		 ]);
+	}
         
 }

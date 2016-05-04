@@ -4,6 +4,8 @@ namespace app\models\massmedia;
 
 use Yii,
     app\components\MyModel,
+    app\components\TaxPayer,
+    app\components\MyHtmlHelper,
     app\models\massmedia\proto\MassmediaProto,
     app\models\Holding,
     app\models\User,
@@ -45,7 +47,7 @@ use Yii,
  * @property Religion $religion
  * @property Ideology $ideology
  */
-class Massmedia extends MyModel
+class Massmedia extends MyModel //implements TaxPayer
 {
     /**
      * @inheritdoc
@@ -189,4 +191,9 @@ class Massmedia extends MyModel
             return $this->save();
         }
     }
+
+	public function getHtmlName()
+	{
+		return MyHtmlHelper::a($this->name, 'load_page("newspaper",{id:'.$this->id.'})');
+	}
 }
