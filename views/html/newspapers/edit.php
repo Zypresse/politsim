@@ -69,10 +69,20 @@ use app\models\User,
                     </div>
                     <div class="box-content">
                         <table class="table table-normal">
+                            <thead>
+                                <tr>
+                                    <th>Должность</th>
+                                    <th>Имя</th>
+                                    <th><i class="fa fa-newspaper-o" title="Посты"></i></th>
+                                    <th><i class="fa fa-star" title="Рейтинг"></i></th>
+                                </tr>
+                            </thead>
                         <?php foreach ($newspaper->editors as $editor): ?>
                             <tr>
                                 <td><?=$editor->customName ? $editor->customName : ($editor->userId === $newspaper->directorId ? 'Главный редактор' : 'Редактор')?></td>
                                 <td><?=$editor->user->getHtmlName()?></td>
+                                <td><?=$editor->posts?></td>
+                                <td><?=$editor->rating?></td>
                             </tr>
                         <?php endforeach ?>
                         </table>

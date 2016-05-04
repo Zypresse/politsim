@@ -7,6 +7,8 @@ use Yii,
     app\components\TaxPayer,
     app\components\MyHtmlHelper,
     app\models\massmedia\proto\MassmediaProto,
+    app\models\massmedia\MassmediaEditor,
+    app\models\massmedia\MassmediaPost,
     app\models\Holding,
     app\models\User,
     app\models\State,
@@ -35,6 +37,9 @@ use Yii,
  * @property integer $ideologyId
  * @property integer $coverage
  * @property integer $rating
+ * @property integer $utr
+ * @property double $balance
+ * @property integer $created
  * 
  * @property MassmediaProto $proto
  * @property Holding $holding
@@ -46,6 +51,11 @@ use Yii,
  * @property Region $region
  * @property Religion $religion
  * @property Ideology $ideology
+ * @property MassmediaEditor[] $editors
+ * @property MassmediaPost[] $posts
+ * 
+ * @property Population[] $audience
+ * 
  */
 class Massmedia extends MyModel //implements TaxPayer
 {
@@ -65,7 +75,8 @@ class Massmedia extends MyModel //implements TaxPayer
         return [
             [['name', 'protoId', 'holdingId', 'directorId', 'stateId'], 'required'],
             [['name'], 'string'],
-            [['protoId', 'holdingId', 'directorId', 'stateId', 'partyId', 'popClassId', 'popNationId', 'regionId', 'religionId', 'ideologyId', 'rating', 'coverage'], 'integer'],
+            [['protoId', 'holdingId', 'directorId', 'stateId', 'partyId', 'popClassId', 'popNationId', 'regionId', 'religionId', 'ideologyId', 'rating', 'coverage', 'utr', 'created'], 'integer'],
+            [['balance'], 'number'],
         ];
     }
 
@@ -89,7 +100,20 @@ class Massmedia extends MyModel //implements TaxPayer
             'ideologyId' => 'Ideology ID',
             'rating' => 'Rating',
             'coverage' => 'Coverage',
+            'utr' => 'UTR',
+            'balance' => 'Balance',
+            'created' => 'Created',
         ];
+    }
+    
+    public function getEditors()
+    {
+        return $this->hasMany(MassmediaEditor::className(), array('massmediaId' => 'id'));
+    }
+    
+    public function getPosts()
+    {
+        return $this->hasMany(MassmediaPost::className(), array('massmediaId' => 'id'));
     }
     
     public function getDirector()
@@ -119,7 +143,7 @@ class Massmedia extends MyModel //implements TaxPayer
     
     public function getRegion()
     {
-        return $this->hasOne(Region::className(), array('id' => 'RegionId'));
+        return $this->hasOne(Region::className(), array('id' => 'regionId'));
     }
     
     public function getHolding()
@@ -147,7 +171,11 @@ class Massmedia extends MyModel //implements TaxPayer
         return static::find()->where(['protoId' => 1]);
     }
     
-    public function calcCoverage($save = false)
+    /**
+     * 
+     * @return yii\db\ActiveQuery
+     */
+    public function getAudienceQuery()
     {
         $query = Population::find();
         
@@ -185,15 +213,74 @@ class Massmedia extends MyModel //implements TaxPayer
             ]);
         }
         
-        $this->coverage = intval($query->sum('count'));
+        return $query;
+    }
+    
+    public function getAudience()
+    {
+        return $this->getAudienceQuery()->all();
+    }
+    
+    public function calcCoverage($save = false)
+    {        
+        $this->coverage = intval($this->getAudienceQuery()->sum('count'));
         
         if ($save) {
             return $this->save();
         }
     }
+    
+    /**
+     * 
+     * @param integer $userId
+     * @return boolean
+     */
+    public function isEditor($userId)
+    {
+        return $this->directorId === $userId || (MassmediaEditor::find()
+                ->where(['userId' => $userId, 'massmediaId' => $this->id])
+                ->count() > 0);
+    }
+    
+    /**
+     * 
+     * @param integer $userId
+     * @return MassmediaEditor
+     */
+    public function getEditorRules($userId)
+    {
+        return MassmediaEditor::find()
+            ->where(['userId' => $userId, 'massmediaId' => $this->id])
+            ->one();
+    }
 
-	public function getHtmlName()
-	{
-		return MyHtmlHelper::a($this->name, 'load_page("newspaper",{id:'.$this->id.'})');
-	}
+    public function getHtmlName()
+    {
+        return MyHtmlHelper::a($this->name, 'load_page("newspaper",{id:'.$this->id.'})');
+    }
+    
+    public function beforeSave($insert)
+    {
+        if ($insert) {
+            $this->created = time();
+        }
+        
+        return parent::beforeSave($insert);
+    }
+    
+    public function afterSave($insert, $changedAttributes)
+    {
+        if ($insert) {
+            $editor = MassmediaEditor::generateRoot();
+            $editor->load([
+                'userId' => $this->directorId,
+                'massmediaId' => $this->id
+            ],'');
+            
+            $editor->save();
+        }
+        
+        return parent::afterSave($insert, $changedAttributes);
+    }
+    
 }

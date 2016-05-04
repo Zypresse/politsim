@@ -37,8 +37,23 @@ class m160425_231300_addMassMediaAndEventsAndPopRequests extends Migration
             'religionId' => 'INTEGER DEFAULT NULL',
             'ideologyId' => 'INTEGER DEFAULT NULL',
             'coverage' => 'INTEGER DEFAULT 0',
-            'rating' => 'INTEGER DEFAULT 0'
+            'rating' => 'INTEGER DEFAULT 0',
+            'utr' => 'INTEGER DEFAULT NULL',
+            'balance' => 'REAL NOT NULL DEFAULT 0',
+            'created' => 'INTEGER NOT NULL'
         ]);
+        
+        $this->createTable('massmedia_editors', [
+            'userId' => 'INTEGER NOT NULL',
+            'massmediaId' => 'INTEGER NOT NULL',
+            'rules' => 'INTEGER(5) NOT NULL',
+            'posts' => 'INTEGER(5) NOT NULL DEFAULT 0',
+            'rating' => 'INTEGER NOT NULL DEFAULT 0',
+            'hide' => 'INTEGER(1) NOT NULL DEFAULT 0',
+            'customName' => 'TEXT DEFAULT NULL'
+        ]);
+        
+        $this->createIndex('editor', 'massmedia_editors', ['userId', 'massmediaId'], true);
         
         $this->createTable('massmedia_posts', [
             'id' => 'INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT',
@@ -75,6 +90,7 @@ class m160425_231300_addMassMediaAndEventsAndPopRequests extends Migration
         $this->dropTable('events');
         $this->dropTable('pop_requests');
         $this->dropTable('massmedia');
+        $this->dropTable('massmedia_editors');
         $this->dropTable('massmedia_posts');
         $this->dropTable('massmedia_posts_votes');
         $this->dropTable('massmedia_posts_comments');

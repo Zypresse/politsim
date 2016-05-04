@@ -27,7 +27,7 @@ $statesArray[0] = 'Все страны';
     <div class="row" style="margin-top: 20px">
         <?php foreach ($newspapers as $newspaper): ?>
         <div class="col-md-6">
-            <div class="info-box bg-gray-light">
+            <div class="info-box bg-gray-light newspaper-box">
                 <span class="info-box-icon"><i class="fa fa-newspaper-o"></i></span>
                 <div class="info-box-content">
                     <span class="info-box-text">

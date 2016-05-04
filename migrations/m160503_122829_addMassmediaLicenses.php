@@ -1,7 +1,9 @@
 <?php
 
 use yii\db\Migration,
-    app\models\licenses\proto\LicenseProto;
+    app\models\licenses\License,
+    app\models\licenses\proto\LicenseProto,
+    yii\helpers\ArrayHelper;
 
 class m160503_122829_addMassmediaLicenses extends Migration
 {
@@ -26,6 +28,12 @@ class m160503_122829_addMassmediaLicenses extends Migration
 
     public function safeDown()
     {
+        $licenseProtoIds = ArrayHelper::map(LicenseProto::find()
+                ->where(['IN', 'code', ['newspapers', 'radio', 'tv']])
+                ->all(),'id','id');
+        
+        License::deleteAll(['IN', 'proto_id', $licenseProtoIds]);
+        
         LicenseProto::deleteAll('code IN (:code1, :code2, :code3)', [
             ':code1' => 'newspapers',
             ':code2' => 'radio',

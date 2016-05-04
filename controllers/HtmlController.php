@@ -436,7 +436,7 @@ class HtmlController extends MyController
     
     public function actionNewspapers($stateId = 0)
     {
-        $query = Massmedia::findNewspapers()->orderBy('rating', 'DESC');
+        $query = Massmedia::findNewspapers()->orderBy('coverage*(rating+1)', 'DESC');
         if ($stateId) {
             $query = $query->where(['stateId' => $stateId]);
         }
@@ -452,17 +452,31 @@ class HtmlController extends MyController
         ]);
     }
 
-	public function actionNewspaper($id)
-	{
-		$newspaper = Massmedia::findByPK($id);
-		if (is_null($newspaper)) {
-			return $this->_r("Massmedia not found");
-		}
-		
-		return $this->render('newspapers/view', [
-			'newspaper' => $newspaper,
-			'user' => $this->user
-		 ]);
-	}
+    public function actionNewspaper($id)
+    {
+        $newspaper = Massmedia::find()
+                        ->where(['id' => $id])
+                        ->with('editors')
+                        ->with('editors.user')
+                        ->one();
+        if (is_null($newspaper)) {
+            return $this->_r("Massmedia not found");
+        }
+        if ($newspaper->isEditor($this->viewer_id)) {
+            
+            $editorRules = $newspaper->getEditorRules($this->viewer_id);
+            
+            return $this->render('newspapers/edit', [                
+                'newspaper' => $newspaper,
+                'user' => $this->user,
+                'rules' => $editorRules
+            ]);
+        } else {
+            return $this->render('newspapers/view', [
+                'newspaper' => $newspaper,
+                'user' => $this->user
+            ]);
+        }
+    }
         
 }
