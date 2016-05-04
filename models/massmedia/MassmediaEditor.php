@@ -114,4 +114,16 @@ class MassmediaEditor extends MyModel
     {
         return !!($this->rules & $permission);
     }
+    
+    public function beforeValidate()
+    {
+        if (is_array($this->rules)) {
+            $sum = 0;
+            foreach ($this->rules as $rule) {
+                $sum += $rule;
+            }
+            $this->rules = $sum;
+        }
+        return parent::beforeValidate();
+    }
 }

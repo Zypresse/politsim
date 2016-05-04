@@ -94,9 +94,9 @@ use app\models\User,
                                 <td>
                                     <div class="btn-group">
                                         <?php if ($editor->userId !== $newspaper->directorId): ?>
-                                        <button class="btn btn-danger btn-xs" ><i class="fa fa-trash"></i> Уволить</button>
+                                        <button class="btn btn-danger btn-xs fire-editor-button" data-user-id="<?=$editor->userId?>" ><i class="fa fa-trash"></i> Уволить</button>
                                         <?php endif ?>
-                                        <button class="btn btn-info btn-xs" ><i class="fa fa-cog"></i> Изменить</button>
+                                        <button class="btn btn-info btn-xs rule-edit-button" data-user-id="<?=$editor->userId?>" ><i class="fa fa-cog"></i> Изменить</button>
                                     </div>
                                 </td>
                             </tr>
@@ -124,10 +124,39 @@ use app\models\User,
         </div>
     </div>
 </div>
+<div style="display:none" class="modal fade" id="rule-editor-modal" tabindex="-1" role="dialog" aria-labelledby="rule-editor-modal-label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="rule-editor-modal-label">Настройка прав редактора</h3>
+            </div>
+            <div id="rule-editor-modal-body" class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button id="rule-editor-submit" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Сохранить</button>
+                <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script type="text/javascript">
     $(function(){
        $('#add-editor-button').click(function(){
            load_modal('add-editor', {'massmediaId':<?=$newspaper->id?>}, 'add-editor-modal', 'add-editor-modal-body');
+       });
+       
+       $('.rule-edit-button').click(function(){
+           load_modal('rule-editor', {'massmediaId':<?=$newspaper->id?>, 'userId':$(this).data('userId')}, 'rule-editor-modal', 'rule-editor-modal-body');
+       });
+       
+       $('#rule-editor-submit').click(function(){
+           $('#add-editor-form').submit();
+       });
+       
+       $('.fire-editor-button').click(function(){
+           json_request('fire-editor', {'massmediaId':<?=$newspaper->id?>, 'userId':$(this).data('userId')});
        });
     });
 </script>

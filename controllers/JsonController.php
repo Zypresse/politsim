@@ -46,7 +46,8 @@ use Yii,
     app\models\factories\proto\LineProto,
     app\models\licenses\License,
     app\models\licenses\proto\LicenseProto,
-    app\models\massmedia\Massmedia;
+    app\models\massmedia\Massmedia,
+    app\models\massmedia\MassmediaEditor;
 
 class JsonController extends MyController {
 
@@ -2140,6 +2141,74 @@ class JsonController extends MyController {
             return $this->_r();
         } else {
             return $this->_r($massmedia->getErrors());
+        }
+    }
+    
+    public function actionSaveEditorRule($massmediaId, $userId)
+    {
+        $massmedia = Massmedia::findByPk($massmediaId);
+        if (is_null($massmedia)) {
+            return $this->_r("Invalid massmedia ID");
+        }
+        
+        if (!$massmedia->isEditor($this->viewer_id)) {
+            return $this->_r("Not allowed. Code 1");
+        }
+        
+        $viewerRule = $massmedia->getEditorRules($this->viewer_id);
+        if (!$viewerRule || !$viewerRule->isHavePermission(MassmediaEditor::RULE_SET_EDITORS)) {
+            return $this->_r("Not allowed. Code 2/3");
+        }
+        
+        $user = User::findByPk($userId);
+        if (is_null($user)) {
+            return $this->_r("Invalid user ID");
+        }
+        
+        $rule = MassmediaEditor::findOrCreate([
+            'userId' => $userId,
+            'massmediaId' => $massmediaId
+        ], false);
+        $rule->load(Yii::$app->request->queryParams);
+        $rule->rules = Yii::$app->request->get('rules');
+        
+        if ($rule->save()) {
+            return $this->_rOk();
+        } else {
+            return $this->_r($rule->getErrors());
+        }
+    }
+    
+    public function actionFireEditor($massmediaId, $userId)
+    {
+        $massmedia = Massmedia::findByPk($massmediaId);
+        if (is_null($massmedia)) {
+            return $this->_r("Invalid massmedia ID");
+        }
+        
+        if (!$massmedia->isEditor($this->viewer_id)) {
+            return $this->_r("Not allowed. Code 1");
+        }
+        
+        $viewerRule = $massmedia->getEditorRules($this->viewer_id);
+        if (!$viewerRule || !$viewerRule->isHavePermission(MassmediaEditor::RULE_SET_EDITORS)) {
+            return $this->_r("Not allowed. Code 2/3");
+        }
+        
+        $user = User::findByPk($userId);
+        if (is_null($user)) {
+            return $this->_r("Invalid user ID");
+        }
+        
+        $rule = MassmediaEditor::find()->where([
+            'userId' => $userId,
+            'massmediaId' => $massmediaId
+        ])->one();
+        
+        if ($rule->delete()) {
+            return $this->_rOk();
+        } else {
+            return $this->_r($rule->getErrors());
         }
     }
     

@@ -21,7 +21,7 @@ $dataProvider->pagination = [
 ]
 
 ?>
-<h4>Назначение нового редактора СМИ <?=$massmedia->getHtmlName()?></h4>
+<h5>Назначение нового редактора СМИ <?=$massmedia->getHtmlName()?></h5>
 <div class="massmedia-add-editor-search">
 
     <?php $form = ActiveForm::begin([
@@ -84,5 +84,9 @@ $dataProvider->pagination = [
 <script>
     $(function(){
        $('#add-editor-search-input').focus();
+       
+       $('.add-editor-button2').click(function(){
+           load_modal('rule-editor', {'massmediaId':<?=$massmedia->id?>, 'userId':$(this).data('userId')}, 'rule-editor-modal', 'rule-editor-modal-body');
+       });
     });
 </script>

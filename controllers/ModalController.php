@@ -35,7 +35,8 @@ use Yii,
     app\models\Religion,
     app\models\PopClass,
     app\models\PopNation,
-    app\models\massmedia\Massmedia;
+    app\models\massmedia\Massmedia,
+    app\models\massmedia\MassmediaEditor;
 
 class ModalController extends MyController {
 
@@ -781,6 +782,30 @@ class ModalController extends MyController {
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
             'massmedia' => $massmedia
+        ]);
+    }
+    
+    public function actionRuleEditor($massmediaId, $userId)
+    {
+        $massmedia = Massmedia::findByPk($massmediaId);
+        if (is_null($massmedia)) {
+            return $this->_r("Invalid massmedia ID");
+        }
+        
+        $user = User::findByPk($userId);
+        if (is_null($user)) {
+            return $this->_r("Invalid user ID");
+        }
+        
+        $rule = MassmediaEditor::findOrCreate([
+            'userId' => $userId,
+            'massmediaId' => $massmediaId
+        ], false);
+        
+        return $this->render('massmedia/rule-editor', [
+            'user' => $user,
+            'massmedia' => $massmedia,
+            'rule' => $rule
         ]);
     }
     
