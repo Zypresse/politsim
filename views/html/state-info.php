@@ -92,7 +92,6 @@ $show_create_party = isset($_GET['show_create_party']);
         <h3>Экономика</h3>
         <ul>
             <?php foreach ($state->licenses as $license): ?>
-            <?php if (!$license->proto) $license->delete () ?>
                 <li><strong><?= $license->proto->name ?>:</strong><br>
                     <?php if ($license->is_only_goverment): ?>
                         Гос. монополия
