@@ -36,6 +36,7 @@ use Yii,
     app\models\PopClass,
     app\models\PopNation,
     app\models\massmedia\Massmedia,
+    app\models\massmedia\MassmediaPost,
     app\models\massmedia\MassmediaEditor;
 
 class ModalController extends MyController {
@@ -806,6 +807,20 @@ class ModalController extends MyController {
             'user' => $user,
             'massmedia' => $massmedia,
             'rule' => $rule
+        ]);
+    }
+    
+    public function actionMassmediaPostComments($id)
+    {        
+        $post = MassmediaPost::findByPk($id);
+        if (is_null($post)) {
+            return $this->_r("Invalid post ID");
+        }
+        
+        $comments = $post->getComments()->with('user')->orderBy('created')->all();
+        
+        return $this->render('massmedia/comments',[
+            'comments' => $comments
         ]);
     }
     

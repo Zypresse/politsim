@@ -4,7 +4,7 @@ $.ajaxSetup({
     cache: true
 });
 
-$("#spinner").fadeIn('fast');
+//$("#spinner").fadeIn('fast');
 
 function init_app() {
     $('.show_on_load').show();

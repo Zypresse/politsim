@@ -4,7 +4,8 @@ namespace app\models\massmedia;
 
 use Yii,
     app\components\MyModel,
-    app\models\massmedia\MassmediaPost;
+    app\models\massmedia\MassmediaPost,
+    app\models\User;
 
 /**
  * This is the model class for table "massmedia_posts_comments".
@@ -15,6 +16,7 @@ use Yii,
  * @property integer $created
  * 
  * @property MassmediaPost $post
+ * @property User $user
  */
 class MassmediaPostComment extends MyModel
 {
@@ -33,7 +35,7 @@ class MassmediaPostComment extends MyModel
     {
         return [
             [['userId', 'massmediaPostId', 'created'], 'integer'],
-            [['text', 'created'], 'required'],
+            [['userId', 'massmediaPostId', 'text'], 'required'],
             [['text'], 'string']
         ];
     }
@@ -54,5 +56,27 @@ class MassmediaPostComment extends MyModel
     public function getPost()
     {
         return $this->hasOne(MassmediaPost::className(), array('id' => 'massmediaPostId'));
+    }
+    
+    public function getUser()
+    {
+        return $this->hasOne(User::className(), array('id' => 'userId'));
+    }
+    
+    public function beforeSave($insert)
+    {
+        if ($insert) {
+            $this->created = time();
+        }
+        return parent::beforeSave($insert);
+    }
+    
+    public static function primaryKey()
+    {
+        return [
+            'massmediaPostId',
+            'userId',
+            'created'
+        ];
     }
 }

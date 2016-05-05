@@ -28,11 +28,12 @@ $(function () {
             return false;
         }
     });
-    $("#spinner").ajaxSend(function (event, xhr, options) {
-        $(this).fadeIn("fast");
-    }).ajaxStop(function () {
-        $(this).fadeOut("fast");
-    });
+//    $("#spinner").ajaxSend(function (event, xhr, options) {
+//        $(this).fadeIn("fast");
+//    }).ajaxStop(function () {
+//        $(this).fadeOut("fast");
+//    });
+    $(document).ajaxStart(function() { Pace.restart(); }); 
     if (typeof VK !== 'undefined') {
         setInterval(function () {
             var newheight = $('#bigcontainer').height() + 200;
@@ -163,7 +164,7 @@ function show_error(e) {
     $('#error_text').html('Ошибка при соединении с сервером<br>' + text + '<br><strong>Статус</strong> — ' + e.status + ': ' + e.statusText);
     $('#error_block').slideDown();
     $("html, body").animate({scrollTop: 0}, "fast");
-    $("#spinner").fadeOut("fast");
+//    $("#spinner").fadeOut("fast");
 }
 function show_custom_error(text) {
     //console.log(e);
@@ -172,7 +173,7 @@ function show_custom_error(text) {
     $('#error_text').html(text);
     $('#error_block').slideDown();
     $("html, body").animate({scrollTop: 0}, "fast");
-    $("#spinner").fadeOut("fast");
+//    $("#spinner").fadeOut("fast");
 }
 
 function request(pageUrl,postParams,requestType,callback,noError,method)
@@ -183,7 +184,7 @@ function request(pageUrl,postParams,requestType,callback,noError,method)
     postParams.viewer_id = viewer_id;
     postParams.auth_key = auth_key;
     
-    $("#spinner").fadeIn("fast");
+//    $("#spinner").fadeIn("fast");
     $('#error_block').slideUp();
     $.ajax({
         method: method,
@@ -218,7 +219,7 @@ function request(pageUrl,postParams,requestType,callback,noError,method)
             } else {
                 callback(d);
             }
-            $("#spinner").fadeOut("fast");
+//            $("#spinner").fadeOut("fast");
         },
         error: (noError) ? function(e) {console.log(e);$("#spinner").fadeOut("fast");} : show_error
     });
@@ -286,7 +287,7 @@ function load_page(page, params, time) {
 
 function reload_page(time) {
     time = time || 0;
-    $("#spinner").fadeIn("fast");
+//    $("#spinner").fadeIn("fast");
     if (time) {
         setTimeout(function () {
             load_page(current_page, current_page_params);

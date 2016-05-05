@@ -159,4 +159,15 @@ class MassmediaPost extends MyModel
         
         return parent::beforeSave($insert);
     }
+    
+    public function afterDelete()
+    {
+        MassmediaPostComment::deleteAll([
+            'massmediaPostId' => $this->id
+        ]);
+        MassmediaPostVote::deleteAll([
+            'massmediaPostId' => $this->id
+        ]);
+        return parent::afterDelete();
+    }
 }

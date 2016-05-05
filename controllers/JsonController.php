@@ -49,7 +49,8 @@ use Yii,
     app\models\massmedia\Massmedia,
     app\models\massmedia\MassmediaEditor,
     app\models\massmedia\MassmediaPost,
-    app\models\massmedia\MassmediaPostVote;
+    app\models\massmedia\MassmediaPostVote,
+    app\models\massmedia\MassmediaPostComment;
 
 class JsonController extends MyController {
 
@@ -2268,6 +2269,79 @@ class JsonController extends MyController {
             return $this->_rOk();
         } else {
             return $this->_r($post->errors);
+        }
+    }
+    
+    public function actionMassmediaPostDelete($id)
+    {        
+        $post = MassmediaPost::findByPk($id);
+        if (is_null($post)) {
+            return $this->_r("Invalid post ID");
+        }
+        
+        if (!$post->massmedia->isEditor($this->viewer_id)) {
+            return $this->_r("Not allowed, code 1");
+        }
+        
+        $rule = $post->massmedia->getEditorRules($this->viewer_id);
+        if (!$rule || !$rule->isHavePermission(MassmediaEditor::RULE_DELETE_POSTS)) {
+            return $this->_r("Not allowed, code 2/3");
+        }
+        
+        if ($post->delete()) {
+            return $this->_rOk();
+        } else {
+            return $this->_r($post->errors);
+        }
+    }
+        
+    public function actionMassmediaPostComment()
+    {
+        $id = Yii::$app->request->post('id');
+        
+        $post = MassmediaPost::findByPk($id);
+        if (is_null($post)) {
+            return $this->_r("Invalid post ID");
+        }
+                
+        $comment = new MassmediaPostComment([
+            'massmediaPostId' => $post->id,
+            'userId' => $this->viewer_id,
+            'text' => Yii::$app->request->post('text')
+        ]);     
+        if ($comment->save()) {
+            return $this->_rOk();
+        } else {
+            return $this->_r($comment->getErrors());
+        }
+    }
+    
+    public function actionMassmediaPostCommentDelete($userId, $postId, $created)
+    {        
+        $comment = MassmediaPostComment::find()
+                ->where([
+                    'massmediaPostId' => $postId,
+                    'userId' => $userId,
+                    'created' => $created
+                ])
+                ->one();
+        if (is_null($comment)) {
+            return $this->_r("Invalid comment ID");
+        }
+        
+        if (!$comment->post->massmedia->isEditor($this->viewer_id)) {
+            return $this->_r("Not allowed, code 1");
+        }
+        
+        $rule = $comment->post->massmedia->getEditorRules($this->viewer_id);
+        if (!$rule || !$rule->isHavePermission(MassmediaEditor::RULE_DELETE_COMMENTS)) {
+            return $this->_r("Not allowed, code 2/3");
+        }
+        
+        if ($comment->delete()) {
+            return $this->_rOk();
+        } else {
+            return $this->_r($comment->errors);
         }
     }
     
