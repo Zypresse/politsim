@@ -75,7 +75,7 @@ if ($rules) {
                                     0
                                 </span>
                                 <?php endif ?>
-                                <?=$post->title?>
+                                <?=htmlspecialchars($post->title)?>
                             </h3>
                             <span class="description">
                                 <span class="formatDate" data-unixtime="<?=$post->created?>"><?=date('d-m-Y',$post->created)?></span>
@@ -83,7 +83,7 @@ if ($rules) {
                                 <?=$post->author->htmlName?>
                             </span>
                         </div>
-                        <?=$post->text?>
+                        <?=MyHtmlHelper::filterTags($post->text)?>
                         <ul class="list-inline">
                             <li>
                                 <?php

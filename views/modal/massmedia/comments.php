@@ -1,6 +1,7 @@
 <?php
 
-use app\models\massmedia\MassmediaPostComment;
+use app\models\massmedia\MassmediaPostComment,
+    app\components\MyHtmlHelper;
 
 /* @var $comments MassmediaPostComment[] */
 
@@ -18,7 +19,7 @@ use app\models\massmedia\MassmediaPostComment;
         <a href="#" class="name" onclick="load_page('profile', {id:<?=$comment->user->id?>})">
             <?=$comment->user->name?>
         </a>
-        <?=$comment->text?>
+        <?=MyHtmlHelper::filterTags($comment->text)?>
     </p>
 </div>
 <?php endforeach ?>

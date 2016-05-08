@@ -301,5 +301,85 @@ class MyHtmlHelper {
             return "Осталось ".static::formateNumberword(round($d/3600), "часов", "час", "часа");
         }
     }
+    
+    public static function filterTags($source) {
+        $ra1 = array('applet', 'body', 'bgsound', 'base', 'basefont', 'embed', 'frame', 'frameset', 'head', 'html',
+                     'id', 'iframe', 'ilayer', 'layer', 'link', 'meta', 'name', 'object', 'script', 'style', 'title', 'xml');
+        $ra2 = array('javascript', 'vbscript', 'expression', 'applet', 'meta', 'xml', 'blink', 'link', 'style', 'script',
+                    'embed', 'object', 'iframe', 'frame', 'frameset', 'ilayer', 'layer', 'bgsound', 'title', 'base',
+                    'onabort', 'onactivate', 'onafterprint', 'onafterupdate', 'onbeforeactivate', 'onbeforecopy',
+                    'onbeforecut', 'onbeforedeactivate', 'onbeforeeditfocus', 'onbeforepaste', 'onbeforeprint',
+                    'onbeforeunload', 'onbeforeupdate', 'onblur', 'onbounce', 'oncellchange', 'onchange', 'onclick',
+                    'oncontextmenu', 'oncontrolselect', 'oncopy', 'oncut', 'ondataavailable', 'ondatasetchanged',
+                    'ondatasetcomplete', 'ondblclick', 'ondeactivate', 'ondrag', 'ondragend', 'ondragenter', 'ondragleave',
+                    'ondragover', 'ondragstart', 'ondrop', 'onerror', 'onerrorupdate', 'onfilterchange', 'onfinish', 'onfocus',
+                    'onfocusin', 'onfocusout', 'onhelp', 'onkeydown', 'onkeypress', 'onkeyup', 'onlayoutcomplete', 'onload',
+                    'onlosecapture', 'onmousedown', 'onmouseenter', 'onmouseleave', 'onmousemove', 'onmouseout', 'onmouseover',
+                    'onmouseup', 'onmousewheel', 'onmove', 'onmoveend', 'onmovestart', 'onpaste', 'onpropertychange',
+                    'onreadystatechange', 'onreset', 'onresize', 'onresizeend', 'onresizestart', 'onrowenter', 'onrowexit',
+                    'onrowsdelete', 'onrowsinserted', 'onscroll', 'onselect', 'onselectionchange', 'onselectstart', 'onstart',
+                    'onstop', 'onsubmit', 'onunload');
+        $tagBlacklist = array_merge($ra1, $ra2);
+
+	$preTag = NULL;
+	$postTag = $source;
+	$tagOpen_start = strpos($source, '<');
+	while($tagOpen_start !== FALSE) {
+            $preTag .= substr($postTag, 0, $tagOpen_start);
+            $postTag = substr($postTag, $tagOpen_start);
+            $fromTagOpen = substr($postTag, 1);
+            $tagOpen_end = strpos($fromTagOpen, '>');
+            if ($tagOpen_end === false) break;
+            $tagOpen_nested = strpos($fromTagOpen, '<');
+            if (($tagOpen_nested !== false) && ($tagOpen_nested < $tagOpen_end)) {
+                    $preTag .= substr($postTag, 0, ($tagOpen_nested+1));
+                    $postTag = substr($postTag, ($tagOpen_nested+1));
+                    $tagOpen_start = strpos($postTag, '<');
+                    continue;
+            }
+            $tagOpen_nested = (strpos($fromTagOpen, '<') + $tagOpen_start + 1);
+            $currentTag = substr($fromTagOpen, 0, $tagOpen_end);
+            $tagLength = strlen($currentTag);
+            if (!$tagOpen_end) {
+                    $preTag .= $postTag;
+                    $tagOpen_start = strpos($postTag, '<');
+            }
+            $tagLeft = $currentTag;
+            $attrSet = array();
+            $currentSpace = strpos($tagLeft, ' ');
+            if (substr($currentTag, 0, 1) == '/') {
+                    $isCloseTag = TRUE;
+                    list($tagName) = explode(' ', $currentTag);
+                    $tagName = substr($tagName, 1);
+            } else {
+                    $isCloseTag = FALSE;
+                    list($tagName) = explode(' ', $currentTag);
+            }
+            if ((!preg_match('/^[a-z][a-z0-9]*$/i',$tagName)) || (!$tagName) || ((in_array(strtolower($tagName), $tagBlacklist)))) {
+                    $postTag = substr($postTag, ($tagLength + 2));
+                    $tagOpen_start = strpos($postTag, '<');
+                    continue;
+            }
+            while ($currentSpace !== FALSE) {
+                    $fromSpace = substr($tagLeft, ($currentSpace+1));
+                    $nextSpace = strpos($fromSpace, ' ');
+                    $openQuotes = strpos($fromSpace, '"');
+                    $closeQuotes = strpos(substr($fromSpace, ($openQuotes+1)), '"') + $openQuotes + 1;
+                    if (strpos($fromSpace, '=') !== FALSE) {
+                            if (($openQuotes !== FALSE) && (strpos(substr($fromSpace, ($openQuotes+1)), '"') !== FALSE))
+                                    $attr = substr($fromSpace, 0, ($closeQuotes+1));
+                                    else $attr = substr($fromSpace, 0, $nextSpace);
+                    } else $attr = substr($fromSpace, 0, $nextSpace);
+                    if (!$attr) $attr = $fromSpace;
+                            $attrSet[] = $attr;
+                            $tagLeft = substr($fromSpace, strlen($attr));
+                            $currentSpace = strpos($tagLeft, ' ');
+            }
+            $postTag = substr($postTag, ($tagLength + 2));
+            $tagOpen_start = strpos($postTag, '<');
+	}
+	$preTag .= $postTag;
+	return $preTag;
+    }
 
 }
