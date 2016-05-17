@@ -194,10 +194,10 @@ def addLine(i):
 
 	if i in linesAdded:
 		if len(linesAdded) == len(lines):
-			return
+			return -1
 		for j in range(0,len(lines)):
 			if not j in linesAdded:
-				return addLine(j)
+				return j
 	line = lines[i]
 	linesAdded.append(i)
 	right = getLineIdByCoord(line[1],line)
@@ -205,15 +205,17 @@ def addLine(i):
 	for contur in conturs:
 		if lines[right] in contur:
 			contur.append(line)
-			return addLine(left)
+			return left
 
 	contur = []
 	contur.append(line)
 	conturs.append(contur)
-	return addLine(left)
+	return left
 
 counter = 0
-addLine(0)
+next = 0
+while next >= 0:
+	next = addLine(next)
 
 print("Finded {} conturs".format(len(conturs)))
 
