@@ -3,6 +3,23 @@ import math
 import json
 import sys
 
+def printProgress (iteration, total, prefix = '', suffix = '', decimals = 2, barLength = 100):
+    """
+    Call in a loop to create terminal progress bar
+    @params:
+        iteration   - Required  : current iteration (Int)
+        total       - Required  : total iterations (Int)
+        prefix      - Optional  : prefix string (Str)
+        suffix      - Optional  : suffix string (Str)
+    """
+    filledLength    = int(round(barLength * iteration / float(total)))
+    percents        = round(100.00 * (iteration / float(total)), decimals)
+    bar             = '#' * filledLength + '-' * (barLength - filledLength)
+    sys.stdout.write('%s [%s] %s%s %s\r' % (prefix, bar, percents, '%', suffix)),
+    sys.stdout.flush()
+    if iteration == total:
+        print("\n")
+
 def getLat(x,y):
 	if y%2 == 0:
 		lat = 0
@@ -80,19 +97,22 @@ cursor = db.execute('''
 	WHERE is_land = 1;
 '''.format())
 rows = cursor.fetchall()
+rowsLength = len(rows)
 
-if (len(rows) == 0):
+if (rowsLength == 0):
 	print ("0 tiles found")
 	quit()
 
 tiles = [];
 counter = 0
+printProgress(0,rowsLength,"loading tiles: ")
 for row in rows:
 	tiles.append(Tile(row[0],row[1],row[2]))
 	counter += 1
-	if (counter%1000 == 0):
-		print ("loaded {} tiles".format(counter))
-print ("Start imploding {} tiles".format(len(tiles)))
+	printProgress(counter,rowsLength,"loading tiles: ")
+
+tilesLength = len(tiles)
+print ("Start imploding {} tiles".format(tilesLength))
 
 def tileByXY(t):
 	for tile in tiles:
@@ -115,6 +135,7 @@ def c2i(c):
 
 lines = []
 counter = 0
+printProgress(0,tilesLength,"get borders: ")
 for tile in tiles:	
 	kray = []
 	for i in range(0,6):
@@ -132,10 +153,11 @@ for tile in tiles:
 			if not line in lines:
 				lines.append(line)		
 	counter += 1
-	if (counter%1000 == 0):
-		print ("calculated borders of {} tiles. {} lines found".format(counter, len(lines)))
+	printProgress(counter,tilesLength,"get borders: ")
 
-print ("{} lines found".format(len(lines)))
+linesLength = len(lines)
+
+print ("{} lines found".format(linesLength))
 
 def pointEquals(p1, p2):
 	d = 10
@@ -151,6 +173,7 @@ def getLineIdByCoord(t, no):
 	return -1
 
 counter = 0
+printProgress(0,linesLength,"check lines: ")
 for line in lines:
 	if (getLineIdByCoord(line[0],line) >= 0) and (getLineIdByCoord(line[1],line) >= 0):
 		pass
@@ -170,9 +193,8 @@ for line in lines:
 		line = (p1, p2)
 		print (line)
 		quit()
-	counter += 1
-	if (counter%1000 == 0):
-		print ("Checked {} lines".format(counter))
+	counter += 1	
+	printProgress(counter,linesLength,"check lines: ")
 print ("ALL lines checked")
 
 # for i in range(len(lines)):
@@ -189,8 +211,7 @@ def addLine(i):
 	global counter
 
 	counter += 1
-	if (counter%100 == 0):
-		print ("Adding {} lines".format(counter))
+	printProgress(counter,linesLength,"adding lines: ")
 
 	if i in linesAdded:
 		if len(linesAdded) == len(lines):
@@ -213,9 +234,10 @@ def addLine(i):
 	return left
 
 counter = 0
-next = 0
-while next >= 0:
-	next = addLine(next)
+n = 0
+printProgress(0,len(lines),"adding lines: ")
+while n >= 0:
+	n = addLine(n)
 
 print("Finded {} conturs".format(len(conturs)))
 
