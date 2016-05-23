@@ -56,10 +56,6 @@ runtime
 vendor
 database
 
-requirements.php
-yii
-composer.lock
-
 nbproject
 sftp-config.json
 
@@ -68,6 +64,3 @@ tests/README.md
 tests/codeception.yml
 tests/codeception/
 yii.bat
-
-
-/composer.*

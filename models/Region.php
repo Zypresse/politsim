@@ -15,6 +15,7 @@ use app\components\TaxPayer,
     app\models\RegionDiggingEff,
     app\models\Stock,
     app\models\User,
+    app\models\tiles\Tile,
     yii\db\Query;
 
 /**
@@ -42,6 +43,7 @@ use app\components\TaxPayer,
  * @property Vacansy[] $vacansiesWithSalaryAndCount Актуальнаые вакансии
  * @property Vacansy[] $vacansiesWithSalary Потенцальные вакансии
  * @property RegionDiggingEff[] $diggingEffs
+ * @property Tile[] $tiles
  */
 class Region extends MyModel implements TaxPayer
 {
@@ -208,6 +210,11 @@ class Region extends MyModel implements TaxPayer
     {
         return $this->hasMany(RegionDiggingEff::className(), array('region_id' => 'id'))->orderBy('group_id');
     }
+    
+    public function getTiles()
+    {
+        return $this->hasMany(Tile::className(), array('region_id' => 'id'));
+    }
 
     /**
      * 
@@ -331,6 +338,13 @@ class Region extends MyModel implements TaxPayer
         $sumUsers = User::find()->where(['region_id'=>$this->id])->count();
 
         $this->population = intval($sumPop) + intval($sumUsers);
+    }
+    
+    public function calcPolygon()
+    {
+        foreach ($this->tiles as $tile) {
+            
+        }
     }
 
 }
