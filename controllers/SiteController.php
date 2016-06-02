@@ -109,9 +109,10 @@ class SiteController extends Controller
         
         if (Yii::$app->user->isGuest) {
             if ($auth && $auth->user) { // login
-                $auth->updateUserInfo($client->getId(), $attributes, true);
-                Yii::$app->user->login($auth->user, 30*24*60*60);
-                if ($auth->user->invited) {
+                $user = $auth->user;
+                Auth::updateUserInfo($user, $client->getId(), $attributes, true);
+                Yii::$app->user->login($user, 30*24*60*60);
+                if ($user->invited) {
                     $this->redirect("/");
                 } else {
                     $this->redirect("invite");

@@ -99,7 +99,7 @@ class Auth extends MyModel
             'region_id' => 0
         ]);
         
-        $this->updateUserInfo($source, $attributes);
+        self::updateUserInfo($user, $source, $attributes);
         
         $transaction = $user->getDb()->beginTransaction();
         if ($user->save()) {
@@ -121,11 +121,11 @@ class Auth extends MyModel
         }
     }
     
-    public function updateUserInfo($source, $attributes, $save = false)
+    public static function updateUserInfo(&$user, $source, $attributes, $save = false)
     {
         switch ($source) {
             case 'google':
-                $this->user->load([
+                $user->load([
                     'name' => $attributes['displayName'],
                     'sex' => User::stringGenderToSex($attributes['gender']),
                     'photo' => $attributes['image']['url'],
@@ -133,7 +133,7 @@ class Auth extends MyModel
                 ],'');
                 break;
             case 'facebook':
-                $this->user->load([
+                $user->load([
                     'name' => $attributes['name'],
                     'sex' => User::stringGenderToSex($attributes['gender']),
                     'photo' => "http://graph.facebook.com/{$attributes['id']}/picture",
@@ -142,7 +142,7 @@ class Auth extends MyModel
                 break;
             case 'vkontakte':
             case 'vkapp':
-                $this->user->load([
+                $user->load([
                     'name' => $attributes['first_name'] . ' ' . $attributes['last_name'],
                     'sex' => intval($attributes['sex']),
                     'photo' => $attributes['photo_50'],
@@ -152,7 +152,7 @@ class Auth extends MyModel
         }
         
         if ($save) {
-            $this->user->save();
+            $user->save();
         }
     }
     

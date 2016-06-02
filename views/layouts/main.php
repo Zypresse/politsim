@@ -24,7 +24,7 @@ AppAsset::register($this);
         <img src="/img/ajax-loader.gif" id="spinner" style="display:none" />
         <div class="wrapper">
             <?= $content ?>
-            <footer class="main-footer footer">
+            <footer class="main-footer footer" <?php if (Yii::$app->user->isGuest || !Yii::$app->user->identity->invited): ?>style="margin-left: 0"<?php endif ?> >
                 <div class="pull-right hidden-xs">
                     Используются иконки <a href="http://www.fatcow.com/free-icons" target="_blank" >FatCow</a> и <a href="http://icons8.com/web-app/" target="_blank" >Icons8</a>
                 </div>
