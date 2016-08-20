@@ -126,7 +126,10 @@ class m160819_032658_start extends Migration
             // минимальная зарплата
             'minWage' => 'UNSIGNED REAL DEFAULT NULL',
             // пенсионный возраст
-            'retirementAge' => 'UNSIGNED INTEGER(3) DEFAULT 65'
+            'retirementAge' => 'UNSIGNED INTEGER(3) DEFAULT 65',
+            
+            // государственная религия
+            'stateReligion' => 'UNSIGNED INTEGER(3) DEFAULT NULL'
             
         ]); 
         
