@@ -144,7 +144,13 @@ class m160819_032658_start extends Migration
             // 3 - назначаются предшественником
             // 4 - выбираются на выборах по партийным спискам
             // 5 - выбираются на выборах по индивидуальным спискам
-            'membersAssignmentRule' => 'UNSIGNED INTEGER(1) NOT NULL',
+            'assignmentRule' => 'UNSIGNED INTEGER(1) NOT NULL',
+            // полномочия постов (bitmask)
+            // 1 право быть "диктатором", единолично принимать законы
+            // 2 право вето по законопроектам
+            // 4 право предлагать законопроекты
+            // 8 право голосовать по законопроектам
+            'powers' => 'UNSIGNED INTEGER(3) NOT NULL',
 
             // срок полномочий 
             'termOfOffice' => 'UNSIGNED INTEGER(4) NOT NULL',
@@ -165,13 +171,6 @@ class m160819_032658_start extends Migration
 
             'postId' => 'UNSIGNED INTEGER PRIMARY KEY REFERENCES posts(id) NOT NULL',
 
-            // полномочия поста (bitmask)
-            // 1 право быть "диктатором", единолично принимать законы
-            // 2 право вето по законопроектам
-            // 4 право предлагать законопроекты
-            // 8 право голосовать по законопроектам
-            'powers' => 'UNSIGNED INTEGER(3) NOT NULL',
-
             // способ назначения
             // 0 - не назначается
             // 1 - назначается лидером организации
@@ -180,6 +179,12 @@ class m160819_032658_start extends Migration
             // 4 - выбирается на выборах по партийным спискам
             // 5 - выбирается на выборах по индивидуальным спискам
             'assignmentRule' => 'UNSIGNED INTEGER(1) NOT NULL',
+            // полномочия поста (bitmask)
+            // 1 право быть "диктатором", единолично принимать законы
+            // 2 право вето по законопроектам
+            // 4 право предлагать законопроекты
+            // 8 право голосовать по законопроектам
+            'powers' => 'UNSIGNED INTEGER(3) NOT NULL',
 
             // срок полномочий 
             'termOfOffice' => 'UNSIGNED INTEGER(4) NOT NULL',
@@ -1114,7 +1119,6 @@ class m160819_032658_start extends Migration
 
         $this->dropTable('accounts');
 
-        $this->dropTable('bills-prototypes');
         $this->dropTable('bills');
         $this->dropTable('bills-votes');
 
@@ -1166,6 +1170,9 @@ class m160819_032658_start extends Migration
         $this->dropTable('agencies');
 
         $this->dropTable('parties');
+        $this->dropTable('parties-lists');
+        $this->dropTable('parties-lists-members');
+        $this->dropTable('parties-lists-members-votes');
         $this->dropTable('parties-posts');
 
         $this->dropTable('posts');

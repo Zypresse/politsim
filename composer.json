@@ -2,19 +2,19 @@
     "name": "lazzyteam/politsim",
     "description": "Political Simulator API",
     "keywords": [],
-    "homepage": "http://politsim.lazzyteam.com/",
+    "homepage": "http://politsim.lazzyteam.pw/",
     "type": "project",
     "license": "WTFPL",
     "support": {
         "issues": "https://github.com/LazzyTeam/politsim/issues?state=open",
         "forum": "http://vk.com/politsim/",
-        "wiki": "http://wiki-politsim.lazzyteam.com/",
+        "wiki": "http://wiki-politsim.lazzyteam.pw/",
         "source": "https://github.com/LazzyTeam/politsim"
     },
     "minimum-stability": "stable",
     "require": {
         "php": ">=5.5.0",
-        "yiisoft/yii2": "2.0.7",
+        "yiisoft/yii2": ">=2.0.7",
         "yiisoft/yii2-bootstrap": "*",
         "yiisoft/yii2-swiftmailer": "*",
         "yiisoft/yii2-authclient": "^2.0"
