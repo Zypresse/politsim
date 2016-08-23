@@ -18,9 +18,9 @@ class UserSearch extends User
     public function rules()
     {
         return [
-            [['id', 'last_vote', 'last_tweet', 'party_id', 'state_id', 'post_id', 'region_id', 'sex', 'invited', 'ideology_id', 'utr'], 'integer'],
-            [['name', 'photo', 'photo_big', 'twitter_nickname'], 'safe'],
-            [['money', 'star', 'heart', 'chart_pie'], 'number'],
+            [['genderId', 'locationId', 'ideologyId', 'religionId', 'dateCreated', 'dateLastLogin', 'utr', 'fame', 'trust', 'success', 'fameBase', 'trustBase', 'successBase'], 'integer'],
+            [['name', 'avatar', 'avatarBig'], 'safe'],
+            [['isInvited'], 'boolean'],
         ];
     }
 
@@ -57,27 +57,26 @@ class UserSearch extends User
         }
 
         $query->andFilterWhere([
-            'id' => $this->id,
-            'last_vote' => $this->last_vote,
-            'last_tweet' => $this->last_tweet,
-            'party_id' => $this->party_id,
-            'state_id' => $this->state_id,
-            'post_id' => $this->post_id,
-            'region_id' => $this->region_id,
-            'money' => $this->money,
-            'sex' => $this->sex,
-            'star' => $this->star,
-            'heart' => $this->heart,
-            'chart_pie' => $this->chart_pie,
-            'invited' => $this->invited,
-            'ideology_id' => $this->ideology_id,
+            'id' => $this->id, 
+            'genderId' => $this->genderId,
+            'locationId' => $this->locationId,
+            'ideologyId' => $this->ideologyId,
+            'religionId' => $this->religionId,
+            'fame' => $this->fame,
+            'trust' => $this->trust,
+            'success' => $this->success,
+            'fameBase' => $this->fameBase,
+            'trustBase' => $this->trustBase,
+            'successBase' => $this->successBase,
+            'dateCreated' => $this->dateCreated,
+            'dateLastLogin' => $this->dateLastLogin,
+            'isInvited' => $this->isInvited,
             'utr' => $this->utr,
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'photo', $this->photo])
-            ->andFilterWhere(['like', 'photo_big', $this->photo_big])
-            ->andFilterWhere(['like', 'twitter_nickname', $this->twitter_nickname]);
+            ->andFilterWhere(['like', 'avatar', $this->avatar])
+            ->andFilterWhere(['like', 'avatarBig', $this->avatarBig]);
 
         return $dataProvider;
     }

@@ -248,60 +248,14 @@ class User extends MyModel implements TaxPayer, IdentityInterface {
         ];
     }
 
-    /**
-     * Покинуть партию и обсчитать нужные после этого дела
-     * @return boolean
-     */
-    public function leaveParty($partyId)
-    {
-        if ($this->party) {
-            if (intval($this->party->getMembersCount()) === 1) {
-                $this->party->delete();
-            }
-        }
-        $this->party_id = 0;
-        if ($this->post && $this->post->party_reserve) {
-            $this->post_id = 0;
-        }
-
-        return $this->save();
-    }
-
-    /**
-     * Покинуть государство и обсчитать нужные после этого дела
-     * @return boolean
-     */
-    public function leaveState()
-    {
-        foreach ($this->requests as $request) {
-            $request->delete();
-        }
-
-        $this->state_id = 0;
-        $this->post_id = 0;
-
-        return $this->leaveParty();
-    }
-
     public function getAuthKey()
     {
         return static::getRealKey($this->id);
     }
 
-    public static function getRealKey($viewer_id)
+    public static function getRealKey($id)
     {
-        return md5($viewer_id . Yii::$app->params['AUTH_KEY_SECRET']);
-    }
-
-
-    public function getHtmlName($showImg = true)
-    {
-        return ($showImg ? MyHtmlHelper::a(Html::img($this->photo,['style'=>'width:20px']), "load_page('profile',{'id':{$this->id}})")." " : '').MyHtmlHelper::a($this->name, "load_page('profile',{'id':{$this->id}})");
-    }
-    
-    public function getCurrentStateId()
-    {
-        return $this->region ? $this->region->state_id : 0;
+        return md5($id . Yii::$app->params['AUTH_KEY_SECRET']);
     }
 
 }
