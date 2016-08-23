@@ -32,7 +32,6 @@ use Yii,
  * @property string $name Имя
  * @property string $avatar Маленькая фотография 50x50
  * @property string $avatarBig Большая фотография 400xn
- * @property integer $last_vote Дата последнего "высказывания" о другом игроке
  * @property integer $genderId Пол: 0 - неопр., 1 - женский, 2 - мужской
  * @property integer $locationId UTR местоположения
  * @property integer $ideologyId ID Идеологии
@@ -224,13 +223,15 @@ class User extends MyModel implements TaxPayer, IdentityInterface {
     public function rules()
     {
         return [
-            [['name', 'avatar', 'avatarBig', 'genderId', 'locationId', 'dateCreated', 'dateLastLogin'], 'required'],
+            [['name', 'avatar', 'avatarBig', 'genderId', 'locationId', 'dateLastLogin'], 'required'],
             [['genderId'], 'integer', 'min' => 0, 'max' => 2],
             [['locationId', 'ideologyId', 'religionId', 'dateCreated', 'dateLastLogin', 'utr'], 'integer', 'min' => 0],
-            [['fame', 'trust', 'success', 'fameBase', 'trustBase', 'successBase'], 'integer', 'default' => 0],
+            [['fame', 'trust', 'success', 'fameBase', 'trustBase', 'successBase'], 'integer'],
+            [['fame', 'trust', 'success', 'fameBase', 'trustBase', 'successBase'], 'default', 'value' => 0],
             [['name'], 'string', 'max' => 255],
             [['avatar', 'avatarBig'], 'string'],
-            [['isInvited'], 'boolean', 'default' => false],
+            [['isInvited'], 'boolean'],
+            [['isInvited'], 'default', 'value' => false],
         ];
     }
 
@@ -257,5 +258,20 @@ class User extends MyModel implements TaxPayer, IdentityInterface {
     {
         return md5($id . Yii::$app->params['AUTH_KEY_SECRET']);
     }
-
+    
+    public function beforeSave($insert)
+    {
+        if ($insert) {
+            $this->dateCreated = time();
+        }
+        return parent::beforeSave($insert);
+    }
+    
+    public function updateLastLogin($save = false)
+    {
+        $this->dateLastLogin = time();
+        if ($save) {
+            return $this->save();
+        }
+    }
 }

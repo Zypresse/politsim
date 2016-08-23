@@ -4,6 +4,7 @@ use app\components\MyHtmlHelper;
 
 /* @var $this yii\web\View */
 $this->title = 'Political Simulator';
+
 ?>
 <?php if (Yii::$app->user->isGuest): ?>
     <header class="index-header" >

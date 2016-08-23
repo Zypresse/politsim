@@ -56,7 +56,7 @@ class AppAsset extends AssetBundle
     ];
     
     public function __construct($config = array()) {
-        if (!Yii::$app->user->isGuest && Yii::$app->user->identity->invited) {
+        if (!Yii::$app->user->isGuest && Yii::$app->user->identity->isInvited) {
             $this->js[] = 'js/script_authorized.js';
         }
         return parent::__construct($config);

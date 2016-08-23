@@ -1,6 +1,9 @@
 <?php
 
-    use yii\widgets\ActiveForm;
+use yii\widgets\ActiveForm;
+
+/* @var $this yii\web\View */
+$this->title = 'Political Simulator';
 
 ?>
 

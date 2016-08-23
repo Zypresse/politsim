@@ -54,15 +54,6 @@ use Yii,
 
 class JsonController extends MyController {
 
-    public function actions()
-    {
-        return [
-            'error' => [
-                'class' => 'app\components\JsonErrorAction',
-            ],
-        ];
-    }
-
     public function actionHello()
     {
         $this->result = 'Hello, world!';

@@ -5,7 +5,8 @@ namespace app\controllers;
 use Yii,
     yii\web\Controller,
     yii\web\UploadedFile,
-    app\models\Auth,
+    app\models\Account,
+    app\models\User,
     app\models\InviteForm,
     app\components\vkapi\VkApi;
 
@@ -16,7 +17,7 @@ class SiteController extends Controller
     {
         return [
             'error' => [
-                'class' => 'yii\web\ErrorAction',
+                'class' => 'app\components\MyErrorAction',
             ],
             'auth' => [
                 'class' => 'yii\authclient\AuthAction',
@@ -27,7 +28,7 @@ class SiteController extends Controller
     
     public function actionIndex()
     {
-        if (Yii::$app->user->isGuest || Yii::$app->user->identity->invited) {
+        if (Yii::$app->user->isGuest || Yii::$app->user->identity->isInvited) {
             return $this->render('index');
         } else {
             return $this->redirect(["invite"]);
@@ -56,32 +57,28 @@ class SiteController extends Controller
         if (!(isset($vkinfo['response'][0]['first_name']))) exit('VK API error');
         $vkinfo = $vkinfo['response'][0];
         
-        $auth = Auth::find()->where([
-            'source' => 'vkontakte',
-            'source_id' => $viewer_id,
+        $account = Account::find()->where([
+            'sourceType' => 3,
+            'sourceId' => $viewer_id,
         ])->one();
                 
-        if ($auth) { // login
-            /** @var \app\models\User */
-            $user = $auth->user;
-            $user->name = $vkinfo['first_name'].' '.$vkinfo['last_name'];
-            $user->photo = $vkinfo['photo_50'];
-            $user->photo_big = $vkinfo['photo_big'];
-            $user->sex = intval($vkinfo['sex']);
-            $user->save();
+        if ($account) { // login
+            /* @var $user User */
+            $user = $account->user;
+            Account::updateUserInfo($user, 4, $vkinfo, true);
             
             Yii::$app->user->login($user, 30*24*60*60);
                 
-            if ($user->invited) {
-                $authView = Auth::find()->where([
-                    'source' => 'vkontakte',
-                    'source_id' => $user_id,
+            if ($user->isInvited) {
+                $accountView = Account::find()->where([
+                    'sourceType' => 3,
+                    'sourceId' => $user_id,
                 ])->one();
                 
-                if ($authView && $authView->user && $authView->user->id) {
-                    $user_id = $authView->user->id;
+                if ($accountView && $accountView->user && $accountView->user->id) {
+                    $user_id = $accountView->user->id;
                 } else {
-                    $user_id = $auth->user->id;
+                    $user_id = $account->user->id;
                 }
                 
                 $this->redirect("/#!profile&id={$user_id}");
@@ -89,49 +86,57 @@ class SiteController extends Controller
                 $this->redirect("invite");
             }
         } else { // signup
-            $auth = Auth::signUp('vkontakte', $vkinfo);
+            $account = Account::signUp(3, $vkinfo);
         }
         
-        if (!$auth->id) {
-            var_dump($auth->getErrors());
+        if (!$account->id) {
+            var_dump($account->getErrors());
         }
     }
     
     public function onAuthSuccess($client)
     {
+        
+        $clients = [
+            'google' => 1,
+            'facebook' => 2,
+            'vkontakte' => 3,
+            'vkapp' => 3
+        ];
+        $sourceType = $clients[$client->getId()];
         $attributes = $client->getUserAttributes();
+        $sourceId = (string)(isset($attributes['id'])?$attributes['id']:$attributes['uid']);
 
-        /** @var Auth $auth */
-        $auth = Auth::find()->where([
-            'source' => $client->getId(),
-            'source_id' => $attributes['id'],
+        /* @var $account Account */
+        $account = Account::find()->where([
+            'sourceType' => $sourceType,
+            'sourceId' => $sourceId,
         ])->one();
         
         if (Yii::$app->user->isGuest) {
-            if ($auth && $auth->user) { // login
-                $user = $auth->user;
-                Auth::updateUserInfo($user, $client->getId(), $attributes, true);
+            if ($account && $account->user) { // login
+                $user = $account->user;
+                Account::updateUserInfo($user, $clientId, $attributes, true);
                 Yii::$app->user->login($user, 30*24*60*60);
-                if ($user->invited) {
+                if ($user->isInvited) {
                     $this->redirect("/");
                 } else {
                     $this->redirect("invite");
                 }
             } else { // signup
-                Auth::signUp($client->getId(), $attributes);
+                var_dump(Account::signUp($sourceType, $attributes));
+                exit();
             }
         } else { // user already logged in
-            if (!$auth) { // add auth provider
-                $auth = new Auth([
-                    'user_id' => Yii::$app->user->id,
-                    'source' => $client->getId(),
-                    'source_id' => $attributes['id'],
+            if (!$account) { // add auth provider
+                $account = new Account([
+                    'userId' => Yii::$app->user->id,
+                    'sourceType' => $sourceType,
+                    'sourceId' => $sourceId,
                 ]);
-                $auth->save();
+                $account->save();
             }
         }
-
-        // Visitor::findOneOrCreate(['ip'=>Yii::$app->request->userIP,'useragent'=>Yii::$app->request->userAgent,'user_id'=>Yii::$app->user->id]);
 
     }
 
@@ -147,14 +152,10 @@ class SiteController extends Controller
                 if ($model->validate()) {
                     $invite = $model->getInvite();
                     if ($invite) {
-                        $invite->uid = Yii::$app->user->id;
-                        $invite->time = time();
-                        $invite->save();
-                        Yii::$app->user->identity->invited = 1;
-                        Yii::$app->user->identity->save();
+                        $invite->activateUser(Yii::$app->user->identity);
                         $this->redirect("/");
                     } else {
-                        $model->addError('imageFile', 'Invalid invite');
+                        $model->addError('imageFile', Yii::t('app', 'Invalid invite'));
                     }
                 }
             }

@@ -298,10 +298,10 @@ class m160819_032658_start extends Migration
         $this->createTable('accounts', [
             'id' => 'INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL',
             'userId' => 'UNSIGNED INTEGER REFERENCES users(id) NOT NULL',
-            'source' => 'UNSIGNED INTEGER(1) NOT NULL',
+            'sourceType' => 'UNSIGNED INTEGER(1) NOT NULL',
             'sourceId' => 'VARCHAR(255) NOT NULL'
         ]);
-        $this->createIndex('accountsSources', 'accounts', ['source', 'sourceId'], true);
+        $this->createIndex('accountsSources', 'accounts', ['sourceType', 'sourceId'], true);
     }
 
     private function createBillsTables()
