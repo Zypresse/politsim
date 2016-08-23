@@ -14,7 +14,7 @@ $this->title = 'Political Simulator';
                     <h1>Political Simulator</h1>
                     <p class="subtitle">Мультиплеерный реалистичный симулятор геополитики и бизнеса.</p>
                     <p>Следите за обновлениями в социальных сетях: <a href="https://plus.google.com/110425397057830817568" rel="publisher" target="_blank">Google+</a>, <a href="https://vk.com/politsim" target="_blank">VK</a></p>
-                    <p>Так же рекомендуется к прочтению: <a href="http://blog.politsim.net">официальный блог разработки</a>, <a href="http://wiki-politsim.lazzyteam.pw">вики по игре</a>.</p>
+                    <p>Так же рекомендуется к прочтению: <a href="http://politsim.tumblr.com">официальный блог разработки</a>, <a href="http://wiki-politsim.lazzyteam.pw">вики по игре</a>.</p>
                 </div>
                 <div class="col-md-6">
                     <h3>Вход через соц. сети:</h3>
@@ -31,7 +31,7 @@ $this->title = 'Political Simulator';
         <a class="logo" href="#"><?=MyHtmlHelper::icon('lg-icons/globe','width:25px')?> Political Simulator</a>
         <nav class="navbar navbar-static-top show_on_load" role="navigation">
             <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
-                <span class="sr-only">Toggle navigation</span>
+                <span class="sr-only"><?=Yii::t('app','Toggle navigation')?></span>
             </a>
 
             <div class="navbar-custom-menu" id="navbar" >
@@ -42,30 +42,30 @@ $this->title = 'Political Simulator';
                                         fullScreenApi.cancelFullScreen();
                                     } else {
                                         fullScreenApi.requestFullScreen(document.documentElement);
-                                    }"><i class="fa fa-arrows-alt" title="На весь экран"></i></a>
+                                    }"><i class="fa fa-arrows-alt" title="<?=Yii::t('app','Fullscreen')?>"></i></a>
                     </li>
                     <li>
-                        <a href="#" onclick="reload_page()"><i class="fa fa-refresh" title="Обновить"></i></a>
+                        <a href="#" onclick="reload_page()"><i class="fa fa-refresh" title="<?=Yii::t('app','Reload page')?>"></i></a>
                     </li>
                     <li class="dropdown user-menu" >
                         <a href="#" class="dropdown-toggle dropdown-avatar" data-toggle="dropdown">
                             <span>
-                                <img class="menu-avatar profile-avatar user-image" src="<?=Yii::$app->user->identity->photo?>" alt="" /> <span><span class="profile-name" ><?=Yii::$app->user->identity->name?></span> <i class="icon-caret-down"></i></span>
+                                <img class="menu-avatar profile-avatar user-image" src="<?=Yii::$app->user->identity->avatar?>" alt="" /> <span><span class="profile-name" ><?=Yii::$app->user->identity->name?></span> <i class="icon-caret-down"></i></span>
                                 <!--<span class="badge badge-dark-red">5</span>-->
                             </span>
                         </a>
                         <ul class="dropdown-menu">
 
                             <li class="user-header">
-                                <img class="img-circle" src="<?=Yii::$app->user->identity->photo_big?>" alt="" />
+                                <img class="img-circle" src="<?=Yii::$app->user->identity->avatarBig?>" alt="" />
                                 <p>
                                     <span class="profile-name" ><?=Yii::$app->user->identity->name?></span>
                                 </p>
                                 <p>
                                     <small>
-                                        <span class="profile-star star"><?= Yii::$app->user->identity->star ?> <?= MyHtmlHelper::icon('star') ?></span>
-                                        <span class="profile-heart heart"><?= Yii::$app->user->identity->heart ?> <?= MyHtmlHelper::icon('heart') ?></span>
-                                        <span class="profile-chart_pie chart_pie"><?= Yii::$app->user->identity->chart_pie ?> <?= MyHtmlHelper::icon('chart_pie') ?></span>
+                                        <span class="profile-star star"><?= Yii::$app->user->identity->fame ?> <?= MyHtmlHelper::icon('star') ?></span>
+                                        <span class="profile-heart heart"><?= Yii::$app->user->identity->trust ?> <?= MyHtmlHelper::icon('heart') ?></span>
+                                        <span class="profile-chart_pie chart_pie"><?= Yii::$app->user->identity->success ?> <?= MyHtmlHelper::icon('chart_pie') ?></span>
                                     </small>
                                 </p>
                             </li>
@@ -90,11 +90,11 @@ $this->title = 'Political Simulator';
         <section class="sidebar" style="height:auto">
             <div class="user-panel">
                 <div class="pull-left image">
-                    <img src="<?=Yii::$app->user->identity->photo?>" class="img-circle" alt="">
+                    <img src="<?=Yii::$app->user->identity->avatar?>" class="img-circle" alt="">
                 </div>
                 <div class="pull-left info">
                     <p><?=Yii::$app->user->identity->name?></p>
-                    <strong id="head_money"></strong> <?=MyHtmlHelper::icon('money')?>
+                    <strong id="head_money"></strong> <?//=MyHtmlHelper::icon('money')?>
                 </div>
             </div>
             <form action="#" method="get" class="sidebar-form" style="display:none">
@@ -117,7 +117,7 @@ $this->title = 'Political Simulator';
                 </a>
                 <ul class="treeview-menu">
                     <li>
-                        <a onclick="load_page('profile', {'uid':<?= Yii::$app->user->identity->uid ?>})" href="#">
+                        <a onclick="load_page('profile', {'id':<?= Yii::$app->user->identity->id ?>})" href="#">
                             <i class="fa fa-user"></i> Мой профиль
                         </a>
                     </li>
