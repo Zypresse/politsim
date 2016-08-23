@@ -53,6 +53,9 @@ class m160819_032658_start extends Migration
         $this->createUsersTables();
 
         $this->createMilitaryTables();
+
+        $this->createUTRTable();
+        
     }
     
     private function createConstitutionsTables()
@@ -986,9 +989,9 @@ class m160819_032658_start extends Migration
             'subProtoId' => 'UNSIGNED INTEGER DEFAULT NULL',
             'masterId' => 'UNSIGNED INTEGER REFERENCES utr(id) NOT NULL',
             'locationId' => 'UNSIGNED INTEGER REFERENCES utr(id) NOT NULL',
-            'quality' => 'UNSIGNED INTEGER(3) NOT NULL DEFAULT 100',
-            'deterioration' => 'UNSIGNED INTEGER(3) NOT NULL DEFAULT 0',
-            'count' => 'UNSIGNED REAL NOT NULL DEFAULT 1'
+            'quality' => 'UNSIGNED INTEGER(3) DEFAULY NULL',
+            'deterioration' => 'UNSIGNED INTEGER(3) DEFAULT NULL',
+            'count' => 'UNSIGNED REAL NOT NULL DEFAULT 0'
         ]);
         $this->createIndex('resourcesUnique', 'resources', ['protoId', 'subProtoId', 'masterId', 'locationId', 'quality', 'deterioration'], true);
 
@@ -1066,8 +1069,8 @@ class m160819_032658_start extends Migration
 
             'locationId' => 'UNSIGNED INTEGER REFERENCES utr(id) NOT NULL',
 
-            'ideologyId' => 'UNSIGNED INTEGER(3) NOT NULL',
-            'religionId' => 'UNSIGNED INTEGER(3) NOT NULL',
+            'ideologyId' => 'UNSIGNED INTEGER(3) DEFAULT NULL',
+            'religionId' => 'UNSIGNED INTEGER(3) DEFAULT NULL',
 
             'fame' => 'INTEGER NOT NULL DEFAULT 0',
             'trust' => 'INTEGER NOT NULL DEFAULT 0',
@@ -1080,7 +1083,7 @@ class m160819_032658_start extends Migration
             'dateLastLogin' => 'UNSIGNED INTEGER NOT NULL',
 
             'isInvited' => 'BOOLEAN NOT NULL DEFAULT 0',
-            'utr' => 'UNSIGNED INTEGER REFERENCES utr(id) NOT NULL'
+            'utr' => 'UNSIGNED INTEGER REFERENCES utr(id) DEFAULT NULL'
         ]);
 
         $this->createTable('users-to-parties', [
@@ -1110,6 +1113,15 @@ class m160819_032658_start extends Migration
             'nameShort' => 'VARCHAR(6) NOT NULL',
 
             'utr' => 'UNSIGNED INTEGER REFERENCES utr(id) DEFAULT NULL'
+        ]);
+    }
+    
+    private function createUTRTable()
+    {
+        $this->createTable('utr', [
+            'id' => 'INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL',
+            'objectId' => 'UNSIGNED INTEGER NOT NULL',
+            'objectType' => 'UNSIGNED INTEGER(2) NOT NULL'
         ]);
     }
 
@@ -1203,6 +1215,8 @@ class m160819_032658_start extends Migration
         $this->dropTable('citizenships');
 
         $this->dropTable('military-units');
+
+        $this->dropTable('utr');
 
 //        echo "m160819_032658_start cannot be reverted.\n";
 //

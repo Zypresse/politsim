@@ -7,7 +7,7 @@ namespace app\components;
  *
  * @author ilya
  * 
- * @property int $unnp ИНН
+ * @property integer $utr ИНН
  */
 interface TaxPayer {
     
@@ -15,53 +15,44 @@ interface TaxPayer {
      * Возвращает ИНН
      * @return int
      */
-    public function getUnnp();
-    
-    /*public function getStocks();
-    {
-        return $this->hasMany('app\models\Stock', array('unnp' => 'unnp'));
-    }*/
+    public function getUtr();
     
     /**
      * Является ли плательщик правительством страны
-     * @param int $stateId
+     * @param integer $stateId
      * @return boolean
      */
     public function isGoverment($stateId);
     
     /**
      * Возвращает баланс плательщика в у.е.
+     * @param integer $currencyId
      * @return double
      */
-    public function getBalance();
+    public function getBalance($currencyId);
     
     /**
-     * Меняет баланс плательщика BUT NOT SAVED IT
+     * Меняет баланс плательщика
+     * @param integer $currencyId
      * @param double $delta
      */
-    public function changeBalance($delta);
-    
-    /**
-     * Возвращает название плательщика в HTML
-     * @return string
-     */
-    public function getHtmlName();
+    public function changeBalance($currencyId, $delta);
     
     /**
      * Возвращает константное значение типа налогоплательщика
-     * @return int
+     * @return integer
      */
-    public function getUnnpType();
+    public function getUtrType();
     
     /**
      * ID страны, в которой он платит налоги
-     * @return int
+     * @return integer
      */
     public function getTaxStateId();
     
     /**
      * Является ли налогоплательщиком государства
-     * @param int $stateId
+     * @param integer $stateId
      * @return boolean
      */
     public function isTaxedInState($stateId);
@@ -73,7 +64,7 @@ interface TaxPayer {
     
     /**
      * Может ли юзер управлять этим налогоплательщиком
-     * @param int $userId
+     * @param integer $userId
      * @return boolean
      */
     public function isUserController($userId);
