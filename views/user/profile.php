@@ -1,6 +1,13 @@
 <?php
 
-use app\components\MyHtmlHelper;
+use yii\helpers\Html,
+    app\components\MyHtmlHelper;
+
+/* @var $this \yii\web\View */
+/* @var $user \app\models\User */
+/* @var $isOwner boolean */
+
+$viewer = Yii::$app->user->identity;
 
 ?>
 
@@ -9,54 +16,54 @@ use app\components\MyHtmlHelper;
         <div class="col-md-3">
             <div class="avarar-container box" >
                 <div class="box-content">
-                    <img src="<?= $user->photo_big ?>" class="img-polaroid">
+                    <?=Html::img($user->avatarBig, ['class' => 'img-polaroid'])?>
                     <div class="photo_bottom_container">
-                        <span class="star"><?= $user->star ?> <?= MyHtmlHelper::icon('star') ?></span>
-                        <span class="heart"><?= $user->heart ?> <?= MyHtmlHelper::icon('heart') ?></span>
-                        <span class="chart_pie"><?= $user->chart_pie ?> <?= MyHtmlHelper::icon('chart_pie') ?></span>
+                        <span class="star" ><?= $user->fame ?> <?= MyHtmlHelper::icon('star') ?></span>
+                        <span class="heart" ><?= $user->trust?> <?= MyHtmlHelper::icon('heart') ?></span>
+                        <span class="chart_pie" ><?= $user->success ?> <?= MyHtmlHelper::icon('chart_pie') ?></span>
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-md-9">
-            <h1><?= htmlspecialchars($user->name) ?> <?php if ($is_own) { ?><small>(это вы)</small><?php } ?></h1>
-            <?php if ($user->ideology || $is_own):  ?>
-                <p>
-                    <i class="icon-flag"></i>
+            <h1><?= Html::encode($user->name) ?> <?php if ($isOwner): ?><small>(это вы)</small><?php endif ?></h1>
+            <?php if ($user->ideology || $isOwner):  ?>
+            <p>
+                <i class="icon-flag"></i>
                 <?php if ($user->ideology) : ?>
                     Придерживается идеологии «<?= $user->ideology->name ?>»
                 <?php endif ?>
-                <?php if ($is_own): ?>
-                    <button onclick="load_modal('change-ideology', {}, 'change_ideology_modal', 'change_ideology_modal_body')" class="btn btn-<?php if ($user->ideology) { ?>default<?php } else { ?>lightblue<?php } ?> btn-xs"><?php if ($user->ideology) { ?>Сменить<?php } else { ?>Выбрать<?php } ?> идеологию</button>
+                <?php if ($isOwner): ?>
+                    <?=Html::button($user->ideology ? Yii::t('app', 'Change ideology') : Yii::t('app', 'Set ideology'), ['class' => 'btn '.($user->ideology ? 'btn-default' : 'btn-primary'), 'onclick' => "load_modal('change-ideology', {}, 'change_ideology_modal')" ])?>
                 <?php endif ?>
-                </p>
+            </p>
             <?php endif ?>
-            <p><i class="icon-group"></i> <?php if ($user->party) { ?>
-                    Состоит в партии <?=$user->party->getHtmlName()?>
-                <?php } else { ?>
-                    <?php if ($user->sex === 1) { ?>Беспартийная<?php } else { ?>Беспартийный<?php } ?>
-                <?php } ?></p>
-            <p><i class="icon-globe"></i> <?php if ($user->state) { ?>
-                    <?php if ($user->sex === 1) { ?>Гражданка<?php } else { ?>Гражданин<?php } ?> государства <?=$user->state->getHtmlName()?>
-                <?php } else { ?>
-                    <?php if ($user->sex === 1) { ?>Гражданка<?php } else { ?>Гражданин<?php } ?> мира
-                <?php } ?></p>
-            <?php if ($user->region) { ?><p><i class="icon-map-marker"></i> Живет в регионе <?=$user->region->getHtmlName()?></p><?php } ?>
-            <?php if ($user->post) { ?><p><i class="icon-briefcase"></i> Занимает пост &laquo;<?= htmlspecialchars($user->post->name) ?>&raquo;<?php if ($user->post->org) { ?> в организации <?=$user->post->org->getHtmlName()?></p><?php } ?><?php } ?>
-            <?php if (count($user->medales)) { ?><p>
-                <h4>Значки:</h4>
-                <?php foreach ($user->medales as $medale) { ?>
-                    <a href="#" rel="popover" class="medale" data-content="<?= htmlspecialchars($medale->proto->desc) ?>" data-original-title="<?= htmlspecialchars($medale->proto->name) ?>" ><img src="<?= $medale->proto->image ?>" alt="<?= htmlspecialchars($medale->proto->name) ?>" class="img-polaroid" ></a> 
-                <?php } ?>
-                </p>
-                <script type="text/javascript">
-                    $(function () {
-                        $('.medale').popover({'placement': 'top'});
-                    })
-                </script>
-            <?php } ?>
-
-            <?php if (!$is_own) { ?>
+            <p>
+                <i class="icon-group"></i>
+                <?php if (count($user->parties)): ?>
+                    Состоит в партиях
+                <?php else: ?>
+                    <?=$user->genderId === 1 ? 'Беспартийная' : 'Беспартийный' ?>
+                <?php endif ?>
+            </p>
+            <p>
+                <i class="icon-globe"></i>
+                <?php if (count($user->states)): ?>
+                    Имеет гражданства
+                <?php else: ?>
+                    Не имеет гражданства
+                <?php endif ?>
+            </p>            
+            <p>                
+                <i class="icon-briefcase"></i>
+                <?php if (count($user->posts)): ?>
+                    Занимает посты в правительстве
+                <?php else: ?>
+                    Не занимает постов в правительстве
+                <?php endif ?>
+            </p>
+            
+            <?php if (!$isOwner) { ?>
                 <div class="btn-toolbar">
                     <div class="btn-group">
                         <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
@@ -82,16 +89,9 @@ use app\components\MyHtmlHelper;
                             Публикации <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu">
-                            <li><a href='#' onclick="load_page('twitter', {'uid':<?= $user->id ?>})" >Микроблог</a></li>
+                            <li><a href='#' onclick="load_page('twitter/profile', {'id':<?= $user->id ?>})" >Микроблог</a></li>
                         </ul>
-                    </div><!--<div class="btn-group">
-                     <button class="btn btn-sm btn-brown dropdown-toggle" data-toggle="dropdown">
-                       Подробная информация <span class="caret"></span>
-                     </button>
-                     <ul class="dropdown-menu">
-                       <li><a href='#' onclick="load_page('capital',{'uid':<?= $user->id ?>})" >Капитал</a></li>
-                     </ul>
-                    </div>-->
+                    </div>
                 </div>
                 <div style="display:none" class="modal fade" id="transfer_money_dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
@@ -268,7 +268,7 @@ use app\components\MyHtmlHelper;
         </div>
     </div>
 </section>
-<?php if ($is_own): ?>
+<?php if ($isOwner): ?>
 <div style="display:none" class="modal fade" id="change_ideology_modal" tabindex="-1" role="dialog" aria-labelledby="change_ideology_modal_label" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">

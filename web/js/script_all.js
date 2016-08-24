@@ -278,7 +278,7 @@ function load_page(page, params, time) {
         }
         history.pushState({}, page, url);
         $('#page_content').empty();
-        request('/html/'+page,params,'html',function(d){
+        request('/'+page,params,'html',function(d){
             $('#page_content').html(d);
             prettyDates();
         })
@@ -308,7 +308,7 @@ function json_request(page, params, noReload, noError, callback, method) {
         console.log(e);
     };
 
-    request('/json/'+page,params,'json',function(result){
+    request('/'+page,params,'json',function(result){
         if (result.result !== 'error') {
             if (!noReload) {
                 reload_page(100);
@@ -331,7 +331,7 @@ function get_json(page, params, callback, noError) {
         console.log(e);
     };
     
-    request('/json/'+page,params,'json',callback,noError);
+    request('/'+page,params,'json',callback,noError);
 }
 function get_html(page, params, callback, noError) {
     params = params || {};
@@ -340,10 +340,10 @@ function get_html(page, params, callback, noError) {
         console.log(e);
     };
     
-    request('/modal/'+page,params,'html',callback,noError);
+    request('/'+page,params,'html',callback,noError);
 }
 
-function load_modal(page,params,modalId,bodyId) {
+function load_modal(page, params, modalId, bodyId) {
     bodyId = bodyId ? bodyId : modalId + '-body';
     $('#'+bodyId).html('<br><br><br>Загрузка...<br><br><br><br><br>');
     get_html(page,params,function(d){

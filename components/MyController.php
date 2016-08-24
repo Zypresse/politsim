@@ -29,9 +29,11 @@ use Yii,
 
 class MyController extends Controller
 {
+    
+    public $layout = "api";
+    
     protected $result = 'undefined';
     protected $error = false;
-    protected $viewer_id = 0;
 
     protected function _r($e = false, $addFields = []) 
     {
@@ -56,28 +58,19 @@ class MyController extends Controller
         $this->result = "ok";
         return $this->_r();
     }
-
+    
+    /**
+     * 
+     * @param \yii\base\Action $action
+     * @return mixed
+     */
     public function beforeAction($action)
     {
-        if (isset($_REQUEST['viewer_id']) && isset($_REQUEST['auth_key'])) {
-            $viewer_id = intval($_REQUEST['viewer_id']);
-            $auth_key = $_REQUEST['auth_key'];
-            if ($viewer_id > 0 && $auth_key) {
-                $real_key = User::getRealKey($viewer_id);
-                if ($auth_key === $real_key) {
-                    $this->viewer_id = $viewer_id;
-                    return true;
-                }
-            }
-        } 
-        if (isset($action->actionMethod)) $action->actionMethod = 'actionInvalidAuthkey';
+        if (!Yii::$app->request->isAjax) {
+            return $this->redirect(Yii::$app->homeUrl.'#!'.str_replace('?','&',mb_substr(Yii::$app->request->url,1)));
+        }
         
-        return true;
-    }
-
-    public function actionInvalidAuthkey()
-    {
-        return $this->_r("Invalid auth key");
+        return parent::beforeAction($action);
     }
 
     private $_user = null;
@@ -88,8 +81,8 @@ class MyController extends Controller
      */
     protected function getUser()
     {
-        if (is_null($this->_user)) {
-            $this->_user = User::findByPk($this->viewer_id);
+        if (!Yii::$app->user->isGuest && is_null($this->_user)) {
+            $this->_user = Yii::$app->user->identity;
         }
         return $this->_user;
     }

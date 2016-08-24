@@ -4,7 +4,7 @@ $params = require(__DIR__ . '/params.php');
 $authClients = require(__DIR__ . '/auth-clients.php');
 
 $config = [
-    'id' => 'basic',
+    'id' => 'politsim',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'components' => [
@@ -41,6 +41,9 @@ $config = [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
+            'rules' => [
+                'profile' => 'user/profile',
+            ],            
         ],
         'authClientCollection' => [
             'class' => 'yii\authclient\Collection',

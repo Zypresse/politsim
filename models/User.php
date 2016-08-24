@@ -6,23 +6,6 @@ use Yii,
     yii\web\IdentityInterface,
     app\components\TaxPayer,
     app\components\MyModel,
-    app\components\MyHtmlHelper,
-    yii\helpers\Html,
-    app\models\Twitter,
-    app\models\Utr,
-    app\models\Dealing,
-    app\models\State,
-    app\models\Party,
-    app\models\Post,
-    app\models\Region,
-    app\models\Medale,
-    app\models\ElectVote,
-    app\models\Stock,
-    app\models\ElectRequest,
-    app\models\Notification,
-    app\models\factories\Factory,
-    app\models\Auth,
-    app\models\Holding,
     app\models\Ideology;
 
 /**
@@ -273,5 +256,29 @@ class User extends MyModel implements TaxPayer, IdentityInterface {
         if ($save) {
             return $this->save();
         }
+    }
+    
+    private $_ideology = null;
+    public function getIdeology()
+    {
+        if (is_null($this->_ideology) && $this->ideologyId) {
+            $this->_ideology = Ideology::findOne($this->ideologyId);
+        }
+        return $this->_ideology;
+    }
+    
+    public function getParties()
+    {
+        return [];
+    }
+    
+    public function getStates()
+    {
+        return [];
+    }
+    
+    public function getPosts()
+    {
+        return [];
     }
 }

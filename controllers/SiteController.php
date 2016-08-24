@@ -65,7 +65,7 @@ class SiteController extends Controller
         if ($account) { // login
             /* @var $user User */
             $user = $account->user;
-            Account::updateUserInfo($user, 4, $vkinfo, true);
+            Account::updateUserInfo($user, 3, $vkinfo, true);
             
             Yii::$app->user->login($user, 30*24*60*60);
                 
@@ -116,7 +116,7 @@ class SiteController extends Controller
         if (Yii::$app->user->isGuest) {
             if ($account && $account->user) { // login
                 $user = $account->user;
-                Account::updateUserInfo($user, $clientId, $attributes, true);
+                Account::updateUserInfo($user, $sourceType, $attributes, true);
                 Yii::$app->user->login($user, 30*24*60*60);
                 if ($user->isInvited) {
                     $this->redirect("/");
