@@ -4,6 +4,8 @@ namespace app\controllers;
 
 use Yii,
     yii\web\Controller,
+    yii\filters\AccessControl,
+    yii\filters\VerbFilter,
     yii\web\UploadedFile,
     app\models\Account,
     app\models\User,
@@ -22,6 +24,29 @@ class SiteController extends Controller
             'auth' => [
                 'class' => 'yii\authclient\AuthAction',
                 'successCallback' => [$this, 'onAuthSuccess'],
+            ],
+        ];
+    }
+    
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['logout'],
+                'rules' => [
+                    [
+                        'actions' => ['logout'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'logout' => ['post'],
+                ],
             ],
         ];
     }
@@ -165,4 +190,12 @@ class SiteController extends Controller
             $this->redirect("/");
         }
     }
+        
+    public function actionLogout()
+    {
+        Yii::$app->user->logout();
+
+        return $this->goHome();
+    }
+    
 }

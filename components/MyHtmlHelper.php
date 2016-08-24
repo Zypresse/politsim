@@ -6,9 +6,10 @@ use yii\helpers\Html;
 
 class MyHtmlHelper {
 
-    public static function a($text, $onclick)
+    public static function a($text, $onclick, $params)
     {
-        return Html::a($text, '#', ['onclick' => $onclick]);
+        $params['onclick'] = $onclick;
+        return Html::a($text, '#', $params);
     }
 
     public static function getSomeColor($i, $hash = false)

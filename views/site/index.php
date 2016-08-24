@@ -1,6 +1,7 @@
 <?php
 
-use app\components\MyHtmlHelper;
+use yii\helpers\Html,
+    app\components\MyHtmlHelper;
 
 /* @var $this yii\web\View */
 $this->title = 'Political Simulator';
@@ -47,6 +48,46 @@ $this->title = 'Political Simulator';
                     <li>
                         <a href="#" onclick="reload_page()"><i class="fa fa-refresh" title="<?=Yii::t('app','Reload page')?>"></i></a>
                     </li>
+                    <li class="dropdown notifications-menu">
+                        <a aria-expanded="true" href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <i class="fa fa-bell"></i>
+                            <span id="new_notifications_count" class="label label-info hide autoupdated-notifications">0</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li class="header">You have <span class="autoupdated-notifications">0</span> new notifications</li>
+                            <li>
+                                <ul id="new_notifications_list" class="menu">
+                                    <li>
+                                        <a href="#">
+                                            <i class="fa fa-users text-aqua"></i> 5 new members joined today
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#">
+                                            <i class="fa fa-warning text-yellow"></i> Very long description here that may not fit into the
+                                          page and may cause design problems
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#">
+                                            <i class="fa fa-users text-red"></i> 5 new members joined
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#">
+                                            <i class="fa fa-shopping-cart text-green"></i> 25 sales made
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#">
+                                            <i class="fa fa-user text-red"></i> You changed your username
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="footer"><a href="#!notifications">View all</a></li>
+                        </ul>
+                    </li>
                     <li class="dropdown user-menu" >
                         <a href="#" class="dropdown-toggle dropdown-avatar" data-toggle="dropdown">
                             <span>
@@ -57,26 +98,35 @@ $this->title = 'Political Simulator';
                         <ul class="dropdown-menu">
 
                             <li class="user-header">
-                                <img class="img-circle" src="<?=Yii::$app->user->identity->avatarBig?>" alt="" />
+                                <?=Html::img(Yii::$app->user->identity->avatarBig, ['class' => 'img-circle'])?>
                                 <p>
-                                    <span class="profile-name" ><?=Yii::$app->user->identity->name?></span>
+                                    <span class="profile-name" ><?=Html::encode(Yii::$app->user->identity->name)?></span>
                                 </p>
                                 <p>
-                                    <small>
-                                        <span class="profile-star star"><?= Yii::$app->user->identity->fame ?> <?= MyHtmlHelper::icon('star') ?></span>
-                                        <span class="profile-heart heart"><?= Yii::$app->user->identity->trust ?> <?= MyHtmlHelper::icon('heart') ?></span>
-                                        <span class="profile-chart_pie chart_pie"><?= Yii::$app->user->identity->success ?> <?= MyHtmlHelper::icon('chart_pie') ?></span>
-                                    </small>
+                                    <span class="autoupdated-fame star"><?= Yii::$app->user->identity->fame ?> <?= MyHtmlHelper::icon('star') ?></span>
+                                    <span class="autoupdated-trust heart"><?= Yii::$app->user->identity->trust ?> <?= MyHtmlHelper::icon('heart') ?></span>
+                                    <span class="autoupdated-success chart_pie"><?= Yii::$app->user->identity->success ?> <?= MyHtmlHelper::icon('chart_pie') ?></span>
                                 </p>
                             </li>
 
 
                             <li class="user-footer">
-                                <div class="col-xs-6 text-center">
-                                    <?=MyHtmlHelper::a('<i class="fa fa-user"></i> Профиль', 'load_page("profile",{"id":'.Yii::$app->user->identity->id.'})', ['class' => 'btn btn-default btn-flat'])?>
-                                </div>
-                                <div class="col-xs-6 text-center">
-                                    <?=MyHtmlHelper::a('<i class="fa fa-cog"></i> Настройки', "load_modal('account-settings',{},'settings_modal','settings_modal_body')", ['class' => 'btn btn-default btn-flat'])?>
+                                <div class="text-center">
+                                    <div class="btn-group">
+                                        <?=MyHtmlHelper::a('<i class="fa fa-user"></i> Профиль', '#!profile', [
+                                            'class' => 'btn btn-primary btn-xs'
+                                        ])?>
+                                        <?=MyHtmlHelper::a('<i class="fa fa-cog"></i> Настройки', "load_modal('account-settings',{},'settings_modal','settings_modal_body')", [
+                                            'class' => 'btn btn-info btn-xs'
+                                        ])?>
+                                        <?=Html::a('<i class="fa fa-sign-out"></i> Выход', ["site/logout"], [
+                                            'class' => 'btn btn-warning btn-xs',
+                                            'data' => [
+                                                'confirm' => 'Are you sure you want to sign out?',
+                                                'method' => 'post',
+                                            ]
+                                        ])?>
+                                    </div>
                                 </div>
                             </li>
                             <!-- <li class="divider"></li> -->                 
@@ -110,8 +160,7 @@ $this->title = 'Political Simulator';
                 <a href="#" >
                     <?=MyHtmlHelper::icon('lg-icons/profile')?>
                     <span>
-                        Профиль
-                        <span id="profile_badge" class="badge badge-green"></span>                        
+                        Профиль                     
                     </span>
                     <i class="fa fa-angle-left pull-right"></i>
                 </a>
@@ -124,7 +173,6 @@ $this->title = 'Political Simulator';
                     <li>
                         <a href="#" onclick="load_page('dealings')">
                             <i class="fa fa-briefcase"></i> Мои сделки
-                            <span id="new_dealings_count" class="badge badge-green"></span>
                         </a>
                     </li>
                     <li>

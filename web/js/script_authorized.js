@@ -1,11 +1,4 @@
 
-
-$.ajaxSetup({
-    cache: true
-});
-
-//$("#spinner").fadeIn('fast');
-
 function init_app() {
     $('.show_on_load').show();
 
@@ -22,16 +15,6 @@ function init_app() {
     window.onhashchange = loadPageFromHash;
 }
 
-var MAP_DATA = $.parseJSON(localStorage.getItem("MAP_DATA"));
-var MAP_VERSION = parseInt(localStorage.getItem("MAP_VERSION"));
-
-if (MAP_DATA && MAP_VERSION >= 5) {
-    jQuery.fn.vectorMap('addMap', 'map5', MAP_DATA);
-    init_app();
-} else {
-    $.getScript("/js/maps/map5.js", init_app);
-}
-
 function loadPageFromHash() {
     var ar = document.location.hash.split('&');
     page = ar.shift().substr(2);
@@ -43,3 +26,4 @@ function loadPageFromHash() {
     load_page(page, params);
 }
 
+$(init_app);

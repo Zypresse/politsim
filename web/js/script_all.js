@@ -226,27 +226,24 @@ function request(pageUrl,postParams,requestType,callback,noError,method)
 }
 
 function update_header() {
-    get_json('header-info-updates',{},function(d){
+    get_json('notification/get-updates',{},function(d){
         var d = d.result;
 
-        $('#head_star').text(d.star);
-        $('#head_heart').text(d.heart);
-        $('#head_chart_pie').text(d.chart_pie);
-        $('#head_money').text(number_format(d.money, 0, '', ' '));
-        
-        var new_dealings_count = d.new_dealings_count ? parseInt(d.new_dealings_count) : 0
-        if (new_dealings_count) {
-            $('#new_dealings_count').text(new_dealings_count);
-            $('#new_dealings_count').show();
+        $('.autoupdated-fame').text(d.fame);
+        $('.autoupdated-trust').text(d.trust);
+        $('.autoupdated-success').text(d.success);
+//        $('.autoupdated-money').text(number_format(d.money, 0, '', ' '));
+
+        $('.autoupdated-notifications').text(d.notificationsCount);
+        $('#new_notifications_list').empty();
+        if (d.notificationsCount > 0) {
+            $('#new_notifications_count').removeClass('hide');
+            for (var i in d.notifications) {
+                var n = d.notifications[i];
+                $('#new_notifications_list').append('<li><a href="#!notifications&id='+n.id+'">'+n.shortText+'</a></li>');
+            }
         } else {
-            $('#new_dealings_count').hide();
-        }
-        var profile_badge = new_dealings_count;
-        if (profile_badge) {
-            $('#profile_badge').text(profile_badge);
-            $('#profile_badge').show();
-        } else {
-            $('#profile_badge').hide();
+            $('#new_notifications_count').addClass('hide');
         }
     })
 }

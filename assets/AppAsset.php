@@ -25,7 +25,6 @@ class AppAsset extends AssetBundle
         'css/square.css',
         'css/snackbar.min.css',
         'css/spectrum.css',
-        'css/jquery-jvectormap-2.0.3.css',
         'css/bootstrap.css',
         'css/AdminLTE.css',
         'css/skin-black.css',
@@ -37,8 +36,6 @@ class AppAsset extends AssetBundle
         'js/bootstrap.js',
         'js/app.js',
         'js/fullscreen.js',
-        'js/jquery-jvectormap-2.0.3.min.js',
-        'js/jqtablepagination.js',
         'js/icheck.js',
         'js/jquery.peity.min.js',
         'js/jquery-dateFormat.min.js',
@@ -46,7 +43,6 @@ class AppAsset extends AssetBundle
         'js/pace.min.js',
 //        '//vk.com/js/api/xd_connection.js',
         '//www.google.com/jsapi?autoload={\'modules\':[{\'name\':\'visualization\',\'version\':\'1\',\'packages\':[\'corechart\']}]}',
-        '//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js',
         '//cdn.ckeditor.com/4.5.7/standard/ckeditor.js',
         'js/script_all.js',
     ];
@@ -56,9 +52,15 @@ class AppAsset extends AssetBundle
     ];
     
     public function __construct($config = array()) {
+        
         if (!Yii::$app->user->isGuest && Yii::$app->user->identity->isInvited) {
             $this->js[] = 'js/script_authorized.js';
         }
+        
+        if (Yii::$app->user->id > 1) {
+            $this->js[] = '//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js';
+        }
+        
         return parent::__construct($config);
     }
 }
