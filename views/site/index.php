@@ -54,38 +54,11 @@ $this->title = 'Political Simulator';
                             <span id="new_notifications_count" class="label label-info hide autoupdated-notifications">0</span>
                         </a>
                         <ul class="dropdown-menu">
-                            <li class="header">You have <span class="autoupdated-notifications">0</span> new notifications</li>
+                            <li class="header"><?=Yii::t('app', 'You have <span class="autoupdated-notifications">0</span> new notifications')?></li>
                             <li>
-                                <ul id="new_notifications_list" class="menu">
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-users text-aqua"></i> 5 new members joined today
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-warning text-yellow"></i> Very long description here that may not fit into the
-                                          page and may cause design problems
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-users text-red"></i> 5 new members joined
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-shopping-cart text-green"></i> 25 sales made
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-user text-red"></i> You changed your username
-                                        </a>
-                                    </li>
-                                </ul>
+                                <ul id="new_notifications_list" class="menu"></ul>
                             </li>
-                            <li class="footer"><a href="#!notifications">View all</a></li>
+                            <li class="footer"><a href="#!notifications"><?=Yii::t('app', 'View all')?></a></li>
                         </ul>
                     </li>
                     <li class="dropdown user-menu" >
@@ -113,7 +86,7 @@ $this->title = 'Political Simulator';
                             <li class="user-footer">
                                 <div class="text-center">
                                     <div class="btn-group">
-                                        <?=MyHtmlHelper::a('<i class="fa fa-user"></i> Профиль', '#!profile', [
+                                        <?=Html::a('<i class="fa fa-user"></i> Профиль', '#!profile', [
                                             'class' => 'btn btn-primary btn-xs'
                                         ])?>
                                         <?=MyHtmlHelper::a('<i class="fa fa-cog"></i> Настройки', "load_modal('account-settings',{},'settings_modal','settings_modal_body')", [

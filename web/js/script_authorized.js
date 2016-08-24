@@ -12,7 +12,7 @@ function init_app() {
     } else {
         load_page('profile');
     }
-    window.onhashchange = loadPageFromHash;
+    $(window).on('hashchange',loadPageFromHash);
 }
 
 function loadPageFromHash() {

@@ -1079,7 +1079,7 @@ a:focus {
   padding: 10px;
   text-align: center;
 }
-.navbar-nav > .user-menu > .dropdown-menu > li.user-header img {
+.navbar-nav > .user-menu > .dropdown-menu > li.user-header img.img-circle {
   z-index: 5;
   height: 90px;
   width: 90px;
