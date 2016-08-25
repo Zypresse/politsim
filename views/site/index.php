@@ -76,9 +76,9 @@ $this->title = 'Political Simulator';
                                     <span class="profile-name" ><?=Html::encode(Yii::$app->user->identity->name)?></span>
                                 </p>
                                 <p>
-                                    <span class="autoupdated-fame star"><?= Yii::$app->user->identity->fame ?> <?= MyHtmlHelper::icon('star') ?></span>
-                                    <span class="autoupdated-trust heart"><?= Yii::$app->user->identity->trust ?> <?= MyHtmlHelper::icon('heart') ?></span>
-                                    <span class="autoupdated-success chart_pie"><?= Yii::$app->user->identity->success ?> <?= MyHtmlHelper::icon('chart_pie') ?></span>
+                                    <span class="star"><span class="autoupdated-fame"><?= Yii::$app->user->identity->fame ?></span> <?= MyHtmlHelper::icon('star') ?></span>
+                                    <span class="heart"><span class="autoupdated-trust"><?= Yii::$app->user->identity->trust ?></span> <?= MyHtmlHelper::icon('heart') ?></span>
+                                    <span class="chart_pie"><span class="autoupdated-success"><?= Yii::$app->user->identity->success ?></span> <?= MyHtmlHelper::icon('chart_pie') ?></span>
                                 </p>
                             </li>
 
@@ -139,62 +139,33 @@ $this->title = 'Political Simulator';
                 </a>
                 <ul class="treeview-menu">
                     <li>
-                        <a onclick="load_page('profile', {'id':<?= Yii::$app->user->identity->id ?>})" href="#">
+                        <a href="#!profile">
                             <i class="fa fa-user"></i> Мой профиль
                         </a>
                     </li>
                     <li>
-                        <a href="#" onclick="load_page('dealings')">
+                        <a href="#!dealings">
                             <i class="fa fa-briefcase"></i> Мои сделки
                         </a>
                     </li>
                     <li>
-                        <a href="#" onclick="load_page('notifications')">
+                        <a href="#!notifications">
                             <i class="fa fa-comments"></i> Мои уведомления
                         </a>
                     </li>
                 </ul>
             </li>
             <li class="work_page">
-                <a href="#" onclick="load_page('work')">
+                <a href="#!work">
                     <?= MyHtmlHelper::icon('lg-icons/work') ?>
-                    <span>Работа</span>
+                    <span>Моя работа</span>
                 </a>
             </li>
             <li class="party-info_page">
-                <a href="#" onclick="load_page('party-info')" >
+                <a href="#!party">
                     <?= MyHtmlHelper::icon('lg-icons/party') ?>
-                    <span>Партия</span>
+                    <span>Моя партия</span>
                 </a>
-            </li>
-            <li class="treeview map-politic_page map-resources_page map-population_page">
-                <a href="#" >
-                    <?= MyHtmlHelper::icon('lg-icons/globe') ?>
-                    <span>Карта</span>
-                    <i class="fa fa-angle-left pull-right"></i>
-                </a>
-                <ul class="treeview-menu">
-                    <li>
-                        <a href="#" onclick="load_page('map-politic')">
-                            <i class="fa fa-flag"></i> Политическая карта
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" onclick="load_page('map-cores')">
-                            <i class="fa fa-legal"></i> Карта претензий
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" onclick="load_page('map-resources')">
-                            <i class="fa fa-money"></i> Экономическая карта
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" onclick="load_page('map-population')">
-                            <i class="fa fa-group"></i> Демографическая карта
-                        </a>
-                    </li>
-                </ul>
             </li>
             <li class="treeview state-info_page elections_page org-info_page">
                 <a href="#" >
@@ -204,13 +175,61 @@ $this->title = 'Political Simulator';
                 </a>
                 <ul class="treeview-menu">
                     <li>
-                        <a onclick="load_page('state-info')" href="#">
-                            <i class="fa fa-flag"></i> О государстве
+                        <a href="#!state">
+                            <i class="fa fa-flag"></i> Моё государство
                         </a>
                     </li>
                     <li>
-                        <a onclick="load_page('elections')" href="#">
+                        <a href="#!state/elections">
                             <i class="fa fa-bullhorn"></i> Выборы
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="treeview holding-info_page my-buisness_page market_page market-factories_page market-forex_page market-stocks_page market-resources_page factory-info_page">
+                <a href="#" >
+                    <?= MyHtmlHelper::icon('lg-icons/business') ?>
+                    <span>Бизнес</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                </a>
+                <ul class="treeview-menu">
+                    <li>
+                        <a href="#!business">
+                            <i class="fa fa-building"></i> Мой бизнес
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#!market">
+                            <i class="fa fa-th-large"></i> Рынок
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="treeview map-politic_page map-resources_page map-population_page">
+                <a href="#" >
+                    <?= MyHtmlHelper::icon('lg-icons/globe') ?>
+                    <span>Карта</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                </a>
+                <ul class="treeview-menu">
+                    <li>
+                        <a href="#!map/political">
+                            <i class="fa fa-flag"></i> Политическая карта
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#!map/historical">
+                            <i class="fa fa-legal"></i> Карта исторических территорий
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#!map/resources">
+                            <i class="fa fa-money"></i> Карта ресурсов
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#!map/demography">
+                            <i class="fa fa-group"></i> Демографическая карта
                         </a>
                     </li>
                 </ul>
@@ -223,34 +242,13 @@ $this->title = 'Political Simulator';
                 </a>
                 <ul class="treeview-menu">
                     <li>
-                        <a onclick="load_page('twitter')" href="#">
+                        <a href="#!twitter">
                             <i class="fa fa-twitter"></i> Соц. сети
                         </a>
                     </li>
                     <li>
-                        <a onclick="load_page('newspapers')" href="#">
+                        <a href="#!newspapers">
                             <i class="fa fa-newspaper-o"></i> Пресса
-                        </a>
-                    </li>
-<!--                    <li><a onclick="load_page('radio')" href="#">Радио</a></li>
-                    <li><a onclick="load_page('tv')" href="#">Телевиденье</a></li>-->
-                </ul>
-            </li>
-            <li class="treeview holding-info_page my-buisness_page market_page market-factories_page market-forex_page market-stocks_page market-resources_page factory-info_page">
-                <a href="#" >
-                    <?= MyHtmlHelper::icon('lg-icons/business') ?>
-                    <span>Бизнес</span>
-                    <i class="fa fa-angle-left pull-right"></i>
-                </a>
-                <ul class="treeview-menu">
-                    <li>
-                        <a onclick="load_page('my-buisness')" href="#">
-                            <i class="fa fa-building"></i> Мой бизнес
-                        </a>
-                    </li>
-                    <li>
-                        <a onclick="load_page('market')" href="#">
-                            <i class="fa fa-th-large"></i> Рынок
                         </a>
                     </li>
                 </ul>
@@ -263,22 +261,22 @@ $this->title = 'Political Simulator';
                 </a>
                 <ul class="treeview-menu">
                     <li>
-                        <a onclick="load_page('chart-states')" href="#">
-                            <i class="fa fa-th-list"></i> Рейтинг государств
-                        </a>
-                    </li>
-                    <li>
-                        <a onclick="load_page('chart-parties')" href="#">
-                            <i class="fa fa-list-ul"></i> Рейтинг партий
-                        </a>
-                    </li>
-                    <li>
-                        <a onclick="load_page('chart-peoples')" href="#">
+                        <a href="#!chart/users">
                             <i class="fa fa-list"></i> Рейтинг людей
                         </a>
                     </li>
                     <li>
-                        <a onclick="load_page('chart-holdings')" href="#">
+                        <a href="#!chart/states">
+                            <i class="fa fa-th-list"></i> Рейтинг государств
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#!chart/parties">
+                            <i class="fa fa-list-ul"></i> Рейтинг партий
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#!chart/companies">
                             <i class="fa fa-tasks"></i> Рейтинг компаний
                         </a>
                     </li>
