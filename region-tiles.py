@@ -24,19 +24,19 @@ def getLat(x,y):
 	if y%2 == 0:
 		lat = 0
 	else:
-		lat = 886
+		lat = 0.0886
 
 	if x > 0:
 		for i in range(0,x):
-			lat += 866*2*correctX(lat)
+			lat += 0.0866*2*correctX(lat)
 	else:
 		for i in range(0,x):
-			lat -= 866*2*correctX(lat)
+			lat -= 0.0866*2*correctX(lat)
 
 	return lat;
 
 def getLng(x,y):
-    return y*1500
+    return y*0.15
 
 def correctX(x):
     return round(math.cos(x*0.0175)*1.025,4)
@@ -52,14 +52,14 @@ class Tile:
 	def calcCoords(self):
 		x = getLat(self.x,self.y)
 		y = getLng(self.x,self.y)
-		xFactor = round(866*correctX(x))
+		xFactor = round(0.0866*correctX(x),4)
 		coords = [
-			(x,y+1000), # east
-			(x-xFactor,y+500), # east-south
-			(x-xFactor,y-500), # west-south
-			(x,y-1000), # west
-			(x+xFactor,y-500), # west-nord
-			(x+xFactor,y+500) # east-nord
+			(x,y+0.1), # east
+			(x-xFactor,y+0.05), # east-south
+			(x-xFactor,y-0.05), # west-south
+			(x,y-0.1), # west
+			(x+xFactor,y-0.05), # west-nord
+			(x+xFactor,y+0.05) # east-nord
 		]
 
 		return coords;
