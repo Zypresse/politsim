@@ -85,7 +85,7 @@ if len(sys.argv) > 1:
         if sys.argv[1] in ('-i', '--interactive'):
                 interactiveMode = True
 
-db = sqlite3.connect('database/politsim-oldstructure-190816.db')
+db = sqlite3.connect('database/politsim.sqlite')
 cursor = db.execute(''' 
 	SELECT 
 		id,
