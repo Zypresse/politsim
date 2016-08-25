@@ -24,22 +24,22 @@ def getLat(x,y):
 	if y%2 == 0:
 		lat = 0
 	else:
-		lat = 0.0886
+		lat = 886
 
 	if x > 0:
 		for i in range(0,x):
-			lat += 0.0866*2*correctX(lat)
+			lat += 866*2*correctX(lat)
 	else:
 		for i in range(0,x):
-			lat -= 0.0866*2*correctX(lat)
+			lat -= 866*2*correctX(lat)
 
 	return lat;
 
 def getLng(x,y):
-    return y*0.15
+    return y*1500
 
 def correctX(x):
-    return round(math.cos(x*0.0175)*41000/360 / 111.1111,4)
+    return round(math.cos(x*0.0175)*1.025,4)
 
 class Tile:
 	def __init__(self,id,x,y):
@@ -52,14 +52,14 @@ class Tile:
 	def calcCoords(self):
 		x = getLat(self.x,self.y)
 		y = getLng(self.x,self.y)
-		xFactor = correctX(x)
+		xFactor = round(866*correctX(x))
 		coords = [
-			(x,y+0.1), # east
-			(x-0.087*xFactor,y+0.05), # east-south
-			(x-0.087*xFactor,y-0.05), # west-south
-			(x,y-0.1), # west
-			(x+0.087*xFactor,y-0.05), # west-nord
-			(x+0.087*xFactor,y+0.05) # east-nord
+			(x,y+1000), # east
+			(x-xFactor,y+500), # east-south
+			(x-xFactor,y-500), # west-south
+			(x,y-1000), # west
+			(x+xFactor,y-500), # west-nord
+			(x+xFactor,y+500) # east-nord
 		]
 
 		return coords;
@@ -139,9 +139,6 @@ def getPointNumbers(i):
 	a = [(4,5),(5,0),(0,1),(1,2),(2,3),(3,4)]
 	return a[i]
 
-def c2i(c):
-	return round(c*10000)
-
 lines = []
 counter = 0
 if interactiveMode:
@@ -154,11 +151,7 @@ for tile in tiles:
 	if len(kray):
 		for i in kray:
 			i1, i2 = getPointNumbers(i)
-			c1 = tile.coords[i1]
-			l1 = (c2i(c1[0]),c2i(c1[1]))
-			c2 = tile.coords[i2]
-			l2 = (c2i(c2[0]),c2i(c2[1]))
-			line = (l1, l2)
+			line = (tile.coords[i1], tile.coords[i2])
 			if not line in lines:
 				lines.append(line)		
 	counter += 1
