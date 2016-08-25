@@ -638,7 +638,7 @@ class m160819_032658_start extends Migration
         ]);
         $this->createIndex('ObjectsSettingsAutoselling', 'objects-settings-autoselling', ['objectId', 'resourceProtoId'], true);
 
-        $this->createTable('objects-settings-autopurchase', [            
+        $this->createTable('objects-settings-autopurchase', [ 
             'objectId' => 'UNSIGNED INTEGER REFERENCES utr(id) NOT NULL',
             'resourceProtoId' => 'INTEGER NOT NULL', // услуги имеют отрицательные ID прототипа
 
@@ -1280,9 +1280,6 @@ class m160819_032658_start extends Migration
         $this->dropTable('military-units');
 
         $this->dropTable('utr');
-
-//        echo "m160819_032658_start cannot be reverted.\n";
-//
-//        return false;
+        
     }
 }
