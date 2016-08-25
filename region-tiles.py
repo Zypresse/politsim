@@ -87,7 +87,7 @@ def offsetNeighbor(h, d):
 # 	print ("Enter region ID")
 # 	quit()
 
-db = sqlite3.connect('database/politsim.db')
+db = sqlite3.connect('database/politsim.sqlite')
 cursor = db.execute(''' 
 	SELECT 
 		id,
@@ -249,4 +249,8 @@ for i in range(len(conturs)):
 		p2 = (p2[0]/10000,p2[1]/10000)
 		conturs[i][j] = p1
 
-print (json.dumps([conturs]))
+#print (json.dumps([conturs]))
+f = open('all-lands.json', 'w')
+f.write(json.dumps([conturs]))
+
+print("conturs writed to all-lands.json")
