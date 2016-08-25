@@ -80,12 +80,10 @@ def offsetNeighbor(h, d):
     off = directions[parityX][parityY][d]
     return (h[0] + off[0], h[1] + off[1])
 
-
-# if len(sys.argv) > 1:
-# 	region_id = int(sys.argv[1])
-# else:
-# 	print ("Enter region ID")
-# 	quit()
+interactiveMode = False
+if len(sys.argv) > 1:
+        if sys.argv[1] in ('-i', '--interactive'):
+                interactiveMode = True
 
 db = sqlite3.connect('database/politsim.sqlite')
 cursor = db.execute(''' 
@@ -100,19 +98,24 @@ rows = cursor.fetchall()
 rowsLength = len(rows)
 
 if (rowsLength == 0):
-	print ("0 tiles found")
+        if interactiveMode:
+                print ("0 tiles found")
 	quit()
 
 tiles = [];
 counter = 0
-printProgress(0,rowsLength,"loading tiles: ")
+if interactiveMode:
+        printProgress(0,rowsLength,"loading tiles: ")
 for row in rows:
 	tiles.append(Tile(row[0],row[1],row[2]))
 	counter += 1
-	printProgress(counter,rowsLength,"loading tiles: ")
+        if interactiveMode:
+                printProgress(counter,rowsLength,"loading tiles: ")
 
 tilesLength = len(tiles)
-print ("Start imploding {} tiles".format(tilesLength))
+
+if interactiveMode:
+        print ("Start imploding {} tiles".format(tilesLength))
 
 def tileByXY(t):
 	for tile in tiles:
@@ -141,7 +144,8 @@ def c2i(c):
 
 lines = []
 counter = 0
-printProgress(0,tilesLength,"get borders: ")
+if interactiveMode:
+        printProgress(0,tilesLength,"get borders: ")
 for tile in tiles:	
 	kray = []
 	for i in range(0,6):
@@ -158,11 +162,13 @@ for tile in tiles:
 			if not line in lines:
 				lines.append(line)		
 	counter += 1
-	printProgress(counter,tilesLength,"get borders: ")
+        if interactiveMode:
+                printProgress(counter,tilesLength,"get borders: ")
 
 linesLength = len(lines)
 
-print ("{} lines found".format(linesLength))
+if interactiveMode:
+        print ("{} lines found".format(linesLength))
 
 def pointEquals(p1, p2):
 	d = 10
@@ -178,29 +184,35 @@ def getLineIdByCoord(t, no):
 	return -1
 
 counter = 0
-printProgress(0,linesLength,"check lines: ")
+if interactiveMode:
+        printProgress(0,linesLength,"check lines: ")
 for line in lines:
 	if (getLineIdByCoord(line[0],line) >= 0) and (getLineIdByCoord(line[1],line) >= 0):
 		pass
 	elif (getLineIdByCoord(line[0],line) >= 0) or (getLineIdByCoord(line[1],line) >= 0):
-		print ("Error, line have only one neighbor")
-		p1, p2 = line
-		p1 = (p1[0]/10000,p1[1]/10000)
-		p2 = (p2[0]/10000,p2[1]/10000)
-		line = (p1, p2)
-		print (line)
+                if interactiveMode:
+                        print ("Error, line have only one neighbor")
+                        p1, p2 = line
+                        p1 = (p1[0]/10000,p1[1]/10000)
+                        p2 = (p2[0]/10000,p2[1]/10000)
+                        line = (p1, p2)
+                        print (line)
 		quit()
 	else:
-		print ("Error, line have no neighbors")
-		p1, p2 = line
-		p1 = (p1[0]/10000,p1[1]/10000)
-		p2 = (p2[0]/10000,p2[1]/10000)
-		line = (p1, p2)
-		print (line)
+                if interactiveMode:                
+                        print ("Error, line have no neighbors")
+                        p1, p2 = line
+                        p1 = (p1[0]/10000,p1[1]/10000)
+                        p2 = (p2[0]/10000,p2[1]/10000)
+                        line = (p1, p2)
+                        print (line)
 		quit()
-	counter += 1	
-	printProgress(counter,linesLength,"check lines: ")
-print ("ALL lines checked")
+	counter += 1        
+        if interactiveMode:
+                printProgress(counter,linesLength,"check lines: ")
+
+if interactiveMode:
+        print ("ALL lines checked")
 
 # for i in range(len(lines)):
 # 	p1, p2 = lines[i]
@@ -216,7 +228,8 @@ def addLine(i):
 	global counter
 
 	counter += 1
-	printProgress(counter,linesLength,"adding lines: ")
+        if interactiveMode:
+            printProgress(counter,linesLength,"adding lines: ")
 
 	if i in linesAdded:
 		if len(linesAdded) == len(lines):
@@ -240,11 +253,13 @@ def addLine(i):
 
 counter = 0
 n = 0
-printProgress(0,len(lines),"adding lines: ")
+if interactiveMode:
+        printProgress(0,len(lines)+1,"adding lines: ")
 while n >= 0:
 	n = addLine(n)
 
-print("Finded {} conturs".format(len(conturs)))
+if interactiveMode:
+        print("Finded {} conturs".format(len(conturs)))
 
 
 for i in range(len(conturs)):
@@ -258,4 +273,5 @@ for i in range(len(conturs)):
 f = open('all-lands.json', 'w')
 f.write(json.dumps([conturs]))
 
-print("conturs writed to all-lands.json")
+if interactiveMode:
+        print("conturs writed to all-lands.json")
