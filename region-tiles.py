@@ -102,38 +102,31 @@ if (rowsLength == 0):
                 print ("0 tiles found")
 	quit()
 
-tiles = [];
+tiles = {}
 counter = 0
 if interactiveMode:
         printProgress(0,rowsLength,"loading tiles: ")
 for row in rows:
-	tiles.append(Tile(row[0],row[1],row[2]))
+        tile = Tile(row[0],row[1],row[2])
+
+	if not tile.x in tiles:
+                tiles[tile.x] = {}
+        tiles[tile.x][tile.y] = tile
+            
 	counter += 1
         if interactiveMode:
                 printProgress(counter,rowsLength,"loading tiles: ")
 
-tilesLength = len(tiles)
+tilesLength = rowsLength
 
 if interactiveMode:
         print ("Start imploding {} tiles".format(tilesLength))
 
-def tileByXY(t):
-	for tile in tiles:
-		if t[0] == tile.x and t[1] == tile.y:
-			return tile;
-	return None
-
 def isIssetTileByXY(t):
-	for tile in tiles:
-		if t[0] == tile.x and t[1] == tile.y:
+        if t[0] in tiles:
+                if t[1] in tiles[t[0]]:                        
 			return True;
 	return False
-
-def tileById(id):
-	for tile in tiles:
-		if id == tile.id:
-			return tile;
-	return None
 
 def getPointNumbers(i):
 	a = [(4,5),(5,0),(0,1),(1,2),(2,3),(3,4)]
@@ -142,21 +135,23 @@ def getPointNumbers(i):
 lines = []
 counter = 0
 if interactiveMode:
-        printProgress(0,tilesLength,"get borders: ")
-for tile in tiles:	
-	kray = []
-	for i in range(0,6):
-		if not isIssetTileByXY(offsetNeighbor((tile.x,tile.y),i)):
-			kray.append(i)
-	if len(kray):
-		for i in kray:
-			i1, i2 = getPointNumbers(i)
-			line = (tile.coords[i1], tile.coords[i2])
-			if not line in lines:
-				lines.append(line)		
-	counter += 1
-        if interactiveMode:
-                printProgress(counter,tilesLength,"get borders: ")
+        printProgress(0,tilesLength,"get borders: ")	
+for x in tiles:
+        for y in tiles[x]:
+                tile = tiles[x][y]
+                kray = []
+                for i in range(0,6):
+                        if not isIssetTileByXY(offsetNeighbor((tile.x,tile.y),i)):
+                                kray.append(i)
+                if len(kray):
+                        for i in kray:
+                                i1, i2 = getPointNumbers(i)
+                                line = (tile.coords[i1], tile.coords[i2])
+                                if not line in lines:
+                                        lines.append(line)		
+                counter += 1
+                if interactiveMode:
+                        printProgress(counter,tilesLength,"get borders: ")
 
 linesLength = len(lines)
 
