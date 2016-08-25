@@ -85,7 +85,7 @@ if len(sys.argv) > 1:
         if sys.argv[1] in ('-i', '--interactive'):
                 interactiveMode = True
 
-db = sqlite3.connect('database/politsim.sqlite')
+db = sqlite3.connect('database/politsim-oldstructure-190816.db')
 cursor = db.execute(''' 
 	SELECT 
 		id,
@@ -146,7 +146,8 @@ for x in tiles:
                 if len(kray):
                         for i in kray:
                                 i1, i2 = getPointNumbers(i)
-                                line = (tile.coords[i1], tile.coords[i2])
+                                point1, point2 = tile.coords[i1], tile.coords[i2]
+                                line = ((round(point1[0]*10000), round(point1[1]*10000)), (round(point2[0]*10000), round(point2[1]*10000)))
                                 if not line in lines:
                                         lines.append(line)		
                 counter += 1
@@ -171,36 +172,6 @@ def getLineIdByCoord(t, no):
 			return i
 	return -1
 
-counter = 0
-if interactiveMode:
-        printProgress(0,linesLength,"check lines: ")
-for line in lines:
-	if (getLineIdByCoord(line[0],line) >= 0) and (getLineIdByCoord(line[1],line) >= 0):
-		pass
-	elif (getLineIdByCoord(line[0],line) >= 0) or (getLineIdByCoord(line[1],line) >= 0):
-                if interactiveMode:
-                        print ("Error, line have only one neighbor")
-                        p1, p2 = line
-                        p1 = (p1[0]/10000,p1[1]/10000)
-                        p2 = (p2[0]/10000,p2[1]/10000)
-                        line = (p1, p2)
-                        print (line)
-		quit()
-	else:
-                if interactiveMode:                
-                        print ("Error, line have no neighbors")
-                        p1, p2 = line
-                        p1 = (p1[0]/10000,p1[1]/10000)
-                        p2 = (p2[0]/10000,p2[1]/10000)
-                        line = (p1, p2)
-                        print (line)
-		quit()
-	counter += 1        
-        if interactiveMode:
-                printProgress(counter,linesLength,"check lines: ")
-
-if interactiveMode:
-        print ("ALL lines checked")
 
 # for i in range(len(lines)):
 # 	p1, p2 = lines[i]
@@ -229,6 +200,26 @@ def addLine(i):
 	linesAdded.append(i)
 	right = getLineIdByCoord(line[1],line)
 	left = getLineIdByCoord(line[0],line)
+        
+        if (left < 0) and (right < 0):
+                if interactiveMode:                
+                        print ("Error, line have no neighbors")
+                        p1, p2 = line
+                        p1 = (p1[0]/10000,p1[1]/10000)
+                        p2 = (p2[0]/10000,p2[1]/10000)
+                        line = (p1, p2)
+                        print (line)
+		quit()
+	elif (left < 0) or (right < 0):
+                if interactiveMode:
+                        print ("Error, line have only one neighbor")
+                        p1, p2 = line
+                        p1 = (p1[0]/10000,p1[1]/10000)
+                        p2 = (p2[0]/10000,p2[1]/10000)
+                        line = (p1, p2)
+                        print (line)
+		quit()
+
 	for contur in conturs:
 		if lines[right] in contur:
 			contur.append(line)
