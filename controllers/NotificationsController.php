@@ -21,18 +21,21 @@ class NotificationsController extends MyController
      */
     public function actionGetUpdates()
     {
+        $notifications = Notification::findByUser($this->user->id)->andWhere(['dateReaded' => null])->orderBy(['id' => SORT_DESC])->all();
+        foreach ($notifications as $i => $notification) {
+            $notifications[$i] = [
+                'id' => $notification->id,
+                'protoId' => $notification->protoId,
+                'textShort' => $notification->getTextShort(),
+            ];
+        }
+        
         $this->result = [
-            'fame' => 0,
-            'trust' => 0,
-            'success' => 0,
-            'notificationsCount' => 1,
-            'notifications' => [
-                [
-                    'id' => 1,
-                    'protoId' => 0,
-                    'shortText' => 'adgfdgdgsdg'
-                ]
-            ]
+            'fame' => $this->user->fame,
+            'trust' => $this->user->trust,
+            'success' => $this->user->success,
+            'notificationsCount' => count($notifications),
+            'notifications' => $notifications
         ];
         return $this->_r();
     }
@@ -43,7 +46,10 @@ class NotificationsController extends MyController
      */
     public function actionIndex()
     {
+        
         $notifications = Notification::findByUser($this->user->id)->orderBy(['id' => SORT_DESC])->limit(5)->all();
+        
+        Notification::markAllAsRead($this->user->id);
         
         return $this->render('index', [
             'notifications' => $notifications,

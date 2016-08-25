@@ -34,7 +34,8 @@ $notificationsIcons = [
                 <?=Yii::t('app', 'New notifications')?>
             </span>
         </li>
-        <?php elseif (!$readedStarted): ?>
+        <?php elseif (!$readedStarted): 
+            $readedStarted = true; ?>
         <li class="time-label">
             <span class="bg-gray">
                 <?=Yii::t('app', 'Readed')?>

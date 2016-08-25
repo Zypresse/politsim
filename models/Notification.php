@@ -80,6 +80,17 @@ class Notification extends MyModel
             'userId' => $userId
         ]);
     }
+    
+    public static function markAllAsRead($userId)
+    {
+        return static::updateAll([
+            'dateReaded' => time()
+        ], [
+            'userId' => $userId,
+            'dateReaded' => null
+        ]);
+    }
+    
 }
 
 

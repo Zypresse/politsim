@@ -244,7 +244,7 @@ function update_header() {
             $('#new_notifications_count').removeClass('hide');
             for (var i in d.notifications) {
                 var n = d.notifications[i];
-                $('#new_notifications_list').append('<li><a href="#!notifications&id='+n.id+'">'+notificationIcons[n.protoId]+' '+n.shortText+'</a></li>');
+                $('#new_notifications_list').append('<li><a href="#!notifications&id='+n.id+'">'+notificationIcons[n.protoId]+' '+n.textShort+'</a></li>');
             }
         } else {
             $('#new_notifications_count').addClass('hide');
