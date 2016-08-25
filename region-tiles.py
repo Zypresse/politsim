@@ -120,6 +120,12 @@ def tileByXY(t):
 			return tile;
 	return None
 
+def isIssetTileByXY(t):
+	for tile in tiles:
+		if t[0] == tile.x and t[1] == tile.y:
+			return True;
+	return False
+
 def tileById(id):
 	for tile in tiles:
 		if id == tile.id:
@@ -139,8 +145,7 @@ printProgress(0,tilesLength,"get borders: ")
 for tile in tiles:	
 	kray = []
 	for i in range(0,6):
-		n = tileByXY(offsetNeighbor((tile.x,tile.y),i))
-		if n is None:
+		if not isIssetTileByXY(offsetNeighbor((tile.x,tile.y),i)):
 			kray.append(i)
 	if len(kray):
 		for i in kray:
