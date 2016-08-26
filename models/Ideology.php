@@ -3,19 +3,19 @@
 namespace app\models;
 
 use Yii,
-    yii\base\Object;
+    app\models\ObjectWithFixedPrototypes;
 
 /**
  * Идеология
  *
  * @author ilya
  */
-class Ideology extends Object
+class Ideology extends ObjectWithFixedPrototypes
 {
     public $id;
     public $name;
     
-    private static function getList()
+    protected static function getList()
     {
         return [
             [
@@ -41,8 +41,4 @@ class Ideology extends Object
         ];
     }
     
-    public static function findOne($id)
-    {
-        return new static(static::getList()[$id]);
-    }
 }

@@ -361,28 +361,29 @@ function subscribeLinksInModal(modalId, bodyId) {
     $('#'+bodyId).off('click');
     
     $('#'+bodyId).on('submit','form', function(){
-        var action = $(this).attr('action').split('/');
-        return makeActionInModal(action, $(this).serializeObject(), modalId, bodyId);
+        var action = $(this).attr('action'),
+            actionType = $(this).data('actionType');
+        return makeActionInModal(actionType, action, $(this).serializeObject(), modalId, bodyId);
     });
     
     $('#'+bodyId).on('click','a[href!=#]', function(){
-        var action = $(this).attr('href').split('/');
-        return makeActionInModal(action, {}, modalId, bodyId);
+        var action = $(this).attr('href'),
+            actionType = $(this).data('actionType');
+        return makeActionInModal(actionType, action, {}, modalId, bodyId);
     });
 }
 
-function makeActionInModal(action, data, modalId, bodyId) {
-    var actionType = action[1];
-    var actionMethod = action[2];
+function makeActionInModal(actionType, action, data, modalId, bodyId) {
+    actionType = actionType ? actionType : 'html';
     switch (actionType) {
         case 'modal':
-            load_modal(actionMethod,data,modalId,bodyId);
+            load_modal(action,data,modalId,bodyId);
             break;
         case 'html':
-            load_page(actionMethod,data);
+            load_page(action,data);
             break;
         case 'json':
-            json_request(actionMethod,data);
+            json_request(action,data);
             break;
     }
 
@@ -392,4 +393,23 @@ function makeActionInModal(action, data, modalId, bodyId) {
 
 function show_region(region) {
     load_modal('region-info',{'id':region},'region_info','region_info_body');
+}
+
+function createAjaxModal(action, params, title, buttons, modalId, bodyId) {
+    modalId = modalId ? modalId : action.replace('/', '-') + '-modal';
+    bodyId = bodyId ? bodyId : modalId + '-body';
+    buttons = buttons ? buttons : '';
+    if ($('#'+modalId)[0]) {
+        $('#'+bodyId).html('<br><br><br>Загрузка...<br><br><br><br><br>');
+    } else {
+        $(document.body).append(
+            '<div style="display:none" class="modal fade" id="'+modalId+'" tabindex="-1" role="dialog" aria-labelledby="'+modalId+'-label" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button><h3 id="'+modalId+'-label">'+title+'</h3></div><div id="'+bodyId+'" class="modal-body"><br><br><br>Загрузка...<br><br><br><br><br></div><div class="modal-footer">'+buttons+'</div></div></div></div>'
+        );        
+    }
+    get_html(action,params,function(d){
+        $('#'+bodyId).html(d);
+        $('#'+modalId).modal();        
+        prettyDates();
+        subscribeLinksInModal(modalId, bodyId);
+    });
 }

@@ -16,7 +16,7 @@ use Yii,
  * @property string $avatar Маленькая фотография 50x50
  * @property string $avatarBig Большая фотография 400xn
  * @property integer $genderId Пол: 0 - неопр., 1 - женский, 2 - мужской
- * @property integer $locationId UTR местоположения
+ * @property integer $cityId ID Города
  * @property integer $ideologyId ID Идеологии
  * @property integer $religionId ID Религии
  * @property integer $fame Известность
@@ -45,7 +45,7 @@ use Yii,
  * @property Account[] $accounts Аккаунты
  * @property Ideology $ideology Идеология
  * @property Religion $religion Религия
- * @property TaxPayer $location местоположение
+ * @property City $city Город
  */
 class User extends MyModel implements TaxPayer, IdentityInterface {
 
@@ -206,9 +206,9 @@ class User extends MyModel implements TaxPayer, IdentityInterface {
     public function rules()
     {
         return [
-            [['name', 'avatar', 'avatarBig', 'genderId', 'locationId', 'dateLastLogin'], 'required'],
+            [['name', 'avatar', 'avatarBig', 'genderId', 'cityId', 'dateLastLogin'], 'required'],
             [['genderId'], 'integer', 'min' => 0, 'max' => 2],
-            [['locationId', 'ideologyId', 'religionId', 'dateCreated', 'dateLastLogin', 'utr'], 'integer', 'min' => 0],
+            [['cityId', 'ideologyId', 'religionId', 'dateCreated', 'dateLastLogin', 'utr'], 'integer', 'min' => 0],
             [['fame', 'trust', 'success', 'fameBase', 'trustBase', 'successBase'], 'integer'],
             [['fame', 'trust', 'success', 'fameBase', 'trustBase', 'successBase'], 'default', 'value' => 0],
             [['name'], 'string', 'max' => 255],
@@ -265,6 +265,15 @@ class User extends MyModel implements TaxPayer, IdentityInterface {
             $this->_ideology = Ideology::findOne($this->ideologyId);
         }
         return $this->_ideology;
+    }
+    
+    private $_religion = null;
+    public function getReligion()
+    {
+        if (is_null($this->_religion) && $this->religionId) {
+            $this->_religion = Religion::findOne($this->religionId);
+        }
+        return $this->_religion;
     }
     
     public function getParties()

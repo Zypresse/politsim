@@ -27,19 +27,24 @@ $viewer = Yii::$app->user->identity;
         </div>
         <div class="col-md-9">
             <h1><?= Html::encode($user->name) ?> <?php if ($isOwner): ?><small>(это вы)</small><?php endif ?></h1>
-            <?php if ($user->ideology || $isOwner):  ?>
+            <?php if ($user->ideology):  ?>
             <p>
-                <i class="icon-flag"></i>
+                <i class="fa fa-flag"></i>
                 <?php if ($user->ideology) : ?>
                     Придерживается идеологии «<?= $user->ideology->name ?>»
                 <?php endif ?>
-                <?php if ($isOwner): ?>
-                    <?=Html::button($user->ideology ? Yii::t('app', 'Change ideology') : Yii::t('app', 'Set ideology'), ['class' => 'btn '.($user->ideology ? 'btn-default' : 'btn-primary'), 'onclick' => "load_modal('change-ideology', {}, 'change_ideology_modal')" ])?>
+            </p>
+            <?php endif ?>
+            <?php if ($user->religion):  ?>
+            <p>
+                <i class="fa">☪</i>
+                <?php if ($user->religion) : ?>
+                    Придерживается идеологии «<?= $user->religion->name ?>»
                 <?php endif ?>
             </p>
             <?php endif ?>
             <p>
-                <i class="icon-group"></i>
+                <i class="fa fa-group"></i>
                 <?php if (count($user->parties)): ?>
                     Состоит в партиях
                 <?php else: ?>
@@ -47,7 +52,7 @@ $viewer = Yii::$app->user->identity;
                 <?php endif ?>
             </p>
             <p>
-                <i class="icon-globe"></i>
+                <i class="fa fa-globe"></i>
                 <?php if (count($user->states)): ?>
                     Имеет гражданства
                 <?php else: ?>
@@ -55,13 +60,21 @@ $viewer = Yii::$app->user->identity;
                 <?php endif ?>
             </p>            
             <p>                
-                <i class="icon-briefcase"></i>
+                <i class="fa fa-briefcase"></i>
                 <?php if (count($user->posts)): ?>
                     Занимает посты в правительстве
                 <?php else: ?>
                     Не занимает постов в правительстве
                 <?php endif ?>
             </p>
+            <?php if ($isOwner): ?>
+                <div class="btn-toolbar">
+                    <div class="btn-group">
+                        <button id="choose-ideology-btn" class="btn btn-sm btn-primary"><i class="fa fa-flag"></i> &nbsp; <?=Yii::t('app', 'Change ideology')?></button>
+                        <button id="choose-religion-btn" class="btn btn-sm btn-primary"><i class="fa">☪</i> &nbsp; <?=Yii::t('app', 'Change religion')?></button>
+                    </div>
+                </div>
+            <?php endif ?>
             
             <?php if (!$isOwner) { ?>
                 <div class="btn-toolbar">
@@ -268,22 +281,24 @@ $viewer = Yii::$app->user->identity;
         </div>
     </div>
 </section>
-<?php if ($isOwner): ?>
-<div style="display:none" class="modal fade" id="change_ideology_modal" tabindex="-1" role="dialog" aria-labelledby="change_ideology_modal_label" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h3 id="change_ideology_modal_label">Выбор идеологии</h3>
-            </div>
-            <div id="change_ideology_modal_body" class="modal-body">
+<script type="text/javascript">
+    
+    function chooseIdeology() {
+        var buttons = '<button class="btn btn-primary" onclick="json_request(\'user/save-ideology\',{ideologyId:$(\'#new-ideology-id\').val()})"><?=Yii::t('app', 'Save')?></button><button class="btn btn-danger" data-dismiss="modal" aria-hidden="true"><?=Yii::t('app', 'Cancel')?></button>';
+        createAjaxModal('user/choose-ideology', {}, 
+            '<?=Yii::t('app', 'Choose your new ideology')?>',
+            buttons
+        );
+    }
+    $('#choose-ideology-btn').click(chooseIdeology);
+    
+    function chooseReligion() {
+        var buttons = '<button class="btn btn-primary" onclick="json_request(\'user/save-religion\',{religionId:$(\'#new-religion-id\').val()})"><?=Yii::t('app', 'Save')?></button><button class="btn btn-danger" data-dismiss="modal" aria-hidden="true"><?=Yii::t('app', 'Cancel')?></button>';
+        createAjaxModal('user/choose-religion', {}, 
+            '<?=Yii::t('app', 'Choose your new religion')?>',
+            buttons
+        );
+    }
+    $('#choose-religion-btn').click(chooseReligion);
 
-            </div>
-            <div class="modal-footer">
-                <button onclick="json_request('change-ideology', {'id': $('#new_ideology_id').val()})" class="btn btn-success" data-dismiss="modal" aria-hidden="true">Сохранить</button>
-                <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Закрыть</button>
-            </div>
-        </div>
-    </div>
-</div>
-<?php endif ?>
+</script>
