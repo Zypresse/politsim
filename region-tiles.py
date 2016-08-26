@@ -4,6 +4,7 @@ import sqlite3
 import math
 import json
 import sys
+import os
 
 def printProgress (iteration, total, prefix = '', suffix = '', decimals = 2, barLength = 100):
     """
@@ -87,7 +88,9 @@ if len(sys.argv) > 1:
         if sys.argv[1] in ('-i', '--interactive'):
                 interactiveMode = True
 
-db = sqlite3.connect('database/politsim.sqlite')
+path = os.path.realpath(os.path.dirname(__file__))
+
+db = sqlite3.connect(path+'/database/politsim-oldstructure-190816.db')
 cursor = db.execute(''' 
 	SELECT 
 		id,
@@ -165,14 +168,21 @@ def pointEquals(p1, p2):
 	d = 10
 	return (abs(p1[0]-p2[0]) <= d) and (abs(p1[1]-p2[1]) <= d)
 
-def getLineIdByCoord(t, no):
-	for i in range(len(lines)):
-		line = lines[i]
-		if (line == no):
-			continue
-		if pointEquals(line[0],t) or pointEquals(line[1],t):
-			return i
-	return -1
+def getLeftAndRightIds(line):
+        left = -1
+        right = -1
+        for i in range(linesLength):
+                currentLine = lines[i]
+                if currentLine == line:
+                        continue
+                if pointEquals(line[0],currentLine[0]) or pointEquals(line[0],currentLine[1]):
+                        left = i                
+                if pointEquals(line[1],currentLine[0]) or pointEquals(line[1],currentLine[1]):
+                        right = i
+
+                if left > 0 and right > 0:
+                        break
+        return (left, right)
 
 
 # for i in range(len(lines)):
@@ -193,15 +203,14 @@ def addLine(i):
             printProgress(counter,linesLength,"adding lines: ")
 
 	if i in linesAdded:
-		if len(linesAdded) == len(lines):
+		if len(linesAdded) == linesLength:
 			return -1
-		for j in range(0,len(lines)):
+		for j in range(0,linesLength):
 			if not j in linesAdded:
 				return j
 	line = lines[i]
 	linesAdded.append(i)
-	right = getLineIdByCoord(line[1],line)
-	left = getLineIdByCoord(line[0],line)
+        left, right = getLeftAndRightIds(line)
         
         if (left < 0) and (right < 0):
                 if interactiveMode:                
@@ -251,7 +260,7 @@ for i in range(len(conturs)):
 		conturs[i][j] = p1
 
 #print (json.dumps([conturs]))
-f = open('all-lands.json', 'w')
+f = open(path+'/all-lands.json', 'w')
 f.write(json.dumps([conturs]))
 
 if interactiveMode:
