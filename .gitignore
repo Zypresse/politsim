@@ -64,3 +64,5 @@ tests/README.md
 tests/codeception.yml
 tests/codeception/
 yii.bat
+
+all-lands.json
