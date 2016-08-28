@@ -270,14 +270,14 @@ function load_page(page, params, time) {
         current_page_params = params;
 
         $('#topmenu>li').removeClass('active');
-        $('.' + current_page + '_page').addClass('active');
+        $('.' + current_page.replace('/','-') + '_page').addClass('active');
 
-        url = '/#!' + page;
+        hash = '!' + page;
         for (var i in params) {
             if (i !== 'viewer_id' && i !== 'auth_key')
-                url += '&' + i + '=' + encodeURIComponent(params[i]);
+                hash += '&' + i + '=' + encodeURIComponent(params[i]);
         }
-        history.pushState({}, page, url);
+        document.location.hash = hash;
         $('#page_content').empty();
         request('/'+page,params,'html',function(d){
             $('#page_content').html(d);

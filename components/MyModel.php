@@ -75,4 +75,13 @@ abstract class MyModel extends ActiveRecord
         return $m;
     }
     
+    public static function findAll($condition = false)
+    {
+        if ($condition === false) {
+            return static::find()->all();
+        } else {
+            return parent::findAll($condition);
+        }
+    }
+    
 }

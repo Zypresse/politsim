@@ -28,6 +28,7 @@ class AppAsset extends AssetBundle
         'css/bootstrap.css',
         'css/AdminLTE.css',
         'css/skin-black.css',
+        'css/leaflet.css',
         'css/style.css',
     ];
     public $js = [
@@ -44,6 +45,7 @@ class AppAsset extends AssetBundle
 //        '//vk.com/js/api/xd_connection.js',
         '//www.google.com/jsapi?autoload={\'modules\':[{\'name\':\'visualization\',\'version\':\'1\',\'packages\':[\'corechart\']}]}',
         '//cdn.ckeditor.com/4.5.7/standard/ckeditor.js',
+        'js/leaflet.js',
         'js/script_all.js',
     ];
     public $depends = [

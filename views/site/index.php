@@ -205,13 +205,18 @@ $this->title = 'Political Simulator';
                     </li>
                 </ul>
             </li>
-            <li class="treeview map-politic_page map-resources_page map-population_page">
+            <li class="treeview map_page map-politic_page map-resources_page map-population_page">
                 <a href="#" >
                     <?= MyHtmlHelper::icon('lg-icons/globe') ?>
                     <span>Карта</span>
                     <i class="fa fa-angle-left pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
+                    <li>
+                        <a href="#!map">
+                            <i class="fa fa-flag"></i> Тестовая карта
+                        </a>
+                    </li>
                     <li>
                         <a href="#!map/political">
                             <i class="fa fa-flag"></i> Политическая карта
@@ -295,7 +300,6 @@ $this->title = 'Political Simulator';
         <div id="page_content" >
 
         </div>
-        <hr class='show_on_load'>
         <!-- politsim resp -->
         <ins class="adsbygoogle"
              style="display:block"
@@ -303,37 +307,5 @@ $this->title = 'Political Simulator';
              data-ad-slot="9864631062"
              data-ad-format="auto">
         </ins>
-    </div>
-    <div style="display:none" class="modal fade" id="settings_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <h3 id="myModalLabel">Настройки авторизации</h3>
-                </div>
-                <div id="settings_modal_body" class="modal-body">
-
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Закрыть</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div style="display:none;" class="modal fade" id="region_info" tabindex="-1" role="dialog" aria-labelledby="region_info_label" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <h3 id="region_info_label">Информация о регионе</h3>
-                </div>
-                <div id="region_info_body" class="modal-body">
-                    <p>Загрузка…</p>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Закрыть</button>
-                </div>
-            </div>
-        </div>
     </div>
 <?php endif ?>
