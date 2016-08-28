@@ -47,7 +47,8 @@ use Yii,
  * @property Religion $religion Религия
  * @property City $city Город
  */
-class User extends MyModel implements TaxPayer, IdentityInterface {
+class User extends MyModel implements TaxPayer, IdentityInterface
+{
 
     /**
      * Возвращает константное значение типа налогоплательщика
@@ -94,7 +95,7 @@ class User extends MyModel implements TaxPayer, IdentityInterface {
         $money = resources\Resource::findOrCreate([
             'protoId' => 1, // деньги
             'subProtoId' => $currencyId,
-            'masterId' => $this->id            
+            'masterId' => $this->getUtr()            
         ], false, [
             'count' => 0
         ]);
@@ -111,7 +112,7 @@ class User extends MyModel implements TaxPayer, IdentityInterface {
         $money = resources\Resource::findOrCreate([
             'protoId' => 1, // деньги
             'subProtoId' => $currencyId,
-            'masterId' => $this->id            
+            'masterId' => $this->getUtr()     
         ], false, [
             'count' => 0
         ]);
