@@ -208,8 +208,7 @@ def implodeTiles(fromX, fromY):
     linesAdded = []
 
     counter = 0
-    def addLine(i):
-        counter += 1
+    def addLine(i, counter):
         if interactiveMode:
             printProgress(counter,linesLength,"adding lines: ")
 
@@ -256,7 +255,8 @@ def implodeTiles(fromX, fromY):
     if interactiveMode:
         printProgress(0,len(lines)+1,"adding lines: ")
     while n >= 0:
-        n = addLine(n)
+        counter += 1
+        n = addLine(n, counter)
 
     if interactiveMode:
         print("Finded {} conturs".format(len(conturs)))
