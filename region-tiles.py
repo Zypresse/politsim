@@ -263,7 +263,7 @@ def implodeTiles(fromX, fromY):
 
     return conturs
 
-counturs = implodeTiles(500,500)
+conturs = implodeTiles(500,500)
 
 for i in range(len(conturs)):
     for j in range(len(conturs[i])):
