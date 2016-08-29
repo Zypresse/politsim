@@ -90,7 +90,7 @@ if len(sys.argv) > 1:
 
 path = os.path.realpath(os.path.dirname(__file__))
 
-db = sqlite3.connect(path+'/database/politsim-oldstructure-190816.db')
+db = sqlite3.connect(path+'/database/politsim.sqlite')
 cursor = db.execute(''' 
 	SELECT 
 		id,
@@ -127,42 +127,62 @@ tilesLength = rowsLength
 if interactiveMode:
         print ("Start imploding {} tiles".format(tilesLength))
 
-def isIssetTileByXY(t):
-        if t[0] in tiles:
-                if t[1] in tiles[t[0]]:                        
-			return True;
-	return False
 
 def getPointNumbers(i):
 	a = [(4,5),(5,0),(0,1),(1,2),(2,3),(3,4)]
 	return a[i]
 
 lines = []
-counter = 0
-if interactiveMode:
-        printProgress(0,tilesLength,"get borders: ")	
-for x in tiles:
-        for y in tiles[x]:
-                tile = tiles[x][y]
-                kray = []
-                for i in range(0,6):
-                        if not isIssetTileByXY(offsetNeighbor((tile.x,tile.y),i)):
-                                kray.append(i)
-                if len(kray):
-                        for i in kray:
-                                i1, i2 = getPointNumbers(i)
-                                point1, point2 = tile.coords[i1], tile.coords[i2]
-                                line = ((round(point1[0]*10000), round(point1[1]*10000)), (round(point2[0]*10000), round(point2[1]*10000)))
-                                if not line in lines:
-                                        lines.append(line)		
-                counter += 1
-                if interactiveMode:
-                        printProgress(counter,tilesLength,"get borders: ")
 
-linesLength = len(lines)
+def implodeTiles(fromX, fromY):
+    R = 100
+    currentTiles = {}
+    currentTilesLength = 0
+    for x in range(fromX,fromX+R):
+        if x in tiles:
+            for y in range(fromY,fromY+R):
+                if y in tiles[x]:
+                    if not x in currentTiles:
+                        currentTiles[x] = {}
 
-if interactiveMode:
-        print ("{} lines found".format(linesLength))
+                    currentTiles[x][y] = tiles[x][y]
+                    currentTilesLength += 1
+
+        
+    def isIssetTileByXY(t):
+        if t[0] in currentTiles:
+            if t[1] in currentTiles[t[0]]:                        
+                return True;
+        return False
+
+    counter = 0
+    if interactiveMode:
+        printProgress(0,currentTilesLength,"get borders: ")	
+    for x in currentTilesLength:
+        for y in currentTiles[x]:
+            tile = currentTiles[x][y]
+            kray = []
+            for i in range(0,6):
+                if not isIssetTileByXY(offsetNeighbor((tile.x,tile.y),i)):
+                    kray.append(i)
+            if len(kray):
+                for i in kray:
+                    i1, i2 = getPointNumbers(i)
+                    point1, point2 = tile.coords[i1], tile.coords[i2]
+                    line = ((round(point1[0]*10000), round(point1[1]*10000)), (round(point2[0]*10000), round(point2[1]*10000)))
+                    if not line in lines:
+                        lines.append(line)		
+            counter += 1
+            if interactiveMode:
+                printProgress(counter,tilesLength,"get borders: ")
+
+    linesLength = len(lines)
+
+    if interactiveMode:
+            print ("{} lines found".format(linesLength))
+
+implodeTiles(500,500)
+quit()
 
 def pointEquals(p1, p2):
 	d = 10
