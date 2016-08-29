@@ -85,8 +85,8 @@ def offsetNeighbor(h, d):
 
 interactiveMode = False
 if len(sys.argv) > 1:
-        if sys.argv[1] in ('-i', '--interactive'):
-                interactiveMode = True
+    if sys.argv[1] in ('-i', '--interactive'):
+        interactiveMode = True
 
 path = os.path.realpath(os.path.dirname(__file__))
 
@@ -103,8 +103,8 @@ rows = cursor.fetchall()
 rowsLength = len(rows)
 
 if (rowsLength == 0):
-        if interactiveMode:
-                print ("0 tiles found")
+    if interactiveMode:
+        print ("0 tiles found")
 	quit()
 
 tiles = {}
@@ -115,7 +115,7 @@ for row in rows:
         tile = Tile(row[0],row[1],row[2])
 
 	if not tile.x in tiles:
-                tiles[tile.x] = {}
+        tiles[tile.x] = {}
         tiles[tile.x][tile.y] = tile
             
 	counter += 1
@@ -125,7 +125,7 @@ for row in rows:
 tilesLength = rowsLength
 
 if interactiveMode:
-        print ("Start imploding {} tiles".format(tilesLength))
+    print ("Start imploding {} tiles".format(tilesLength))
 
 
 def getPointNumbers(i):
@@ -224,22 +224,22 @@ def implodeTiles(fromX, fromY):
             left, right = getLeftAndRightIds(line)
             
             if (left < 0) and (right < 0):
-                    if interactiveMode:                
-                            print ("Error, line have no neighbors")
-                            p1, p2 = line
-                            p1 = (p1[0]/10000,p1[1]/10000)
-                            p2 = (p2[0]/10000,p2[1]/10000)
-                            line = (p1, p2)
-                            print (line)
+                if interactiveMode:                
+                    print ("Error, line have no neighbors")
+                    p1, p2 = line
+                    p1 = (p1[0]/10000,p1[1]/10000)
+                    p2 = (p2[0]/10000,p2[1]/10000)
+                    line = (p1, p2)
+                    print (line)
             quit()
         elif (left < 0) or (right < 0):
-                    if interactiveMode:
-                            print ("Error, line have only one neighbor")
-                            p1, p2 = line
-                            p1 = (p1[0]/10000,p1[1]/10000)
-                            p2 = (p2[0]/10000,p2[1]/10000)
-                            line = (p1, p2)
-                            print (line)
+            if interactiveMode:
+                print ("Error, line have only one neighbor")
+                p1, p2 = line
+                p1 = (p1[0]/10000,p1[1]/10000)
+                p2 = (p2[0]/10000,p2[1]/10000)
+                line = (p1, p2)
+                print (line)
             quit()
 
         for contur in conturs:
@@ -254,12 +254,12 @@ def implodeTiles(fromX, fromY):
 
     n = 0
     if interactiveMode:
-            printProgress(0,len(lines)+1,"adding lines: ")
+        printProgress(0,len(lines)+1,"adding lines: ")
     while n >= 0:
         n = addLine(n)
 
     if interactiveMode:
-            print("Finded {} conturs".format(len(conturs)))
+        print("Finded {} conturs".format(len(conturs)))
 
 implodeTiles(500,500)
 quit()
