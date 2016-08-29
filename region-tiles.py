@@ -129,7 +129,7 @@ def implodeTiles(fromX, fromY):
             tile = Tile(row[0],row[1],row[2])
 
         if not tile.x in tiles:
-                    tiles[tile.x] = {}
+            tiles[tile.x] = {}
             tiles[tile.x][tile.y] = tile
                 
         counter += 1
