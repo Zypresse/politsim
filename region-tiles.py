@@ -91,41 +91,6 @@ if len(sys.argv) > 1:
 path = os.path.realpath(os.path.dirname(__file__))
 
 db = sqlite3.connect(path+'/database/politsim.sqlite')
-cursor = db.execute(''' 
-	SELECT 
-		id,
-		x,
-		y
-	FROM tiles
-	WHERE is_land = 1;
-'''.format())
-rows = cursor.fetchall()
-rowsLength = len(rows)
-
-if (rowsLength == 0):
-    if interactiveMode:
-        print ("0 tiles found")
-	quit()
-
-tiles = {}
-counter = 0
-if interactiveMode:
-        printProgress(0,rowsLength,"loading tiles: ")
-for row in rows:
-        tile = Tile(row[0],row[1],row[2])
-
-	if not tile.x in tiles:
-                tiles[tile.x] = {}
-        tiles[tile.x][tile.y] = tile
-            
-	counter += 1
-        if interactiveMode:
-                printProgress(counter,rowsLength,"loading tiles: ")
-
-tilesLength = rowsLength
-
-if interactiveMode:
-    print ("Start imploding {} tiles".format(tilesLength))
 
 
 def getPointNumbers(i):
@@ -139,33 +104,57 @@ def pointEquals(p1, p2):
 
 R = 100
 def implodeTiles(fromX, fromY):
+
+    cursor = db.execute(''' 
+        SELECT 
+            id,
+            x,
+            y
+        FROM tiles
+        WHERE is_land = 1 AND x >= {} AND x < {} AND y >= {} AND y < {};
+    '''.format(fromX,fromX+R,fromY,fromY+R)
+    rows = cursor.fetchall()
+    rowsLength = len(rows)
+
+    if (rowsLength == 0):
+        if interactiveMode:
+            print ("0 tiles found")
+        quit()
+
+    tiles = {}
+    counter = 0
+    if interactiveMode:
+            printProgress(0,rowsLength,"loading tiles: ")
+    for row in rows:
+            tile = Tile(row[0],row[1],row[2])
+
+        if not tile.x in tiles:
+                    tiles[tile.x] = {}
+            tiles[tile.x][tile.y] = tile
+                
+        counter += 1
+            if interactiveMode:
+                    printProgress(counter,rowsLength,"loading tiles: ")
+
+    tilesLength = rowsLength
+
+    if interactiveMode:
+        print ("Start imploding {} tiles".format(tilesLength))
+
     lines = []
-    currentTiles = {}
-    currentTilesLength = 0
-    for x in range(fromX,fromX+R):
-        if x in tiles:
-            for y in range(fromY,fromY+R):
-                if y in tiles[x]:
-                    if not x in currentTiles:
-                        currentTiles[x] = {}
-
-                    currentTiles[x][y] = tiles[x][y]
-                    currentTilesLength += 1
-
-
         
     def isIssetTileByXY(t):
-        if t[0] in currentTiles:
-            if t[1] in currentTiles[t[0]]:                        
+        if t[0] in tiles:
+            if t[1] in tiles[t[0]]:                        
                 return True;
         return False
 
     counter = 0
     if interactiveMode:
-        printProgress(0,currentTilesLength,"get borders: ")	
-    for x in currentTiles:
-        for y in currentTiles[x]:
-            tile = currentTiles[x][y]
+        printProgress(0,tilesLength,"get borders: ")	
+    for x in tiles:
+        for y in tiles[x]:
+            tile = tiles[x][y]
             kray = []
             for i in range(0,6):
                 if not isIssetTileByXY(offsetNeighbor((tile.x,tile.y),i)):
@@ -179,10 +168,10 @@ def implodeTiles(fromX, fromY):
                         lines.append(line)		
             counter += 1
             if interactiveMode:
-                printProgress(counter,currentTilesLength,"get borders: ")
+                printProgress(counter,tilesLength,"get borders: ")
 
     linesLength = len(lines)
-
+    tiles = None
 
     def getLeftAndRightIds(line):
         left = -1
