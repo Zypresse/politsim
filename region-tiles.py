@@ -261,29 +261,15 @@ def implodeTiles(fromX, fromY):
     if interactiveMode:
         print("Finded {} conturs".format(len(conturs)))
 
-implodeTiles(500,500)
-quit()
+    return conturs
 
-
-
-
-# for i in range(len(lines)):
-# 	p1, p2 = lines[i]
-# 	p1 = (p1[0]/10000,p1[1]/10000)
-# 	p2 = (p2[0]/10000,p2[1]/10000)
-# 	lines[i] = (p1,p2)
-# print (json.dumps(lines))
-
-
+counturs = implodeTiles(500,500)
 
 for i in range(len(conturs)):
-	for j in range(len(conturs[i])):
-		p1, p2 = conturs[i][j]
-		p1 = (p1[0]/10000,p1[1]/10000)
-		p2 = (p2[0]/10000,p2[1]/10000)
-		conturs[i][j] = p1
+    for j in range(len(conturs[i])):
+        p1, p2 = conturs[i][j]
+        conturs[i][j] = (p1[0]/10000,p1[1]/10000)
 
-#print (json.dumps([conturs]))
 f = open(path+'/all-lands.json', 'w')
 f.write(json.dumps([conturs]))
 
