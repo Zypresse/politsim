@@ -97,7 +97,7 @@ cursor = db.execute('''
 		x,
 		y
 	FROM tiles
-	WHERE is_land = 1 AND x >= 500 AND x < 600 AND y >= 500 AND x < 600;
+	WHERE is_land = 1;
 '''.format())
 rows = cursor.fetchall()
 rowsLength = len(rows)
@@ -137,8 +137,8 @@ def pointEquals(p1, p2):
     return (abs(p1[0]-p2[0]) <= d) and (abs(p1[1]-p2[1]) <= d)
 
 
+R = 100
 def implodeTiles(fromX, fromY):
-    R = 100
     lines = []
     currentTiles = {}
     currentTilesLength = 0
@@ -263,15 +263,20 @@ def implodeTiles(fromX, fromY):
 
     return conturs
 
-conturs = implodeTiles(500,500)
+paths = []
+for x in range(-15,15):
+    for y in range(-15,15):
+        conturs = implodeTiles(x*R,y*R)
 
-for i in range(len(conturs)):
-    for j in range(len(conturs[i])):
-        p1, p2 = conturs[i][j]
-        conturs[i][j] = (p1[0]/10000,p1[1]/10000)
+        if len(conturs):
+            for i in range(len(conturs)):
+                for j in range(len(conturs[i])):
+                    p1, p2 = conturs[i][j]
+                    conturs[i][j] = (p1[0]/10000,p1[1]/10000)
+            paths.append(conturs)
 
 f = open(path+'/all-lands.json', 'w')
-f.write(json.dumps([conturs]))
+f.write(json.dumps(paths))
 
 if interactiveMode:
         print("conturs writed to all-lands.json")
