@@ -112,7 +112,7 @@ def implodeTiles(fromX, fromY):
             y
         FROM tiles
         WHERE is_land = 1 AND x >= {} AND x < {} AND y >= {} AND y < {};
-    '''.format(fromX,fromX+R,fromY,fromY+R)
+    '''.format(fromX,fromX+R,fromY,fromY+R))
     rows = cursor.fetchall()
     rowsLength = len(rows)
 
