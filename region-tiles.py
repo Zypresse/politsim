@@ -132,10 +132,14 @@ def getPointNumbers(i):
 	a = [(4,5),(5,0),(0,1),(1,2),(2,3),(3,4)]
 	return a[i]
 
-lines = []
+def pointEquals(p1, p2):
+    d = 10
+    return (abs(p1[0]-p2[0]) <= d) and (abs(p1[1]-p2[1]) <= d)
+
 
 def implodeTiles(fromX, fromY):
     R = 100
+    lines = []
     currentTiles = {}
     currentTilesLength = 0
     for x in range(fromX,fromX+R):
@@ -147,6 +151,7 @@ def implodeTiles(fromX, fromY):
 
                     currentTiles[x][y] = tiles[x][y]
                     currentTilesLength += 1
+
 
         
     def isIssetTileByXY(t):
@@ -174,35 +179,94 @@ def implodeTiles(fromX, fromY):
                         lines.append(line)		
             counter += 1
             if interactiveMode:
-                printProgress(counter,tilesLength,"get borders: ")
+                printProgress(counter,currentTilesLength,"get borders: ")
 
     linesLength = len(lines)
+
+
+    def getLeftAndRightIds(line):
+        left = -1
+        right = -1
+        for i in range(linesLength):
+            currentLine = lines[i]
+            if currentLine == line:
+                continue
+            if pointEquals(line[0],currentLine[0]) or pointEquals(line[0],currentLine[1]):
+                left = i                
+            if pointEquals(line[1],currentLine[0]) or pointEquals(line[1],currentLine[1]):
+                right = i
+
+            if left > 0 and right > 0:
+                break
+        return (left, right)
 
     if interactiveMode:
             print ("{} lines found".format(linesLength))
 
+
+    conturs = []
+    linesAdded = []
+
+    def addLine(i):
+        nonlocal counter
+
+        counter += 1
+            if interactiveMode:
+                printProgress(counter,linesLength,"adding lines: ")
+
+        if i in linesAdded:
+            if len(linesAdded) == linesLength:
+                return -1
+            for j in range(0,linesLength):
+                if not j in linesAdded:
+                    return j
+        line = lines[i]
+        linesAdded.append(i)
+            left, right = getLeftAndRightIds(line)
+            
+            if (left < 0) and (right < 0):
+                    if interactiveMode:                
+                            print ("Error, line have no neighbors")
+                            p1, p2 = line
+                            p1 = (p1[0]/10000,p1[1]/10000)
+                            p2 = (p2[0]/10000,p2[1]/10000)
+                            line = (p1, p2)
+                            print (line)
+            quit()
+        elif (left < 0) or (right < 0):
+                    if interactiveMode:
+                            print ("Error, line have only one neighbor")
+                            p1, p2 = line
+                            p1 = (p1[0]/10000,p1[1]/10000)
+                            p2 = (p2[0]/10000,p2[1]/10000)
+                            line = (p1, p2)
+                            print (line)
+            quit()
+
+        for contur in conturs:
+            if lines[right] in contur:
+                contur.append(line)
+                return left
+
+        contur = []
+        contur.append(line)
+        conturs.append(contur)
+        return left
+
+    counter = 0
+    n = 0
+    if interactiveMode:
+            printProgress(0,len(lines)+1,"adding lines: ")
+    while n >= 0:
+        n = addLine(n)
+
+    if interactiveMode:
+            print("Finded {} conturs".format(len(conturs)))
+
 implodeTiles(500,500)
 quit()
 
-def pointEquals(p1, p2):
-	d = 10
-	return (abs(p1[0]-p2[0]) <= d) and (abs(p1[1]-p2[1]) <= d)
 
-def getLeftAndRightIds(line):
-        left = -1
-        right = -1
-        for i in range(linesLength):
-                currentLine = lines[i]
-                if currentLine == line:
-                        continue
-                if pointEquals(line[0],currentLine[0]) or pointEquals(line[0],currentLine[1]):
-                        left = i                
-                if pointEquals(line[1],currentLine[0]) or pointEquals(line[1],currentLine[1]):
-                        right = i
-
-                if left > 0 and right > 0:
-                        break
-        return (left, right)
 
 
 # for i in range(len(lines)):
@@ -212,64 +276,6 @@ def getLeftAndRightIds(line):
 # 	lines[i] = (p1,p2)
 # print (json.dumps(lines))
 
-conturs = []
-linesAdded = []
-
-def addLine(i):
-	global counter
-
-	counter += 1
-        if interactiveMode:
-            printProgress(counter,linesLength,"adding lines: ")
-
-	if i in linesAdded:
-		if len(linesAdded) == linesLength:
-			return -1
-		for j in range(0,linesLength):
-			if not j in linesAdded:
-				return j
-	line = lines[i]
-	linesAdded.append(i)
-        left, right = getLeftAndRightIds(line)
-        
-        if (left < 0) and (right < 0):
-                if interactiveMode:                
-                        print ("Error, line have no neighbors")
-                        p1, p2 = line
-                        p1 = (p1[0]/10000,p1[1]/10000)
-                        p2 = (p2[0]/10000,p2[1]/10000)
-                        line = (p1, p2)
-                        print (line)
-		quit()
-	elif (left < 0) or (right < 0):
-                if interactiveMode:
-                        print ("Error, line have only one neighbor")
-                        p1, p2 = line
-                        p1 = (p1[0]/10000,p1[1]/10000)
-                        p2 = (p2[0]/10000,p2[1]/10000)
-                        line = (p1, p2)
-                        print (line)
-		quit()
-
-	for contur in conturs:
-		if lines[right] in contur:
-			contur.append(line)
-			return left
-
-	contur = []
-	contur.append(line)
-	conturs.append(contur)
-	return left
-
-counter = 0
-n = 0
-if interactiveMode:
-        printProgress(0,len(lines)+1,"adding lines: ")
-while n >= 0:
-	n = addLine(n)
-
-if interactiveMode:
-        print("Finded {} conturs".format(len(conturs)))
 
 
 for i in range(len(conturs)):
