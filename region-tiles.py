@@ -158,7 +158,7 @@ def implodeTiles(fromX, fromY):
     counter = 0
     if interactiveMode:
         printProgress(0,currentTilesLength,"get borders: ")	
-    for x in currentTilesLength:
+    for x in currentTiles:
         for y in currentTiles[x]:
             tile = currentTiles[x][y]
             kray = []
