@@ -97,7 +97,7 @@ cursor = db.execute('''
 		x,
 		y
 	FROM tiles
-	WHERE is_land = 1;
+	WHERE is_land = 1 AND x >= 500 AND x < 600 AND y >= 500 AND x < 600;
 '''.format())
 rows = cursor.fetchall()
 rowsLength = len(rows)
