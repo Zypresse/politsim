@@ -221,16 +221,16 @@ def implodeTiles(fromX, fromY):
                     return j
         line = lines[i]
         linesAdded.append(i)
-            left, right = getLeftAndRightIds(line)
-            
-            if (left < 0) and (right < 0):
-                if interactiveMode:                
-                    print ("Error, line have no neighbors")
-                    p1, p2 = line
-                    p1 = (p1[0]/10000,p1[1]/10000)
-                    p2 = (p2[0]/10000,p2[1]/10000)
-                    line = (p1, p2)
-                    print (line)
+        left, right = getLeftAndRightIds(line)
+        
+        if (left < 0) and (right < 0):
+            if interactiveMode:                
+                print ("Error, line have no neighbors")
+                p1, p2 = line
+                p1 = (p1[0]/10000,p1[1]/10000)
+                p2 = (p2[0]/10000,p2[1]/10000)
+                line = (p1, p2)
+                print (line)
             quit()
         elif (left < 0) or (right < 0):
             if interactiveMode:
