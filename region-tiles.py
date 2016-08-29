@@ -119,7 +119,7 @@ def implodeTiles(fromX, fromY):
     if (rowsLength == 0):
         if interactiveMode:
             print ("0 tiles found")
-        quit()
+        return []
 
     tiles = {}
     counter = 0
