@@ -210,8 +210,8 @@ def implodeTiles(fromX, fromY):
     counter = 0
     def addLine(i):
         counter += 1
-            if interactiveMode:
-                printProgress(counter,linesLength,"adding lines: ")
+        if interactiveMode:
+            printProgress(counter,linesLength,"adding lines: ")
 
         if i in linesAdded:
             if len(linesAdded) == linesLength:
