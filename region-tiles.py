@@ -228,7 +228,7 @@ def implodeTiles(fromX, fromY):
         left, right = getLeftAndRightIds(line)
         
         if (left < 0) and (right < 0):
-            if interactiveMode:                
+            if interactiveMode:    
                 print ("Error, line have no neighbors")
                 print (line)
                 p1, p2 = line
@@ -239,6 +239,9 @@ def implodeTiles(fromX, fromY):
             quit()
         elif (left < 0) or (right < 0):
             if interactiveMode:
+                print('                                     ')
+                print('                                     ')
+                print('                                     ')
                 print ("Error, line have only one neighbor")
                 print (line)
                 p1, p2 = line
