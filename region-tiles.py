@@ -159,7 +159,7 @@ def implodeTiles(fromX, fromY):
             if tile.id in (691644,670905,'691644','670905'):
                 print (tile)
                 for i in range(0,6):
-                    print(i+": " isIssetTileByXY(offsetNeighbor((tile.x,tile.y),i)))
+                    print(i+": "+isIssetTileByXY(offsetNeighbor((tile.x,tile.y),i)))
                 quit()
 
             for i in range(0,6):
