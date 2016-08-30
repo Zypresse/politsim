@@ -24,19 +24,19 @@ def printProgress (iteration, total, prefix = '', suffix = '', decimals = 2, bar
         print("\n")
 
 def getLat(x,y):
-	if y%2 == 0:
-		lat = 0
-	else:
-		lat = 0.0886
+    if y%2 == 0:
+       lat = 0
+    else:
+        lat = 0.0886
 
-	if x > 0:
-		for i in range(0,x):
-			lat += 0.0866*2*correctX(lat)
-	else:
-		for i in range(0,x):
-			lat -= 0.0866*2*correctX(lat)
+    if x > 0:
+        for i in range(0,x):
+        lat += 0.0866*2*correctX(lat)
+    else:
+        for i in range(0,x):
+            lat -= 0.0866*2*correctX(lat)
 
-	return lat;
+    return lat;
 
 def getLng(x,y):
     return y*0.15
@@ -45,39 +45,39 @@ def correctX(x):
     return round(math.cos(x*0.0175)*1.025,4)
 
 class Tile:
-	def __init__(self,id,x,y):
-		self.kray = []
-		self.id = id
-		self.x = x
-		self.y = y
-		self.coords = self.calcCoords()
+    def __init__(self,id,x,y):
+        self.kray = []
+        self.id = id
+        self.x = x
+        self.y = y
+        self.coords = self.calcCoords()
 
-	def calcCoords(self):
-		x = getLat(self.x,self.y)
-		y = getLng(self.x,self.y)
-		xFactor = round(0.0866*correctX(x),4)
-		coords = [
-			(x,y+0.1), # east
-			(x-xFactor,y+0.05), # east-south
-			(x-xFactor,y-0.05), # west-south
-			(x,y-0.1), # west
-			(x+xFactor,y-0.05), # west-nord
-			(x+xFactor,y+0.05) # east-nord
-		]
+    def calcCoords(self):
+        x = getLat(self.x,self.y)
+        y = getLng(self.x,self.y)
+        xFactor = round(0.0866*correctX(x),4)
+        coords = [
+            (x,y+0.1), # east
+            (x-xFactor,y+0.05), # east-south
+            (x-xFactor,y-0.05), # west-south
+            (x,y-0.1), # west
+            (x+xFactor,y-0.05), # west-nord
+            (x+xFactor,y+0.05) # east-nord
+        ]
 
         self.lat = x
         self.lng = y
 
-		return coords
+        return coords
 
 directions = (
-	( #	    nord      n-e       s-e      south      s-w       n-w
-		( (+1,  0), ( 0, +1), (-1, +1), (-1,  0), (-1, -1), ( 0, -1) ), #
-		( (+1,  0), (+1, +1), ( 0, +1), (-1,  0), ( 0, -1), (+1, -1) ), #
-	), (
-		( (+1,  0), ( 0, +1), (-1, +1), (-1,  0), (-1, -1), ( 0, -1) ), #
-		( (+1,  0), (+1, +1), ( 0, +1), (-1,  0), ( 0, -1), (+1, -1) )  #
-    )  
+    ( #	    nord      n-e       s-e      south      s-w       n-w
+        ( (+1,  0), ( 0, +1), (-1, +1), (-1,  0), (-1, -1), ( 0, -1) ), #
+        ( (+1,  0), (+1, +1), ( 0, +1), (-1,  0), ( 0, -1), (+1, -1) ), #
+    ), (
+        ( (+1,  0), ( 0, +1), (-1, +1), (-1,  0), (-1, -1), ( 0, -1) ), #
+        ( (+1,  0), (+1, +1), ( 0, +1), (-1,  0), ( 0, -1), (+1, -1) )  #
+    )
 )
 
 def offsetNeighbor(h, d):
@@ -97,8 +97,8 @@ db = sqlite3.connect(path+'/database/politsim.sqlite')
 
 
 def getPointNumbers(i):
-	a = [(4,5),(5,0),(0,1),(1,2),(2,3),(3,4)]
-	return a[i]
+    a = [(4,5),(5,0),(0,1),(1,2),(2,3),(3,4)]
+    return a[i]
 
 def pointEquals(p1, p2):
     d = 10
@@ -276,4 +276,4 @@ f = open(path+'/all-lands.json', 'w')
 f.write(json.dumps(paths))
 
 if interactiveMode:
-        print("conturs writed to all-lands.json")
+    print("conturs writed to all-lands.json")
