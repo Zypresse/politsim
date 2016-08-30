@@ -222,8 +222,9 @@ def implodeTiles(fromX, fromY):
                 if not j in linesAdded:
                     return j
         line = lines[i]
-        if line == ((888, 662500), (-888, -663500)):
+        if line == ((1774, 698000), (1774, -697000)):
             print ("FUCK")
+            quit()
         linesAdded.append(i)
         left, right = getLeftAndRightIds(line)
         
@@ -232,8 +233,8 @@ def implodeTiles(fromX, fromY):
                 print ("Error, line have no neighbors")
                 print (line)
                 p1, p2 = line
-                p1 = (p1[0]/10000,p1[1]/10000)
-                p2 = (p2[0]/10000,p2[1]/10000)
+                p1 = (float(p1[0])/10000,float(p1[1])/10000)
+                p2 = (float(p2[0])/10000,float(p2[1])/10000)
                 line = (p1, p2)
                 print (line)
             quit()
@@ -245,8 +246,8 @@ def implodeTiles(fromX, fromY):
                 print ("Error, line have only one neighbor")
                 print (line)
                 p1, p2 = line
-                p1 = (p1[0]/10000,p1[1]/10000)
-                p2 = (p2[0]/10000,p2[1]/10000)
+                p1 = (float(p1[0])/10000,float(p1[1])/10000)
+                p2 = (float(p2[0])/10000,float(p2[1])/10000)
                 line = (p1, p2)
                 print (line)
             quit()
@@ -282,7 +283,7 @@ for x in range(-15,15):
             for i in range(len(conturs)):
                 for j in range(len(conturs[i])):
                     p1, p2 = conturs[i][j]
-                    conturs[i][j] = (p1[0]/10000,p1[1]/10000)
+                    conturs[i][j] = (float(p1[0])/10000,float(p1[1])/10000)
             paths.append(conturs)
 
 f = open(path+'/all-lands.json', 'w')
