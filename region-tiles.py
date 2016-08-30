@@ -23,6 +23,9 @@ def printProgress (iteration, total, prefix = '', suffix = '', decimals = 2, bar
     if iteration == total:
         print("\n")
 
+def correctX(x):
+    return round(math.cos(x*0.0175)*1.025,4)
+
 def getLat(x,y):
     if y%2 == 0:
         lat = 0
@@ -40,9 +43,6 @@ def getLat(x,y):
 
 def getLng(x,y):
     return y*0.15
-
-def correctX(x):
-    return round(math.cos(x*0.0175)*1.025,4)
 
 class Tile:
     def __init__(self,id,x,y):
@@ -168,7 +168,7 @@ def implodeTiles(fromX, fromY):
                     point1, point2 = tile.coords[i1], tile.coords[i2]
                     line = ((int(round(point1[0]*10000)), int(round(point1[1]*10000))), (int(round(point2[0]*10000)), int(round(point2[1]*10000))))
                     if line == ((-888, -662500), (-888, -663500)):
-                        print (i,tile.x,tile.y,(tile.lat, tile.lng))
+                        print (i,tile.id)
                         quit()
                     if not line in lines:
                         lines.append(line)		
