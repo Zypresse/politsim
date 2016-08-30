@@ -156,12 +156,6 @@ def implodeTiles(fromX, fromY):
         for y in tiles[x]:
             tile = tiles[x][y]
             kray = []
-            if tile.id in (670882,670922,'670882','670922'):
-                print (tile.id)
-                print (tile)
-                for i in range(0,6):
-                    print(i+": "+isIssetTileByXY(offsetNeighbor((tile.x,tile.y),i)))
-                quit()
 
             for i in range(0,6):
                 if not isIssetTileByXY(offsetNeighbor((tile.x,tile.y),i)):
@@ -174,9 +168,9 @@ def implodeTiles(fromX, fromY):
                     if line == ((1774, -698000), (1774, -697000)):
                         print ("FUCK")
                         print (tile.id)
-                        print (tile)
+                        print (tile.x, tile.y)
                         for i in range(0,6):
-                            print(i+": "+isIssetTileByXY(offsetNeighbor((tile.x,tile.y),i)))
+                            print(i,": ",isIssetTileByXY(offsetNeighbor((tile.x,tile.y),i)))
                         quit()
 
                     if not line in lines:
@@ -223,9 +217,6 @@ def implodeTiles(fromX, fromY):
                 if not j in linesAdded:
                     return j
         line = lines[i]
-        if line == ((1774, -698000), (1774, -697000)):
-            print ("FUCK")
-            quit()
         linesAdded.append(i)
         left, right = getLeftAndRightIds(line)
         
