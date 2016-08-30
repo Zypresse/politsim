@@ -144,7 +144,6 @@ def implodeTiles(fromX, fromY):
     lines = []
         
     def isIssetTileByXY(t):
-        print(len(tiles))
         if t[0] in tiles:
             if t[1] in tiles[t[0]]:                        
                 return True;
@@ -172,6 +171,7 @@ def implodeTiles(fromX, fromY):
                         print (tile.x, tile.y)
                         for i in range(0,6):
                             print(i,": ",isIssetTileByXY(offsetNeighbor((tile.x,tile.y),i)))
+                        print (offsetNeighbor((tile.x,tile.y),5))
                         quit()
 
                     if not line in lines:
