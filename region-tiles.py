@@ -130,7 +130,7 @@ def implodeTiles(fromX, fromY):
 
         if not tile.x in tiles:
             tiles[tile.x] = {}
-            tiles[tile.x][tile.y] = tile
+        tiles[tile.x][tile.y] = tile
                 
         counter += 1
         # if interactiveMode:
