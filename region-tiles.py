@@ -123,7 +123,7 @@ def implodeTiles(fromX, fromY):
     print(fromX,fromX+R,fromY,fromY+R)
     tiles = {}
     counter = 0
-    if interactiveMode:
+    # if interactiveMode:
         # printProgress(0,rowsLength,"loading tiles: ")
     for row in rows:
         tile = Tile(row[0],row[1],row[2])
@@ -133,7 +133,7 @@ def implodeTiles(fromX, fromY):
             tiles[tile.x][tile.y] = tile
                 
         counter += 1
-        if interactiveMode:
+        # if interactiveMode:
             # printProgress(counter,rowsLength,"loading tiles: ")
 
     tilesLength = rowsLength
@@ -150,7 +150,7 @@ def implodeTiles(fromX, fromY):
         return False
 
     counter = 0
-    if interactiveMode:
+    # if interactiveMode:
         # printProgress(0,tilesLength,"get borders: ")	
     for x in tiles:
         for y in tiles[x]:
@@ -177,7 +177,7 @@ def implodeTiles(fromX, fromY):
                     if not line in lines:
                         lines.append(line)		
             counter += 1
-            if interactiveMode:
+            # if interactiveMode:
                 # printProgress(counter,tilesLength,"get borders: ")
 
     linesLength = len(lines)
