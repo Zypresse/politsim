@@ -222,12 +222,15 @@ def implodeTiles(fromX, fromY):
                 if not j in linesAdded:
                     return j
         line = lines[i]
+        if line == ((888, 662500), (-888, -663500)):
+            print ("FUCK")
         linesAdded.append(i)
         left, right = getLeftAndRightIds(line)
         
         if (left < 0) and (right < 0):
             if interactiveMode:                
                 print ("Error, line have no neighbors")
+                print (line)
                 p1, p2 = line
                 p1 = (p1[0]/10000,p1[1]/10000)
                 p2 = (p2[0]/10000,p2[1]/10000)
@@ -237,6 +240,7 @@ def implodeTiles(fromX, fromY):
         elif (left < 0) or (right < 0):
             if interactiveMode:
                 print ("Error, line have only one neighbor")
+                print (line)
                 p1, p2 = line
                 p1 = (p1[0]/10000,p1[1]/10000)
                 p2 = (p2[0]/10000,p2[1]/10000)
