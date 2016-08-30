@@ -170,6 +170,14 @@ def implodeTiles(fromX, fromY):
                     i1, i2 = getPointNumbers(i)
                     point1, point2 = tile.coords[i1], tile.coords[i2]
                     line = ((round(point1[0]*10000), round(point1[1]*10000)), (round(point2[0]*10000), round(point2[1]*10000)))
+                    if line == ((888, 662500), (-888, -663500)):
+                        print ("FUCK")
+                        print (tile.id)
+                        print (tile)
+                        for i in range(0,6):
+                            print(i+": " isIssetTileByXY(offsetNeighbor((tile.x,tile.y),i)))
+                        quit()
+
                     if not line in lines:
                         lines.append(line)		
             counter += 1
