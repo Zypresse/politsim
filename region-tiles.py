@@ -65,7 +65,10 @@ class Tile:
 			(x+xFactor,y+0.05) # east-nord
 		]
 
-		return coords;
+        self.lat = x
+        self.lng = y
+
+		return coords
 
 directions = (
 	( #	    nord      n-e       s-e      south      s-w       n-w
@@ -165,7 +168,7 @@ def implodeTiles(fromX, fromY):
                     point1, point2 = tile.coords[i1], tile.coords[i2]
                     line = ((int(round(point1[0]*10000)), int(round(point1[1]*10000))), (int(round(point2[0]*10000)), int(round(point2[1]*10000))))
                     if line == ((-888, -662500), (-888, -663500)):
-                        print (i,tile.x,tile.y,getPointNumbers(i),tile.coords[i1], tile.coords[i2])
+                        print (i,tile.x,tile.y,(tile.lat, tile.lng))
                         quit()
                     if not line in lines:
                         lines.append(line)		
