@@ -144,6 +144,7 @@ def implodeTiles(fromX, fromY):
     lines = []
         
     def isIssetTileByXY(t):
+        print(len(tiles))
         if t[0] in tiles:
             if t[1] in tiles[t[0]]:                        
                 return True;
