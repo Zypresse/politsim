@@ -160,6 +160,8 @@ def implodeTiles(fromX, fromY):
             kray = []
 
             for i in range(0,6):
+                if tile.id == 633146:
+                    print (i,isIssetTileByXY(offsetNeighbor((tile.x,tile.y),i)))
                 if not isIssetTileByXY(offsetNeighbor((tile.x,tile.y),i)):
                     kray.append(i)
             if len(kray):
