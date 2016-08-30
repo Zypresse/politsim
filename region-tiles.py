@@ -164,6 +164,9 @@ def implodeTiles(fromX, fromY):
                     i1, i2 = getPointNumbers(i)
                     point1, point2 = tile.coords[i1], tile.coords[i2]
                     line = ((int(round(point1[0]*10000)), int(round(point1[1]*10000))), (int(round(point2[0]*10000)), int(round(point2[1]*10000))))
+                    if line == ((-888, -662500), (-888, -663500)):
+                        print (i,tile.x,tile.y)
+                        quit()
                     if not line in lines:
                         lines.append(line)		
             counter += 1
