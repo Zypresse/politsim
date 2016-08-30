@@ -25,13 +25,13 @@ def printProgress (iteration, total, prefix = '', suffix = '', decimals = 2, bar
 
 def getLat(x,y):
     if y%2 == 0:
-       lat = 0
+        lat = 0
     else:
         lat = 0.0886
 
     if x > 0:
         for i in range(0,x):
-        lat += 0.0866*2*correctX(lat)
+            lat += 0.0866*2*correctX(lat)
     else:
         for i in range(0,x):
             lat -= 0.0866*2*correctX(lat)
@@ -63,7 +63,7 @@ class Tile:
             (x,y-0.1), # west
             (x+xFactor,y-0.05), # west-nord
             (x+xFactor,y+0.05) # east-nord
-        ];
+        ]
 
         self.lat = x
         self.lng = y
