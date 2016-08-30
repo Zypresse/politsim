@@ -175,7 +175,7 @@ def implodeTiles(fromX, fromY):
                         print (tile.id)
                         print (tile)
                         for i in range(0,6):
-                            print(i+": " isIssetTileByXY(offsetNeighbor((tile.x,tile.y),i)))
+                            print(i+": "+isIssetTileByXY(offsetNeighbor((tile.x,tile.y),i)))
                         quit()
 
                     if not line in lines:
