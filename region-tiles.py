@@ -101,11 +101,11 @@ def getPointNumbers(i):
     return a[i]
 
 def pointEquals(p1, p2):
-    d = 10
+    d = 1000
     return (abs(p1[0]-p2[0]) <= d) and (abs(p1[1]-p2[1]) <= d)
 
 
-R = 100
+R = 200
 def implodeTiles(fromX, fromY):
 
     cursor = db.execute(''' 
@@ -160,7 +160,7 @@ def implodeTiles(fromX, fromY):
             kray = []
 
             for i in range(0,6):
-                if tile.id == 633146:
+                if tile.id == 633107:
                     print (i,isIssetTileByXY(offsetNeighbor((tile.x,tile.y),i)))
                 if not isIssetTileByXY(offsetNeighbor((tile.x,tile.y),i)):
                     kray.append(i)
@@ -169,9 +169,8 @@ def implodeTiles(fromX, fromY):
                     i1, i2 = getPointNumbers(i)
                     point1, point2 = tile.coords[i1], tile.coords[i2]
                     line = ((int(round(point1[0]*10000)), int(round(point1[1]*10000))), (int(round(point2[0]*10000)), int(round(point2[1]*10000))))
-                    if line == ((-888, -662500), (-888, -663500)):
-                        print (i,tile.id)
-                        quit()
+                    if i == 4 and tile.id == 633107:
+                        print(line)
                     if not line in lines:
                         lines.append(line)		
             counter += 1
@@ -204,10 +203,7 @@ def implodeTiles(fromX, fromY):
     conturs = []
     linesAdded = []
 
-    counter = 0
-    def addLine(i, counter):
-        if interactiveMode:
-            printProgress(counter,linesLength,"adding lines: ")
+    def addLine(i,counter):
 
         if i in linesAdded:
             if len(linesAdded) == linesLength:
@@ -215,6 +211,11 @@ def implodeTiles(fromX, fromY):
             for j in range(0,linesLength):
                 if not j in linesAdded:
                     return j
+
+        counter += 1
+        if interactiveMode:
+            printProgress(counter,linesLength,"adding lines: ")
+
         line = lines[i]
         linesAdded.append(i)
         left, right = getLeftAndRightIds(line)
@@ -254,8 +255,7 @@ def implodeTiles(fromX, fromY):
     if interactiveMode:
         printProgress(0,len(lines)+1,"adding lines: ")
     while n >= 0:
-        counter += 1
-        n = addLine(n, counter)
+        n = addLine(n,0)
 
     if interactiveMode:
         print("Finded {} conturs".format(len(conturs)))
