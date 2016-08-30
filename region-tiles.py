@@ -63,7 +63,7 @@ class Tile:
             (x,y-0.1), # west
             (x+xFactor,y-0.05), # west-nord
             (x+xFactor,y+0.05) # east-nord
-        ]
+        ];
 
         self.lat = x
         self.lng = y
