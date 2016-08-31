@@ -291,4 +291,9 @@ class User extends MyModel implements TaxPayer, IdentityInterface
     {
         return [];
     }
+
+    public function getCitizenships()
+    {
+	return $this->hasMany(Citizenship::classname(), ['userId' => 'id']);
+    }
 }
