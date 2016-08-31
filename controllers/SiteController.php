@@ -140,17 +140,16 @@ class SiteController extends Controller
         
         if (Yii::$app->user->isGuest) {
             if ($account && $account->user) { // login
-                $user = $account->user;
-                Account::updateUserInfo($user, $sourceType, $attributes, true);
-                Yii::$app->user->login($user, 30*24*60*60);
-                if ($user->isInvited) {
-                    $this->redirect("/");
-                } else {
-                    $this->redirect("invite");
-                }
+                Account::updateUserInfo($account->user, $sourceType, $attributes, true);
+                Yii::$app->user->login($account->user, 30*24*60*60);
             } else { // signup
-                var_dump(Account::signUp($sourceType, $attributes));
-                exit();
+                $account = Account::signUp($sourceType, $attributes);
+            }
+
+            if ($account->user->isInvited) {
+                $this->redirect("/");
+            } else {
+                $this->redirect("invite");
             }
         } else { // user already logged in
             if (!$account) { // add auth provider
