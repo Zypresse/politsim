@@ -53,7 +53,7 @@ class Account extends MyModel
     public static function signUp($sourceType, $attributes)
     {
         $user = new User([
-            'locationId' => 1
+            'cityId' => 1
         ]);
         
         $user->updateLastLogin();
