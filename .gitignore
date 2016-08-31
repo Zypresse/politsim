@@ -63,3 +63,4 @@ tests/codeception/
 yii.bat
 
 composer.lock
+all-lands.json
