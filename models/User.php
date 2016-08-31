@@ -27,7 +27,7 @@ use Yii,
  * @property integer $successBase Успешность базовая * 
  * @property integer $dateCreated Дата регистрации
  * @property integer $dateLastLogin Дата последнего входа
- * @property integer $isInvited Флаг есть ли инвайт у юзера
+ * @property boolean $isInvited Флаг есть ли инвайт у юзера
  * @property integer $utr ИНН
  * 
  * @property string $authKey Авторизационный ключ
