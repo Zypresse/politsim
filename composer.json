@@ -8,7 +8,7 @@
     "support": {
         "issues": "https://github.com/LazzyTeam/politsim/issues?state=open",
         "forum": "http://vk.com/politsim/",
-        "wiki": "http://wiki-politsim.lazzyteam.pw/",
+        "wiki": "http://wiki.politsim.lazzyteam.pw/",
         "source": "https://github.com/LazzyTeam/politsim"
     },
     "minimum-stability": "stable",

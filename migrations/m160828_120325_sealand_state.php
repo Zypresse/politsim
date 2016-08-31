@@ -22,6 +22,8 @@ class m160828_120325_sealand_state extends Migration
             'population' => 'UNSIGNED INTEGER NOT NULL DEFAULT 0',
             'usersCount' => 'UNSIGNED INTEGER NOT NULL DEFAULT 0',
             'usersFame' => 'UNSIGNED INTEGER NOT NULL DEFAULT 0',
+            'dateCreated' => 'UNSIGNED INTEGER NOT NULL',
+            'dateDeleted' => 'UNSIGNED INTEGER DEFAULT NULL',
             'utr' => 'UNSIGNED INTEGER REFERENCES utr(id) DEFAULT NULL'
         ]);
         
@@ -31,7 +33,8 @@ class m160828_120325_sealand_state extends Migration
             'flag' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Flag_of_Sealand.svg/320px-Flag_of_Sealand.svg.png',
             'athem' => 'https://soundcloud.com/sien69/e-mare-libertas',
             'mapColor' => 'ff0000',
-            'population' => 11
+            'population' => 11,
+            'dateCreated' => time()
         ]);
     }
 

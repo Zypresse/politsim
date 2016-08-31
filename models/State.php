@@ -22,6 +22,8 @@ use Yii,
  * @property integer $population
  * @property integer $usersCount
  * @property integer $usersFame
+ * @property integer $dateCreated
+ * @property integer $dateDeleted
  * @property integer $utr
  * 
  * @property City $city
@@ -31,6 +33,28 @@ use Yii,
  */
 class State extends MyModel implements TaxPayer
 {
+    
+    /**
+     * @inheritdoc
+     */
+    public static function tableName()
+    {
+        return 'states';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        return [
+            [['name', 'nameShort'], 'required'],
+            [['name'], 'string', 'max' => 255],
+            [['nameShort', 'mapColor'], 'string', 'max' => 6],
+            [['flag', 'athem'], 'string'],
+            [['cityId', 'govermentFormId', 'stateStructureId', 'population', 'usersCount', 'usersFame', 'dateCreated', 'dateDeleted', 'utr'], 'integer', 'min' => 0],
+        ];
+    }
     
     /**
      * Возвращает константное значение типа налогоплательщика
