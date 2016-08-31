@@ -53,10 +53,15 @@ class SiteController extends Controller
     
     public function actionIndex()
     {
-        if (Yii::$app->user->isGuest || Yii::$app->user->identity->isInvited) {
-            return $this->render('index');
-        } else {
-            return $this->redirect(["invite"]);
+        if (Yii::$app->user->isGuest) {
+            $this->layout = 'fullpage';
+            return $this->render('homepage');
+        } else {            
+            if (Yii::$app->user->identity->isInvited) {
+                return $this->render('index');
+            } else {
+                return $this->redirect(["invite"]);
+            }
         }
     }
     
@@ -166,9 +171,8 @@ class SiteController extends Controller
 
     public function actionInvite()
     {
-        
-        if (!Yii::$app->user->isGuest) {
-        
+        $this->layout = 'fullpage';
+        if (!Yii::$app->user->isGuest && !Yii::$app->user->identity->isInvited) {
             $model = new InviteForm();
 
             if (Yii::$app->request->isPost) {
@@ -177,7 +181,7 @@ class SiteController extends Controller
                     $invite = $model->getInvite();
                     if ($invite) {
                         $invite->activateUser(Yii::$app->user->identity);
-                        $this->redirect("/");
+                        $this->redirect('/');
                     } else {
                         $model->addError('imageFile', Yii::t('app', 'Invalid invite'));
                     }
@@ -186,7 +190,7 @@ class SiteController extends Controller
 
             return $this->render('invite', ['model' => $model]);
         } else {
-            $this->redirect("/");
+            $this->redirect('/');
         }
     }
         

@@ -181,8 +181,8 @@ function request(pageUrl,postParams,requestType,callback,noError,method)
     method = method || 'GET';
     noError = noError || false;
     postParams = postParams || {};
-    postParams.viewer_id = viewer_id;
-    postParams.auth_key = auth_key;
+//    postParams.viewer_id = viewer_id;
+//    postParams.auth_key = auth_key;
     
 //    $("#spinner").fadeIn("fast");
     $('#error_block').slideUp();

@@ -1,28 +1,29 @@
 <?php
 
-use yii\widgets\ActiveForm;
+use yii\bootstrap\ActiveForm,
+    app\components\MyHtmlHelper;
 
 /* @var $this yii\web\View */
-$this->title = 'Political Simulator';
+/* @var $model app\models\InviteForm */
+
+$this->title = Yii::t('app', 'Activate account | Political Simulator');
 
 ?>
+<header id="top" class="header">
+    <div class="text-vertical-center container">
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2 col-sm-12">
+                <h1>Political Simulator</h1>
+                <h3><?=Yii::t('app','Upload your invite picture')?></h3>
+                <br>
+                <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data'], 'class' => "form-group"]) ?>
 
-<div class="content" style="background-color: white">
-    <div class="col-md-6">
-        <h3>Загрузите картинку-инвайт, чтобы получить доступ к игре</h3>
-        <?php if ($model->getErrors()): ?>
-        <ul style="color:red">
-            <?php foreach ($model->getErrors()['imageFile'] as $error): ?>
-            <li><?=$error?></li>
-            <?php endforeach ?>
-        </ul>
-        <?php endif ?>
-        <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]) ?>
+                    <?= $form->field($model, 'imageFile')->fileInput(['style' => 'display: inline']) ?>
 
-            <?= $form->field($model, 'imageFile')->fileInput() ?>
+                    <button class="btn btn-lg btn-primary"><?=Yii::t('app', 'Upload')?></button>
 
-            <button class="btn btn-primary">Загрузить</button>
-
-        <?php ActiveForm::end() ?>
+                <?php ActiveForm::end() ?>
+            </div>
+        </div>
     </div>
-</div>
+</header>
