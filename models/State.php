@@ -4,8 +4,7 @@ namespace app\models;
 
 use Yii,
     app\components\MyModel,
-    app\components\TaxPayer,
-    app\components\LinkHelper;
+    app\components\TaxPayer;
 
 /**
  * Государство
@@ -167,25 +166,7 @@ class State extends MyModel implements TaxPayer
     {
         return false;
     }    
-    
-    public function validateAnthem()
-    {
-        if (!LinkHelper::isSoundCloudLink($this->anthem)) {
-            $this->addError('anthem', Yii::t('app', 'Anthem are not valid SoundCloud link'));
-            return false;
-        }
-        return true;
-    }
-    
-    public function validateFlag()
-    {
-        if (!LinkHelper::isImageLink($this->flag)) {
-            $this->addError('flag', Yii::t('app', 'Flag are not valid image link'));
-            return false;
-        }
-        return true;
-    }
-    
+        
     private $_govermentForm = null;
     public function getGovermentForm()
     {

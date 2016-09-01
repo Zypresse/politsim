@@ -64,7 +64,7 @@ use yii\helpers\Html,
                             <table class="table table-bordered no-margin">
                                 <tbody>
                                     <tr>
-                                        <td><strong><i class="fa fa-group"></i> <?=Yii::t('app', 'Capital city')?></strong></td>
+                                        <td><strong><i class="fa fa-building"></i> <?=Yii::t('app', 'Capital city')?></strong></td>
                                         <td>
                                             <?php if ($state->city): ?>
                                                 <a href="#!city&id=<?=$state->cityId?>"><?=Html::encode($state->city->name)?></a>

@@ -3,8 +3,7 @@
 namespace app\models;
 
 use app\components\MyModel,
-    app\components\TaxPayer,
-    app\models\User;
+    app\components\TaxPayer;
 
 /**
  * Универсальный ИНН для всех платежей. Таблица "utr".
@@ -29,11 +28,14 @@ class Utr extends MyModel
     const TYPE_STATE = 9;
     const TYPE_BUILDINGTWOTILED = 10;
     const TYPE_UNIT = 11;
+    const TYPE_CITY = 12;
     
     private function typeToClass()
     {
         return [
-            static::TYPE_USER => User::className()
+            static::TYPE_USER => User::className(),
+            static::TYPE_STATE => State::className(),
+            static::TYPE_CITY => City::className(),
         ];
     }
 

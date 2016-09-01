@@ -28,6 +28,8 @@ class m160828_120325_sealand_state extends Migration
         ]);
         
         $this->insert('states', [
+            'id' => 1,
+            'cityId' => 1,
             'name' => 'Principality of Sealand',
             'nameShort' => 'SEA',
             'flag' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Flag_of_Sealand.svg/320px-Flag_of_Sealand.svg.png',
