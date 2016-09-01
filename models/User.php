@@ -262,7 +262,7 @@ class User extends MyModel implements TaxPayer, IdentityInterface
     private $_ideology = null;
     public function getIdeology()
     {
-        if (is_null($this->_ideology) && $this->ideologyId) {
+        if (is_null($this->_ideology)) {
             $this->_ideology = Ideology::findOne($this->ideologyId);
         }
         return $this->_ideology;
@@ -271,7 +271,7 @@ class User extends MyModel implements TaxPayer, IdentityInterface
     private $_religion = null;
     public function getReligion()
     {
-        if (is_null($this->_religion) && $this->religionId) {
+        if (is_null($this->_religion)) {
             $this->_religion = Religion::findOne($this->religionId);
         }
         return $this->_religion;

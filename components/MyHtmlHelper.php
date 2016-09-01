@@ -154,30 +154,38 @@ class MyHtmlHelper {
     // Например 0 комментариев, 1 комментарий, 2 комментария
     // На вход подается число и 3 варианта написание соответствующие 0,1 и 2
     // На выходе - строка в правильного вида.
-    public static function formateNumberword($n, $s1, $s2 = false, $s3 = false)
+    public static function formateNumberword($n, $s1 = false, $s2 = false, $s3 = false)
     {
+        $pref = ($n < 0) ? '-' : '';
+        $n = abs($n);
+        $number = $pref . number_format($n, 0, '', ' ');
+        
+        if ($s1 === false) {
+            return $number;
+        }
+        
         if ($s1 === 'h') {
             $s1 = 'человек';
             $s2 = 'человек';
             $s3 = 'человека';
         }
-        if ($s2 === false)
+        if ($s2 === false) {
             $s2 = $s1;
-        if ($s3 === false)
+        }
+        if ($s3 === false) {
             $s3 = $s1;
+        }
 
-        $pref = ($n < 0) ? '-' : '';
-        $n = abs($n);
         if ($n === 0) {
             return '0 ' . $s1;
-        } else if ($n === 1 || ($n % 10 === 1 && $n % 100 != 11 && $n != 11)) {
-            return $pref . number_format($n, 0, '', ' ') . ' ' . $s2;
-        } else if ($n > 100 && $n % 100 >= 12 && $n % 100 <= 14) {
-            return $pref . number_format($n, 0, '', ' ') . ' ' . $s1;
-        } else if (($n % 10 >= 2 && $n % 10 <= 4 && $n > 20) || ($n >= 2 && $n <= 4)) {
-            return $pref . number_format($n, 0, '', ' ') . ' ' . $s3;
+        } elseif ($n === 1 || ($n % 10 === 1 && $n % 100 != 11 && $n != 11)) {
+            return $number . ' ' . $s2;
+        } elseif ($n > 100 && $n % 100 >= 12 && $n % 100 <= 14) {
+            return $number . ' ' . $s1;
+        } elseif (($n % 10 >= 2 && $n % 10 <= 4 && $n > 20) || ($n >= 2 && $n <= 4)) {
+            return $number . ' ' . $s3;
         } else {
-            return $pref . number_format($n, 0, '', ' ') . ' ' . $s1;
+            return $number . ' ' . $s1;
         }
     }
 

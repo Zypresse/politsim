@@ -29,6 +29,8 @@ use Yii,
  * 
  * @property City $city
  * @property Constitution $constitution
+ * @property GovermentForm $govermentForm
+ * @property StateStructure $stateStructure
  *
  * @author ilya
  */
@@ -182,5 +184,33 @@ class State extends MyModel implements TaxPayer
             return false;
         }
         return true;
+    }
+    
+    private $_govermentForm = null;
+    public function getGovermentForm()
+    {
+        if (is_null($this->_govermentForm)) {
+            $this->_govermentForm = GovermentForm::findOne($this->govermentFormId);
+        }
+        return $this->_govermentForm;
+    }
+    
+    private $_stateStructure = null;
+    public function getStateStructure()
+    {
+        if (is_null($this->_stateStructure)) {
+            $this->_stateStructure = StateStructure::findOne($this->stateStructureId);
+        }
+        return $this->_stateStructure;
+    }
+    
+    public function getCity()
+    {
+        return $this->hasOne(City::classname(), ['id' => 'cityId']);
+    }
+    
+    public function getConstitution()
+    {
+        return $this->hasOne(Constitution::classname(), ['stateId' => 'id']);
     }
 }
