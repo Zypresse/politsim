@@ -4,7 +4,8 @@ namespace app\models;
 
 use Yii,
     app\components\MyModel,
-    app\components\TaxPayer;
+    app\components\TaxPayer,
+    app\components\LinkHelper;
 
 /**
  * Государство
@@ -14,7 +15,7 @@ use Yii,
  * @property string $nameShort
  * @property string $nameShort
  * @property string $flag
- * @property string $athem
+ * @property string $anthem
  * @property integer $cityId
  * @property string $mapColor
  * @property integer $govermentFormId
@@ -51,8 +52,10 @@ class State extends MyModel implements TaxPayer
             [['name', 'nameShort'], 'required'],
             [['name'], 'string', 'max' => 255],
             [['nameShort', 'mapColor'], 'string', 'max' => 6],
-            [['flag', 'athem'], 'string'],
+            [['flag', 'anthem'], 'string'],
             [['cityId', 'govermentFormId', 'stateStructureId', 'population', 'usersCount', 'usersFame', 'dateCreated', 'dateDeleted', 'utr'], 'integer', 'min' => 0],
+            [['anthem'], 'validateAnthem'],
+            [['flag'], 'validateFlag'],
         ];
     }
     
@@ -162,4 +165,22 @@ class State extends MyModel implements TaxPayer
     {
         return false;
     }    
+    
+    public function validateAnthem()
+    {
+        if (!LinkHelper::isSoundCloudLink($this->anthem)) {
+            $this->addError('anthem', Yii::t('app', 'Anthem are not valid SoundCloud link'));
+            return false;
+        }
+        return true;
+    }
+    
+    public function validateFlag()
+    {
+        if (!LinkHelper::isImageLink($this->flag)) {
+            $this->addError('flag', Yii::t('app', 'Flag are not valid image link'));
+            return false;
+        }
+        return true;
+    }
 }

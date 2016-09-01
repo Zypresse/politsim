@@ -14,7 +14,7 @@ class m160828_120325_sealand_state extends Migration
             'name' => 'VARCHAR(255) NOT NULL',
             'nameShort' => 'VARCHAR(6) NOT NULL',
             'flag' => 'TEXT DEFAULT NULL',
-            'athem' => 'TEXT DEFAULT NULL',
+            'anthem' => 'TEXT DEFAULT NULL',
             'cityId' => 'UNSIGNED INTEGER REFERENCES cities(id) DEFAULT NULL',
             'mapColor' => 'VARCHAR(6) DEFAULT NULL',
             'govermentFormId' => 'UNSIGNED INTEGER(3) DEFAULT NULL',
@@ -31,7 +31,7 @@ class m160828_120325_sealand_state extends Migration
             'name' => 'Principality of Sealand',
             'nameShort' => 'SEA',
             'flag' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Flag_of_Sealand.svg/320px-Flag_of_Sealand.svg.png',
-            'athem' => 'https://soundcloud.com/sien69/e-mare-libertas',
+            'anthem' => 'https://soundcloud.com/sien69/e-mare-libertas',
             'mapColor' => 'ff0000',
             'population' => 11,
             'dateCreated' => time()
