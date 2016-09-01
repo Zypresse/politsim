@@ -733,3 +733,11 @@ ul.twPc-Arrange {
 .chat .item > .message > .name {
     max-width: 330px;
 }
+
+#chart_states img {
+    max-width: 50px;
+}
+
+#page_content .pagination > li > a, #page_content .pagination > li > span {
+    text-decoration: none;
+}

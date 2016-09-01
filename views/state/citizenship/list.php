@@ -17,18 +17,22 @@ use yii\helpers\Html;
     </ol>
 </section>
 <section class="content">
-    <?php if (count($list)): ?>
-        <?php foreach ($list as $citizenship): ?>
-        <?=$citizenship->dateCreated?>
-        <?php endforeach ?>
-    <?php else: ?>
-    <h3><?=Yii::t('app', 'You have no one citizenship')?></h3>
-    <p><?=Yii::t('app', 'Use one of this pages to select state:')?>
-    <a class="btn btn-primary" href="#!chart-states">
-        <i class="fa fa-th-list"></i> <?=Yii::t('app', 'States chart')?>
-    </a>
-    <a class="btn btn-info" href="#!map">
-        <i class="fa fa-flag"></i> <?=Yii::t('app', 'Political map')?>
-    </a></p>
-    <?php endif ?>
+    <div class="box">
+        <div class="box-body">
+            <?php if (count($list)): ?>
+                <?php foreach ($list as $citizenship): ?>
+                <?=$citizenship->dateCreated?>
+                <?php endforeach ?>
+            <?php else: ?>
+            <h3><?=Yii::t('app', 'You have no one citizenship')?></h3>
+            <p><?=Yii::t('app', 'Use one of this pages to select state:')?>
+            <a class="btn btn-primary" href="#!chart/states">
+                <i class="fa fa-th-list"></i> <?=Yii::t('app', 'States chart')?>
+            </a>
+            <a class="btn btn-info" href="#!map">
+                <i class="fa fa-flag"></i> <?=Yii::t('app', 'Political map')?>
+            </a></p>
+            <?php endif ?>
+        </div>
+    </div>
 </section>
