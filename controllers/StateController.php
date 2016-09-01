@@ -3,7 +3,8 @@
 namespace app\controllers;
 
 use Yii,
-    app\components\MyController;
+    app\components\MyController,
+    app\models\State;
 /**
  * Description of StateController
  *
@@ -16,11 +17,18 @@ class StateController extends MyController
     {
         if (!$id) {
             return $this->render('citizenship/list', [
-                'user' => $this->user,
-		'list' => $this->user->citizenships
+		'list' => $this->user->citizenships,
+                'user' => $this->user
 	    ]);
         } else {
-            return $this->render('view');
+            $state = State::findByPk($id);
+            if (is_null($state)) {
+                return $this->_r("State not found");
+            }
+            return $this->render('view', [
+                'state' => $state,
+                'user' => $this->user
+            ]);
         }
     }
     

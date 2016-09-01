@@ -27,7 +27,7 @@ use yii\helpers\Html,
                 <?php foreach ($list as $state): ?>
                     <tr>
                         <td><?=Html::img($state->flag)?></td>
-                        <td><a href="#" onclick="load_page('state-info', {'id':<?= $state->id ?>})"><?= Html::encode($state->name) ?></a></td>
+                        <td><a href="#!state&id=<?=$state->id?>"><?= Html::encode($state->name) ?></a></td>
                         <td><i class="fa fa-group"></i> <?= MyHtmlHelper::formateNumberword($state->population, 'h') ?></td>
                     </tr>
                 <?php endforeach ?>
