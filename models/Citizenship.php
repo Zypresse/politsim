@@ -24,7 +24,7 @@ class Citizenship extends MyModel {
      */
     public static function tableName()
     {
-        return 'accounts';
+        return 'citizenships';
     }
 
     /**

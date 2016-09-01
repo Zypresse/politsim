@@ -16,6 +16,7 @@ class StateController extends MyController
     {
         if (!$id) {
             return $this->render('citizenship/list', [
+                'user' => $this->user,
 		'list' => $this->user->citizenships
 	    ]);
         } else {
