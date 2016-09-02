@@ -733,3 +733,8 @@ ul.twPc-Arrange {
 #page_content .pagination > li > a, #page_content .pagination > li > span {
     text-decoration: none;
 }
+
+.leaflet-container .leaflet-control-attribution {
+    opacity: 0.5;
+    font-size: 5px;
+}

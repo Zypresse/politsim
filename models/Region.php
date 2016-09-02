@@ -20,9 +20,12 @@ use Yii,
  * @property integer $usersCount
  * @property integer $usersFame
  * @property integer $utr
+ * 
+ * @property string $polygon JSON
  *
  * @property State $state
  * @property City $city
+ * @property Tile[] $tiles
  * 
  */
 class Region extends MyModel implements TaxPayer
@@ -158,4 +161,29 @@ class Region extends MyModel implements TaxPayer
     {
         return false;
     }    
+    
+    public function getTiles()
+    {
+        return $this->hasMany(Tile::className(), ['regionId' => 'id']);
+    }
+    
+    public function calcPolygon()
+    {
+        return Tile::union($this->getTiles());
+    }
+    
+    private $_polygon = null;
+    public function getPolygon()
+    {
+        if (is_null($this->_polygon)) {
+            $filePath = Yii::$app->basePath.'/data/polygons/regions/'.$this->id.'.json';
+            if (file_exists($filePath)) {
+                $this->_polygon = file_get_contents($filePath);
+            } else {
+                $this->_polygon = json_encode($this->calcPolygon());
+                file_put_contents($filePath, $this->_polygon);
+            }
+        }
+        return $this->_polygon;
+    }
 }

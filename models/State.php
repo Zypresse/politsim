@@ -200,5 +200,5 @@ class State extends MyModel implements TaxPayer
     {
         return $this->hasMany(Region::classname(), ['stateId' => 'id']);
     }
-    
+        
 }
