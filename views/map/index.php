@@ -1,7 +1,9 @@
 <?php
 
 /* @var $this \yii\web\View */
-/* @var $tiles \app\models\Tile[] */
+/* @var $states \app\models\State[] */
+
+use yii\helpers\Html;
 
 ?>
 
@@ -69,8 +71,19 @@
         }).addTo(map);
     }
     
-    <?php foreach($tiles as $tile): ?>
-        createPolygon(<?=$tile->lat?>, <?=$tile->lon?>);
+    var states = {};
+    
+    <?php foreach($states as $state): ?>
+        states[<?=$state->id?>] = L.multiPolygon(<?=$state->polygon?>,{
+            color: '#000',
+            opacity: 0.5,
+            fillColor: '#<?=$state->mapColor?$state->mapColor:'fff'?>',
+            fillOpacity: 0.5,
+            weight: 1,
+            title: 'asd'
+        }).bindLabel('<?=Html::encode($state->name)?>');
+        states[<?=$state->id?>].addTo(map);
+        
     <?php endforeach ?>
     
 </script>

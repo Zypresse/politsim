@@ -4,7 +4,8 @@ namespace app\models;
 
 use Yii,
     app\components\MyModel,
-    app\components\TaxPayer;
+    app\components\TaxPayer,
+    app\components\RegionCombiner;
 
 /**
  * Государство
@@ -25,6 +26,8 @@ use Yii,
  * @property integer $dateCreated
  * @property integer $dateDeleted
  * @property integer $utr
+ * 
+ * @property string $polygon
  * 
  * @property City $city
  * @property Constitution $constitution
@@ -199,6 +202,26 @@ class State extends MyModel implements TaxPayer
     public function getRegions()
     {
         return $this->hasMany(Region::classname(), ['stateId' => 'id']);
+    }
+    
+    public function calcPolygon()
+    {
+        return RegionCombiner::combine($this->getRegions());
+    }
+    
+    private $_polygon = null;
+    public function getPolygon()
+    {
+        if (is_null($this->_polygon)) {
+            $filePath = Yii::$app->basePath.'/data/polygons/states/'.$this->id.'.json';
+            if (file_exists($filePath)) {
+                $this->_polygon = file_get_contents($filePath);
+            } else {
+                $this->_polygon = json_encode($this->calcPolygon());
+                file_put_contents($filePath, $this->_polygon);
+            }
+        }
+        return $this->_polygon;
     }
         
 }

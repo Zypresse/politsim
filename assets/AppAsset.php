@@ -30,6 +30,7 @@ class AppAsset extends AssetBundle
         'css/AdminLTE.css',
         'css/skin-black.css',
         'css/leaflet.css',
+        'css/leaflet.label.css',
         'css/style.css',
     ];
     public $js = [
@@ -48,6 +49,7 @@ class AppAsset extends AssetBundle
         'js/jquery.dataTables.min.js',
         'js/dataTables.bootstrap.min.js',
         'js/leaflet.js',
+        'js/leaflet.label.js',
         'js/script_all.js',
     ];
     public $depends = [

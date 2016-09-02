@@ -4,7 +4,8 @@ namespace app\models;
 
 use Yii,
     app\components\MyModel,
-    app\components\TaxPayer;
+    app\components\TaxPayer,
+    app\components\TileCombiner;
 
 /**
  * Административный регион
@@ -169,7 +170,7 @@ class Region extends MyModel implements TaxPayer
     
     public function calcPolygon()
     {
-        return Tile::union($this->getTiles());
+        return TileCombiner::combine($this->getTiles());
     }
     
     private $_polygon = null;
