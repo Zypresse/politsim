@@ -14,7 +14,7 @@ class m160828_110458_sealand_tile extends Migration
             'name' => 'VARCHAR(255) NOT NULL',
             'nameShort' => 'VARCHAR(6) NOT NULL',
             'flag' => 'TEXT DEFAULT NULL',
-            'athem' => 'TEXT DEFAULT NULL',
+            'anthem' => 'TEXT DEFAULT NULL',
             'population' => 'UNSIGNED INTEGER NOT NULL DEFAULT 0',
             'usersCount' => 'UNSIGNED INTEGER NOT NULL DEFAULT 0',
             'usersFame' => 'UNSIGNED INTEGER NOT NULL DEFAULT 0',

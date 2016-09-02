@@ -75,12 +75,36 @@ use yii\helpers\Html,
                                     </tr>
                                     <tr>
                                         <td><strong><i class="fa fa-group"></i> <?=Yii::t('app', 'Population')?></strong></td>
-                                        <td><a class="btn btn-info btn-xs btn-block" href="#!state/population&id=<?=$state->id?>"><?=MyHtmlHelper::formateNumberword($state->population)?></a></td>
+                                        <td><?=MyHtmlHelper::formateNumberword($state->population)?> <?=Html::a(Yii::t('app', 'Population info'),'#!population/state&id='.$state->id,['class' => 'btn btn-info btn-xs'])?></td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
+                </div>
+            </div>
+            <div class="box">
+                <div class="box-header">
+                    <h3><?=Yii::t('app', 'Regions')?></h3>
+                </div>
+                <div class="box-body">
+                    <table class="table table-bordered no-margin">
+                        <thead>
+                            <tr>
+                                <th><?=Yii::t('app', 'Name')?></th>
+                                <th><i class="fa fa-group"></i> <?=Yii::t('app', 'Population')?></th>
+                                
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($state->regions as $region): ?>
+                            <tr>
+                                <td><?=$region->flag ? Html::img($region->flag, ['style' => 'height: 8px']) : ''?> <?=Html::a(Html::encode($region->name), '#!region&id='.$region->id)?></td>
+                                <td><?=MyHtmlHelper::formateNumberword($region->population)?> <?=Html::a(Yii::t('app', 'Population info'),'#!population/region&id='.$region->id,['class' => 'btn btn-info btn-xs'])?></td>
+                            </tr>
+                            <?php endforeach ?>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

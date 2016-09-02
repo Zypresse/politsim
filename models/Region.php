@@ -7,42 +7,33 @@ use Yii,
     app\components\TaxPayer;
 
 /**
- * Государство
+ * Административный регион
  * 
  * @property integer $id 
+ * @property integer $stateId 
+ * @property integer $cityId 
  * @property string $name
- * @property string $nameShort
  * @property string $nameShort
  * @property string $flag
  * @property string $anthem
- * @property integer $cityId
- * @property string $mapColor
- * @property integer $govermentFormId
- * @property integer $stateStructureId
  * @property integer $population
  * @property integer $usersCount
  * @property integer $usersFame
- * @property integer $dateCreated
- * @property integer $dateDeleted
  * @property integer $utr
- * 
- * @property City $city
- * @property Constitution $constitution
- * @property GovermentForm $govermentForm
- * @property StateStructure $stateStructure
- * @property Region[] $regions
  *
- * @author ilya
+ * @property State $state
+ * @property City $city
+ * 
  */
-class State extends MyModel implements TaxPayer
+class Region extends MyModel implements TaxPayer
 {
-    
+        
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'states';
+        return 'regions';
     }
 
     /**
@@ -51,11 +42,11 @@ class State extends MyModel implements TaxPayer
     public function rules()
     {
         return [
-            [['name', 'nameShort'], 'required'],
+            [['stateId', 'name', 'nameShort'], 'required'],
             [['name'], 'string', 'max' => 255],
-            [['nameShort', 'mapColor'], 'string', 'max' => 6],
+            [['nameShort'], 'string', 'max' => 6],
             [['flag', 'anthem'], 'string'],
-            [['cityId', 'govermentFormId', 'stateStructureId', 'population', 'usersCount', 'usersFame', 'dateCreated', 'dateDeleted', 'utr'], 'integer', 'min' => 0],
+            [['stateId', 'cityId', 'population', 'usersCount', 'usersFame', 'utr'], 'integer', 'min' => 0],
             [['anthem'], 'validateAnthem'],
             [['flag'], 'validateFlag'],
         ];
@@ -67,7 +58,7 @@ class State extends MyModel implements TaxPayer
      */
     public function getUtrType()
     {
-        return Utr::TYPE_STATE;
+        return Utr::TYPE_REGION;
     }
     
     /**
@@ -93,7 +84,7 @@ class State extends MyModel implements TaxPayer
      */
     public function isGoverment($stateId)
     {
-        return $this->id === $stateId;
+        return $this->stateId === $stateId;
     }
     
     /**
@@ -137,7 +128,7 @@ class State extends MyModel implements TaxPayer
      */
     public function getTaxStateId()
     {
-        return $this->id;
+        return $this->stateId;
     }
     
     /**
@@ -147,7 +138,7 @@ class State extends MyModel implements TaxPayer
      */
     public function isTaxedInState($stateId)
     {
-        return $this->id === $stateId;
+        return $this->stateId === $stateId;
     }
     
     /**
@@ -167,38 +158,4 @@ class State extends MyModel implements TaxPayer
     {
         return false;
     }    
-        
-    private $_govermentForm = null;
-    public function getGovermentForm()
-    {
-        if (is_null($this->_govermentForm)) {
-            $this->_govermentForm = GovermentForm::findOne($this->govermentFormId);
-        }
-        return $this->_govermentForm;
-    }
-    
-    private $_stateStructure = null;
-    public function getStateStructure()
-    {
-        if (is_null($this->_stateStructure)) {
-            $this->_stateStructure = StateStructure::findOne($this->stateStructureId);
-        }
-        return $this->_stateStructure;
-    }
-    
-    public function getCity()
-    {
-        return $this->hasOne(City::classname(), ['id' => 'cityId']);
-    }
-    
-    public function getConstitution()
-    {
-        return $this->hasOne(Constitution::classname(), ['stateId' => 'id']);
-    }
-    
-    public function getRegions()
-    {
-        return $this->hasMany(Region::classname(), ['stateId' => 'id']);
-    }
-    
 }
