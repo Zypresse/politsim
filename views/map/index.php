@@ -74,7 +74,7 @@ use yii\helpers\Html;
     var states = {};
     
     <?php foreach($states as $state): ?>
-        states[<?=$state->id?>] = L.multiPolygon(<?=$state->polygon?>,{
+        states[<?=$state->id?>] = L.multiPolygon([<?=$state->polygon?>],{
             color: '#000',
             opacity: 0.5,
             fillColor: '#<?=$state->mapColor?$state->mapColor:'fff'?>',

@@ -80,7 +80,7 @@ abstract class TileCombiner {
             if (count(static::$linesAdded) == count(static::$lines)) {
                 return -1;
             }
-            foreach ($lines as $i => $line) {
+            foreach (static::$lines as $i => $line) {
                 if (!in_array($i, static::$linesAdded)) {
                     return $i;
                 }
