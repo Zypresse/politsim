@@ -108,8 +108,7 @@ abstract class TileCombiner {
             }
         }
 
-        $contur = [$i];
-        static::$conturs[] = $contur;
+        static::$conturs[] = [$i];
         return $left;
     }
 
@@ -117,6 +116,9 @@ abstract class TileCombiner {
     {
         /* @var $list \app\models\Tile[] */
         $list = $query->all();
+        if (count($list) == 0) {
+            return [];
+        }
         $tilesByXY = [];
         foreach ($list as $tile) {
             $data = [$tile->lat, $tile->lon];
@@ -163,22 +165,21 @@ abstract class TileCombiner {
         unset($tilesByXY);
         
         $n = 0;
-        while ($n >= 0)
+        while ($n >= 0) {
             $n = static::addLine($n);
-        
+        }
+                
         foreach (static::$conturs as &$contur) {
             foreach ($contur as $i => $lineId) {
                 $point1 = static::$lines[$lineId][0];           
                 $contur[$i] = static::pointToFloat($point1);
             }
         }
-        
         $result = static::$conturs;
         
         static::$conturs = [];
         static::$lines = [];
         static::$linesAdded = [];
-        
         return $result;
     }
 }
