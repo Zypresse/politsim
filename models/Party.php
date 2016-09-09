@@ -4,47 +4,73 @@ namespace app\models;
 
 use Yii,
     app\components\MyModel,
-    app\components\TaxPayer,
-    app\components\RegionCombiner;
+    app\components\TaxPayer;
 
 /**
- * Государство
+ * Политическая партия
  * 
  * @property integer $id 
+ * @property integer $stateId 
  * @property string $name
  * @property string $nameShort
  * @property string $flag
  * @property string $anthem
- * @property integer $cityId
- * @property string $mapColor
- * @property integer $govermentFormId
- * @property integer $stateStructureId
- * @property integer $population
- * @property integer $usersCount
- * @property integer $usersFame
+ * @property integer $ideologyId
+ * @property string $text
+ * @property integer $fame
+ * @property integer $trust
+ * @property integer $success
+ * @property integer $membersCount
+ * @property integer $leaderPostId
+ * @property integer $joiningRules
+ * @property integer $listCreationRules
  * @property integer $dateCreated
  * @property integer $dateDeleted
  * @property integer $utr
  * 
- * @property string $polygon
+ * @property State $state
+ * @property PartyPost $leaderPost
+ * @property PartyPost[] $posts
+ * @property PartyList[] $lists
+ * @property Ideology $ideology
+ * @property User[] $members
  * 
- * @property City $city
- * @property Constitution $constitution
- * @property GovermentForm $govermentForm
- * @property StateStructure $stateStructure
- * @property Region[] $regions
- *
- * @author ilya
  */
-class State extends MyModel implements TaxPayer
+class Party extends MyModel implements TaxPayer
 {
     
+    /**
+     * Частная (заявки запрещены)
+     */
+    const JOINING_RULES_PRIVATE = 0;
+    
+    /**
+     * Закрытая (заявки утверждаются)
+     */
+    const JOINING_RULES_CLOSED = 1;
+    
+    /**
+     * Открытая (заявки автоподтверждаются)
+     */
+    const JOINING_RULES_OPEN = 2;
+    
+    /**
+     * Избирательный список составляется лидером
+     */
+    const LIST_CREATION_RULES_LEADER = 1;
+    
+    /**
+     * Избирательный список составляется по праймериз
+     */
+    const LIST_CREATION_RULES_PRIMARIES = 2;
+
+
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'states';
+        return 'parties';
     }
 
     /**
@@ -53,11 +79,12 @@ class State extends MyModel implements TaxPayer
     public function rules()
     {
         return [
-            [['name', 'nameShort'], 'required'],
+            [['name', 'nameShort', 'stateId', 'ideologyId', 'joiningRules', 'listCreationRules'], 'required'],
             [['name'], 'string', 'max' => 255],
-            [['nameShort', 'mapColor'], 'string', 'max' => 6],
-            [['flag', 'anthem'], 'string'],
-            [['cityId', 'govermentFormId', 'stateStructureId', 'population', 'usersCount', 'usersFame', 'dateCreated', 'dateDeleted', 'utr'], 'integer', 'min' => 0],
+            [['nameShort'], 'string', 'max' => 6],
+            [['flag', 'anthem', 'text'], 'string'],
+            [['stateId', 'ideologyId', 'leaderPostId', 'joiningRules', 'listCreationRules', 'membersCount', 'dateCreated', 'dateDeleted', 'utr'], 'integer', 'min' => 0],
+            [['fame', 'trust', 'success'], 'integer'],
             [['anthem'], 'validateAnthem'],
             [['flag'], 'validateFlag'],
         ];
@@ -69,7 +96,7 @@ class State extends MyModel implements TaxPayer
      */
     public function getUtrType()
     {
-        return Utr::TYPE_STATE;
+        return Utr::TYPE_PARTY;
     }
     
     /**
@@ -95,7 +122,7 @@ class State extends MyModel implements TaxPayer
      */
     public function isGoverment($stateId)
     {
-        return $this->id === $stateId;
+        return false;
     }
     
     /**
@@ -139,7 +166,7 @@ class State extends MyModel implements TaxPayer
      */
     public function getTaxStateId()
     {
-        return $this->id;
+        return $this->stateId;
     }
     
     /**
@@ -149,7 +176,7 @@ class State extends MyModel implements TaxPayer
      */
     public function isTaxedInState($stateId)
     {
-        return $this->id === $stateId;
+        return $this->stateId === $stateId;
     }
     
     /**
@@ -157,7 +184,7 @@ class State extends MyModel implements TaxPayer
      */
     public function getUserControllerId()
     {
-        return false;
+        return $this->leaderPost->userId;
     }
     
     /**
@@ -167,61 +194,8 @@ class State extends MyModel implements TaxPayer
      */
     public function isUserController($userId)
     {
-        return false;
+        return $this->leaderPost->userId == $userId;
     }    
-        
-    private $_govermentForm = null;
-    public function getGovermentForm()
-    {
-        if (is_null($this->_govermentForm)) {
-            $this->_govermentForm = GovermentForm::findOne($this->govermentFormId);
-        }
-        return $this->_govermentForm;
-    }
-    
-    private $_stateStructure = null;
-    public function getStateStructure()
-    {
-        if (is_null($this->_stateStructure)) {
-            $this->_stateStructure = StateStructure::findOne($this->stateStructureId);
-        }
-        return $this->_stateStructure;
-    }
-    
-    public function getCity()
-    {
-        return $this->hasOne(City::classname(), ['id' => 'cityId']);
-    }
-    
-    public function getConstitution()
-    {
-        return $this->hasOne(Constitution::classname(), ['stateId' => 'id']);
-    }
-    
-    public function getRegions()
-    {
-        return $this->hasMany(Region::classname(), ['stateId' => 'id']);
-    }
-    
-    public function calcPolygon()
-    {
-        return RegionCombiner::combine($this->getRegions());
-    }
-    
-    private $_polygon = null;
-    public function getPolygon()
-    {
-        if (is_null($this->_polygon)) {
-            $filePath = Yii::$app->basePath.'/data/polygons/states/'.$this->id.'.json';
-            if (file_exists($filePath)) {
-                $this->_polygon = file_get_contents($filePath);
-            } else {
-                $this->_polygon = json_encode($this->calcPolygon());
-                file_put_contents($filePath, $this->_polygon);
-            }
-        }
-        return $this->_polygon;
-    }
     
     public function beforeSave($insert)
     {
@@ -229,6 +203,40 @@ class State extends MyModel implements TaxPayer
             $this->dateCreated = time();
         }
         return parent::beforeSave($insert);
+    }         
+         
+    public function getState()
+    {
+        return $this->hasOne(State::classname(), ['id' => 'stateId']);
     }
-        
+         
+    public function getLeaderPost()
+    {
+        return $this->hasOne(PartyPost::classname(), ['id' => 'leaderPostId']);
+    }
+         
+    public function getPosts()
+    {
+        return $this->hasMany(PartyPost::classname(), ['partyId' => 'id']);
+    }
+         
+    public function getMembers()
+    {
+        return $this->hasMany(User::classname(), ['partyId' => 'id']);
+    }
+         
+    public function getLists()
+    {
+        return $this->hasMany(PartyList::classname(), ['partyId' => 'id']);
+    }
+    
+    private $_ideology = null;
+    public function getIdeology()
+    {
+        if (is_null($this->_ideology)) {
+            $this->_ideology = Ideology::findOne($this->ideologyId);
+        }
+        return $this->_ideology;
+    }
+    
 }
