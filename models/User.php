@@ -34,6 +34,8 @@ use Yii,
  * 
  * @property State[] $states Государство
  * @property Citizenship[] $citizenships Гражданства
+ * @property Citizenship[] $approvedCitizenships Гражданства (подтверждённые)
+ * @property Citizenship[] $requestedCitizenships Гражданства (неподтверждённые)
  * @property Party[] $parties Партии
  * @property Post[] $posts Посты
  * @property Notification[] $notifications Уведомления
@@ -296,4 +298,20 @@ class User extends MyModel implements TaxPayer, IdentityInterface
     {
 	return $this->hasMany(Citizenship::classname(), ['userId' => 'id']);
     }
+    
+    public function getApprovedCitizenships()
+    {
+        return $this->hasMany(Citizenship::classname(), ['userId' => 'id'])->where(['>', 'dateApproved', 0]);
+    }
+    
+    public function getRequestedCitizenships()
+    {
+        return $this->hasMany(Citizenship::classname(), ['userId' => 'id'])->where(['dateApproved' => null]);
+    }
+    
+    public function isHaveCitizenship($stateId)
+    {
+        return !!$this->getCitizenships()->where(['stateId' => $stateId])->count();
+    }
+    
 }

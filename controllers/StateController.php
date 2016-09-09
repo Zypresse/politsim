@@ -15,8 +15,9 @@ class StateController extends MyController
     public function actionIndex($id = false)
     {
         if (!$id) {
-            return $this->render('citizenship/list', [
-		'list' => $this->user->citizenships,
+            return $this->render('/citizenship/list', [
+		'approved' => $this->user->getApprovedCitizenships()->with('state')->all(),
+		'requested' => $this->user->getRequestedCitizenships()->with('state')->all(),
                 'user' => $this->user
 	    ]);
         } else {

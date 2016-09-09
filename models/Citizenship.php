@@ -35,9 +35,14 @@ class Citizenship extends MyModel {
         return [
             [['userId', 'stateId'], 'required'],
             [['userId', 'stateId', 'dateCreated', 'dateApproved'], 'integer', 'min' => 0],
+            [['userId', 'stateId'], 'unique', 'targetAttribute' => ['userId', 'stateId']],
         ];
     }
     
+    public static function primaryKey() {
+        return ['userId', 'stateId'];
+    }
+
     public function getUser()
     {
         return $this->hasOne(User::className(), array('id' => 'userId'));

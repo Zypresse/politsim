@@ -7,6 +7,8 @@ use yii\helpers\Html,
 /* @var $state app\models\State */
 /* @var $user app\models\User */
 
+$isHaveCitizenship = $user->isHaveCitizenship($state->id);
+
 ?>
 <section class="content-header">
     <h1>
@@ -105,6 +107,24 @@ use yii\helpers\Html,
                             <?php endforeach ?>
                         </tbody>
                     </table>
+                </div>
+            </div><div class="box">
+                <div class="box-header">
+                    <h3><?=Yii::t('app', 'Available actions')?></h3>
+                </div>
+                <div class="box-body">
+                    <p>
+                        <?php if ($isHaveCitizenship):?>
+                            <?=Yii::t('app','You have this state citizenship')?>
+                        <?php endif ?>
+                    </p>
+                    <div class="btn-group">
+                        <?php if ($isHaveCitizenship):?>
+                            <button onclick="if (confirm('<?=Yii::t('app', 'Are you sure?')?>')) json_request('citizenship/cancel', {stateId: <?=$state->id?>})" class="btn btn-danger"><?=Yii::t('app', 'Fire citizenship')?></button>
+                        <?php else: ?>
+                            <button onclick="json_request('citizenship/request', {stateId: <?=$state->id?>})" class="btn btn-primary"><?=Yii::t('app', 'Make request for citizenship')?></button>
+                        <?php endif ?>
+                    </div>
                 </div>
             </div>
         </div>
