@@ -155,8 +155,8 @@ $this->title = 'Political Simulator';
             </a>
             <ul class="treeview-menu">
                 <li>
-                    <a href="#!state">
-                        <i class="fa fa-flag"></i> Моё государство
+                    <a href="#!citizenship">
+                        <i class="fa fa-flag"></i> Гражданство
                     </a>
                 </li>
                 <li>

@@ -10,8 +10,18 @@ use Yii,
 /**
  * 
  */
-class CitizenshipController extends MyController {
+class CitizenshipController extends MyController
+{
     
+    public function actionIndex()
+    {
+        return $this->render('list', [
+            'approved' => $this->user->getApprovedCitizenships()->with('state')->all(),
+            'requested' => $this->user->getRequestedCitizenships()->with('state')->all(),
+            'user' => $this->user
+        ]);
+    }
+
     public function actionRequest($stateId)
     {
         $state = State::findByPk($stateId);
