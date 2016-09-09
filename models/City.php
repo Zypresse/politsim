@@ -156,5 +156,10 @@ class City extends MyModel implements TaxPayer
     {
         return false;
     }    
+    
+    public function getRegion()
+    {
+        return $this->hasOne(Region::className(), ['id' => 'regionId']);
+    }
 
 }

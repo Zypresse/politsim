@@ -5,10 +5,9 @@ namespace app\controllers;
 use Yii,
     app\components\MyController,
     app\models\State;
+
 /**
- * Description of StateController
- *
- * @author ilya
+ * 
  */
 class StateController extends MyController
 {

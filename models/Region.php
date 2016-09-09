@@ -168,6 +168,16 @@ class Region extends MyModel implements TaxPayer
         return $this->hasMany(Tile::className(), ['regionId' => 'id']);
     }
     
+    public function getState()
+    {
+        return $this->hasOne(State::className(), ['id' => 'stateId']);
+    }
+    
+    public function getCity()
+    {
+        return $this->hasOne(City::className(), ['id' => 'cityId']);
+    }
+    
     public function calcPolygon()
     {
         return TileCombiner::combine($this->getTiles());
