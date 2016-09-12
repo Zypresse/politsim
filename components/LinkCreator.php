@@ -5,7 +5,8 @@ namespace app\components;
 use yii\helpers\Html,
     app\models\State,
     app\models\Region,
-    app\models\City;
+    app\models\City,
+    app\models\User;
 
 /**
  * 
@@ -27,6 +28,8 @@ abstract class LinkCreator
                 return static::regionLink($object);
             case City::className():
                 return static::cityLink($object);
+            case User::className():
+                return static::userLink($object);
         }
     }
     
@@ -37,9 +40,9 @@ abstract class LinkCreator
      * @param string $link
      * @return string
      */
-    private static function render($flag, $name, $link)
+    private static function render($flag, $name, $link, $flagHeight = 8, $vertAlign = 'baseline')
     {
-        return ($flag ? Html::img($flag, ['style' => 'height: 8px; vertical-align: baseline;']).' ' : '') . Html::a(Html::encode($name), $link);    
+        return ($flag ? Html::img($flag, ['style' => 'height: '.$flagHeight.'px; vertical-align: '.$vertAlign.';']).' ' : '') . Html::a(Html::encode($name), $link);    
     }
     
     /**
@@ -70,6 +73,16 @@ abstract class LinkCreator
     public static function cityLink(City $city)
     {
         return static::render($city->flag, $city->name, '#!city&id='.$city->id);
+    }
+    
+    /**
+     * 
+     * @param User $user
+     * @return string
+     */
+    public static function userLink(User $user)
+    {
+        return static::render($user->avatar, $user->name, '#!profile&id='.$user->id, 16, 'top');
     }
     
 }

@@ -90,6 +90,17 @@ class Party extends MyModel implements TaxPayer
         ];
     }
     
+    public function attributeLabels() {
+        return [
+            'name' => Yii::t('app', 'Party name'),
+            'nameShort' => Yii::t('app', 'Party short name'),
+            'ideologyId' => Yii::t('app', 'Ideology'),
+            'joiningRules' => Yii::t('app', 'Joining'),
+            'listCreationRules' => Yii::t('app', 'Election list creation'),
+        ];
+    }
+
+
     /**
      * Возвращает константное значение типа налогоплательщика
      * @return integer

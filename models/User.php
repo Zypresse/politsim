@@ -286,7 +286,8 @@ class User extends MyModel implements TaxPayer, IdentityInterface
     
     public function getStates()
     {
-        return [];
+        return $this->hasMany(State::className(), ['id' => 'stateId'])
+            ->via('citizenships');
     }
     
     public function getPosts()
