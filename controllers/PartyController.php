@@ -5,7 +5,9 @@ namespace app\controllers;
 use Yii,
     app\components\MyController,
     app\models\Party,
-    app\models\State;
+    app\models\State,
+    yii\web\Response,
+    yii\widgets\ActiveForm;
 
 /**
  * 
@@ -39,7 +41,6 @@ class PartyController extends MyController
     
     public function actionCreateForm($stateId)
     {
-        
         $state = State::findByPk($stateId);
         if (is_null($state)) {
             return $this->_r(Yii::t('app', 'State not found'));
@@ -47,6 +48,11 @@ class PartyController extends MyController
         
         $model = new Party();
         $model->stateId = $state->id;
+
+        if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return ActiveForm::validate($model);
+        }
         
         return $this->render('create-form', [
             'model' => $model,

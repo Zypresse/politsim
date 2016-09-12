@@ -2,7 +2,8 @@
 
 use yii\helpers\Html,
     yii\helpers\ArrayHelper,
-    yii\bootstrap\ActiveForm,
+//    yii\bootstrap\ActiveForm,
+    yii\widgets\ActiveForm,
     app\models\Ideology,
     app\models\Party;
 
@@ -13,9 +14,18 @@ use yii\helpers\Html,
 $form = new ActiveForm();
 
 ?>
-<?php $form->begin(['options' => [ 'id' => 'party-create-form' ]]) ?>
+<?php $form->begin([
+    'options' => [
+        'id' => 'create-party-form',
+    ],
+    'action' => '/party/create-form', 
+    'enableClientValidation' => true,
+    'enableAjaxValidation' => true,
+]) ?>
 
-<?=$form->field($model, 'stateId')->hiddenInput()?>
+<?=$form->field($model, 'stateId', [
+    'labelOptions' => ['class' => 'hide']
+])->hiddenInput()?>
 
 <?=$form->field($model, 'name')->textInput()?>
 
@@ -33,5 +43,9 @@ $form = new ActiveForm();
     Party::LIST_CREATION_RULES_LEADER => Yii::t('app', 'By leader'),
     Party::LIST_CREATION_RULES_PRIMARIES => Yii::t('app', 'By primaries')
 ])?>
+
+<?=$form->field($model, 'flag')->textInput()?>
+
+<?=$form->field($model, 'anthem')->textInput()?>
 
 <?php $form->end() ?>

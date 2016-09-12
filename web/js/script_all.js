@@ -362,10 +362,11 @@ function subscribeLinksInModal(modalId, bodyId) {
         return makeActionInModal(actionType, action, $(this).serializeObject(), modalId, bodyId);
     });
     
-    $('#'+bodyId).on('click','a[href!=#]', function(){
+    $('#'+bodyId).on('click','a', function(){
         var action = $(this).attr('href'),
             actionType = $(this).data('actionType');
-        return makeActionInModal(actionType, action, {}, modalId, bodyId);
+        if (action !== '#')
+            return makeActionInModal(actionType, action, {}, modalId, bodyId);
     });
 }
 

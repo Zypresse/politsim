@@ -97,6 +97,8 @@ class Party extends MyModel implements TaxPayer
             'ideologyId' => Yii::t('app', 'Ideology'),
             'joiningRules' => Yii::t('app', 'Joining'),
             'listCreationRules' => Yii::t('app', 'Election list creation'),
+            'flag' => Yii::t('app', 'Flag'),
+            'anthem' => Yii::t('app', 'Anthem'),
         ];
     }
 

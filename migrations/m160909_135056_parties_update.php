@@ -14,7 +14,7 @@ class m160909_135056_parties_update extends Migration
             'name' => 'VARCHAR(255) NOT NULL',
             'nameShort' => 'VARCHAR(6) NOT NULL',
             'flag' => 'TEXT DEFAULT NULL',
-            'athem' => 'TEXT DEFAULT NULL',
+            'anthem' => 'TEXT DEFAULT NULL',
             'ideologyId' => 'UNSIGNED INTEGER(3) NOT NULL',
             'text' => 'TEXT DEFAULT NULL',
             'fame' => 'INTEGER NOT NULL DEFAULT 0',
