@@ -225,10 +225,6 @@ function request(pageUrl,postParams,requestType,callback,noError,method)
     });
 }
 
-var notificationIcons = [
-    '<i class="fa fa-envelope text-blue"></i>'
-];
-
 function update_header() {
     get_json('notifications/get-updates',{},function(d){
         var d = d.result;
@@ -244,7 +240,7 @@ function update_header() {
             $('#new_notifications_count').removeClass('hide');
             for (var i in d.notifications) {
                 var n = d.notifications[i];
-                $('#new_notifications_list').append('<li><a href="#!notifications&id='+n.id+'">'+notificationIcons[n.protoId]+' '+n.textShort+'</a></li>');
+                $('#new_notifications_list').append('<li><a href="#!notifications&id='+n.id+'">'+n.icon+' '+n.textShort+'</a></li>');
             }
         } else {
             $('#new_notifications_count').addClass('hide');

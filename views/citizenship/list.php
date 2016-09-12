@@ -1,7 +1,8 @@
 <?php
 
 use yii\helpers\Html,
-    app\components\MyHtmlHelper;
+    app\components\MyHtmlHelper,
+    app\components\LinkCreator;
 
 /* @var $this yii\base\View */
 /* @var $approved app\models\Citizenship[] */
@@ -38,7 +39,7 @@ use yii\helpers\Html,
                             <?php foreach ($approved as $citizenship): ?>
                                 <tr>
                                     <td>
-                                        <?=$citizenship->state->flag ? Html::img($citizenship->state->flag, ['style' => 'height: 8px; vertical-align: baseline;']) : ''?> <?=Html::a(Html::encode($citizenship->state->name), "#!state&id={$citizenship->stateId}")?>
+                                        <?=LinkCreator::stateLink($citizenship->state)?>
                                     </td>
                                     <td>
                                         <?=MyHtmlHelper::timeAutoFormat($citizenship->dateApproved)?>

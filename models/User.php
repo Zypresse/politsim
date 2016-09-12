@@ -314,4 +314,27 @@ class User extends MyModel implements TaxPayer, IdentityInterface
         return !!$this->getCitizenships()->where(['stateId' => $stateId])->count();
     }
     
+    public function noticy($protoId, $text = null, $textShort = null)
+    {
+        $n = new Notification([
+            'userId' => $this->id,
+            'protoId' => $protoId,
+            'text' => $text,
+            'textShort' => $textShort
+        ]);
+        return $n->save();
+    }
+    
+    public function noticyReaded($protoId, $text = null, $textShort = null)
+    {
+        $n = new Notification([
+            'userId' => $this->id,
+            'protoId' => $protoId,
+            'text' => $text,
+            'textShort' => $textShort,
+            'dateReaded' => time()
+        ]);
+        return $n->save();
+    }
+    
 }

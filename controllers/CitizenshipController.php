@@ -35,7 +35,7 @@ class CitizenshipController extends MyController
         ]);
         
         // @TODO: принятие запросов на гражданство
-        $citizenship->dateApproved = time();
+        $citizenship->approve(false);
         
         if ($citizenship->save()) {
             return $this->_rOk();
@@ -57,7 +57,7 @@ class CitizenshipController extends MyController
             return $this->_r('Citizenship not found');
         }
         
-        if ($citizenship->delete()) {
+        if ($citizenship->fireSelf()) {
             return $this->_rOk();
         } else {
             return $this->_r($citizenship->getErrors());            

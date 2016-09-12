@@ -69,6 +69,16 @@ class Notification extends MyModel
         return $this->textShort ? $this->textShort : $this->proto->textShort;
     }
     
+    public function getIcon()
+    {
+        return $this->proto->icon;
+    }
+    
+    public function getIconBg()
+    {
+        return $this->proto->iconBg;
+    }
+    
     /**
      * 
      * @param integer $userId
@@ -99,6 +109,8 @@ class NotificationProto extends Object
     public $id;
     public $text;
     public $textShort;
+    public $icon;
+    public $iconBg;
     
     private static function getList()
     {
@@ -106,7 +118,23 @@ class NotificationProto extends Object
             [
                 'id' => 0,
                 'text' => Yii::t('app', 'Просто уведомление о том, что ты пидор.'),
-                'textShort' => Yii::t('app', 'Ты пидор')
+                'textShort' => Yii::t('app', 'Ты пидор'),
+                'icon' => '<i class="fa fa-envelope text-blue"></i>',
+                'iconBg' => '<i class="fa fa-envelope bg-blue"></i>',
+            ],
+            [
+                'id' => 1,
+                'text' => Yii::t('app', 'Your citizenship request is approved'),
+                'textShort' => Yii::t('app', 'Citizenship approved'),
+                'icon' => '<i class="fa fa-flag text-green"></i>',
+                'iconBg' => '<i class="fa fa-flag bg-green"></i>',
+            ],            
+            [
+                'id' => 2,
+                'text' => Yii::t('app', 'Your have lost citizehship'),
+                'textShort' => Yii::t('app', 'Citizenship fired'),
+                'icon' => '<i class="fa fa-flag text-red"></i>',
+                'iconBg' => '<i class="fa fa-flag bg-red"></i>',
             ],
         ];
     }

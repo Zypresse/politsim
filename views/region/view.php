@@ -1,7 +1,8 @@
 <?php
 
 use yii\helpers\Html,
-    app\components\MyHtmlHelper;
+    app\components\MyHtmlHelper,
+    app\components\LinkCreator;
 
 /* @var $this yii\base\View */
 /* @var $region app\models\Region */
@@ -13,7 +14,7 @@ use yii\helpers\Html,
         <?=Html::encode($region->name)?>
     </h1>
     <ol class="breadcrumb">
-        <li><?=$region->state->flag ? Html::img($region->state->flag, ['style' => 'height: 8px; vertical-align: baseline;']) : ''?> <?=Html::a(Html::encode($region->state->name), "#!state&id={$region->stateId}")?></li>
+        <li><?=LinkCreator::stateLink($region->state)?></li>
         <li class="active"><?=$region->flag ? Html::img($region->flag, ['style' => 'height: 8px; vertical-align: baseline;']) : ''?> <?=Html::encode($region->name)?></li>
     </ol>
 </section>
@@ -59,6 +60,7 @@ use yii\helpers\Html,
                                         <td>
                                             <?php if ($region->city): ?>
                                                 <a href="#!city&id=<?=$region->cityId?>"><?=Html::encode($region->city->name)?></a>
+                                                <?=LinkCreator::cityLink($region->city)?>
                                             <?php else: ?>
                                                 <?=Yii::t('app', 'Not set')?>
                                             <?php endif ?>

@@ -7,10 +7,6 @@ use yii\helpers\Html,
 /* @var $notifications \app\models\Notification[] */
 /* @var $user \app\models\User */
 
-$notificationsIcons = [  
-    '<i class="fa fa-envelope bg-blue"></i>'  
-];
-
 ?>
 <section class="content-header">
     <h1>
@@ -43,7 +39,7 @@ $notificationsIcons = [
         </li>
         <?php endif ?>
         <li>
-            <?=$notificationsIcons[$notification->protoId]?>
+            <?=$notification->getIconBg()?>
 
             <div class="timeline-item">
                 <span class="time"><i class="fa fa-clock-o"></i> <?=MyHtmlHelper::timeAutoFormat($notification->dateCreated)?></span>

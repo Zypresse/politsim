@@ -1,7 +1,8 @@
 <?php
 
 use yii\helpers\Html,
-    app\components\MyHtmlHelper;
+    app\components\MyHtmlHelper,
+    app\components\LinkCreator;
 
 /* @var $this yii\base\View */
 /* @var $state app\models\State */
@@ -69,7 +70,7 @@ $isHaveCitizenship = $user->isHaveCitizenship($state->id);
                                         <td><strong><i class="fa fa-building"></i> <?=Yii::t('app', 'Capital city')?></strong></td>
                                         <td>
                                             <?php if ($state->city): ?>
-                                                <a href="#!city&id=<?=$state->cityId?>"><?=Html::encode($state->city->name)?></a>
+                                                <?=LinkCreator::cityLink($state->city)?>
                                             <?php else: ?>
                                                 <?=Yii::t('app', 'Not set')?>
                                             <?php endif ?>
@@ -101,7 +102,7 @@ $isHaveCitizenship = $user->isHaveCitizenship($state->id);
                         <tbody>
                             <?php foreach ($state->regions as $region): ?>
                             <tr>
-                                <td><?=$region->flag ? Html::img($region->flag, ['style' => 'height: 8px']) : ''?> <?=Html::a(Html::encode($region->name), '#!region&id='.$region->id)?></td>
+                                <td><?=LinkCreator::regionLink($region)?></td>
                                 <td><?=MyHtmlHelper::formateNumberword($region->population)?> <?=Html::a(Yii::t('app', 'Population info'),'#!population/region&id='.$region->id,['class' => 'btn btn-info btn-xs'])?></td>
                             </tr>
                             <?php endforeach ?>

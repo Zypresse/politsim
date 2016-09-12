@@ -26,6 +26,7 @@ class NotificationsController extends MyController
             $notifications[$i] = [
                 'id' => $notification->id,
                 'protoId' => $notification->protoId,
+                'icon' => $notification->getIcon(),
                 'textShort' => $notification->getTextShort(),
             ];
         }
