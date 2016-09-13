@@ -21,12 +21,12 @@ use yii\helpers\Html,
 <section class="content">
     <div class="row">
         <div class="col-md-6">
-            <div class="box">
-                <div class="box-header">
-                    <h4><?=Yii::t('app', 'Memberships')?></h4>
-                </div>
-                <div class="box-body">
-                    <?php if (count($approved)): ?>
+            <?php if (count($approved)): ?>
+                <div class="box">
+                    <div class="box-header">
+                        <h4><?=Yii::t('app', 'Memberships')?></h4>
+                    </div>
+                    <div class="box-body">
                         <table class="table table-condensed">
                             <thead>
                                 <tr>
@@ -46,13 +46,39 @@ use yii\helpers\Html,
                                 </tr>
                             <?php endforeach ?>
                             </tbody>
-                        </table>
-                    <?php else: ?>
-                        <p>
-                            <?=Yii::t('app', 'You have no one membership')?>
-                    <?php endif ?>
+                        </table>                   
+                    </div>
                 </div>
-            </div>
+            <?php else: ?>
+                <div class="box">
+                    <div class="box-header">
+                        <h4><?=Yii::t('app', 'You have no one membership')?></h4>
+                    </div>
+                    <div class="box-body">
+                        <?=Yii::t('app', 'You can join to existing party or create a new one')?>
+                    </div>
+                </div>
+                <?php if (count($user->states)): ?>
+                    <?php foreach ($user->states as $state): ?>
+                    <div class="box">
+                        <div class="box-title">
+                            <h4><?=LinkCreator::stateLink($state)?></h4>
+                        </div>
+                        <div class="box-body">
+                            <div class="btn-group">
+                                <button class="create-party-btn btn btn-primary" data-state-id="<?=$state->id?>" ><i class="fa fa-plus"></i> <?=Yii::t('app', 'Create party')?></button>
+                            </div>
+                        </div>
+                    </div>
+                    <?php endforeach ?>
+                <?php else: ?>
+                <div class="box">
+                    <div class="box-body">
+                        <?=Yii::t('app', 'You have not citizehship and you can not create parties')?>
+                    </div>
+                </div>
+                <?php endif ?>
+            <?php endif ?>
         </div>
         <div class="col-md-6">
             <div class="box">
@@ -93,3 +119,19 @@ use yii\helpers\Html,
         </div>
     </div>
 </section>
+
+<script type="text/javascript">
+    
+    function make_create_party_request() {
+        json_request('party/create', $('#create-party-form').serializeObject(), false, false, false, 'POST');
+    }
+
+    $('.create-party-btn').click(function(){
+        createAjaxModal(
+                'party/create-form',
+                {stateId: $(this).data('stateId')},
+                '<?=Yii::t('app', 'Party creation')?>',
+                '<button class="btn btn-primary" onclick="if ($(\'#create-party-form\').yiiActiveForm(\'submitForm\') && $(\'#create-party-form\').yiiActiveForm(\'data\').validated) make_create_party_request()"><?=Yii::t('app', 'Create')?></button> <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true"><?=Yii::t('app', 'Close')?></button>');
+    });
+    
+</script>

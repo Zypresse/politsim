@@ -136,6 +136,27 @@ class NotificationProto extends Object
                 'icon' => '<i class="fa fa-flag text-red"></i>',
                 'iconBg' => '<i class="fa fa-flag bg-red"></i>',
             ],
+            [
+                'id' => 3,
+                'text' => Yii::t('app', 'Your membership request is approved'),
+                'textShort' => Yii::t('app', 'Membership approved'),
+                'icon' => '<i class="fa fa-group text-green"></i>',
+                'iconBg' => '<i class="fa fa-group bg-green"></i>',
+            ],            
+            [
+                'id' => 4,
+                'text' => Yii::t('app', 'Your have lost membership'),
+                'textShort' => Yii::t('app', 'Membership fired'),
+                'icon' => '<i class="fa fa-group text-red"></i>',
+                'iconBg' => '<i class="fa fa-group bg-red"></i>',
+            ],
+            [
+                'id' => 5,
+                'text' => Yii::t('app', 'Party successfully created'),
+                'textShort' => Yii::t('app', 'Party created'),
+                'icon' => '<i class="fa fa-group text-green"></i>',
+                'iconBg' => '<i class="fa fa-group bg-green"></i>',
+            ],
         ];
     }
     

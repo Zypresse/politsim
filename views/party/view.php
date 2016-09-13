@@ -47,11 +47,20 @@ $isHaveMembership = $user->isHaveMembership($party->id);
         <?php endif ?>
         <div class="col-md-<?=($party->flag || $party->anthem)?8:12?>">
             <div class="box">
-                <div class="box-body">
+                <div class="box-header">
                     <h1>
                         <?=Html::encode($party->name)?>
                          <small>(<?=Html::encode($party->nameShort)?>)</small>
                     </h1>
+                </div>
+                <div class="box-body">
+                    <?php if ($party->dateDeleted): ?>
+                    <div class="callout callout-danger">
+                        <h4><i class="icon fa fa-ban"></i> <?=Yii::t('app', 'Party deleted!')?></h4>
+
+                        <p><?=Yii::t('app', 'This party has been deleted')?> <?=MyHtmlHelper::timeAutoFormat($party->dateDeleted)?></p>
+                    </div>
+                    <?php endif ?>
                 </div>
             </div>
             <div class="box">
@@ -66,9 +75,11 @@ $isHaveMembership = $user->isHaveMembership($party->id);
                     </p>
                     <div class="btn-group">
                         <?php if ($isHaveMembership):?>
-                            <button onclick="if (confirm('<?=Yii::t('app', 'Are you sure?')?>')) json_request('membership/cancel', {stateId: <?=$party->id?>})" class="btn btn-danger"><?=Yii::t('app', 'Fire membership')?></button>
+                            <button onclick="if (confirm('<?=Yii::t('app', 'Are you sure?')?>')) json_request('membership/cancel', {partyId: <?=$party->id?>})" class="btn btn-danger"><?=Yii::t('app', 'Fire membership')?></button>
                         <?php else: ?>
-                            <button onclick="json_request('membership/request', {stateId: <?=$party->id?>})" class="btn btn-primary"><?=Yii::t('app', 'Make request for membership')?></button>
+                            <?php if (!$party->dateDeleted): ?>
+                                <button onclick="json_request('membership/request', {partyId: <?=$party->id?>})" class="btn btn-primary"><?=Yii::t('app', 'Make request for membership')?></button>
+                            <?php endif ?>
                         <?php endif ?>
                     </div>
                 </div>

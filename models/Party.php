@@ -235,7 +235,13 @@ class Party extends MyModel implements TaxPayer
          
     public function getMembers()
     {
-        return $this->hasMany(User::classname(), ['partyId' => 'id']);
+        return $this->hasMany(User::classname(), ['id' => 'userId'])
+                 ->via('memberships');
+    }
+    
+    public function getMemberships()
+    {
+	return $this->hasMany(Membership::classname(), ['partyId' => 'id']);
     }
          
     public function getLists()
@@ -250,6 +256,71 @@ class Party extends MyModel implements TaxPayer
             $this->_ideology = Ideology::findOne($this->ideologyId);
         }
         return $this->_ideology;
+    }
+    
+    public function updateParams($save = true)
+    {
+        
+        $this->fame = 0;
+        $this->trust = 0;
+        $this->success = 0;
+        $this->membersCount = 0;
+        
+        foreach ($this->members as $member) {
+            $this->membersCount++;
+            $this->fame += $member->fame;
+            $this->trust += $member->trust;
+            $this->success += $member->success;
+        }
+        
+        if ($this->membersCount == 0) {
+            $this->dateDeleted = time();
+        }
+        
+        if ($save) {
+            $this->save();
+        }
+    }
+    
+    /**
+     * 
+     * @param \app\models\User $creator
+     * @return boolean
+     */
+    public function createNew(User $creator)
+    {
+        
+        if ($this->save()) {
+        
+            $membership = new Membership([
+                'partyId' => $this->id,
+                'userId' => $creator->id,
+                'dateApproved' => time()
+            ]);
+
+            if ($membership->save()) {
+
+                $post = new PartyPost([
+                    'partyId' => $this->id,
+                    'userId' => $creator->id,
+                    'name' => Yii::t('app', 'Party leader'),
+                    'nameShort' => Yii::t('app', 'leader'),
+                    'powers' => PartyPost::POWER_CHANGE_FIELDS + PartyPost::POWER_EDIT_POSTS + PartyPost::POWER_APPROVE_REQUESTS,
+                    'appointmentType' => PartyPost::APPOINTMENT_TYPE_INHERITANCE
+                ]);
+
+                if ($post->save()) {
+                    $creator->noticy(5, Yii::t('app', 'Party '.\app\components\LinkCreator::partyLink($this)).' created');
+                    return true;
+                }
+
+                $this->addErrors($post->getErrors());
+            }
+
+            $this->addErrors($membership->getErrors());
+        }
+        
+        return false;
     }
     
 }

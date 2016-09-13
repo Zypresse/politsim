@@ -37,6 +37,10 @@ class Membership extends MyModel
         ];
     }
     
+    public static function primaryKey() {
+        return ['userId', 'partyId'];
+    }
+    
     public function beforeSave($insert) {
         
         if ($insert) {
@@ -54,5 +58,29 @@ class Membership extends MyModel
     public function getParty()
     {
 	return $this->hasOne(Party::classname(), ['id' => 'partyId']);
+    }
+    
+    /**
+     * Подтвердить 
+     * @param boolean $save
+     */
+    public function approve($save = true)
+    {
+        $this->dateApproved = time();
+        if ($save) {
+            $this->save();
+        }
+        
+        $this->user->noticy(3, Yii::t('app', 'Now you are a membership of '.\app\components\LinkCreator::partyLink($this->party)));
+    }
+    
+    public function fire() {
+        $this->user->noticy(4, Yii::t('app', 'You have lost membership of '.\app\components\LinkCreator::partyLink($this->party)));        
+        return $this->delete();
+    }
+    
+    public function fireSelf() {
+        $this->user->noticyReaded(4, Yii::t('app', 'You have lost membership of '.\app\components\LinkCreator::partyLink($this->party)));
+        return $this->delete();
     }
 }

@@ -41,32 +41,8 @@ class PartyController extends MyController
                 return $this->_r(Yii::t('app', 'You allready have party membership in this state'));
             }
                     
-            if ($model->save()) {
-                $membership = new Membership([
-                    'partyId' => $model->id,
-                    'userId' => $this->user->id,
-                    'dateApproved' => time()
-                ]);
-                
-                if ($membership->save()) {
-                    
-                    $post = new PartyPost([
-                        'partyId' => $model->id,
-                        'userId' => $this->user->id,
-                        'name' => Yii::t('app', 'Party leader'),
-                        'nameShort' => Yii::t('app', 'leader'),
-                        'powers' => PartyPost::POWER_CHANGE_FIELDS + PartyPost::POWER_EDIT_POSTS + PartyPost::POWER_APPROVE_REQUESTS,
-                        'appointmentType' => PartyPost::APPOINTMENT_TYPE_INHERITANCE
-                    ]);
-                    
-                    if ($post->save()) {
-                        return $this->_rOk();
-                    }
-                    
-                    return $this->_r($post->getErrors());
-                }
-                
-                return $this->_r($membership->getErrors());
+            if ($model->createNew($this->user)) {
+                return $this->_rOk();
             }
         
             return $this->_r($model->getErrors());
