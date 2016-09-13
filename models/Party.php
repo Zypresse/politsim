@@ -310,7 +310,7 @@ class Party extends MyModel implements TaxPayer
                 ]);
 
                 if ($post->save()) {
-                    $creator->noticy(5, Yii::t('app', 'Party '.\app\components\LinkCreator::partyLink($this)).' created');
+                    $creator->noticy(5, \app\components\LinkCreator::partyLink($this)).Yii::t('app', ' created');
                     return true;
                 }
 

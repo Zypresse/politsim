@@ -71,16 +71,16 @@ class Membership extends MyModel
             $this->save();
         }
         
-        $this->user->noticy(3, Yii::t('app', 'Now you are a membership of '.\app\components\LinkCreator::partyLink($this->party)));
+        $this->user->noticy(3, Yii::t('app', 'Now you are a membership of ').\app\components\LinkCreator::partyLink($this->party));
     }
     
     public function fire() {
-        $this->user->noticy(4, Yii::t('app', 'You have lost membership of '.\app\components\LinkCreator::partyLink($this->party)));        
+        $this->user->noticy(4, Yii::t('app', 'You have lost membership of ').\app\components\LinkCreator::partyLink($this->party));        
         return $this->delete();
     }
     
     public function fireSelf() {
-        $this->user->noticyReaded(4, Yii::t('app', 'You have lost membership of '.\app\components\LinkCreator::partyLink($this->party)));
+        $this->user->noticyReaded(4, Yii::t('app', 'You have lost membership of ').\app\components\LinkCreator::partyLink($this->party));
         return $this->delete();
     }
 }

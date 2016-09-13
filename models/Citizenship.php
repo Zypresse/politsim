@@ -72,16 +72,16 @@ class Citizenship extends MyModel {
             $this->save();
         }
         
-        $this->user->noticy(1, Yii::t('app', 'Now you are a citizenship of '.\app\components\LinkCreator::stateLink($this->state)));
+        $this->user->noticy(1, Yii::t('app', 'Now you are a citizenship of ').\app\components\LinkCreator::stateLink($this->state));
     }
     
     public function fire() {
-        $this->user->noticy(2, Yii::t('app', 'You have lost citizenship of '.\app\components\LinkCreator::stateLink($this->state)));        
+        $this->user->noticy(2, Yii::t('app', 'You have lost citizenship of ').\app\components\LinkCreator::stateLink($this->state));        
         return $this->delete();
     }
     
     public function fireSelf() {
-        $this->user->noticyReaded(2, Yii::t('app', 'You have lost citizenship of '.\app\components\LinkCreator::stateLink($this->state)));
+        $this->user->noticyReaded(2, Yii::t('app', 'You have lost citizenship of ').\app\components\LinkCreator::stateLink($this->state));
         return $this->delete();
     }
     
