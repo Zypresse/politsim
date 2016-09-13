@@ -122,16 +122,12 @@ use yii\helpers\Html,
 
 <script type="text/javascript">
     
-    function make_create_party_request() {
-        json_request('party/create', $('#create-party-form').serializeObject(), false, false, false, 'POST');
-    }
-
     $('.create-party-btn').click(function(){
         createAjaxModal(
                 'party/create-form',
                 {stateId: $(this).data('stateId')},
                 '<?=Yii::t('app', 'Party creation')?>',
-                '<button class="btn btn-primary" onclick="if ($(\'#create-party-form\').yiiActiveForm(\'submitForm\') && $(\'#create-party-form\').yiiActiveForm(\'data\').validated) make_create_party_request()"><?=Yii::t('app', 'Create')?></button> <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true"><?=Yii::t('app', 'Close')?></button>');
+                '<button class="btn btn-primary" onclick="$(\'#create-party-form\').yiiActiveForm(\'submitForm\')"><?=Yii::t('app', 'Create')?></button> <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true"><?=Yii::t('app', 'Close')?></button>');
     });
     
 </script>

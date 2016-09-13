@@ -111,15 +111,21 @@ if ($isHaveMembership) {
                             <tr>
                                 <td><?=Html::encode($post->name)?></td>
                                 <td><?=($post->user) ? LinkCreator::userLink($post->user) : Yii::t('app', 'Not set')?></td>
+                                <td><?=[
+                                    PartyPost::APPOINTMENT_TYPE_LEADER => Yii::t('app', 'By leader'),
+                                    PartyPost::APPOINTMENT_TYPE_INHERITANCE => Yii::t('app', 'By inheritance'),
+                                    PartyPost::APPOINTMENT_TYPE_PRIMARIES => Yii::t('app', 'By primaries'),
+                                ][$post->appointmentType]?>
+                                </td>
                                 <?php if ($isHaveMembership && $userPost && ($userPost->powers & PartyPost::POWER_EDIT_POSTS)): ?>
                                 <td class="text-center">
                                     <div class="btn-group">
-                                        <button class="btn btn-xs btn-info"><i class="fa fa-edit"></i> <?=Yii::t('app', 'Edit')?></button>
+                                        <button data-post-id="<?=$post->id?>" class="edit-party-post-btn btn btn-xs btn-info"><i class="fa fa-edit"></i> <?=Yii::t('app', 'Edit')?></button>
                                         <?php if ($post->id != $userPost->id): ?>
                                         <?php if ($post->user): ?>
-                                            <button class="btn btn-xs btn-warning"><i class="fa fa-ban"></i> <?=Yii::t('app', 'Drop')?></button>
+                                            <button data-post-id="<?=$post->id?>" class="drop-party-post-btn btn btn-xs btn-warning"><i class="fa fa-ban"></i> <?=Yii::t('app', 'Drop')?></button>
                                         <?php endif ?>
-                                        <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i> <?=Yii::t('app', 'Delete')?></button>
+                                        <button data-post-id="<?=$post->id?>" class="delete-party-post-btn btn btn-xs btn-danger"><i class="fa fa-trash"></i> <?=Yii::t('app', 'Delete')?></button>
                                         <?php endif ?>
                                     </div>
                                 </td>
@@ -137,12 +143,20 @@ if ($isHaveMembership) {
                 <div class="box-body">
                     <p>
                         <?php if ($isHaveMembership):?>
-                            <?=Yii::t('app','You have this party membership')?>
+                            <?=Yii::t('app','You have this party membership')?><br>
+                            <?php if ($userPost):?>
+                                <?=Yii::t('app','You are {0} of this party', [Html::encode($userPost->name)])?><br>
+                            <?php endif ?>
                         <?php endif ?>
                     </p>
                     <div class="btn-group">
                         <?php if ($isHaveMembership):?>
                             <button onclick="if (confirm('<?=Yii::t('app', 'Are you sure?')?>')) json_request('membership/cancel', {partyId: <?=$party->id?>})" class="btn btn-danger"><?=Yii::t('app', 'Fire membership')?></button>
+                            <?php if ($userPost):?>
+                                <?php if ($userPost->appointmentType == PartyPost::APPOINTMENT_TYPE_INHERITANCE):?>
+                                <button class="btn btn-primary"><?=Yii::t('app', 'Set successor')?></button>
+                                <?php endif ?>
+                            <?php endif ?>
                         <?php else: ?>
                             <?php if (!$party->dateDeleted): ?>
                                 <button onclick="json_request('membership/request', {partyId: <?=$party->id?>})" class="btn btn-primary"><?=Yii::t('app', 'Make request for membership')?></button>
@@ -158,12 +172,28 @@ if ($isHaveMembership) {
 <script type="text/javascript">
     
     function createNewPost() {
-        var buttons = '<button class="btn btn-primary" onclick="json_request(\'party/create-post\',$(\'#create-party-post-form\').serializeObject(), false, false, false, \'POST\')"><?=Yii::t('app', 'Create')?></button><button class="btn btn-danger" data-dismiss="modal" aria-hidden="true"><?=Yii::t('app', 'Cancel')?></button>';
+        var buttons = '<button class="btn btn-primary" onclick="$(\'#create-party-post-form\').yiiActiveForm(\'submitForm\')"><?=Yii::t('app', 'Create')?></button><button class="btn btn-danger" data-dismiss="modal" aria-hidden="true"><?=Yii::t('app', 'Cancel')?></button>';
         createAjaxModal('party/create-post-form', {partyId: <?=$party->id?>}, 
             '<?=Yii::t('app', 'Create new party post')?>',
             buttons
         );
     }
     $('#create-new-post-btn').click(createNewPost);
+    
+    function editPost() {
+        var buttons = '<button class="btn btn-primary" onclick="$(\'#edit-party-post-form\').yiiActiveForm(\'submitForm\')"><?=Yii::t('app', 'Save')?></button><button class="btn btn-danger" data-dismiss="modal" aria-hidden="true"><?=Yii::t('app', 'Cancel')?></button>';
+        createAjaxModal('party/edit-post-form', {postId: $(this).data('postId')}, 
+            '<?=Yii::t('app', 'Edit party post')?>',
+            buttons
+        );
+    }
+    $('.edit-party-post-btn').click(editPost);
+    
+    function deletePost() {
+        if (confirm('<?=Yii::t('app', 'Are you sure?')?>')) {
+            json_request('party/delete-post', {id: $(this).data('postId')});
+        }
+    }
+    $('.delete-party-post-btn').click(deletePost);
     
 </script>

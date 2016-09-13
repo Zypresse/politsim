@@ -131,4 +131,75 @@ class PartyController extends MyController
         ]);
     }
     
+    public function actionEditPost()
+    {
+        $id = Yii::$app->request->post('PartyPost')['id'];
+        
+        $model = PartyPost::findByPk($id);
+        
+        if (is_null($model)) {
+            return $this->_r("Party post not found");
+        }
+        
+        $userPost = $model->party->getPostByUserId($this->user->id);
+        if (is_null($userPost) || !($userPost->powers & PartyPost::POWER_EDIT_POSTS)) {
+            return $this->_r("Access denied");
+        }
+        
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->save()) {
+                return $this->_rOk();
+            } else {
+                return $this->_r($model->getErrors());
+            }
+        }
+        
+        return $this->_r(Yii::t('app', 'Undefined error'));
+    }
+    
+    public function actionEditPostForm($postId = false)
+    {
+        
+        if (!$postId) {
+            $postId = Yii::$app->request->post('PartyPost')['id'];
+        }
+        
+        $model = PartyPost::findByPk($postId);
+
+        if (is_null($model)) {
+            return $this->_r("Party post not found");
+        }
+        
+        if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return ActiveForm::validate($model);
+        }
+        
+        return $this->render('edit-post-form', [
+            'model' => $model,
+            'user' => $this->user
+        ]);
+    }
+    
+    public function actionDeletePost($id)
+    {
+        
+        $model = PartyPost::findByPk($id);
+        
+        if (is_null($model)) {
+            return $this->_r("Party post not found");
+        }
+        
+        $userPost = $model->party->getPostByUserId($this->user->id);
+        if (is_null($userPost) || !($userPost->powers & PartyPost::POWER_EDIT_POSTS)) {
+            return $this->_r("Access denied");
+        }
+        
+        if ($model->delete()) {
+            return $this->_rOk();
+        }
+        
+        return $this->_r(Yii::t('app', 'Undefined error'));
+    }
+    
 }

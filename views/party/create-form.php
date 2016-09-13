@@ -97,7 +97,7 @@ $form = new ActiveForm();
     
     $form.on('submit', function() {
         if ($form.yiiActiveForm('data').validated) {
-            make_create_party_request();
+            json_request('party/create', $form.serializeObject(), false, false, false, 'POST');
         }
         return false;
     });

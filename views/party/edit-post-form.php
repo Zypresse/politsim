@@ -7,22 +7,39 @@ use yii\helpers\Html,
 
 /* @var $this \yii\web\View */
 /* @var $model \app\models\PartyPost */
-/* @var $party \app\models\Party */
 /* @var $user \app\models\User */
 
 $form = new ActiveForm();
+
+$powers = [];
+if ($model->powers) {
+    if ($model->powers & PartyPost::POWER_CHANGE_FIELDS) {
+        $powers[] = PartyPost::POWER_CHANGE_FIELDS;
+    }
+    if ($model->powers & PartyPost::POWER_EDIT_POSTS) {
+        $powers[] = PartyPost::POWER_EDIT_POSTS;
+    }
+    if ($model->powers & PartyPost::POWER_APPROVE_REQUESTS) {
+        $powers[] = PartyPost::POWER_APPROVE_REQUESTS;
+    }
+}
+$model->powers = $powers;
 
 ?>
 
 <?php $form->begin([
     'options' => [
-        'id' => 'create-party-post-form',
+        'id' => 'edit-party-post-form',
     ],
-    'action' => Url::to(['party/create-post-form']),
+    'action' => Url::to(['party/edit-post-form']),
     'enableClientValidation' => true,
     'enableAjaxValidation' => true,
-    'validationUrl' => Url::to(['party/create-post-form'])
+    'validationUrl' => Url::to(['party/edit-post-form'])
 ]) ?>
+
+<?=$form->field($model, 'id', [
+    'labelOptions' => ['class' => 'hide']
+])->hiddenInput()?>
 
 <?=$form->field($model, 'partyId', [
     'labelOptions' => ['class' => 'hide']
@@ -32,11 +49,13 @@ $form = new ActiveForm();
 
 <?=$form->field($model, 'nameShort')->textInput()?>
 
+<?php if (!$model->isPartyLeader()): ?>
 <?=$form->field($model, 'powers')->checkboxList([
     PartyPost::POWER_CHANGE_FIELDS => Yii::t('app', 'Can change party name, flag, ideology & etc.'),
     PartyPost::POWER_EDIT_POSTS => Yii::t('app', 'Can edit party posts, drop and set users to posts'),
     PartyPost::POWER_APPROVE_REQUESTS => Yii::t('app', 'Can approve party membership requests'),
 ])?>
+<?php endif ?>
 
 <?=$form->field($model, 'appointmentType')->dropDownList([
     PartyPost::APPOINTMENT_TYPE_LEADER => Yii::t('app', 'By leader'),
@@ -51,7 +70,7 @@ $form = new ActiveForm();
         <?=implode(PHP_EOL, $js)?>
     <?php endforeach ?>    
         
-    $form = $('#create-party-post-form');
+    $form = $('#edit-party-post-form');
     
     $form.yiiActiveForm('add', {
         'id': 'partypost-name',
@@ -73,7 +92,7 @@ $form = new ActiveForm();
         
     $form.on('submit', function() {
         if ($form.yiiActiveForm('data').validated) {
-            json_request('party/create-post',$form.serializeObject(), false, false, false, 'POST');
+            json_request('party/edit-post',$form.serializeObject(), false, false, false, 'POST');
         }
         return false;
     });

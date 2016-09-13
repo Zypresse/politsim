@@ -100,6 +100,11 @@ class PartyPost extends MyModel
 	return $this->hasOne(User::classname(), ['id' => 'successorId']);
     }
     
+    public function isPartyLeader()
+    {
+        return $this->party->leaderPostId == $this->id;
+    }
+    
     public function beforeValidate() {
         if (is_array($this->powers)) {
             $powers = 0;
