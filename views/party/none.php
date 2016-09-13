@@ -22,6 +22,9 @@ use yii\helpers\Html,
             <div class="box">
                 <div class="box-body">
                     <h3><?=Yii::t('app', 'You are have not parties membership')?></h3>
+                    <pre>
+                        <?=print_r(\app\models\Party::findAll(), true)?>
+                    </pre>
                 </div>
             </div>
         </div>
@@ -51,9 +54,17 @@ use yii\helpers\Html,
 </section>
 
 <script type="text/javascript">
+    
+    function make_create_party_request() {
+        json_request('party/create', $('#create-party-form').serializeObject(), false, false, false, 'POST');
+    }
 
     $('.create-party-btn').click(function(){
-        createAjaxModal('party/create-form', {stateId: $(this).data('stateId')}, '<?=Yii::t('app', 'Party creation')?>', '<button class="btn btn-primary" onclick="json_request(\'party/create\', $(\'#party-create-form\').serialize())" data-dismiss="modal" aria-hidden="true"><?=Yii::t('app', 'Create')?></button> <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true"><?=Yii::t('app', 'Close')?></button>');
+        createAjaxModal(
+                'party/create-form',
+                {stateId: $(this).data('stateId')},
+                '<?=Yii::t('app', 'Party creation')?>',
+                '<button class="btn btn-primary" onclick="if ($(\'#create-party-form\').yiiActiveForm(\'submitForm\') && $(\'#create-party-form\').yiiActiveForm(\'data\').validated) make_create_party_request()"><?=Yii::t('app', 'Create')?></button> <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true"><?=Yii::t('app', 'Close')?></button>');
     });
     
 </script>

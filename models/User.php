@@ -281,7 +281,8 @@ class User extends MyModel implements TaxPayer, IdentityInterface
     
     public function getParties()
     {
-        return [];
+        return $this->hasMany(Party::className(), ['id' => 'partyId'])
+            ->via('memberships');
     }
     
     public function getStates()
@@ -313,6 +314,11 @@ class User extends MyModel implements TaxPayer, IdentityInterface
     public function isHaveCitizenship($stateId)
     {
         return !!$this->getCitizenships()->where(['stateId' => $stateId])->count();
+    }
+    
+    public function getMemberships()
+    {
+	return $this->hasMany(Membership::classname(), ['userId' => 'id']);
     }
     
     public function noticy($protoId, $text = null, $textShort = null)

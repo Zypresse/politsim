@@ -1,9 +1,9 @@
 <?php
 
 use yii\helpers\Html,
+    yii\helpers\Url,
     yii\helpers\ArrayHelper,
-//    yii\bootstrap\ActiveForm,
-    yii\widgets\ActiveForm,
+    yii\bootstrap\ActiveForm,
     app\models\Ideology,
     app\models\Party;
 
@@ -14,13 +14,15 @@ use yii\helpers\Html,
 $form = new ActiveForm();
 
 ?>
+
 <?php $form->begin([
     'options' => [
         'id' => 'create-party-form',
     ],
-    'action' => '/party/create-form', 
+    'action' => Url::to(['party/create-form']),
     'enableClientValidation' => true,
     'enableAjaxValidation' => true,
+    'validationUrl' => Url::to(['party/create-form'])
 ]) ?>
 
 <?=$form->field($model, 'stateId', [
@@ -49,3 +51,54 @@ $form = new ActiveForm();
 <?=$form->field($model, 'anthem')->textInput()?>
 
 <?php $form->end() ?>
+
+<script type="text/javascript">
+    <?php foreach($this->js as $js): ?>
+        <?=implode(PHP_EOL, $js)?>
+    <?php endforeach ?>    
+        
+    $form = $('#create-party-form');
+    
+    $form.yiiActiveForm('add', {
+        'id': 'party-name',
+        'name': 'Party[name]',
+        'container': '.field-party-name',
+        'input': '#party-name',
+        'error': '.help-block',
+        'enableAjaxValidation': true
+    });
+    
+    $form.yiiActiveForm('add', {
+        'id': 'party-nameshort',
+        'name': 'Party[nameShort]',
+        'container': '.field-party-nameshort',
+        'input': '#party-nameshort',
+        'error': '.help-block',
+        'enableAjaxValidation': true
+    });
+    
+    $form.yiiActiveForm('add', {
+        'id': 'party-flag',
+        'name': 'Party[flag]',
+        'container': '.field-party-flag',
+        'input': '#party-flag',
+        'error': '.help-block',
+        'enableAjaxValidation': true
+    });
+    
+    $form.yiiActiveForm('add', {
+        'id': 'party-anthem',
+        'name': 'Party[anthem]',
+        'container': '.field-party-anthem',
+        'input': '#party-anthem',
+        'error': '.help-block',
+        'enableAjaxValidation': true
+    });
+    
+    $form.on('submit', function() {
+        if ($form.yiiActiveForm('data').validated) {
+            make_create_party_request();
+        }
+        return false;
+    });
+</script>

@@ -181,6 +181,9 @@ function request(pageUrl,postParams,requestType,callback,noError,method)
     method = method || 'GET';
     noError = noError || false;
     postParams = postParams || {};
+    if (method === 'POST') {
+        postParams[yii.getCsrfParam()] = yii.getCsrfToken();
+    }
 //    postParams.viewer_id = viewer_id;
 //    postParams.auth_key = auth_key;
     
@@ -221,7 +224,7 @@ function request(pageUrl,postParams,requestType,callback,noError,method)
             }
 //            $("#spinner").fadeOut("fast");
         },
-        error: (noError) ? function(e) {console.log(e);$("#spinner").fadeOut("fast");} : show_error
+        error: (noError) ? function(e) {console.log(e);/*$("#spinner").fadeOut("fast");*/} : show_error
     });
 }
 

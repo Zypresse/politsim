@@ -34,14 +34,13 @@ class AppAsset extends AssetBundle
         'css/style.css',
     ];
     public $js = [
-//        '//code.jquery.com/ui/1.11.4/jquery-ui.js',
         'js/bootstrap.js',
         'js/app.js',
         'js/fullscreen.js',
 //        'js/icheck.js',
 //        'js/jquery.peity.min.js',
         'js/jquery-dateFormat.min.js',
-//        'js/serialize-object.js',
+        'js/serialize-object.js',
         'js/pace.min.js',
 //        '//vk.com/js/api/xd_connection.js',
 //        '//www.google.com/jsapi?autoload={\'modules\':[{\'name\':\'visualization\',\'version\':\'1\',\'packages\':[\'corechart\']}]}',
@@ -54,7 +53,9 @@ class AppAsset extends AssetBundle
     ];
     public $depends = [
         'yii\web\YiiAsset',
-//        'yii\bootstrap\BootstrapAsset',
+        'yii\jui\JuiAsset',
+        'yii\bootstrap\BootstrapAsset',
+        'yii\widgets\ActiveFormAsset',
     ];
     
     public function __construct($config = array()) {
@@ -63,7 +64,7 @@ class AppAsset extends AssetBundle
             $this->js[] = 'js/script_authorized.js';
         }
         
-        if (Yii::$app->user->id > 1) {
+        if (Yii::$app->user->id > 3) {
             $this->js[] = '//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js';
         }
         
