@@ -232,7 +232,12 @@ class Party extends MyModel implements TaxPayer
     {
         return $this->hasMany(PartyPost::classname(), ['partyId' => 'id']);
     }
-         
+    
+    public function getPostByUserId($userId)
+    {
+        return $this->getPosts()->where(['userId' => $userId])->one();
+    }
+
     public function getMembers()
     {
         return $this->hasMany(User::classname(), ['id' => 'userId'])
@@ -310,8 +315,13 @@ class Party extends MyModel implements TaxPayer
                 ]);
 
                 if ($post->save()) {
-                    $creator->noticy(5, \app\components\LinkCreator::partyLink($this)).Yii::t('app', ' created');
-                    return true;
+                    
+                    $this->leaderPostId = $post->id;
+                    
+                    if ($this->save()) {
+                        $creator->noticy(5, \app\components\LinkCreator::partyLink($this)).Yii::t('app', ' created');
+                        return true;
+                    }
                 }
 
                 $this->addErrors($post->getErrors());

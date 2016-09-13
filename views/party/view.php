@@ -2,13 +2,18 @@
 
 use yii\helpers\Html,
     app\components\MyHtmlHelper,
-    app\components\LinkCreator;
+    app\components\LinkCreator,
+    app\models\Party,
+    app\models\PartyPost;
 
 /* @var $this yii\base\View */
 /* @var $party app\models\Party */
 /* @var $user app\models\User */
 
 $isHaveMembership = $user->isHaveMembership($party->id);
+if ($isHaveMembership) {
+    $userPost = $party->getPostByUserId($user->id);
+}
 
 ?>
 <section class="content-header">
@@ -27,6 +32,11 @@ $isHaveMembership = $user->isHaveMembership($party->id);
             <div class="box">
                 <div class="box-body">
                     <?=Html::img($party->flag, ['class' => 'img-polaroid', 'style' => 'width: 100%'])?>
+                    <div class="photo_bottom_container">
+                        <span class="star" ><?= $party->fame ?> <?= MyHtmlHelper::icon('star') ?></span>
+                        <span class="heart" ><?= $party->trust?> <?= MyHtmlHelper::icon('heart') ?></span>
+                        <span class="chart_pie" ><?= $party->success ?> <?= MyHtmlHelper::icon('chart_pie') ?></span>
+                    </div>
                 </div>
                 <div class="box-footer">
                     <em><?=Yii::t('app', 'Party flag')?></em>
@@ -54,14 +64,68 @@ $isHaveMembership = $user->isHaveMembership($party->id);
                     </h1>
                 </div>
                 <div class="box-body">
+                    <p><?=Yii::t('app', 'It`s a party of state ')?><?=LinkCreator::stateLink($party->state)?></p>
+                    <p><strong><i class="fa fa-flag"></i> <?=Yii::t('app', 'Ideology')?>:</strong> <?=$party->ideology->name?></p>
+                    <p><strong><i class="fa fa-sign-in"></i> <?=Yii::t('app', 'Joining')?>:</strong> <?=[
+                        Party::JOINING_RULES_PRIVATE => Yii::t('app', 'Private'),
+                        Party::JOINING_RULES_CLOSED => Yii::t('app', 'Closed'),
+                        Party::JOINING_RULES_OPEN => Yii::t('app', 'Open'),
+                    ][$party->joiningRules]?></p>
+                    <p><strong><i class="fa fa-list-alt"></i> <?=Yii::t('app', 'Election list creation')?>:</strong> <?=[
+                        Party::LIST_CREATION_RULES_LEADER => Yii::t('app', 'By leader'),
+                        Party::LIST_CREATION_RULES_PRIMARIES => Yii::t('app', 'By primaries'),
+                    ][$party->listCreationRules]?></p>
                     <?php if ($party->dateDeleted): ?>
                     <div class="callout callout-danger">
                         <h4><i class="icon fa fa-ban"></i> <?=Yii::t('app', 'Party deleted!')?></h4>
 
                         <p><?=Yii::t('app', 'This party has been deleted')?> <?=MyHtmlHelper::timeAutoFormat($party->dateDeleted)?></p>
                     </div>
+                    <?php else: ?>
+                        <?php if ($party->leaderPost && $party->leaderPost->user): ?>
+                        <p>
+                            <strong><?=Html::encode($party->leaderPost->name)?>:</strong> <?=LinkCreator::userLink($party->leaderPost->user) ?>
+                        </p>
+                        <?php endif ?>
                     <?php endif ?>
                 </div>
+            </div>
+            <div class="box">
+                <div class="box-header">
+                    <h3><?=Yii::t('app', 'Party posts')?></h3>
+                    <?php if ($isHaveMembership && $userPost && ($userPost->powers & PartyPost::POWER_EDIT_POSTS)): ?>
+                    <div class="box-tools pull-right">
+                        <button class="btn btn-sm btn-success">
+                            <i class="fa fa-plus"></i> <?=Yii::t('app', 'Create')?>
+                        </button>
+                    </div>
+                    <?php endif ?>
+                </div>
+                <div class="box-body">
+                    <table class="table table-condensed table-bordered table-hover">
+                        <thead>
+
+                        </thead>
+                        <tbody>
+                            <?php foreach ($party->posts as $post): ?>
+                            <tr>
+                                <td><?=Html::encode($post->name)?></td>
+                                <td><?=($post->user) ? LinkCreator::userLink($post->user) : Yii::t('app', 'Not set')?></td>
+                                <?php if ($isHaveMembership && $userPost && ($userPost->powers & PartyPost::POWER_EDIT_POSTS)): ?>
+                                <td class="text-center">
+                                    <div class="btn-group">
+                                        <button class="btn btn-xs btn-info"><i class="fa fa-edit"></i> <?=Yii::t('app', 'Edit')?></button>
+                                        <?php if ($post->id != $userPost->id): ?>
+                                        <button class="btn btn-xs btn-danger"><i class="fa fa-ban"></i> <?=Yii::t('app', 'Drop')?></button>
+                                        <?php endif ?>
+                                    </div>
+                                </td>
+                                <?php endif ?>
+                            </tr>
+                            <?php endforeach ?>
+                        </tbody>
+                    </table>
+                </div>                
             </div>
             <div class="box">
                 <div class="box-header">

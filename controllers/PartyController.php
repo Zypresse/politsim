@@ -41,10 +41,12 @@ class PartyController extends MyController
                 return $this->_r(Yii::t('app', 'You allready have party membership in this state'));
             }
                     
+            $transaction = Yii::$app->db->beginTransaction();
             if ($model->createNew($this->user)) {
+                $transaction->commit();
                 return $this->_rOk();
             }
-        
+            $transaction->rollBack();
             return $this->_r($model->getErrors());
         }
         

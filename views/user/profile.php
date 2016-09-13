@@ -13,10 +13,10 @@ $viewer = Yii::$app->user->identity;
 
 <section class="content">
     <div class="row">
-        <div class="col-md-3">
-            <div class="avarar-container box" >
-                <div class="box-content">
-                    <?=Html::img($user->avatarBig, ['class' => 'img-polaroid'])?>
+        <div class="col-md-4">
+            <div class=" box" >
+                <div class="box-body">
+                    <?=Html::img($user->avatarBig, ['class' => 'img-polaroid', 'style' => 'width: 100%'])?>
                     <div class="photo_bottom_container">
                         <span class="star" ><?= $user->fame ?> <?= MyHtmlHelper::icon('star') ?></span>
                         <span class="heart" ><?= $user->trust?> <?= MyHtmlHelper::icon('heart') ?></span>
@@ -25,56 +25,62 @@ $viewer = Yii::$app->user->identity;
                 </div>
             </div>
         </div>
-        <div class="col-md-9">
-            <h1><?= Html::encode($user->name) ?> <?php if ($isOwner): ?><small>(это вы)</small><?php endif ?></h1>
-            <?php if ($user->ideology):  ?>
-            <p>
-                <i class="fa fa-flag"></i>
-                <?php if ($user->ideology) : ?>
-                    Придерживается идеологии «<?= $user->ideology->name ?>»
-                <?php endif ?>
-            </p>
-            <?php endif ?>
-            <?php if ($user->religion):  ?>
-            <p>
-                <i class="fa">☪</i>
-                <?php if ($user->religion) : ?>
-                    Придерживается идеологии «<?= $user->religion->name ?>»
-                <?php endif ?>
-            </p>
-            <?php endif ?>
-            <p>
-                <i class="fa fa-group"></i>
-                <?php if (count($user->parties)): ?>
-                    Состоит в партиях
-                <?php else: ?>
-                    <?=$user->genderId === 1 ? 'Беспартийная' : 'Беспартийный' ?>
-                <?php endif ?>
-            </p>
-            <p>
-                <i class="fa fa-globe"></i>
-                <?php if (count($user->states)): ?>
-                    Имеет гражданства
-                <?php else: ?>
-                    Не имеет гражданства
-                <?php endif ?>
-            </p>            
-            <p>                
-                <i class="fa fa-briefcase"></i>
-                <?php if (count($user->posts)): ?>
-                    Занимает посты в правительстве
-                <?php else: ?>
-                    Не занимает постов в правительстве
-                <?php endif ?>
-            </p>
-            <?php if ($isOwner): ?>
-                <div class="btn-toolbar">
-                    <div class="btn-group">
-                        <button id="choose-ideology-btn" class="btn btn-sm btn-primary"><i class="fa fa-flag"></i> &nbsp; <?=Yii::t('app', 'Change ideology')?></button>
-                        <button id="choose-religion-btn" class="btn btn-sm btn-primary"><i class="fa">☪</i> &nbsp; <?=Yii::t('app', 'Change religion')?></button>
-                    </div>
+        <div class="col-md-8">
+            <div class="box">
+                <div class="box-header">
+                    <h1><?= Html::encode($user->name) ?> <?php if ($isOwner): ?><small>(это вы)</small><?php endif ?></h1>
                 </div>
-            <?php endif ?>
+                <div class="box-body">
+                    <?php if ($user->ideology):  ?>
+                    <p>
+                        <i class="fa fa-flag"></i>
+                        <?php if ($user->ideology) : ?>
+                            Придерживается идеологии «<?= $user->ideology->name ?>»
+                        <?php endif ?>
+                    </p>
+                    <?php endif ?>
+                    <?php if ($user->religion):  ?>
+                    <p>
+                        <i class="fa">☪</i>
+                        <?php if ($user->religion) : ?>
+                            Придерживается идеологии «<?= $user->religion->name ?>»
+                        <?php endif ?>
+                    </p>
+                    <?php endif ?>
+                    <p>
+                        <i class="fa fa-group"></i>
+                        <?php if (count($user->parties)): ?>
+                            Состоит в партиях
+                        <?php else: ?>
+                            <?=$user->genderId === 1 ? 'Беспартийная' : 'Беспартийный' ?>
+                        <?php endif ?>
+                    </p>
+                    <p>
+                        <i class="fa fa-globe"></i>
+                        <?php if (count($user->states)): ?>
+                            Имеет гражданства
+                        <?php else: ?>
+                            Не имеет гражданства
+                        <?php endif ?>
+                    </p>            
+                    <p>                
+                        <i class="fa fa-briefcase"></i>
+                        <?php if (count($user->posts)): ?>
+                            Занимает посты в правительстве
+                        <?php else: ?>
+                            Не занимает постов в правительстве
+                        <?php endif ?>
+                    </p>
+                </div>
+                <div class="box-footer">
+                <?php if ($isOwner): ?>
+                    <div class="btn-toolbar">
+                        <div class="btn-group">
+                            <button id="choose-ideology-btn" class="btn btn-sm btn-primary"><i class="fa fa-flag"></i> &nbsp; <?=Yii::t('app', 'Change ideology')?></button>
+                            <button id="choose-religion-btn" class="btn btn-sm btn-primary"><i class="fa">☪</i> &nbsp; <?=Yii::t('app', 'Change religion')?></button>
+                        </div>
+                    </div>
+                <?php endif ?>
             
             <?php if (!$isOwner) { ?>
                 <div class="btn-toolbar">
@@ -278,6 +284,9 @@ $viewer = Yii::$app->user->identity;
 
                 </script>
 <?php } ?>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </section>

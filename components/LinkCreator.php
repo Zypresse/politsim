@@ -43,7 +43,7 @@ abstract class LinkCreator
      * @param string $link
      * @return string
      */
-    private static function render($flag, $name, $link, $flagHeight = 8, $vertAlign = 'baseline')
+    private static function render($flag, $name, $link, $flagHeight = 10, $vertAlign = 'baseline')
     {
         return ($flag ? Html::img($flag, ['style' => 'height: '.$flagHeight.'px; vertical-align: '.$vertAlign.';']).' ' : '') . Html::a(Html::encode($name), $link);    
     }
