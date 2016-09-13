@@ -10,6 +10,10 @@ use Yii,
  * @property integer $partyId
  * @property integer $dateCreated
  * @property integer $dateApproved
+ * 
+ * @property User $user
+ * @property Party $party
+ * 
  */
 class Membership extends MyModel
 {
@@ -42,4 +46,13 @@ class Membership extends MyModel
         return parent::beforeSave($insert);
     }
     
+    public function getUser()
+    {
+	return $this->hasOne(User::classname(), ['id' => 'userId']);
+    }
+    
+    public function getParty()
+    {
+	return $this->hasOne(Party::classname(), ['id' => 'partyId']);
+    }
 }

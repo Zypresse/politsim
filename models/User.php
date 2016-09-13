@@ -321,6 +321,21 @@ class User extends MyModel implements TaxPayer, IdentityInterface
 	return $this->hasMany(Membership::classname(), ['userId' => 'id']);
     }
     
+    public function getApprovedMemberships()
+    {
+        return $this->hasMany(Membership::classname(), ['userId' => 'id'])->where(['>', 'dateApproved', 0]);
+    }
+    
+    public function getRequestedMemberships()
+    {
+        return $this->hasMany(Membership::classname(), ['userId' => 'id'])->where(['dateApproved' => null]);
+    }
+    
+    public function isHaveMembership($partyId)
+    {
+        return !!$this->getMemberships()->where(['partyId' => $partyId])->count();
+    }
+    
     public function noticy($protoId, $text = null, $textShort = null)
     {
         $n = new Notification([

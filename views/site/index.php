@@ -141,10 +141,10 @@ $this->title = 'Political Simulator';
                 <span>Моя работа</span>
             </a>
         </li>
-        <li class="party-info_page">
-            <a href="#!party">
+        <li class="membership_page party_page">
+            <a href="#!membership">
                 <?= MyHtmlHelper::icon('lg-icons/party') ?>
-                <span>Моя партия</span>
+                <span>Мои партии</span>
             </a>
         </li>
         <li class="treeview state-info_page elections_page org-info_page">

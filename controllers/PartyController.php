@@ -17,15 +17,17 @@ use Yii,
 class PartyController extends MyController
 {
     
-    public function actionIndex()
+    public function actionIndex($id)
     {
-        if (count($this->user->parties)) {
-            return print_r($this->user->parties, true);
-        } else {
-            return $this->render('none', [
-                'user' => $this->user
-            ]);
+        $party = Party::findByPk($id);
+        
+        if (is_null($party)) {
+            return $this->_r("Party not found");
         }
+        return $this->render('view', [
+            'party' => $party,
+            'user' => $this->user
+        ]);
     }
     
     public function actionCreate()

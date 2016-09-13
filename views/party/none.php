@@ -22,9 +22,6 @@ use yii\helpers\Html,
             <div class="box">
                 <div class="box-body">
                     <h3><?=Yii::t('app', 'You are have not parties membership')?></h3>
-                    <pre>
-                        <?=print_r(\app\models\Party::findAll(), true)?>
-                    </pre>
                 </div>
             </div>
         </div>

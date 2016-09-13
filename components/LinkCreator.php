@@ -6,7 +6,8 @@ use yii\helpers\Html,
     app\models\State,
     app\models\Region,
     app\models\City,
-    app\models\User;
+    app\models\User,
+    app\models\Party;
 
 /**
  * 
@@ -30,6 +31,8 @@ abstract class LinkCreator
                 return static::cityLink($object);
             case User::className():
                 return static::userLink($object);
+            case Party::className():
+                return static::partyLink($object);
         }
     }
     
@@ -83,6 +86,16 @@ abstract class LinkCreator
     public static function userLink(User $user)
     {
         return static::render($user->avatar, $user->name, '#!profile&id='.$user->id, 16, 'top');
+    }
+    
+    /**
+     * 
+     * @param Party $party
+     * @return string
+     */
+    public static function partyLink(Party $party)
+    {
+        return static::render($party->flag, $party->name, '#!party&id='.$party->id, 10);
     }
     
 }
