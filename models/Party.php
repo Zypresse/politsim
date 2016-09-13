@@ -230,9 +230,14 @@ class Party extends MyModel implements TaxPayer
          
     public function getPosts()
     {
-        return $this->hasMany(PartyPost::classname(), ['partyId' => 'id']);
+        return $this->hasMany(PartyPost::classname(), ['partyId' => 'id'])->orderBy(['id' => SORT_ASC]);
     }
     
+    /**
+     * 
+     * @param integer $userId
+     * @return PartyPost
+     */
     public function getPostByUserId($userId)
     {
         return $this->getPosts()->where(['userId' => $userId])->one();

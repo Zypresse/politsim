@@ -7,21 +7,6 @@ use Yii,
 
 /**
  * 
- * 'partyId' => 'UNSIGNED INTEGER REFERENCES parties(id) NOT NULL',
-    'userId' => 'UNSIGNED INTEGER REFERENCES users(id) DEFAULT NULL',
-    'name' => 'VARCHAR(255) NOT NULL',
-    'nameShort' => 'VARCHAR(6) NOT NULL',
-    // bitmask
-    // 1 изменение основных полей 
-    // 2 создание и редактирование постов
-    // 4 принятие заявок в партию
-    'powers' => 'UNSIGNED INTEGER(3) NOT NULL',
-    // 1 назнач лидером
-    // 2 назначается предыдущим владельцем
-    // 3 выбирается на праймериз
-    'appointmentType' => 'UNSIGNED INTEGER(1) NOT NULL',
-    'successorId' => 'UNSIGNED INTEGER REFERENCES users(id) DEFAULT NULL'
- * 
  * @property integer $partyId
  * @property integer $userId
  * @property string $name
@@ -86,7 +71,17 @@ class PartyPost extends MyModel
         return [
             [['partyId', 'name', 'nameShort', 'powers', 'appointmentType'], 'required'],
             [['userId', 'partyId', 'powers', 'appointmentType', 'successorId'], 'integer', 'min' => 0],
-            [['name', 'nameShort'], 'string', 'max' => 255],
+            [['name'], 'string', 'max' => 255],
+            [['nameShort'], 'string', 'max' => 6],
+        ];
+    }
+    
+    public function attributeLabels() {
+        return [
+            'name' => Yii::t('app', 'Post name'),
+            'nameShort' => Yii::t('app', 'Post short name'),
+            'powers' => Yii::t('app', 'Powers'),
+            'appointmentType' => Yii::t('app', 'Appointment type'),
         ];
     }
     
@@ -103,6 +98,17 @@ class PartyPost extends MyModel
     public function getSuccessor()
     {
 	return $this->hasOne(User::classname(), ['id' => 'successorId']);
+    }
+    
+    public function beforeValidate() {
+        if (is_array($this->powers)) {
+            $powers = 0;
+            foreach ($this->powers as $power) {
+                $powers += intval($power);
+            }
+            $this->powers = $powers;
+        }
+        return parent::beforeValidate();
     }
     
 }

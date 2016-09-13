@@ -76,4 +76,59 @@ class PartyController extends MyController
         ]);
     }
     
+    public function actionCreatePost()
+    {
+        $partyId = Yii::$app->request->post('PartyPost')['partyId'];
+        if (!$partyId) {
+            return $this->_r(Yii::t('app', 'Invalid party ID'));
+        }
+        
+        $party = Party::findByPk($partyId);
+        if (is_null($party)) {
+            return $this->_r("Party not found");
+        }
+        
+        $userPost = $party->getPostByUserId($this->user->id);
+        if (is_null($userPost) || !($userPost->powers & PartyPost::POWER_EDIT_POSTS)) {
+            return $this->_r("Access denied");
+        }
+        
+        $model = new PartyPost();
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->save()) {
+                return $this->_rOk();
+            } else {
+                return $this->_r($model->getErrors());
+            }
+        }
+        
+        return $this->_r(Yii::t('app', 'Undefined error'));
+    }
+    
+    public function actionCreatePostForm($partyId = false)
+    {
+        
+        $model = new PartyPost();
+        
+        if ($partyId) {
+            $party = Party::findByPk($partyId);
+
+            if (is_null($party)) {
+                return $this->_r("Party not found");
+            }
+            $model->partyId = $party->id;
+        }
+        
+        if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return ActiveForm::validate($model);
+        }
+        
+        return $this->render('create-post-form', [
+            'model' => $model,
+            'party' => $party,
+            'user' => $this->user
+        ]);
+    }
+    
 }

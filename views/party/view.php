@@ -95,7 +95,7 @@ if ($isHaveMembership) {
                     <h3><?=Yii::t('app', 'Party posts')?></h3>
                     <?php if ($isHaveMembership && $userPost && ($userPost->powers & PartyPost::POWER_EDIT_POSTS)): ?>
                     <div class="box-tools pull-right">
-                        <button class="btn btn-sm btn-success">
+                        <button id="create-new-post-btn" class="btn btn-sm btn-success">
                             <i class="fa fa-plus"></i> <?=Yii::t('app', 'Create')?>
                         </button>
                     </div>
@@ -116,7 +116,10 @@ if ($isHaveMembership) {
                                     <div class="btn-group">
                                         <button class="btn btn-xs btn-info"><i class="fa fa-edit"></i> <?=Yii::t('app', 'Edit')?></button>
                                         <?php if ($post->id != $userPost->id): ?>
-                                        <button class="btn btn-xs btn-danger"><i class="fa fa-ban"></i> <?=Yii::t('app', 'Drop')?></button>
+                                        <?php if ($post->user): ?>
+                                            <button class="btn btn-xs btn-warning"><i class="fa fa-ban"></i> <?=Yii::t('app', 'Drop')?></button>
+                                        <?php endif ?>
+                                        <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i> <?=Yii::t('app', 'Delete')?></button>
                                         <?php endif ?>
                                     </div>
                                 </td>
@@ -151,3 +154,16 @@ if ($isHaveMembership) {
         </div>
     </div>
 </section>
+
+<script type="text/javascript">
+    
+    function createNewPost() {
+        var buttons = '<button class="btn btn-primary" onclick="json_request(\'party/create-post\',$(\'#create-party-post-form\').serializeObject(), false, false, false, \'POST\')"><?=Yii::t('app', 'Create')?></button><button class="btn btn-danger" data-dismiss="modal" aria-hidden="true"><?=Yii::t('app', 'Cancel')?></button>';
+        createAjaxModal('party/create-post-form', {partyId: <?=$party->id?>}, 
+            '<?=Yii::t('app', 'Create new party post')?>',
+            buttons
+        );
+    }
+    $('#create-new-post-btn').click(createNewPost);
+    
+</script>
