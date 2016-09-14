@@ -400,16 +400,18 @@ function createAjaxModal(action, params, title, buttons, modalId, bodyId) {
     bodyId = bodyId ? bodyId : modalId + '-body';
     buttons = buttons ? buttons : '';
     if ($('#'+modalId)[0]) {
-        $('#'+bodyId).html('<br><br><br>Загрузка...<br><br><br><br><br>');
+        $('#'+bodyId).html('<div class="text-center"><br><br><br>Загрузка...<br><br><br><br><br></div>');
+        $('#'+modalId+'-footer').html(buttons);
     } else {
         $(document.body).append(
-            '<div style="display:none" class="modal fade" id="'+modalId+'" tabindex="-1" role="dialog" aria-labelledby="'+modalId+'-label" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button><h3 id="'+modalId+'-label">'+title+'</h3></div><div id="'+bodyId+'" class="modal-body"><br><br><br>Загрузка...<br><br><br><br><br></div><div class="modal-footer">'+buttons+'</div></div></div></div>'
+            '<div style="display:none" class="modal fade" id="'+modalId+'" tabindex="-1" role="dialog" aria-labelledby="'+modalId+'-label" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button><h3 id="'+modalId+'-label">'+title+'</h3></div><div id="'+bodyId+'" class="modal-body"><div class="text-center"><br><br><br>Загрузка...<br><br><br><br><br></div></div><div id="'+modalId+'-footer" class="modal-footer">'+buttons+'</div></div></div></div>'
         );        
     }
     get_html(action,params,function(d){
         $('#'+bodyId).html(d);
         $('#'+modalId).modal();        
         prettyDates();
-        subscribeLinksInModal(modalId, bodyId);
+        $('#'+bodyId).find('[autofocus]').focus();
+//        subscribeLinksInModal(modalId, bodyId);
     });
 }

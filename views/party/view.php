@@ -154,7 +154,7 @@ if ($isHaveMembership) {
                             <button onclick="if (confirm('<?=Yii::t('app', 'Are you sure?')?>')) json_request('membership/cancel', {partyId: <?=$party->id?>})" class="btn btn-danger"><?=Yii::t('app', 'Fire membership')?></button>
                             <?php if ($userPost):?>
                                 <?php if ($userPost->appointmentType == PartyPost::APPOINTMENT_TYPE_INHERITANCE):?>
-                                <button class="btn btn-primary"><?=Yii::t('app', 'Set successor')?></button>
+                                <button id="set-successor-btn" class="btn btn-primary"><?=Yii::t('app', 'Set successor')?></button>
                                 <?php endif ?>
                             <?php endif ?>
                         <?php else: ?>
@@ -168,7 +168,7 @@ if ($isHaveMembership) {
         </div>
     </div>
 </section>
-
+<?php if ($isHaveMembership && $userPost): ?>
 <script type="text/javascript">
     
     function createNewPost() {
@@ -196,4 +196,15 @@ if ($isHaveMembership) {
     }
     $('.delete-party-post-btn').click(deletePost);
     
+    
+    function setSuccessor() {
+        var buttons = '<button class="btn btn-primary" onclick="if ($(\'#successor-user-id\').val()) json_request(\'party/set-successor\',{postId: <?=$userPost->id?>, userId: $(\'#successor-user-id\').val()})"><?=Yii::t('app', 'Save')?></button><button class="btn btn-danger" data-dismiss="modal" aria-hidden="true"><?=Yii::t('app', 'Cancel')?></button>';
+        createAjaxModal('party/set-successor-form', {postId: <?=$userPost->id?>}, 
+            '<?=Yii::t('app', 'Set successor')?>',
+            buttons
+        );
+    }
+    $('#set-successor-btn').click(setSuccessor);
+    
 </script>
+<?php endif ?>

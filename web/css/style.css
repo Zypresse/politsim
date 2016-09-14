@@ -738,3 +738,7 @@ ul.twPc-Arrange {
     opacity: 0.5;
     font-size: 5px;
 }
+
+.ui-autocomplete {
+    z-index: 100500;
+}

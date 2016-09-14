@@ -5,7 +5,7 @@ namespace app\controllers;
 use Yii,
     app\components\MyController,
     app\models\Party,
-    app\models\Membership,
+    app\models\User,
     app\models\PartyPost,
     app\models\State,
     yii\web\Response,
@@ -22,7 +22,7 @@ class PartyController extends MyController
         $party = Party::findByPk($id);
         
         if (is_null($party)) {
-            return $this->_r("Party not found");
+            return $this->_r(Yii::t('app', "Party not found"));
         }
         return $this->render('view', [
             'party' => $party,
@@ -85,12 +85,12 @@ class PartyController extends MyController
         
         $party = Party::findByPk($partyId);
         if (is_null($party)) {
-            return $this->_r("Party not found");
+            return $this->_r(Yii::t('app', "Party not found"));
         }
         
         $userPost = $party->getPostByUserId($this->user->id);
         if (is_null($userPost) || !($userPost->powers & PartyPost::POWER_EDIT_POSTS)) {
-            return $this->_r("Access denied");
+            return $this->_r(Yii::t('app', "Access denied"));
         }
         
         $model = new PartyPost();
@@ -114,7 +114,7 @@ class PartyController extends MyController
             $party = Party::findByPk($partyId);
 
             if (is_null($party)) {
-                return $this->_r("Party not found");
+                return $this->_r(Yii::t('app', "Party not found"));
             }
             $model->partyId = $party->id;
         }
@@ -138,12 +138,12 @@ class PartyController extends MyController
         $model = PartyPost::findByPk($id);
         
         if (is_null($model)) {
-            return $this->_r("Party post not found");
+            return $this->_r(Yii::t('app', "Party post not found"));
         }
         
         $userPost = $model->party->getPostByUserId($this->user->id);
         if (is_null($userPost) || !($userPost->powers & PartyPost::POWER_EDIT_POSTS)) {
-            return $this->_r("Access denied");
+            return $this->_r(Yii::t('app', "Access denied"));
         }
         
         if ($model->load(Yii::$app->request->post())) {
@@ -167,7 +167,7 @@ class PartyController extends MyController
         $model = PartyPost::findByPk($postId);
 
         if (is_null($model)) {
-            return $this->_r("Party post not found");
+            return $this->_r(Yii::t('app', "Party post not found"));
         }
         
         if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
@@ -187,12 +187,12 @@ class PartyController extends MyController
         $model = PartyPost::findByPk($id);
         
         if (is_null($model)) {
-            return $this->_r("Party post not found");
+            return $this->_r(Yii::t('app', "Party post not found"));
         }
         
         $userPost = $model->party->getPostByUserId($this->user->id);
         if (is_null($userPost) || !($userPost->powers & PartyPost::POWER_EDIT_POSTS)) {
-            return $this->_r("Access denied");
+            return $this->_r(Yii::t('app', "Access denied"));
         }
         
         if ($model->delete()) {
@@ -200,6 +200,55 @@ class PartyController extends MyController
         }
         
         return $this->_r(Yii::t('app', 'Undefined error'));
+    }
+    
+    public function actionSetSuccessor($postId, $userId)
+    {
+        
+        $model = PartyPost::findByPk($postId);
+
+        if (is_null($model)) {
+            return $this->_r(Yii::t('app', "Party post not found"));
+        }
+        
+        if (!$model->userId || $model->userId != $this->user->id || $model->appointmentType != PartyPost::APPOINTMENT_TYPE_INHERITANCE) {
+            return $this->_r(Yii::t('app', "Access denied"));
+        }
+        
+        $user = User::findByPk($userId);
+        
+        if (is_null($user)) {
+            return $this->_r(Yii::t('app', "User not found"));
+        }
+        
+        if (!$user->isHaveMembership($model->partyId)) {
+            return $this->_r(Yii::t('app', "User have not membership in this party"));
+        }
+        
+        $model->successorId = $user->id;
+        if ($model->save()) {
+            return $this->_rOk();
+        } else {
+            return $this->_r($model->getErrors());
+        }
+    }
+    
+    public function actionSetSuccessorForm($postId)
+    {
+        
+        $model = PartyPost::findByPk($postId);
+
+        if (is_null($model)) {
+            return $this->_r(Yii::t('app', "Party post not found"));
+        }
+        
+        $candidats = $model->party->getMembers()->where(['<>', 'id', $this->user->id])->orderBy(['fame' => SORT_DESC, 'trust' => SORT_DESC, 'success' => SORT_DESC])->all();
+        
+        return $this->render('set-successor-form', [
+            'model' => $model,
+            'candidats' => $candidats,
+            'user' => $this->user
+        ]);
     }
     
 }
