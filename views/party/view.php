@@ -11,10 +11,10 @@ use yii\helpers\Html,
 /* @var $user app\models\User */
 
 $isHaveMembership = $user->isHaveMembership($party->id);
+$userPost = null;
 if ($isHaveMembership) {
     $userPost = $party->getPostByUserId($user->id);
 }
-
 ?>
 <section class="content-header">
     <h1>
@@ -64,30 +64,84 @@ if ($isHaveMembership) {
                     </h1>
                 </div>
                 <div class="box-body">
-                    <p><?=Yii::t('app', 'It`s a party of state ')?><?=LinkCreator::stateLink($party->state)?></p>
-                    <p><strong><i class="fa fa-flag"></i> <?=Yii::t('app', 'Ideology')?>:</strong> <?=$party->ideology->name?></p>
-                    <p><strong><i class="fa fa-sign-in"></i> <?=Yii::t('app', 'Joining')?>:</strong> <?=[
-                        Party::JOINING_RULES_PRIVATE => Yii::t('app', 'Private'),
-                        Party::JOINING_RULES_CLOSED => Yii::t('app', 'Closed'),
-                        Party::JOINING_RULES_OPEN => Yii::t('app', 'Open'),
-                    ][$party->joiningRules]?></p>
-                    <p><strong><i class="fa fa-list-alt"></i> <?=Yii::t('app', 'Election list creation')?>:</strong> <?=[
-                        Party::LIST_CREATION_RULES_LEADER => Yii::t('app', 'By leader'),
-                        Party::LIST_CREATION_RULES_PRIMARIES => Yii::t('app', 'By primaries'),
-                    ][$party->listCreationRules]?></p>
                     <?php if ($party->dateDeleted): ?>
                     <div class="callout callout-danger">
                         <h4><i class="icon fa fa-ban"></i> <?=Yii::t('app', 'Party deleted!')?></h4>
 
                         <p><?=Yii::t('app', 'This party has been deleted')?> <?=MyHtmlHelper::timeAutoFormat($party->dateDeleted)?></p>
                     </div>
-                    <?php else: ?>
-                        <?php if ($party->leaderPost && $party->leaderPost->user): ?>
-                        <p>
-                            <strong><?=Html::encode($party->leaderPost->name)?>:</strong> <?=LinkCreator::userLink($party->leaderPost->user) ?>
-                        </p>
-                        <?php endif ?>
                     <?php endif ?>
+                    <div class="row">
+                        <div class="col-md-6 col-xs-12">
+                            <table class="table table-condensed table-bordered">
+                                <thead>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong><i class="fa fa-building"></i> <?=Yii::t('app', 'State')?>:</strong></td>
+                                        <td><?=LinkCreator::stateLink($party->state)?></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong><i class="fa fa-flag"></i> <?=Yii::t('app', 'Ideology')?>:</strong></td>
+                                        <td><?=$party->ideology->name?></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong><i class="fa fa-sign-in"></i> <?=Yii::t('app', 'Joining')?>:</strong></td>
+                                        <td>
+                                            <?=[
+                                                Party::JOINING_RULES_PRIVATE => Yii::t('app', 'Private'),
+                                                Party::JOINING_RULES_CLOSED => Yii::t('app', 'Closed'),
+                                                Party::JOINING_RULES_OPEN => Yii::t('app', 'Open'),
+                                            ][$party->joiningRules]?>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong><i class="fa fa-list-alt"></i> <?=Yii::t('app', 'Election list creation')?>:</strong></td>
+                                        <td>
+                                            <?=[
+                                                Party::LIST_CREATION_RULES_LEADER => Yii::t('app', 'By leader'),
+                                                Party::LIST_CREATION_RULES_PRIMARIES => Yii::t('app', 'By primaries'),
+                                            ][$party->listCreationRules]?>
+                                        </td>
+                                    </tr>
+                                    <?php if (!$party->dateDeleted): ?>
+                                        <?php if ($party->leaderPost && $party->leaderPost->user): ?>
+                                        <tr>
+                                            <td><strong><i class="fa fa-user"></i> <?=Html::encode($party->leaderPost->name)?>:</strong></td>
+                                            <td><?=LinkCreator::userLink($party->leaderPost->user) ?></td>
+                                        </tr>
+                                        <?php endif ?>
+                                    <?php endif ?>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-md-6 col-xs-12">
+                            <table class="table">
+                                <thead>
+                                </thead>
+                                <tbody>                                    
+                                    <tr>
+                                        <td><strong><i class="fa fa-group"></i> <?=Yii::t('app', 'Party members')?>:</strong></td>
+                                        <td><?=MyHtmlHelper::formateNumberword($party->membersCount, 'h')?></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong><i class="fa fa-sign-in"></i> <?=Yii::t('app', 'Membership requests')?>:</strong></td>
+                                        <td><?=MyHtmlHelper::formateNumberword($party->getRequestedMemberships()->count(), 'заявок', 'заявка', 'заявки')?></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <div class="btn-group text-center">
+                                                <?php if ($userPost && $userPost->powers & PartyPost::POWER_APPROVE_REQUESTS): ?>
+                                                <button class="btn btn-primary"><i class="fa fa-sign-in"></i> <?=Yii::t('app', 'Manage membership requests')?></button>
+                                                <?php endif ?>
+                                                <a href="#!party/members&id=<?=$party->id?>" class="btn btn-info"><i class="fa fa-group"></i> <?=Yii::t('app', 'Look members list')?></a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="box">
@@ -104,7 +158,14 @@ if ($isHaveMembership) {
                 <div class="box-body">
                     <table class="table table-condensed table-bordered table-hover">
                         <thead>
-
+                            <tr>
+                                <th><?=Yii::t('app', 'Post name')?></th>
+                                <th><?=Yii::t('app', 'User')?></th>
+                                <th><?=Yii::t('app', 'Appointment type')?></th>
+                                <?php if ($isHaveMembership && $userPost && ($userPost->powers & PartyPost::POWER_EDIT_POSTS)): ?>
+                                <th><?=Yii::t('app', 'Actions')?></th>
+                                <?php endif ?>
+                            </tr>
                         </thead>
                         <tbody>
                             <?php foreach ($party->posts as $post): ?>

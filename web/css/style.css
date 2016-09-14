@@ -123,14 +123,6 @@
     color: white;
 }
 
-#region_list,#members_list,#posts_list {
-    display: none;
-}
-
-#region_list li,#members_list li,#posts_list li {
-    list-style: none;
-}
-
 .jvectormap-label {
     position: absolute;
     display: none;
@@ -724,10 +716,6 @@ ul.twPc-Arrange {
 
 .chat .item > .message > .name {
     max-width: 330px;
-}
-
-#chart_states img {
-    max-width: 50px;
 }
 
 #page_content .pagination > li > a, #page_content .pagination > li > span {

@@ -288,3 +288,36 @@ $this->title = 'Political Simulator';
          data-ad-format="auto">
     </ins>
 </div>
+<script type="text/javascript">
+
+var datatable_language = {
+    paginate: {
+        first:    '«',
+        previous: '‹',
+        next:     '›',
+        last:     '»'
+    },
+    aria: {
+        paginate: {
+            first:    '<?=Yii::t('app','First')?>',
+            previous: '<?=Yii::t('app','Previous')?>',
+            next:     '<?=Yii::t('app','Next')?>',
+            last:     '<?=Yii::t('app','Last')?>'
+        },
+        sortAscending: '<?=Yii::t('app',' - click/return to sort ascending')?>',
+        sortDescending: '<?=Yii::t('app',' - click/return to sort descending')?>'
+    },
+    decimal: ',',
+    thousands: '.',
+    emptyTable: '<?=Yii::t('app','No data available in table')?>',
+    info: '<?=Yii::t('app','Showing _START_ to _END_ of _TOTAL_ items')?>',
+    infoEmpty: '<?=Yii::t('app','No entries to show')?>',
+    infoFiltered: '<?=Yii::t('app','(filtered from _MAX_ total items)')?>',
+    lengthMenu: '<?=Yii::t('app','Show <select><option value="10">10</option><option value="20">20</option><option value="30">30</option><option value="40">40</option><option value="50">50</option><option value="-1">All</option></select> items')?>',
+    processing: '<?=Yii::t('app','Processing...')?>',
+    search: '<?=Yii::t('app','Search:')?>',
+    searchPlaceholder: '<?=Yii::t('app','Type anything')?>',
+    zeroRecords: '<?=Yii::t('app','No matching states found')?>'
+};
+
+</script>

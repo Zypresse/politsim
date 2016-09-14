@@ -246,12 +246,22 @@ class Party extends MyModel implements TaxPayer
     public function getMembers()
     {
         return $this->hasMany(User::classname(), ['id' => 'userId'])
-                 ->via('memberships');
+                 ->via('approvedMemberships');
     }
     
     public function getMemberships()
     {
 	return $this->hasMany(Membership::classname(), ['partyId' => 'id']);
+    }
+    
+    public function getApprovedMemberships()
+    {
+        return $this->hasMany(Membership::classname(), ['partyId' => 'id'])->where(['>', 'dateApproved', 0]);
+    }
+    
+    public function getRequestedMemberships()
+    {
+        return $this->hasMany(Membership::classname(), ['partyId' => 'id'])->where(['dateApproved' => null]);
     }
          
     public function getLists()

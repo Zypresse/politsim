@@ -38,6 +38,7 @@ use Yii,
  * @property Citizenship[] $requestedCitizenships Гражданства (неподтверждённые)
  * @property Party[] $parties Партии
  * @property Post[] $posts Посты
+ * @property PartyPost[] $partyPosts Посты в партиях
  * @property Notification[] $notifications Уведомления
  * @property Building[] $buildings Здания которыми он управляет
  * @property BuildingTwotiled[] $buildingsTwotiled Двухтайловые здания которыми он управляет
@@ -294,6 +295,11 @@ class User extends MyModel implements TaxPayer, IdentityInterface
     public function getPosts()
     {
         return [];
+    }
+    
+    public function getPartyPosts()
+    {
+        return $this->hasMany(PartyPost::className(), ['userId' => 'id']);
     }
 
     public function getCitizenships()

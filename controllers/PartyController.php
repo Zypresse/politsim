@@ -30,6 +30,20 @@ class PartyController extends MyController
         ]);
     }
     
+    public function actionMembers($id)
+    {
+        $party = Party::findByPk($id);
+        
+        if (is_null($party)) {
+            return $this->_r(Yii::t('app', "Party not found"));
+        }
+        return $this->render('members', [
+            'party' => $party,
+            'members' => $party->getMembers()->with('partyPosts')->orderBy(['fame' => SORT_DESC, 'trust' => SORT_DESC, 'success' => SORT_DESC])->all(),
+            'user' => $this->user
+        ]);
+    }
+    
     public function actionCreate()
     {
                         
