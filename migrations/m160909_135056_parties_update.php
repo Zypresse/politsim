@@ -34,6 +34,8 @@ class m160909_135056_parties_update extends Migration
             'dateCreated' => 'UNSIGNED INTEGER NOT NULL',
             'dateDeleted' => 'UNSIGNED INTEGER DEFAULT NULL'
         ]);
+        
+        $this->dropIndex('partiesPosts', 'parties-posts');
 
     }
 
@@ -67,6 +69,8 @@ class m160909_135056_parties_update extends Migration
             'dateCreated' => 'UNSIGNED INTEGER NOT NULL',
             'dateDeleted' => 'UNSIGNED INTEGER DEFAULT NULL'
         ]);
+        
+        $this->createIndex('partiesPosts', 'parties-posts', ['partyId', 'userId'], true);
     }
 
 }

@@ -157,6 +157,34 @@ class NotificationProto extends Object
                 'icon' => '<i class="fa fa-group text-green"></i>',
                 'iconBg' => '<i class="fa fa-group bg-green"></i>',
             ],
+            [
+                'id' => 6,
+                'text' => Yii::t('app', 'You are setted to new party post'),
+                'textShort' => Yii::t('app', 'Setting to party post'),
+                'icon' => '<i class="fa fa-group text-green"></i>',
+                'iconBg' => '<i class="fa fa-group bg-green"></i>',
+            ],
+            [
+                'id' => 7,
+                'text' => Yii::t('app', 'You are dropped from party post'),
+                'textShort' => Yii::t('app', 'Dropped from party post'),
+                'icon' => '<i class="fa fa-group text-red"></i>',
+                'iconBg' => '<i class="fa fa-group bg-red"></i>',
+            ],
+            [
+                'id' => 8,
+                'text' => Yii::t('app', 'You are setted as successor of party post'),
+                'textShort' => Yii::t('app', 'Setted as successor of party post'),
+                'icon' => '<i class="fa fa-group text-blue"></i>',
+                'iconBg' => '<i class="fa fa-group bg-blue"></i>',
+            ],
+            [
+                'id' => 9,
+                'text' => Yii::t('app', 'Your party post was deleted'),
+                'textShort' => Yii::t('app', 'Your party post deleted'),
+                'icon' => '<i class="fa fa-group text-blue"></i>',
+                'iconBg' => '<i class="fa fa-group bg-blue"></i>',
+            ],
         ];
     }
     

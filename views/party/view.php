@@ -159,6 +159,7 @@ if ($isHaveMembership) {
                                 <?php if ($userPost->appointmentType == PartyPost::APPOINTMENT_TYPE_INHERITANCE):?>
                                 <button id="set-successor-btn" class="btn btn-primary"><?=Yii::t('app', 'Set successor')?></button>
                                 <?php endif ?>
+                                <button id="self-drop-party-post-btn" data-post-id="<?=$userPost->id?>" class="btn btn-warning"><?=Yii::t('app', 'Drop self from post')?></button>
                             <?php endif ?>
                         <?php else: ?>
                             <?php if (!$party->dateDeleted): ?>
@@ -224,6 +225,7 @@ if ($isHaveMembership) {
         }
     }
     $('.drop-party-post-btn').click(dropPost);
+    $('#self-drop-party-post-btn').click(dropPost);
     
 </script>
 <?php endif ?>

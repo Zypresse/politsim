@@ -195,7 +195,11 @@ class PartyController extends MyController
             return $this->_r(Yii::t('app', "Access denied"));
         }
         
+        $user = $model->user;
         if ($model->delete()) {
+            if ($user) {
+                $user->noticy(9, Yii::t('app', 'Your post {0} in party {1} was deleted', [\yii\helpers\Html::encode($model->name), \app\components\LinkCreator::partyLink($model->party)]));
+            }
             return $this->_rOk();
         }
         
@@ -227,6 +231,7 @@ class PartyController extends MyController
         
         $model->successorId = $user->id;
         if ($model->save()) {
+            $user->noticy(8, Yii::t('app', 'You are setted as successor to post {0} in party {1}', [\yii\helpers\Html::encode($model->name), \app\components\LinkCreator::partyLink($model->party)]));
             return $this->_rOk();
         } else {
             return $this->_r($model->getErrors());
@@ -278,6 +283,7 @@ class PartyController extends MyController
         
         $model->userId = $user->id;
         if ($model->save()) {
+            $user->noticy(6, Yii::t('app', 'You are setted to post {0} in party {1}', [\yii\helpers\Html::encode($model->name), \app\components\LinkCreator::partyLink($model->party)]));
             return $this->_rOk();
         } else {
             return $this->_r($model->getErrors());
@@ -313,12 +319,25 @@ class PartyController extends MyController
         
         $setterPost = $model->party->getPostByUserId($this->user->id);
         
-        if ($model->appointmentType != PartyPost::APPOINTMENT_TYPE_LEADER || !$setterPost || !($setterPost->powers & PartyPost::POWER_EDIT_POSTS)) {
+        if ($model->appointmentType == PartyPost::APPOINTMENT_TYPE_LEADER) {
+            if (!$setterPost || !($setterPost->powers & PartyPost::POWER_EDIT_POSTS)) {
+                return $this->_r(Yii::t('app', "Access denied"));
+            }
+        } elseif ($model->id != $setterPost->id) {
             return $this->_r(Yii::t('app', "Access denied"));
         }
-                
-        $model->userId = null;
+        
+        $dropedUser = $model->user;
+        $settedUser = $model->successor;
+        
+        $model->userId = $model->successorId;
         if ($model->save()) {
+            if ($dropedUser) {
+                $dropedUser->noticy(7, Yii::t('app', 'You are dropped from post {0} in party {1}', [\yii\helpers\Html::encode($model->name), \app\components\LinkCreator::partyLink($model->party)]));
+            }
+            if ($settedUser) {
+                $settedUser->noticy(6, Yii::t('app', 'You are setted to post {0} in party {1}', [\yii\helpers\Html::encode($model->name), \app\components\LinkCreator::partyLink($model->party)]));
+            }
             return $this->_rOk();
         } else {
             return $this->_r($model->getErrors());
