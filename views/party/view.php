@@ -221,6 +221,9 @@ if ($isHaveMembership) {
                                 <button id="set-successor-btn" class="btn btn-primary"><?=Yii::t('app', 'Set successor')?></button>
                                 <?php endif ?>
                                 <button id="self-drop-party-post-btn" data-post-id="<?=$userPost->id?>" class="btn btn-warning"><?=Yii::t('app', 'Drop self from post')?></button>
+                                <?php if ($userPost->powers & PartyPost::POWER_CHANGE_FIELDS): ?>
+                                <button id="edit-party-btn" class="btn btn-primary"><?=Yii::t('app', 'Edit party parametres')?></button>
+                                <?php endif ?>
                             <?php endif ?>
                         <?php else: ?>
                             <?php if (!$party->dateDeleted): ?>
@@ -287,6 +290,15 @@ if ($isHaveMembership) {
     }
     $('.drop-party-post-btn').click(dropPost);
     $('#self-drop-party-post-btn').click(dropPost);
+    
+    function editParty() {
+        var buttons = '<button class="btn btn-primary" onclick="$(\'#edit-form\').yiiActiveForm(\'submitForm\')"><?=Yii::t('app', 'Save')?></button><button class="btn btn-danger" data-dismiss="modal" aria-hidden="true"><?=Yii::t('app', 'Cancel')?></button>';
+        createAjaxModal('party/edit-form', {id: <?=$party->id?>}, 
+            '<?=Yii::t('app', 'Edit party parametres')?>',
+            buttons
+        );
+    }
+    $('#edit-party-btn').click(editParty);
     
 </script>
 <?php endif ?>

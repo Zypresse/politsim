@@ -358,4 +358,55 @@ class PartyController extends MyController
         }
     }
     
+    public function actionEdit()
+    {
+        
+        $id = Yii::$app->request->post('Party')['id'];
+        
+        $model = Party::findByPk($id);
+        
+        if (is_null($model)) {
+            return $this->_r(Yii::t('app', "Party not found"));
+        }
+        
+        $userPost = $model->getPostByUserId($this->user->id);
+        if (is_null($userPost) || !($userPost->powers & PartyPost::POWER_CHANGE_FIELDS)) {
+            return $this->_r(Yii::t('app', "Access denied"));
+        }
+        
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->save()) {
+                return $this->_rOk();
+            } else {
+                return $this->_r($model->getErrors());
+            }
+        }
+        
+        return $this->_r(Yii::t('app', 'Undefined error'));
+    }
+    
+    public function actionEditForm($id = false)
+    {
+        
+        if (!$id) {
+            $id = Yii::$app->request->post('Party')['id'];
+        }
+        
+        $model = Party::findByPk($id);
+
+        if (is_null($model)) {
+            return $this->_r(Yii::t('app', "Party not found"));
+        }
+        
+        if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return ActiveForm::validate($model);
+        }
+        
+        return $this->render('edit-form', [
+            'model' => $model,
+            'user' => $this->user
+        ]);
+    }
+    
 }

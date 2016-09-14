@@ -2,9 +2,7 @@
 
 use yii\helpers\Html,
     app\components\MyHtmlHelper,
-    app\components\LinkCreator,
-    app\models\Party,
-    app\models\PartyPost;
+    app\components\LinkCreator;
 
 /* @var $this yii\base\View */
 /* @var $party app\models\Party */

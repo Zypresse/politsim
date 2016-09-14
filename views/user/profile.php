@@ -1,7 +1,9 @@
 <?php
 
 use yii\helpers\Html,
-    app\components\MyHtmlHelper;
+    app\components\MyHtmlHelper,
+    app\components\LinkCreator,
+    yii\helpers\ArrayHelper;
 
 /* @var $this \yii\web\View */
 /* @var $user \app\models\User */
@@ -50,7 +52,13 @@ $viewer = Yii::$app->user->identity;
                     <p>
                         <i class="fa fa-group"></i>
                         <?php if (count($user->parties)): ?>
-                            Состоит в партиях
+                        <?php
+                            $partyLinks = [];
+                            foreach ($user->parties as $party) {
+                                $partyLinks[] = LinkCreator::partyLink($party);
+                            }
+                        ?>
+                        Состоит в партиях: <?=implode(', ', $partyLinks)?>
                         <?php else: ?>
                             <?=$user->genderId === 1 ? 'Беспартийная' : 'Беспартийный' ?>
                         <?php endif ?>
@@ -58,7 +66,13 @@ $viewer = Yii::$app->user->identity;
                     <p>
                         <i class="fa fa-globe"></i>
                         <?php if (count($user->states)): ?>
-                            Имеет гражданства
+                        <?php
+                            $stateLinks = [];
+                            foreach ($user->states as $state) {
+                                $stateLinks[] = LinkCreator::stateLink($state);
+                            }
+                        ?>
+                            Имеет гражданства: <?=implode(', ', $stateLinks)?>
                         <?php else: ?>
                             Не имеет гражданства
                         <?php endif ?>

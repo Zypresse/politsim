@@ -162,6 +162,7 @@ function show_error(e) {
     $('.modal-backdrop').hide();
     $('.modal').modal('hide');
     $('#error_text').html('Ошибка при соединении с сервером<br>' + text + '<br><strong>Статус</strong> — ' + e.status + ': ' + e.statusText);
+    $('#error_block').stop();
     $('#error_block').slideDown();
     $("html, body").animate({scrollTop: 0}, "fast");
 //    $("#spinner").fadeOut("fast");
@@ -171,6 +172,7 @@ function show_custom_error(text) {
     $('.modal-backdrop').hide();
     $('.modal').modal('hide');
     $('#error_text').html(text);
+    $('#error_block').stop();
     $('#error_block').slideDown();
     $("html, body").animate({scrollTop: 0}, "fast");
 //    $("#spinner").fadeOut("fast");
@@ -215,6 +217,7 @@ function request(pageUrl,postParams,requestType,callback,noError,method)
                         } else {
                             show_custom_error(d.error);
                         }
+                        $(window).on('hashchange',loadPageFromHash);
                     }
                 } else {
                     callback(d);
@@ -224,7 +227,7 @@ function request(pageUrl,postParams,requestType,callback,noError,method)
             }
 //            $("#spinner").fadeOut("fast");
         },
-        error: (noError) ? function(e) {console.log(e);/*$("#spinner").fadeOut("fast");*/} : show_error
+        error: (noError) ? function(e) {console.log(e);$(window).on('hashchange',loadPageFromHash);/*$("#spinner").fadeOut("fast");*/} : show_error
     });
 }
 
@@ -276,9 +279,11 @@ function load_page(page, params, time) {
             if (i !== 'viewer_id' && i !== 'auth_key')
                 hash += '&' + i + '=' + encodeURIComponent(params[i]);
         }
-        document.location.hash = hash;
+        $(window).off('hashchange');
+        document.location.hash = hash;      
         $('#page_content').empty();
-        request('/'+page,params,'html',function(d){
+        request('/'+page,params,'html',function(d){  
+            $(window).on('hashchange',loadPageFromHash);
             $('#page_content').html(d);
             prettyDates();
         })
