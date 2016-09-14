@@ -122,7 +122,10 @@ if ($isHaveMembership) {
                                     <div class="btn-group">
                                         <button data-post-id="<?=$post->id?>" class="edit-party-post-btn btn btn-xs btn-info"><i class="fa fa-edit"></i> <?=Yii::t('app', 'Edit')?></button>
                                         <?php if ($post->id != $userPost->id): ?>
-                                        <?php if ($post->user): ?>
+                                        <?php if ($post->appointmentType == PartyPost::APPOINTMENT_TYPE_LEADER): ?>
+                                            <button data-post-id="<?=$post->id?>" class="set-party-post-btn btn btn-xs btn-primary"><i class="fa fa-user"></i> <?=Yii::t('app', 'Set')?></button>
+                                        <?php endif ?>    
+                                        <?php if ($post->user && $post->appointmentType == PartyPost::APPOINTMENT_TYPE_LEADER): ?>
                                             <button data-post-id="<?=$post->id?>" class="drop-party-post-btn btn btn-xs btn-warning"><i class="fa fa-ban"></i> <?=Yii::t('app', 'Drop')?></button>
                                         <?php endif ?>
                                         <button data-post-id="<?=$post->id?>" class="delete-party-post-btn btn btn-xs btn-danger"><i class="fa fa-trash"></i> <?=Yii::t('app', 'Delete')?></button>
@@ -205,6 +208,22 @@ if ($isHaveMembership) {
         );
     }
     $('#set-successor-btn').click(setSuccessor);
+    
+    function setPost() {
+        var buttons = '<button class="btn btn-primary" onclick="if ($(\'#set-party-post-user-id\').val()) json_request(\'party/set-post\',{postId: '+$(this).data('postId')+', userId: $(\'#set-party-post-user-id\').val()})"><?=Yii::t('app', 'Save')?></button><button class="btn btn-danger" data-dismiss="modal" aria-hidden="true"><?=Yii::t('app', 'Cancel')?></button>';
+        createAjaxModal('party/set-post-form', {postId: $(this).data('postId')}, 
+            '<?=Yii::t('app', 'Set user to party post')?>',
+            buttons
+        );
+    }
+    $('.set-party-post-btn').click(setPost);
+    
+    function dropPost() {
+        if (confirm('<?=Yii::t('app', 'Are you sure?')?>')) {
+            json_request('party/drop-post', {id: $(this).data('postId')});
+        }
+    }
+    $('.drop-party-post-btn').click(dropPost);
     
 </script>
 <?php endif ?>

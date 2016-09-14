@@ -251,4 +251,78 @@ class PartyController extends MyController
         ]);
     }
     
+    public function actionSetPost($postId, $userId)
+    {
+        
+        $model = PartyPost::findByPk($postId);
+
+        if (is_null($model)) {
+            return $this->_r(Yii::t('app', "Party post not found"));
+        }
+        
+        $setterPost = $model->party->getPostByUserId($this->user->id);
+        
+        if ($model->appointmentType != PartyPost::APPOINTMENT_TYPE_LEADER || !$setterPost || !($setterPost->powers & PartyPost::POWER_EDIT_POSTS)) {
+            return $this->_r(Yii::t('app', "Access denied"));
+        }
+        
+        $user = User::findByPk($userId);
+        
+        if (is_null($user)) {
+            return $this->_r(Yii::t('app', "User not found"));
+        }
+        
+        if (!$user->isHaveMembership($model->partyId)) {
+            return $this->_r(Yii::t('app', "User have not membership in this party"));
+        }
+        
+        $model->userId = $user->id;
+        if ($model->save()) {
+            return $this->_rOk();
+        } else {
+            return $this->_r($model->getErrors());
+        }
+    }
+    
+    public function actionSetPostForm($postId)
+    {
+        
+        $model = PartyPost::findByPk($postId);
+
+        if (is_null($model)) {
+            return $this->_r(Yii::t('app', "Party post not found"));
+        }
+        
+        $candidats = $model->party->getMembers()->where(['<>', 'id', $this->user->id])->orderBy(['fame' => SORT_DESC, 'trust' => SORT_DESC, 'success' => SORT_DESC])->all();
+        
+        return $this->render('set-post-form', [
+            'model' => $model,
+            'candidats' => $candidats,
+            'user' => $this->user
+        ]);
+    }
+    
+    public function actionDropPost($id)
+    {
+        
+        $model = PartyPost::findByPk($id);
+
+        if (is_null($model)) {
+            return $this->_r(Yii::t('app', "Party post not found"));
+        }
+        
+        $setterPost = $model->party->getPostByUserId($this->user->id);
+        
+        if ($model->appointmentType != PartyPost::APPOINTMENT_TYPE_LEADER || !$setterPost || !($setterPost->powers & PartyPost::POWER_EDIT_POSTS)) {
+            return $this->_r(Yii::t('app', "Access denied"));
+        }
+                
+        $model->userId = null;
+        if ($model->save()) {
+            return $this->_rOk();
+        } else {
+            return $this->_r($model->getErrors());
+        }
+    }
+    
 }
