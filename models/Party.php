@@ -4,7 +4,8 @@ namespace app\models;
 
 use Yii,
     app\components\MyModel,
-    app\components\TaxPayer;
+    app\components\TaxPayer,
+    bupy7\bbcode\BBCodeBehavior;
 
 /**
  * Политическая партия
@@ -17,6 +18,7 @@ use Yii,
  * @property string $anthem
  * @property integer $ideologyId
  * @property string $text
+ * @property string $textHTML
  * @property integer $fame
  * @property integer $trust
  * @property integer $success
@@ -38,6 +40,8 @@ use Yii,
  */
 class Party extends MyModel implements TaxPayer
 {
+    
+    public $purified_text;
     
     /**
      * Частная (заявки запрещены)
@@ -82,7 +86,7 @@ class Party extends MyModel implements TaxPayer
             [['name', 'nameShort', 'stateId', 'ideologyId', 'joiningRules', 'listCreationRules'], 'required'],
             [['name'], 'string', 'max' => 255],
             [['nameShort'], 'string', 'max' => 6],
-            [['flag', 'anthem', 'text'], 'string'],
+            [['flag', 'anthem', 'text', 'textHTML'], 'string'],
             [['stateId', 'ideologyId', 'leaderPostId', 'joiningRules', 'listCreationRules', 'membersCount', 'dateCreated', 'dateDeleted', 'utr'], 'integer', 'min' => 0],
             [['fame', 'trust', 'success'], 'integer'],
             [['anthem'], 'validateAnthem'],
@@ -99,9 +103,29 @@ class Party extends MyModel implements TaxPayer
             'listCreationRules' => Yii::t('app', 'Election list creation'),
             'flag' => Yii::t('app', 'Flag'),
             'anthem' => Yii::t('app', 'Anthem'),
+            'text' => Yii::t('app', 'Political program'),
         ];
     }
-
+    
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => BBCodeBehavior::className(),
+                'attribute' => 'text',
+                'saveAttribute' => 'textHTML',
+                'codeDefinitionBuilder' => [
+                    ['quote', '<blockquote>{param}</blockquote>'],
+                    ['code', '<code>{param}</code>'],
+                    ['sup', '<sup>{param}</sup>'],
+                    ['sub', '<sub>{param}</sub>'],
+                    ['ul', '<ul>{param}</ul>'],
+                    ['ol', '<ol>{param}</ol>'],
+                    ['li', '<li>{param}</li>'],
+                ],
+            ],
+        ];
+    }
 
     /**
      * Возвращает константное значение типа налогоплательщика
@@ -212,12 +236,13 @@ class Party extends MyModel implements TaxPayer
     
     public function beforeSave($insert)
     {
+        $this->text = \yii\helpers\Html::encode($this->text);
         if ($insert) {
             $this->dateCreated = time();
         }
         return parent::beforeSave($insert);
     }         
-         
+
     public function getState()
     {
         return $this->hasOne(State::classname(), ['id' => 'stateId']);

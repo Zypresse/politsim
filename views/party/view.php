@@ -4,7 +4,9 @@ use yii\helpers\Html,
     app\components\MyHtmlHelper,
     app\components\LinkCreator,
     app\models\Party,
-    app\models\PartyPost;
+    app\models\PartyPost,
+    yii\bootstrap\ActiveForm,
+    franciscomaya\sceditor\SCEditor;
 
 /* @var $this yii\base\View */
 /* @var $party app\models\Party */
@@ -96,7 +98,7 @@ if ($isHaveMembership) {
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td><strong><i class="fa fa-list-alt"></i> <?=Yii::t('app', 'Election list creation')?>:</strong></td>
+                                        <td><strong><i class="fa fa-list-ul"></i> <?=Yii::t('app', 'Election list creation')?>:</strong></td>
                                         <td>
                                             <?=[
                                                 Party::LIST_CREATION_RULES_LEADER => Yii::t('app', 'By leader'),
@@ -122,20 +124,21 @@ if ($isHaveMembership) {
                                 <tbody>                                    
                                     <tr>
                                         <td><strong><i class="fa fa-group"></i> <?=Yii::t('app', 'Party members')?>:</strong></td>
-                                        <td><?=MyHtmlHelper::formateNumberword($party->membersCount, 'h')?></td>
+                                        <td>
+                                            <?=MyHtmlHelper::formateNumberword($party->membersCount, 'h')?> 
+                                            <a href="#!party/members&id=<?=$party->id?>" class="btn btn-info btn-xs"><i class="fa fa-group"></i> <?=Yii::t('app', 'Full list')?></a>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td><strong><i class="fa fa-sign-in"></i> <?=Yii::t('app', 'Membership requests')?>:</strong></td>
-                                        <td><?=MyHtmlHelper::formateNumberword($party->getRequestedMemberships()->count(), 'заявок', 'заявка', 'заявки')?></td>
+                                        <td>
+                                            <?=MyHtmlHelper::formateNumberword($party->getRequestedMemberships()->count(), 'заявок', 'заявка', 'заявки')?>
+                                        </td>
                                     </tr>
                                     <tr>
-                                        <td colspan="2">
-                                            <div class="btn-group text-center">
-                                                <?php if ($userPost && $userPost->powers & PartyPost::POWER_APPROVE_REQUESTS): ?>
-                                                <button class="btn btn-primary"><i class="fa fa-sign-in"></i> <?=Yii::t('app', 'Manage membership requests')?></button>
-                                                <?php endif ?>
-                                                <a href="#!party/members&id=<?=$party->id?>" class="btn btn-info"><i class="fa fa-group"></i> <?=Yii::t('app', 'Look members list')?></a>
-                                            </div>
+                                        <td><strong><i class="fa fa-list-alt"></i> <?=Yii::t('app', 'Political program')?>:</strong></td>
+                                        <td>
+                                            <a href="#!party/program&id=<?=$party->id?>" class="btn btn-info btn-xs"><i class="fa fa-list-alt"></i> <?=Yii::t('app', 'Read')?></a>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -215,14 +218,18 @@ if ($isHaveMembership) {
                     </p>
                     <div class="btn-group">
                         <?php if ($isHaveMembership):?>
-                            <button onclick="if (confirm('<?=Yii::t('app', 'Are you sure?')?>')) json_request('membership/cancel', {partyId: <?=$party->id?>})" class="btn btn-danger"><?=Yii::t('app', 'Fire membership')?></button>
+                            <button onclick="if (confirm('<?=Yii::t('app', 'Are you sure?')?>')) json_request('membership/cancel', {partyId: <?=$party->id?>})" class="btn btn-danger"><i class="fa fa-ban"></i> <?=Yii::t('app', 'Fire membership')?></button>
                             <?php if ($userPost):?>
                                 <?php if ($userPost->appointmentType == PartyPost::APPOINTMENT_TYPE_INHERITANCE):?>
-                                <button id="set-successor-btn" class="btn btn-primary"><?=Yii::t('app', 'Set successor')?></button>
+                                <button id="set-successor-btn" class="btn btn-primary"><i class="fa fa-user"></i> <?=Yii::t('app', 'Set successor')?></button>
                                 <?php endif ?>
-                                <button id="self-drop-party-post-btn" data-post-id="<?=$userPost->id?>" class="btn btn-warning"><?=Yii::t('app', 'Drop self from post')?></button>
+                                <button id="self-drop-party-post-btn" data-post-id="<?=$userPost->id?>" class="btn btn-warning"><i class="fa fa-sign-out"></i> <?=Yii::t('app', 'Drop self from post')?></button>
                                 <?php if ($userPost->powers & PartyPost::POWER_CHANGE_FIELDS): ?>
-                                <button id="edit-party-btn" class="btn btn-primary"><?=Yii::t('app', 'Edit party parametres')?></button>
+                                <button id="edit-party-btn" class="btn btn-primary"><i class="fa fa-cog"></i> <?=Yii::t('app', 'Edit party parametres')?></button>
+                                <button id="edit-party-text-btn" class="btn btn-info"><i class="fa fa-list-alt"></i> <?=Yii::t('app', 'Edit party text')?></button>
+                                <?php endif ?>
+                                <?php if ($userPost && $userPost->powers & PartyPost::POWER_APPROVE_REQUESTS): ?>
+                                    <button class="btn btn-primary"><i class="fa fa-sign-in"></i> <?=Yii::t('app', 'Manage membership requests')?></button>
                                 <?php endif ?>
                             <?php endif ?>
                         <?php else: ?>
@@ -299,6 +306,17 @@ if ($isHaveMembership) {
         );
     }
     $('#edit-party-btn').click(editParty);
+    
+    function editPartyText() {
+        var buttons = '<button class="btn btn-primary" onclick="$(\'#edit-text-form\').yiiActiveForm(\'submitForm\')"><?=Yii::t('app', 'Save')?></button><button class="btn btn-danger" data-dismiss="modal" aria-hidden="true"><?=Yii::t('app', 'Cancel')?></button>';
+        createAjaxModal('party/edit-text-form', {id: <?=$party->id?>}, 
+            '<?=Yii::t('app', 'Edit party text')?>',
+            buttons,
+            false, false,
+            'modal-lg'
+        );
+    }
+    $('#edit-party-text-btn').click(editPartyText);
     
 </script>
 <?php endif ?>

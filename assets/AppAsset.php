@@ -56,6 +56,7 @@ class AppAsset extends AssetBundle
         'yii\jui\JuiAsset',
         'yii\bootstrap\BootstrapAsset',
         'yii\widgets\ActiveFormAsset',
+        'franciscomaya\sceditor\SCEditorAsset',
     ];
     
     public function __construct($config = array()) {

@@ -730,3 +730,10 @@ ul.twPc-Arrange {
 .ui-autocomplete {
     z-index: 100500;
 }
+
+.sceditor-container, .sceditor-container iframe, .sceditor-container textarea {
+    max-width: 100%;
+    min-width: 100%;
+    width: 100%;
+    min-height: 300px;
+}

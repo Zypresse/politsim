@@ -17,6 +17,7 @@ class m160909_135056_parties_update extends Migration
             'anthem' => 'TEXT DEFAULT NULL',
             'ideologyId' => 'UNSIGNED INTEGER(3) NOT NULL',
             'text' => 'TEXT DEFAULT NULL',
+            'textHTML' => 'TEXT DEFAULT NULL',
             'fame' => 'INTEGER NOT NULL DEFAULT 0',
             'trust' => 'INTEGER NOT NULL DEFAULT 0',
             'success' => 'INTEGER NOT NULL DEFAULT 0',
@@ -34,6 +35,9 @@ class m160909_135056_parties_update extends Migration
             'dateCreated' => 'UNSIGNED INTEGER NOT NULL',
             'dateDeleted' => 'UNSIGNED INTEGER DEFAULT NULL'
         ]);
+                
+        $this->delete('parties-posts', 1);
+        $this->delete('memberships', 1);
         
         $this->dropIndex('partiesPosts', 'parties-posts');
 
@@ -69,6 +73,9 @@ class m160909_135056_parties_update extends Migration
             'dateCreated' => 'UNSIGNED INTEGER NOT NULL',
             'dateDeleted' => 'UNSIGNED INTEGER DEFAULT NULL'
         ]);
+        
+        $this->delete('parties-posts', 1);
+        $this->delete('memberships', 1);
         
         $this->createIndex('partiesPosts', 'parties-posts', ['partyId', 'userId'], true);
     }

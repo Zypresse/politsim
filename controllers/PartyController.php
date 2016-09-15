@@ -43,6 +43,19 @@ class PartyController extends MyController
             'user' => $this->user
         ]);
     }
+        
+    public function actionProgram($id)
+    {
+        $party = Party::findByPk($id);
+        
+        if (is_null($party)) {
+            return $this->_r(Yii::t('app', "Party not found"));
+        }
+        return $this->render('program', [
+            'party' => $party,
+            'user' => $this->user
+        ]);
+    }
     
     public function actionCreate()
     {
@@ -404,6 +417,30 @@ class PartyController extends MyController
         }
         
         return $this->render('edit-form', [
+            'model' => $model,
+            'user' => $this->user
+        ]);
+    }
+    
+    public function actionEditTextForm($id = false)
+    {
+        
+        if (!$id) {
+            $id = Yii::$app->request->post('Party')['id'];
+        }
+        
+        $model = Party::findByPk($id);
+
+        if (is_null($model)) {
+            return $this->_r(Yii::t('app', "Party not found"));
+        }
+        
+        if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return ActiveForm::validate($model);
+        }
+        
+        return $this->render('edit-text-form', [
             'model' => $model,
             'user' => $this->user
         ]);

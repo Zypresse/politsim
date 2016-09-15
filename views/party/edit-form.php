@@ -1,7 +1,6 @@
 <?php
 
-use yii\helpers\Html,
-    yii\helpers\Url,
+use yii\helpers\Url,
     yii\helpers\ArrayHelper,
     yii\bootstrap\ActiveForm,
     app\models\Ideology,
@@ -94,7 +93,7 @@ $form = new ActiveForm();
         'error': '.help-block',
         'enableAjaxValidation': true
     });
-    
+        
     $form.on('submit', function() {
         if ($form.yiiActiveForm('data').validated) {
             json_request('party/edit', $form.serializeObject(), false, false, false, 'POST');
