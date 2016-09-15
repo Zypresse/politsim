@@ -69,7 +69,7 @@ class User extends MyModel implements TaxPayer, IdentityInterface
     public function getUtr()
     {
         if (is_null($this->utr)) {
-            $u = Utr::findOneOrCreate(['objectId' => $this->id, 'objectType' => $this->getUtrType()]);
+            $u = Utr::findOrCreate(['objectId' => $this->id, 'objectType' => $this->getUtrType()]);
             if ($u) {
                 $this->utr = $u->id;
                 $this->save();
@@ -345,6 +345,22 @@ class User extends MyModel implements TaxPayer, IdentityInterface
     public function isHaveMembershipRequest($partyId)
     {
         return !!$this->getMemberships()->where(['partyId' => $partyId])->andWhere(['dateApproved' => null])->count();
+    }
+    
+    public function getDealingsInitiated()
+    {
+        if (!$this->utr) {
+            $this->getUtr();
+        }
+	return $this->hasMany(Dealing::classname(), ['initiator' => 'utr']);
+    }
+    
+    public function getDealingsReceived()
+    {
+        if (!$this->utr) {
+            $this->getUtr();
+        }
+	return $this->hasMany(Dealing::classname(), ['receiver' => 'utr']);
     }
     
     public function noticy($protoId, $text = null, $textShort = null)

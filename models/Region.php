@@ -73,7 +73,7 @@ class Region extends MyModel implements TaxPayer
     public function getUtr()
     {
         if (is_null($this->utr)) {
-            $u = Utr::findOneOrCreate(['objectId' => $this->id, 'objectType' => $this->getUtrType()]);
+            $u = Utr::findOrCreate(['objectId' => $this->id, 'objectType' => $this->getUtrType()]);
             if ($u) {
                 $this->utr = $u->id;
                 $this->save();
