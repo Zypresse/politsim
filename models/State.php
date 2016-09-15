@@ -203,16 +203,21 @@ class State extends MyModel implements TaxPayer
         return $this->hasMany(Region::classname(), ['stateId' => 'id']);
     }
     
+    private function getPolygonFilePath()
+    {
+        return Yii::$app->basePath.'/data/polygons/states/'.$this->id.'.json';        
+    }
+    
     public function calcPolygon()
     {
         return RegionCombiner::combine($this->getRegions());
     }
-    
+                
     private $_polygon = null;
     public function getPolygon()
     {
         if (is_null($this->_polygon)) {
-            $filePath = Yii::$app->basePath.'/data/polygons/states/'.$this->id.'.json';
+            $filePath = $this->getPolygonFilePath();
             if (file_exists($filePath)) {
                 $this->_polygon = file_get_contents($filePath);
             } else {
@@ -246,6 +251,14 @@ class State extends MyModel implements TaxPayer
         } else {
             $this->govermentFormId = GovermentForm::DICTATURE;
         }
+        
+        $this->population = 0;
+        foreach ($this->regions as $region) {
+            $this->population += $region->population;
+        }
+        
+        $this->_polygon = json_encode($this->calcPolygon());
+        file_put_contents($this->getPolygonFilePath(), $this->_polygon);
         
         if ($save) {
             return $this->save();

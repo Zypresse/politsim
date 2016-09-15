@@ -147,7 +147,7 @@ $this->title = 'Political Simulator';
                 <span>Мои партии</span>
             </a>
         </li>
-        <li class="treeview state_page state-constitution_page elections_page agency_page">
+        <li class="treeview state_page state-constitution_page elections_page agency_page region_page region-constitution_page city_page">
             <a href="#" >
                 <?= MyHtmlHelper::icon('lg-icons/goverment', '') ?>
                 <span>Государство</span>

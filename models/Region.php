@@ -27,6 +27,7 @@ use Yii,
  * @property State $state
  * @property City $city
  * @property Tile[] $tiles
+ * @property ConstitutionRegion $constitution
  * 
  */
 class Region extends MyModel implements TaxPayer
@@ -178,6 +179,16 @@ class Region extends MyModel implements TaxPayer
         return $this->hasOne(City::className(), ['id' => 'cityId']);
     }
     
+    public function getConstitution()
+    {
+        return $this->hasOne(ConstitutionRegion::classname(), ['regionId' => 'id']);
+    }
+    
+    private function getPolygonFilePath()
+    {
+        return Yii::$app->basePath.'/data/polygons/regions/'.$this->id.'.json';        
+    }
+    
     public function calcPolygon()
     {
         return TileCombiner::combine($this->getTiles());
@@ -187,7 +198,7 @@ class Region extends MyModel implements TaxPayer
     public function getPolygon()
     {
         if (is_null($this->_polygon)) {
-            $filePath = Yii::$app->basePath.'/data/polygons/regions/'.$this->id.'.json';
+            $filePath = $this->getPolygonFilePath();
             if (file_exists($filePath)) {
                 $this->_polygon = file_get_contents($filePath);
             } else {
@@ -196,5 +207,29 @@ class Region extends MyModel implements TaxPayer
             }
         }
         return $this->_polygon;
+    }
+    
+    
+    public function updateParams($save = true)
+    {
+        
+        if (!$this->constitution) {
+            $constitution = ConstitutionRegion::generate($this->state);
+            $constitution->regionId = $this->id;
+            $constitution->save();
+            $this->refresh();
+        }
+                
+        $this->population = 0;
+        foreach ($this->tiles as $tile) {
+            $this->population += $tile->population;
+        }
+        
+        $this->_polygon = json_encode($this->calcPolygon());
+        file_put_contents($this->getPolygonFilePath(), $this->_polygon);
+        
+        if ($save) {
+            return $this->save();
+        }
     }
 }

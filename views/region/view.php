@@ -56,6 +56,10 @@ use yii\helpers\Html,
                             <table class="table table-bordered no-margin">
                                 <tbody>
                                     <tr>
+                                        <td><strong><i class="fa fa-flag"></i> <?=Yii::t('app', 'State')?></strong></td>
+                                        <td><?=LinkCreator::stateLink($region->state)?></td>
+                                    </tr>
+                                    <tr>
                                         <td><strong><i class="fa fa-building"></i> <?=Yii::t('app', 'Capital city')?></strong></td>
                                         <td>
                                             <?php if ($region->city): ?>
@@ -68,6 +72,13 @@ use yii\helpers\Html,
                                     <tr>
                                         <td><strong><i class="fa fa-group"></i> <?=Yii::t('app', 'Population')?></strong></td>
                                         <td><?=MyHtmlHelper::formateNumberword($region->population)?> <?=Html::a(Yii::t('app', 'Population info'),'#!population/region&id='.$region->id,['class' => 'btn btn-info btn-xs'])?></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <div class="btn-group text-center">
+                                                <a href="#!region/constitution&id=<?=$region->id?>" class="btn btn-info"><i class="fa fa-list-alt"></i> <?=Yii::t('app', 'Look constitution')?></a>
+                                            </div>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>

@@ -6,17 +6,18 @@ use yii\helpers\Html,
     app\models\Constitution;
 
 /* @var $this yii\base\View */
-/* @var $state app\models\State */
-/* @var $constitution app\models\Constitution */
+/* @var $region app\models\Region */
+/* @var $constitution app\models\ConstitutionRegion */
 /* @var $user app\models\User */
 
 ?>
 <section class="content-header">
     <h1>
-        <?=Yii::t('app', 'Constitution of {0}', [Html::encode($state->name)])?>
+        <?=Yii::t('app', 'Constitution of {0}', [Html::encode($region->name)])?>
     </h1>
     <ol class="breadcrumb">
-        <li><?=LinkCreator::stateLink($state)?></li>
+        <li><?=LinkCreator::stateLink($region->state)?></li>
+        <li><?=LinkCreator::regionLink($region)?></li>
         <li class="active"><i class="fa fa-list-alt"></i> <?=Yii::t('app', 'Constitution')?></li>
     </ol>
 </section>
@@ -29,62 +30,14 @@ use yii\helpers\Html,
                     <tr>
                         <td colspan="2" class="text-center"><h4><?=Yii::t('app', 'Political properties')?></h4></td>
                     </tr>
-                    <tr>
-                        <td><strong><?=$constitution->getAttributeLabel('partyPolicy')?>:</strong></td>
-                        <td><?=[
-                            Constitution::PARTY_POLICY_FORBIDDEN => Yii::t('app', 'Parties forbidden'),
-                            Constitution::PARTY_POLICY_ALLOW_ONLY_RULING => Yii::t('app', 'Allowed only ruling party'),
-                            Constitution::PARTY_POLICY_ALLOW_REGISTERED => Yii::t('app', 'Allowed only currently registered parties'),
-                            Constitution::PARTY_POLICY_NEED_CONFIRM => Yii::t('app', 'Parties registration needs goverment confirmation'),
-                            Constitution::PARTY_POLICY_FREE => Yii::t('app', 'Free parties registration'),
-                        ][$constitution->partyPolicy]?></td>
-                    </tr>
-                    <?php if ($constitution->rulingParty): ?>
-                    <tr>
-                        <td><strong><?=$constitution->getAttributeLabel('rulingPartyId')?>:</strong></td>
-                        <td><?=LinkCreator::partyLink($constitution->rulingParty)?></td>
-                    </tr>
-                    <?php endif ?>
-                    <tr>
-                        <td><strong><?=$constitution->getAttributeLabel('partyRegistrationTax')?>:</strong></td>
-                        <td><?=($constitution->partyRegistrationTax)?MyHtmlHelper::moneyFormat($constitution->partyRegistrationTax):Yii::t('app', 'Free')?></td>
-                    </tr>
-                    <tr>
-                        <td><strong><?=$constitution->getAttributeLabel('isAllowMultipost')?>:</strong></td>
-                        <td><?=MyHtmlHelper::booleanToYesNo($constitution->isAllowMultipost)?></td>
-                    </tr>
                     <?php /*@TODO if ($constitution->leaderPost): ?>
                     <tr>
                         
                     </tr>
                     <?php endif */?>
-                    <tr>
-                        <td><strong><?=$constitution->getAttributeLabel('religion')?>:</strong></td>
-                        <td><?=($constitution->religion)?$constitution->religion->name:Yii::t('app', 'Not set')?></td>                        
-                    </tr>
                     
                     <tr>
                         <td colspan="2" class="text-center"><h4><?=Yii::t('app', 'Economical properties')?></h4></td>
-                    </tr>
-                    <?php /*@TODO if ($constitution->centralBank): ?>
-                    <tr>
-                        
-                    </tr>
-                    <?php endif */?>
-                    <?php /*@TODO if ($constitution->currency): ?>
-                    <tr>
-                        
-                    </tr>
-                    <?php endif */?>
-                    <?php if ($constitution->isAllowSetExchangeRateManually): ?>
-                    <tr>
-                        <td><strong><?=$constitution->getAttributeLabel('isAllowSetExchangeRateManually')?>:</strong></td>
-                        <td><?=MyHtmlHelper::booleanToYesNo($constitution->isAllowSetExchangeRateManually)?></td>                        
-                    </tr>
-                    <?php endif ?>
-                    <tr>
-                        <td><strong><?=$constitution->getAttributeLabel('taxBase')?>:</strong></td>
-                        <td><?=MyHtmlHelper::zeroOne2Percents($constitution->taxBase)?></td>
                     </tr>
                     <tr>
                         <td><strong><?=$constitution->getAttributeLabel('localBusinessPolicy')?>:</strong></td>
