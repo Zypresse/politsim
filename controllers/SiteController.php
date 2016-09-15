@@ -56,7 +56,7 @@ class SiteController extends Controller
         if (Yii::$app->user->isGuest) {
             $this->layout = 'fullpage';
             return $this->render('homepage');
-        } else {            
+        } else {
             if (Yii::$app->user->identity->isInvited) {
                 return $this->render('index');
             } else {

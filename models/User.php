@@ -339,7 +339,12 @@ class User extends MyModel implements TaxPayer, IdentityInterface
     
     public function isHaveMembership($partyId)
     {
-        return !!$this->getMemberships()->where(['partyId' => $partyId])->count();
+        return !!$this->getMemberships()->where(['partyId' => $partyId])->andWhere(['>', 'dateApproved', 0])->count();
+    }
+    
+    public function isHaveMembershipRequest($partyId)
+    {
+        return !!$this->getMemberships()->where(['partyId' => $partyId])->andWhere(['dateApproved' => null])->count();
     }
     
     public function noticy($protoId, $text = null, $textShort = null)

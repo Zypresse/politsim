@@ -4,15 +4,14 @@ use yii\helpers\Html,
     app\components\MyHtmlHelper,
     app\components\LinkCreator,
     app\models\Party,
-    app\models\PartyPost,
-    yii\bootstrap\ActiveForm,
-    franciscomaya\sceditor\SCEditor;
+    app\models\PartyPost;
 
 /* @var $this yii\base\View */
 /* @var $party app\models\Party */
 /* @var $user app\models\User */
 
 $isHaveMembership = $user->isHaveMembership($party->id);
+$isHaveMembershipRequest = $user->isHaveMembershipRequest($party->id);
 $userPost = null;
 if ($isHaveMembership) {
     $userPost = $party->getPostByUserId($user->id);
@@ -212,33 +211,36 @@ if ($isHaveMembership) {
                 </div>
                 <div class="box-body">
                     <div class="row">
-                        <?php for ($i = 0; $i < min([$party->membersCount,3]); $i++ ):
+                        <?php 
+                        $colors = ['green-gradient', 'aqua-gradient', 'red-gradient'];
+                        for ($i = 0; $i < min([$party->membersCount,3]); $i++ ):
                             $member = $party->members[$i];
+                            $post = $party->getPostByUserId($member->id);
                         ?>
                         <div class="col-lg-4 col-md-6 col-sm-12">
                             <div class="box box-widget widget-user">
-                                <div class="widget-user-header bg-aqua-active">
-                                    <h3 class="widget-user-username"><?=Html::encode($member->name)?></h3>
-                                    <h5 class="widget-user-desc"><?=Html::encode($party->getPostByUserId($member->id)->name)?></h5>
+                                <div class="widget-user-header bg-<?=$colors[$i]?>">
+                                    <h3 class="widget-user-username"><a href="#!profile&id=<?=$member->id?>"><?=Html::encode($member->name)?></a></h3>
+                                    <h5 class="widget-user-desc"><?=$post ? Html::encode($post->name) : Yii::t('app', 'Party member')?></h5>
                                 </div>
                                 <div class="widget-user-image">
-                                    <?=Html::img(Html::encode($member->avatar),['class' => 'img-circle'])?>
+                                    <a href="#!profile&id=<?=$member->id?>"><?=Html::img(Html::encode($member->avatar),['class' => 'img-circle'])?></a>
                                 </div>
                                 <div class="box-footer">
                                     <div class="row">
-                                        <div class="col-sm-4 border-right">
+                                        <div class="col-xs-4 border-right">
                                             <div class="description-block">
                                                 <h5 class="description-header"><?=$member->fame?> <?=MyHtmlHelper::icon('star')?></h5>
                                                 <span class="description-text"><?=Yii::t('app', 'Fame')?></span>
                                             </div>
                                         </div>
-                                        <div class="col-sm-4 border-right">
+                                        <div class="col-xs-4 border-right">
                                             <div class="description-block">
                                                 <h5 class="description-header"><?=$member->trust?> <?=MyHtmlHelper::icon('heart')?></h5>
                                                 <span class="description-text"><?=Yii::t('app', 'Trust')?></span>
                                             </div>
                                         </div>
-                                        <div class="col-sm-4">
+                                        <div class="col-xs-4">
                                             <div class="description-block">
                                                 <h5 class="description-header"><?=$member->success?> <?=MyHtmlHelper::icon('chart_pie')?></h5>
                                                 <span class="description-text"><?=Yii::t('app', 'Success')?></span>
@@ -264,6 +266,9 @@ if ($isHaveMembership) {
                                 <?=Yii::t('app','You are {0} of this party', [Html::encode($userPost->name)])?><br>
                             <?php endif ?>
                         <?php endif ?>
+                        <?php if ($isHaveMembershipRequest):?>
+                            <?=Yii::t('app', 'You sended request for membership')?>
+                        <?php endif ?>
                     </p>
                     <div class="btn-group">
                         <?php if ($isHaveMembership):?>
@@ -278,13 +283,16 @@ if ($isHaveMembership) {
                                 <button id="edit-party-text-btn" class="btn btn-info"><i class="fa fa-list-alt"></i> <?=Yii::t('app', 'Edit party text')?></button>
                                 <?php endif ?>
                                 <?php if ($userPost && $userPost->powers & PartyPost::POWER_APPROVE_REQUESTS): ?>
-                                    <button class="btn btn-primary"><i class="fa fa-sign-in"></i> <?=Yii::t('app', 'Manage membership requests')?></button>
+                                    <button id="manage-membership-requests-btn" class="btn btn-primary"><i class="fa fa-sign-in"></i> <?=Yii::t('app', 'Manage membership requests')?></button>
                                 <?php endif ?>
                             <?php endif ?>
                         <?php else: ?>
-                            <?php if (!$party->dateDeleted): ?>
+                            <?php if (!$party->dateDeleted && $party->joiningRules != Party::JOINING_RULES_PRIVATE && $user->isHaveCitizenship($party->stateId) && !$isHaveMembershipRequest): ?>
                                 <button onclick="json_request('membership/request', {partyId: <?=$party->id?>})" class="btn btn-primary"><?=Yii::t('app', 'Make request for membership')?></button>
                             <?php endif ?>
+                        <?php if ($isHaveMembershipRequest): ?>
+                            <button onclick="json_request('membership/cancel', {partyId: <?=$party->id?>})" class="btn btn-danger"><?=Yii::t('app', 'Cancel membership request')?></button>
+                        <?php endif ?>
                         <?php endif ?>
                     </div>
                 </div>
@@ -366,6 +374,15 @@ if ($isHaveMembership) {
         );
     }
     $('#edit-party-text-btn').click(editPartyText);
+    
+    function manageMembershipRequests() {
+        var buttons = '<button class="btn btn-danger" data-dismiss="modal" aria-hidden="true"><?=Yii::t('app', 'Close')?></button>';
+        createAjaxModal('membership/manage-requests', {partyId: <?=$party->id?>}, 
+            '<?=Yii::t('app', 'Manage membership requests')?>',
+            buttons
+        );
+    }
+    $('#manage-membership-requests-btn').click(manageMembershipRequests);
     
 </script>
 <?php endif ?>

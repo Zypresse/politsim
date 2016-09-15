@@ -566,18 +566,6 @@ dd {
     z-index: 12;
 }
 
-#page_content a {
-    text-decoration: underline;
-}
-
-#page_content a.btn {
-    text-decoration: none;
-}
-
-#page_content .dropdown-menu a {
-    text-decoration: none;
-}
-
 .profile-avatar {
     border-radius: 5px;
 }
@@ -736,4 +724,9 @@ ul.twPc-Arrange {
     min-width: 100%;
     width: 100%;
     min-height: 300px;
+}
+
+.widget-user-username a, .widget-user-image a {    
+    color: inherit;
+    text-decoration: none;
 }

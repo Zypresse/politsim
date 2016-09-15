@@ -16,14 +16,18 @@ function init_app() {
 }
 
 function loadPageFromHash() {
+    
     var ar = document.location.hash.split('&');
-    page = ar.shift().substr(2);
-    params = {};
+    var page = ar.shift().substr(2),
+        params = {};
     for (var i = 0, l = ar.length; i < l; i++) {
         var ar2 = ar[i].split('=');            
         params[ar2[0]] = ar2[1];
     }
-    load_page(page, params);
+    
+    if (page !== current_page || JSON.stringify(params) !== JSON.stringify(current_page_params)) {
+        load_page(page, params);
+    }
 }
 
 $(init_app);
