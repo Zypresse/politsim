@@ -205,6 +205,55 @@ if ($isHaveMembership) {
             </div>
             <div class="box">
                 <div class="box-header">
+                    <h3><?=Yii::t('app', 'Top party members')?></h3>
+                    <div class="box-tools pull-right">
+                        <a href="#!party/members&id=<?=$party->id?>" class="btn btn-info"><i class="fa fa-group"></i> <?=Yii::t('app', 'Full list')?></a>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <div class="row">
+                        <?php for ($i = 0; $i < min([$party->membersCount,3]); $i++ ):
+                            $member = $party->members[$i];
+                        ?>
+                        <div class="col-lg-4 col-md-6 col-sm-12">
+                            <div class="box box-widget widget-user">
+                                <div class="widget-user-header bg-aqua-active">
+                                    <h3 class="widget-user-username"><?=Html::encode($member->name)?></h3>
+                                    <h5 class="widget-user-desc"><?=Html::encode($party->getPostByUserId($member->id)->name)?></h5>
+                                </div>
+                                <div class="widget-user-image">
+                                    <?=Html::img(Html::encode($member->avatar),['class' => 'img-circle'])?>
+                                </div>
+                                <div class="box-footer">
+                                    <div class="row">
+                                        <div class="col-sm-4 border-right">
+                                            <div class="description-block">
+                                                <h5 class="description-header"><?=$member->fame?> <?=MyHtmlHelper::icon('star')?></h5>
+                                                <span class="description-text"><?=Yii::t('app', 'Fame')?></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4 border-right">
+                                            <div class="description-block">
+                                                <h5 class="description-header"><?=$member->trust?> <?=MyHtmlHelper::icon('heart')?></h5>
+                                                <span class="description-text"><?=Yii::t('app', 'Trust')?></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div class="description-block">
+                                                <h5 class="description-header"><?=$member->success?> <?=MyHtmlHelper::icon('chart_pie')?></h5>
+                                                <span class="description-text"><?=Yii::t('app', 'Success')?></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <?php endfor ?>
+                    </div>
+                </div>
+            </div>
+            <div class="box">
+                <div class="box-header">
                     <h3><?=Yii::t('app', 'Available actions')?></h3>
                 </div>
                 <div class="box-body">
