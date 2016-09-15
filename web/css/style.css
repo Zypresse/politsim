@@ -730,3 +730,9 @@ ul.twPc-Arrange {
     color: inherit;
     text-decoration: none;
 }
+
+.widget-user .widget-user-image a > img {
+    width: 90px;
+    height: auto;
+    border: 3px solid #fff;
+}

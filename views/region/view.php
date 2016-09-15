@@ -59,7 +59,6 @@ use yii\helpers\Html,
                                         <td><strong><i class="fa fa-building"></i> <?=Yii::t('app', 'Capital city')?></strong></td>
                                         <td>
                                             <?php if ($region->city): ?>
-                                                <a href="#!city&id=<?=$region->cityId?>"><?=Html::encode($region->city->name)?></a>
                                                 <?=LinkCreator::cityLink($region->city)?>
                                             <?php else: ?>
                                                 <?=Yii::t('app', 'Not set')?>

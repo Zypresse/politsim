@@ -230,5 +230,26 @@ class State extends MyModel implements TaxPayer
         }
         return parent::beforeSave($insert);
     }
+    
+    public function updateParams($save = true)
+    {
+        
+        if (!$this->constitution) {
+            $constitution = Constitution::generate();
+            $constitution->stateId = $this->id;
+            $constitution->save();
+            $this->refresh();
+        }
+        
+        if ($this->constitution->partyPolicy == Constitution::PARTY_POLICY_FREE) {
+            $this->govermentFormId = GovermentForm::REPUBLIC;
+        } else {
+            $this->govermentFormId = GovermentForm::DICTATURE;
+        }
+        
+        if ($save) {
+            return $this->save();
+        }
+    }
         
 }

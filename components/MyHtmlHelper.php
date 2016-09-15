@@ -2,7 +2,8 @@
 
 namespace app\components;
 
-use yii\helpers\Html;
+use Yii,
+    yii\helpers\Html;
 
 class MyHtmlHelper {
 
@@ -111,7 +112,7 @@ class MyHtmlHelper {
             return 'высочайшее';
         }
     }
-
+    
     public static function zeroOne2Stars($n)
     {
         if ($n === 0) {
@@ -148,6 +149,11 @@ class MyHtmlHelper {
         } else {
             return '<span style="color:gold" title="высочайшее качество" >★★★★★</span>';
         }
+    }
+    
+    public static function zeroOne2Percents($n)
+    {
+        return number_format($n*100, 0, '.', ' ').'%';
     }
 
     // Функция которая возвращает правильное русское форматирование слов, стоящие после чисел
@@ -290,6 +296,11 @@ class MyHtmlHelper {
     public static function timeAutoFormat($time)
     {
         return "<span class='prettyDate' data-unixtime='{$time}'>".date('d-m-Y H:i', $time)."</span>";
+    }
+    
+    public static function booleanToYesNo($value)
+    {
+        return $value ? Yii::t('app', 'Yes') : Yii::t('app', 'No');
     }
     
 }

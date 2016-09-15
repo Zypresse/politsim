@@ -60,6 +60,13 @@ $isHaveCitizenship = $user->isHaveCitizenship($state->id);
                                         <td><strong><i class="fa fa-flag"></i> <?=Yii::t('app', 'Goverment form')?></strong></td>
                                         <td><?=$state->govermentForm->name?></td>
                                     </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="btn-group text-center">
+                                                <a href="#!state/constitution&id=<?=$state->id?>" class="btn btn-info"><i class="fa fa-list-alt"></i> <?=Yii::t('app', 'Look constitution')?></a>
+                                            </div>
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>

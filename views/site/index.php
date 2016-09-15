@@ -111,7 +111,7 @@ $this->title = 'Political Simulator';
         <ul class="sidebar-menu" id="topmenu" >
         <li class="treeview profile_page capital_page dealings_page notifications_page">
             <a href="#" >
-                <?=MyHtmlHelper::icon('lg-icons/profile')?>
+                <?=MyHtmlHelper::icon('lg-icons/profile', '')?>
                 <span>
                     Профиль                     
                 </span>
@@ -137,19 +137,19 @@ $this->title = 'Political Simulator';
         </li>
         <li class="work_page">
             <a href="#!work">
-                <?= MyHtmlHelper::icon('lg-icons/work') ?>
+                <?= MyHtmlHelper::icon('lg-icons/work', '') ?>
                 <span>Моя работа</span>
             </a>
         </li>
-        <li class="membership_page party_page">
+        <li class="membership_page party_page party-members_page party-program_page">
             <a href="#!membership">
-                <?= MyHtmlHelper::icon('lg-icons/party') ?>
+                <?= MyHtmlHelper::icon('lg-icons/party', '') ?>
                 <span>Мои партии</span>
             </a>
         </li>
-        <li class="treeview state-info_page elections_page org-info_page">
+        <li class="treeview state_page state-constitution_page elections_page agency_page">
             <a href="#" >
-                <?= MyHtmlHelper::icon('lg-icons/goverment') ?>
+                <?= MyHtmlHelper::icon('lg-icons/goverment', '') ?>
                 <span>Государство</span>
                 <i class="fa fa-angle-left pull-right"></i>
             </a>
@@ -168,7 +168,7 @@ $this->title = 'Political Simulator';
         </li>
         <li class="treeview holding-info_page my-buisness_page market_page market-factories_page market-forex_page market-stocks_page market-resources_page factory-info_page">
             <a href="#" >
-                <?= MyHtmlHelper::icon('lg-icons/business') ?>
+                <?= MyHtmlHelper::icon('lg-icons/business', '') ?>
                 <span>Бизнес</span>
                 <i class="fa fa-angle-left pull-right"></i>
             </a>
@@ -187,7 +187,7 @@ $this->title = 'Political Simulator';
         </li>
         <li class="treeview map_page map-politic_page map-resources_page map-population_page">
             <a href="#" >
-                <?= MyHtmlHelper::icon('lg-icons/globe') ?>
+                <?= MyHtmlHelper::icon('lg-icons/globe', '') ?>
                 <span>Карта</span>
                 <i class="fa fa-angle-left pull-right"></i>
             </a>
@@ -221,7 +221,7 @@ $this->title = 'Political Simulator';
         </li>
         <li class="treeview twitter_page newspapers_page newspaper_page newspaper-new-post_page newspaper-feed_page radio_page tv_page">
             <a href="#" >
-                <?= MyHtmlHelper::icon('lg-icons/news') ?>
+                <?= MyHtmlHelper::icon('lg-icons/news', '') ?>
                 <span>СМИ</span>
                 <i class="fa fa-angle-left pull-right"></i>
             </a>
@@ -240,7 +240,7 @@ $this->title = 'Political Simulator';
         </li>
         <li class="treeview chart-states_page chart-parties_page chart-peoples_page">
             <a href="#" >
-                <?= MyHtmlHelper::icon('lg-icons/rating') ?>
+                <?= MyHtmlHelper::icon('lg-icons/rating', '') ?>
                 <span>Рейтинг</span>
                 <i class="fa fa-angle-left pull-right"></i>
             </a>
