@@ -14,22 +14,12 @@ use Yii,
  * @property double $partyRegistrationTax
  * @property boolean $isAllowMultipost
  * @property integer $leaderPostId
+ * @property integer $regionsLeadersAssignmentRule
  * @property integer $centralBankId
  * @property integer $currencyId
  * @property boolean $isAllowSetExchangeRateManually
  * @property double $taxBase
- * @property integer $localBusinessPolicy
- * @property double $localBusinessRegistrationTax
- * @property double $localBusinessMinCapital
- * @property double $localBusinessMaxCapital
- * @property integer $foreignBusinessPolicy
- * @property double $foreignBusinessRegistrationTax
- * @property double $foreignBusinessMinCapital
- * @property double $foreignBusinessMaxCapital
- * @property integer $npcBusinessPolicy
- * @property double $npcBusinessRegistrationTax
- * @property double $npcBusinessMinCapital
- * @property double $npcBusinessMaxCapital
+ * @property integer $businessPolicy
  * @property double $minWage
  * @property integer $retirementAge
  * @property integer $religionId
@@ -40,8 +30,10 @@ use Yii,
  * @property Company $centralBank
  * @property Currency $currency
  * @property Religion $religion
+ * @property StateConstitutionLicense[] $licenses
+ * 
  */
-class Constitution extends MyModel
+class StateConstitution extends MyModel
 {
     
     /**
@@ -70,19 +62,35 @@ class Constitution extends MyModel
     const PARTY_POLICY_FREE = 4;
     
     /**
-     * запрещено владение бизнесом
+     * запрещено владение бизнесом всем
      */
-    const BUISNESS_FORBIDDEN = 0;
+    const BUISNESS_FORBIDDEN_ALL = 0;
     
     /**
-     * разрешено владение бизнесом, запрещена регистрация компаний
+     * разрешено владение бизнесом, запрещена регистрация компаний всем
      */
-    const BUISNESS_ALLOW_REGISTERED = 1;
+    const BUISNESS_ALLOW_REGISTERED_ALL = 1;
     
     /**
-     * разрешено владение и регистрация компаний
+     * разрешено владение и регистрация компаний всем
      */
-    const BUISNESS_FREE = 2;
+    const BUISNESS_FREE_ALL = 2;
+    
+    /**
+     * запрещено иностранцам, своим разрешено владение, запрещена регистрация 
+     */
+    const BUISNESS_FORBIDDEN_FOREIGN_ALLOW_REGISTERED_LOCAL = 3;
+            
+    /**
+     * запрещено иностранцам, своим разрешено владение и регистрация
+     */
+    const BUISNESS_FORBIDDEN_FOREIGN_FREE_LOCAL = 4;
+    
+    /**
+     * запрещена регистрация иностранцам, но разрешено владение, своим разрешено владение и регистрация
+     */
+    const BUISNESS_ALLOW_REGISTERED_FOREIGN_FREE_LOCAL = 5;
+    
     
     /**
      * @inheritdoc
@@ -98,9 +106,9 @@ class Constitution extends MyModel
     public function rules()
     {
         return [
-            [['stateId', 'partyPolicy', 'isAllowMultipost', 'localBusinessPolicy', 'foreignBusinessPolicy', 'npcBusinessPolicy'], 'required'],
-            [['stateId', 'partyPolicy', 'rulingPartyId', 'leaderPostId', 'centralBankId', 'currencyId', 'localBusinessPolicy', 'foreignBusinessPolicy', 'npcBusinessPolicy', 'retirementAge', 'religionId'], 'integer', 'min' => 0],
-            [['partyRegistrationTax', 'taxBase', 'localBusinessRegistrationTax', 'localBusinessMinCapital', 'localBusinessMaxCapital', 'foreignBusinessRegistrationTax', 'foreignBusinessMinCapital', 'foreignBusinessMaxCapital', 'npcBusinessRegistrationTax', 'npcBusinessMinCapital', 'npcBusinessMaxCapital', 'minWage'], 'number', 'min' => 0],
+            [['stateId', 'partyPolicy', 'isAllowMultipost', 'businessPolicy'], 'required'],
+            [['stateId', 'partyPolicy', 'rulingPartyId', 'leaderPostId', 'centralBankId', 'currencyId', 'businessPolicy', 'retirementAge', 'religionId', 'regionsLeadersAssignmentRule'], 'integer', 'min' => 0],
+            [['partyRegistrationTax', 'taxBase', 'minWage'], 'number', 'min' => 0],
             [['isAllowMultipost', 'isAllowSetExchangeRateManually'], 'boolean'],
             [['stateId'], 'unique'],
 //            [['currencyId'], 'exist', 'skipOnError' => true, 'targetClass' => Currency::className(), 'targetAttribute' => ['currencyId' => 'id']],
@@ -126,21 +134,11 @@ class Constitution extends MyModel
             'currencyId' => Yii::t('app', 'Currency'),
             'isAllowSetExchangeRateManually' => Yii::t('app', 'Allow set exchange rate manually'),
             'taxBase' => Yii::t('app', 'Tax base'),
-            'localBusinessPolicy' => Yii::t('app', 'Local business policy'),
-            'localBusinessRegistrationTax' => Yii::t('app', 'Local business registration tax'),
-            'localBusinessMinCapital' => Yii::t('app', 'Local business minimum starting capital'),
-            'localBusinessMaxCapital' => Yii::t('app', 'Local business maximum starting capital'),
-            'foreignBusinessPolicy' => Yii::t('app', 'Foreign business policy'),
-            'foreignBusinessRegistrationTax' => Yii::t('app', 'Foreign business registration tax'),
-            'foreignBusinessMinCapital' => Yii::t('app', 'Foreign business minimum starting capital'),
-            'foreignBusinessMaxCapital' => Yii::t('app', 'Foreign business maximum starting capital'),
-            'npcBusinessPolicy' => Yii::t('app', 'Npc business policy'),
-            'npcBusinessRegistrationTax' => Yii::t('app', 'Npc business registration tax'),
-            'npcBusinessMinCapital' => Yii::t('app', 'Npc business minimum starting capital'),
-            'npcBusinessMaxCapital' => Yii::t('app', 'Npc business maximum starting capital'),
+            'businessPolicy' => Yii::t('app', 'Business policy'),
             'minWage' => Yii::t('app', 'Minimum wage'),
             'retirementAge' => Yii::t('app', 'Retirement age'),
             'stateReligionId' => Yii::t('app', 'State religion'),
+            'regionsLeadersAssignmentRule' => Yii::t('app', 'Regions leaders assignment type'),
         ];
     }
     
@@ -149,9 +147,8 @@ class Constitution extends MyModel
         return new static([
             'partyPolicy' => static::PARTY_POLICY_FREE,
             'isAllowMultipost' => false,
-            'localBusinessPolicy' => static::BUISNESS_FREE, 
-            'foreignBusinessPolicy' => static::BUISNESS_FREE, 
-            'npcBusinessPolicy' => static::BUISNESS_FREE
+            'businessPolicy' => static::BUISNESS_FREE_ALL,
+            'regionsLeadersAssignmentRule' => AgencyConstitution::ASSIGNMENT_RULE_ELECTIONS_PLURARITY,
         ]);
     }
     
@@ -187,6 +184,11 @@ class Constitution extends MyModel
             $this->_religion = Religion::findOne($this->religionId);
         }
         return $this->_religion;
+    }
+    
+    public function getLicenses()
+    {
+        return $this->hasMany(StateConstitutionLicense::className(), ['stateId' => 'stateId']);
     }
     
 }

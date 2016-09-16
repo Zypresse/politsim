@@ -26,7 +26,7 @@ use Yii,
  * @property State $state
  * @property City $city
  * @property Tile[] $tiles
- * @property ConstitutionRegion $constitution
+ * @property RegionConstitution $constitution
  * 
  */
 class Region extends TaxPayerModel
@@ -129,7 +129,7 @@ class Region extends TaxPayerModel
     
     public function getConstitution()
     {
-        return $this->hasOne(ConstitutionRegion::classname(), ['regionId' => 'id']);
+        return $this->hasOne(RegionConstitution::classname(), ['regionId' => 'id']);
     }
     
     private function getPolygonFilePath()
@@ -162,7 +162,7 @@ class Region extends TaxPayerModel
     {
         
         if (!$this->constitution) {
-            $constitution = ConstitutionRegion::generate($this->state);
+            $constitution = RegionConstitution::generate();
             $constitution->regionId = $this->id;
             $constitution->save();
             $this->refresh();

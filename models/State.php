@@ -28,7 +28,7 @@ use Yii,
  * @property string $polygon
  * 
  * @property City $city
- * @property Constitution $constitution
+ * @property StateConstitution $constitution
  * @property GovermentForm $govermentForm
  * @property StateStructure $stateStructure
  * @property Region[] $regions
@@ -145,7 +145,7 @@ class State extends TaxPayerModel
     
     public function getConstitution()
     {
-        return $this->hasOne(Constitution::classname(), ['stateId' => 'id']);
+        return $this->hasOne(StateConstitution::classname(), ['stateId' => 'id']);
     }
     
     public function getRegions()
@@ -200,13 +200,13 @@ class State extends TaxPayerModel
     {
         
         if (!$this->constitution) {
-            $constitution = Constitution::generate();
+            $constitution = StateConstitution::generate();
             $constitution->stateId = $this->id;
             $constitution->save();
             $this->refresh();
         }
         
-        if ($this->constitution->partyPolicy == Constitution::PARTY_POLICY_FREE) {
+        if ($this->constitution->partyPolicy == StateConstitution::PARTY_POLICY_FREE) {
             $this->govermentFormId = GovermentForm::REPUBLIC;
         } else {
             $this->govermentFormId = GovermentForm::DICTATURE;
