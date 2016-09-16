@@ -43,11 +43,13 @@ $isHaveCitizenship = $user->isHaveCitizenship($state->id);
         </div>
         <div class="col-md-8">
             <div class="box">
-                <div class="box-body">
+                <div class="box-header">                    
                     <h1>
                         <?=Html::encode($state->name)?>
                          <small>(<?=Html::encode($state->nameShort)?>)</small>
                     </h1>
+                </div>
+                <div class="box-body">
                     <div class="row">
                         <div class="col-md-6">
                             <table class="table table-bordered no-margin">
@@ -93,17 +95,35 @@ $isHaveCitizenship = $user->isHaveCitizenship($state->id);
                     </div>
                 </div>
             </div>
-            <div class="box">
+            <div class="box box-info">
                 <div class="box-header">
-                    <h3><?=Yii::t('app', 'Regions')?></h3>
+                    <h3 class="box-title"><?=Yii::t('app', 'Goverment agencies')?></h3>
+                </div>
+                <div class="box-body">
+                    <table class="table table-bordered no-margin">
+                        <thead>
+                            
+                        </thead>
+                        <tbody>
+                        <?php foreach ($state->agencies as $agency): ?>
+                            <tr>
+                                <td><?=LinkCreator::agencyLink($agency)?></td>
+                            </tr>
+                        <?php endforeach ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="box box-info">
+                <div class="box-header">
+                    <h3 class="box-title"><?=Yii::t('app', 'Regions')?></h3>
                 </div>
                 <div class="box-body">
                     <table class="table table-bordered no-margin">
                         <thead>
                             <tr>
                                 <th><?=Yii::t('app', 'Name')?></th>
-                                <th><i class="fa fa-group"></i> <?=Yii::t('app', 'Population')?></th>
-                                
+                                <th><i class="fa fa-group"></i> <?=Yii::t('app', 'Population')?></th>                                
                             </tr>
                         </thead>
                         <tbody>
@@ -116,9 +136,10 @@ $isHaveCitizenship = $user->isHaveCitizenship($state->id);
                         </tbody>
                     </table>
                 </div>
-            </div><div class="box">
+            </div>
+            <div class="box box-solid box-primary">
                 <div class="box-header">
-                    <h3><?=Yii::t('app', 'Available actions')?></h3>
+                    <h3 class="box-title"><?=Yii::t('app', 'Available actions')?></h3>
                 </div>
                 <div class="box-body">
                     <p>
@@ -126,6 +147,8 @@ $isHaveCitizenship = $user->isHaveCitizenship($state->id);
                             <?=Yii::t('app','You have this state citizenship')?>
                         <?php endif ?>
                     </p>
+                </div>
+                <div class="box-footer">
                     <div class="btn-group">
                         <?php if ($isHaveCitizenship):?>
                             <button onclick="if (confirm('<?=Yii::t('app', 'Are you sure?')?>')) json_request('citizenship/cancel', {stateId: <?=$state->id?>})" class="btn btn-danger"><?=Yii::t('app', 'Fire citizenship')?></button>

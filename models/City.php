@@ -3,9 +3,7 @@
 namespace app\models;
 
 use Yii,
-    app\components\MyModel,
-    app\components\TaxPayer,
-    app\components\LinkHelper;
+    app\components\TaxPayerModel;
 
 /**
  * Город
@@ -23,7 +21,7 @@ use Yii,
  * 
  * @property Region $region
  */
-class City extends MyModel implements TaxPayer
+class City extends TaxPayerModel
 {
     
     /**
@@ -60,22 +58,6 @@ class City extends MyModel implements TaxPayer
     }
     
     /**
-     * Возвращает ИНН
-     * @return int
-     */
-    public function getUtr()
-    {
-        if (is_null($this->utr)) {
-            $u = Utr::findOrCreate(['objectId' => $this->id, 'objectType' => $this->getUtrType()]);
-            if ($u) {
-                $this->utr = $u->id;
-                $this->save();
-            }
-        } 
-        return $this->utr;
-    }
-    
-    /**
      * Является ли плательщик правительством страны
      * @param integer $stateId
      * @return boolean
@@ -84,42 +66,7 @@ class City extends MyModel implements TaxPayer
     {
         return $this->region && $this->region->stateId === $stateId;
     }
-    
-    /**
-     * Возвращает баланс плательщика в у.е.
-     * @param integer $currencyId
-     * @return double
-     */
-    public function getBalance($currencyId)
-    {
-        $money = resources\Resource::findOrCreate([
-            'protoId' => 1, // деньги
-            'subProtoId' => $currencyId,
-            'masterId' => $this->getUtr()
-        ], false, [
-            'count' => 0
-        ]);
-        return $money->count;
-    }
-    
-    /**
-     * Меняет баланс плательщика
-     * @param integer $currencyId
-     * @param double $delta
-     */
-    public function changeBalance($currencyId, $delta)
-    {
-        $money = resources\Resource::findOrCreate([
-            'protoId' => 1, // деньги
-            'subProtoId' => $currencyId,
-            'masterId' => $this->getUtr()
-        ], false, [
-            'count' => 0
-        ]);
-        $money->count += $delta;
-        return $money->save();
-    }
-        
+            
     /**
      * ID страны, в которой он платит налоги
      * @return integer

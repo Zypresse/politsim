@@ -47,11 +47,13 @@ use yii\helpers\Html,
         <?php endif ?>
         <div class="col-md-<?=($city->flag || $city->anthem)?8:12?>">            
             <div class="box">
-                <div class="box-body">
+                <div class="box-header">
                     <h1>
                         <?=Html::encode($city->name)?>
                          <small>(<?=Html::encode($city->nameShort)?>)</small>
                     </h1>
+                </div>
+                <div class="box-body">
                     <div class="row">
                         <div class="col-md-6">
                             <table class="table table-bordered no-margin">

@@ -4,7 +4,8 @@ namespace app\controllers;
 
 use Yii,
     app\components\MyController,
-    app\models\State;
+    app\models\State,
+    app\models\Agency;
 
 /**
  * 
@@ -41,6 +42,20 @@ class StateController extends MyController
         return $this->render('constitution', [
             'state' => $state,
             'constitution' => $state->constitution,
+            'user' => $this->user
+        ]);
+    }
+    
+    public function actionAgency($id)
+    {
+        
+        $agency = Agency::findByPk($id);
+        if (is_null($agency)) {
+            return $this->_r(Yii::t('app', 'Agency not found'));
+        }
+        
+        return $this->render('agency', [
+            'agency' => $agency,
             'user' => $this->user
         ]);
     }
