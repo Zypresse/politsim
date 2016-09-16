@@ -49,6 +49,7 @@ use Yii,
  * @property Ideology $ideology Идеология
  * @property Religion $religion Религия
  * @property City $city Город
+ * @property Modifier[] $modifiers Модификаторы
  */
 class User extends MyModel implements TaxPayer, IdentityInterface
 {
@@ -347,6 +348,49 @@ class User extends MyModel implements TaxPayer, IdentityInterface
         return !!$this->getMemberships()->where(['partyId' => $partyId])->andWhere(['dateApproved' => null])->count();
     }
     
+    public function getModifiers()
+    {
+        return $this->hasMany(Modifier::className(), ['userId' => 'id']);
+    }
+    
+    /**
+     * 
+     * @param integer $protoId
+     * @param integer $dateReceiving
+     * @param integer $dateExpired
+     * @param boolean $save
+     * @return Modifier
+     */
+    public function addModifier($protoId, $dateReceiving = null, $dateExpired = null, $save = true)
+    {
+        $modifier = new Modifier([
+            'userId' => $this->id,
+            'protoId' => $protoId,
+            'dateReceiving' => $dateReceiving,
+            'dateExpired' => $dateExpired
+        ]);
+        if ($save) {
+            $modifier->save();
+        }
+        
+        return $modifier;
+    }
+    
+    public function updateParams()
+    {
+        $this->fame = $this->fameBase;
+        $this->trust = $this->trustBase;
+        $this->success = $this->successBase;
+        
+        foreach ($this->modifiers as $modifier) {
+            $this->fame += $modifier->fame;
+            $this->trust += $modifier->trust;
+            $this->success += $modifier->success;
+        }
+        
+        $this->save();
+    }
+
     public function getDealingsInitiated()
     {
         if (!$this->utr) {

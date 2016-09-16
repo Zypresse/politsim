@@ -19,8 +19,8 @@
     background-color: #3D3D3D;
     border-radius: 6px;
     font-family: Verdana;
-    font-size: smaller;
-    padding: 2px 4px;
+    font-size: 14px;
+    padding: 2px 4px 4px;
 }
 
 .star > img, .heart > img, .chart_pie > img {
@@ -735,4 +735,42 @@ ul.twPc-Arrange {
     width: 90px;
     height: auto;
     border: 3px solid #fff;
+}
+
+.modifier-box {
+    display: block;
+    min-height: 46px;
+    border: 1px solid #d3d3d3;
+    background: #fff;
+    width: 100%;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+    border-radius: 2px;
+    margin-bottom: 15px;
+}
+
+.modifier-box-icon {
+    border-top-left-radius: 2px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 2px;
+    display: block;
+    float: left;
+    height: 46px;
+    width: 46px;
+    line-height: 36px;
+    text-align: center;
+    font-size: 32px;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.modifier-box-content {
+    margin: 0 5px 0 51px;
+}
+
+.modifier-box-text {
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 41px;
 }

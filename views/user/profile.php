@@ -2,8 +2,7 @@
 
 use yii\helpers\Html,
     app\components\MyHtmlHelper,
-    app\components\LinkCreator,
-    yii\helpers\ArrayHelper;
+    app\components\LinkCreator;
 
 /* @var $this \yii\web\View */
 /* @var $user \app\models\User */
@@ -15,7 +14,7 @@ $viewer = Yii::$app->user->identity;
 
 <section class="content">
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class=" box" >
                 <div class="box-body">
                     <?=Html::img($user->avatarBig, ['class' => 'img-polaroid', 'style' => 'width: 100%'])?>
@@ -26,8 +25,39 @@ $viewer = Yii::$app->user->identity;
                     </div>
                 </div>
             </div>
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title"><?=Yii::t('app', 'Modifiers')?></h3>
+                </div>
+                <div class="box-body">
+                    <?php foreach ($user->modifiers as $modifier): ?>
+                    <div class="modifier-box ">
+                        <span class="modifier-box-icon">
+                            <?=Html::img($modifier->icon, ['title' => $modifier->name])?>
+                        </span>
+                        <div class="modifier-box-content">
+                            <span class="modifier-box-text">
+                                <strong><?=$modifier->name?></strong>
+                                <div class="pull-right">
+                                <?php if ($modifier->fame): ?>
+                                    <span class="star"><?=($modifier->fame>0?'+':'').$modifier->fame.' '.MyHtmlHelper::icon('star', '')?></span>
+                                <?php endif ?>
+                                <?php if ($modifier->trust): ?>
+                                    <span class="heart"><?=($modifier->trust>0?'+':'').$modifier->trust.' '.MyHtmlHelper::icon('heart', '')?></span>
+                                <?php endif ?>
+                                <?php if ($modifier->success): ?>
+                                    <span class="chart_pie"><?=($modifier->success>0?'+':'').$modifier->success.' '.MyHtmlHelper::icon('chart_pie', '')?></span>
+                                <?php endif ?>
+                                </div>
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <?php endforeach ?>
+                </div>
+            </div>
         </div>
-        <div class="col-md-8">
+        <div class="col-md-9">
             <div class="box">
                 <div class="box-header">
                     <h1><?= Html::encode($user->name) ?> <?php if ($isOwner): ?><small>(это вы)</small><?php endif ?></h1>

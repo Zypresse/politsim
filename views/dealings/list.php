@@ -15,7 +15,7 @@ use yii\helpers\Html,
     </h1>
     <ol class="breadcrumb">
         <li><?=LinkCreator::userLink($user)?></li>
-        <li class="active"><i class="fa fa-list-alt"></i> <?=Yii::t('app', 'Dealings')?></li>
+        <li class="active"><i class="fa fa-briefcase"></i> <?=Yii::t('app', 'Dealings')?></li>
     </ol>
 </section>
 <section class="content">
