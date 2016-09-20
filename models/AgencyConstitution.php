@@ -124,6 +124,10 @@ class AgencyConstitution extends MyModel
     {
         return new static([
             'assignmentRule' => static::ASSIGNMENT_RULE_BY_LEADER,
+            'powers' => 0,
+            'termOfOffice' => 0,
+            'termOfElections' => 0,
+            'termOfElectionsRegistration' => 0
         ]);
     }
     

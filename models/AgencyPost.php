@@ -84,5 +84,5 @@ class AgencyPost extends MyModel
     {
         return $this->hasOne(AgencyPostConstitution::className(), ['postId' => 'id']);
     }
-    
+        
 }

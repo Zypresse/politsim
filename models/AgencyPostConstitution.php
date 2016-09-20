@@ -14,7 +14,7 @@ use Yii,
  * @property integer $termOfOffice срок полномочий 
  * @property integer $termOfElections длительность выборов
  * @property integer $termOfElectionsRegistration длительность регистрации на выборы
- * @property integer $electionRules доп настройки выборов (bitmask)
+ * @property integer #electionsRules доп настройки выборов (bitmask)
  * @property integer $electoralDistrict округ к которому привязан пост
  * 
  * @property Post $post
@@ -27,12 +27,12 @@ class AgencyPostConstitution extends MyModel
     /**
      * наличие второго тура
      */
-    const ELECTION_RULE_SECOND_TOUR = 1;
+    const ELECTIONS_RULE_SECOND_TOUR = 1;
     
     /**
      * право участия в выборах самовыдвиженцев
      */
-    const ELECTION_RULE_ALLOW_SELFREQUESTS = 2;
+    const ELECTIONS_RULE_ALLOW_SELFREQUESTS = 2;
     
         
     /**
@@ -49,8 +49,8 @@ class AgencyPostConstitution extends MyModel
     public function rules()
     {
         return [
-            [['postId', 'assignmentRule', 'powers', 'termOfOffice', 'termOfElections', 'termOfElectionsRegistration', 'electionRules'], 'required'],
-            [['postId', 'assignmentRule', 'powers', 'termOfOffice', 'termOfElections', 'termOfElectionsRegistration', 'electionRules', 'electoralDistrict'], 'integer', 'min' => 0],
+            [['postId', 'assignmentRule', 'powers', 'termOfOffice', 'termOfElections', 'termOfElectionsRegistration', 'electionsRules'], 'required'],
+            [['postId', 'assignmentRule', 'powers', 'termOfOffice', 'termOfElections', 'termOfElectionsRegistration', 'electionsRules', 'electoralDistrict'], 'integer', 'min' => 0],
             [['postId'], 'unique'],
             [['postId'], 'exist', 'skipOnError' => true, 'targetClass' => AgencyPost::className(), 'targetAttribute' => ['postId' => 'id']],
         ];
@@ -69,7 +69,12 @@ class AgencyPostConstitution extends MyModel
     public static function generate()
     {
         return new static([
-            'assignmentRule' => static::ASSIGNMENT_RULE_BY_LEADER,
+            'assignmentRule' => AgencyConstitution::ASSIGNMENT_RULE_BY_LEADER,
+            'powers' => 0,
+            'termOfOffice' => 0,
+            'termOfElections' => 0,
+            'termOfElectionsRegistration' => 0,
+            'electionsRules' => 0,            
         ]);
     }
     

@@ -17,6 +17,8 @@ use Yii,
  * @property integer $utr
  * 
  * @property State $state
+ * @property AgencyConstitution $constitution
+ * @property AgencyPost[] $posts
  * 
  */
 class Agency extends TaxPayerModel
@@ -93,6 +95,17 @@ class Agency extends TaxPayerModel
     public function getState()
     {
         return $this->hasOne(State::className(), ['id' => 'stateId']);
+    }
+    
+    public function getConstitution()
+    {
+        return $this->hasOne(AgencyConstitution::className(), ['agencyId' => 'id']);
+    }
+    
+    public function getPosts()
+    {
+        return $this->hasMany(AgencyPost::className(), ['id' => 'postId'])
+                ->viaTable('agencies-to-posts', ['agencyId' => 'id']);
     }
     
     public function beforeSave($insert)
