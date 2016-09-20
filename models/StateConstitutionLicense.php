@@ -56,7 +56,7 @@ class StateConstitutionLicense extends MyModel
     
     public static function primaryKey()
     {
-        return 'stateId';
+        return ['stateId'];
     }
     
     public function getState()

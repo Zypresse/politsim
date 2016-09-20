@@ -26,7 +26,7 @@ use Yii,
  * 
  * @property State $state
  * @property Party $rulingParty
- * @property Post $leaderPost
+ * @property AgencyPost $leaderPost
  * @property Company $centralBank
  * @property Currency $currency
  * @property Religion $religion
@@ -113,7 +113,7 @@ class StateConstitution extends MyModel
             [['stateId'], 'unique'],
 //            [['currencyId'], 'exist', 'skipOnError' => true, 'targetClass' => Currency::className(), 'targetAttribute' => ['currencyId' => 'id']],
 //            [['centralBankId'], 'exist', 'skipOnError' => true, 'targetClass' => Company::className(), 'targetAttribute' => ['centralBankId' => 'id']],
-//            [['leaderPostId'], 'exist', 'skipOnError' => true, 'targetClass' => Post::className(), 'targetAttribute' => ['leaderPostId' => 'id']],
+            [['leaderPostId'], 'exist', 'skipOnError' => true, 'targetClass' => AgencyPost::className(), 'targetAttribute' => ['leaderPostId' => 'id']],
             [['rulingPartyId'], 'exist', 'skipOnError' => true, 'targetClass' => Party::className(), 'targetAttribute' => ['rulingPartyId' => 'id']],
             [['stateId'], 'exist', 'skipOnError' => true, 'targetClass' => State::className(), 'targetAttribute' => ['stateId' => 'id']],
         ];
@@ -154,7 +154,7 @@ class StateConstitution extends MyModel
     
     public static function primaryKey()
     {
-        return 'stateId';
+        return ['stateId'];
     }
     
     public function getState()
@@ -169,7 +169,7 @@ class StateConstitution extends MyModel
     
     public function getLeaderPost()
     {
-        return $this->hasOne(Post::className(), ['id' => 'leaderPostId']);
+        return $this->hasOne(AgencyPost::className(), ['id' => 'leaderPostId']);
     }
     
     public function getCentralBank()

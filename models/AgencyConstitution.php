@@ -19,7 +19,7 @@ use Yii,
  * 
  * @property Agency $agency
  * @property Post $leaderPost
- * @property ConstitutionAgencyLicense[] $licenses
+ * @property AgencyConstitutionLicense[] $licenses
  * 
  */
 class AgencyConstitution extends MyModel
@@ -106,7 +106,7 @@ class AgencyConstitution extends MyModel
             [['agencyId', 'assignmentRule', 'powers', 'termOfOffice', 'termOfElections', 'termOfElectionsRegistration'], 'required'],
             [['agencyId', 'leaderPostId', 'assignmentRule', 'powers', 'termOfOffice', 'termOfElections', 'termOfElectionsRegistration'], 'integer', 'min' => 0],
             [['agencyId'], 'unique'],
-            [['agencyId'], 'exist', 'skipOnError' => true, 'targetClass' => State::className(), 'targetAttribute' => ['stateId' => 'id']],
+            [['agencyId'], 'exist', 'skipOnError' => true, 'targetClass' => Agency::className(), 'targetAttribute' => ['agencyId' => 'id']],
         ];
     }
 
@@ -129,7 +129,7 @@ class AgencyConstitution extends MyModel
     
     public static function primaryKey()
     {
-        return 'agencyId';
+        return ['agencyId'];
     }
     
     public function getAgency()
@@ -139,12 +139,12 @@ class AgencyConstitution extends MyModel
     
     public function getLeaderPost()
     {
-        return $this->hasOne(Post::className(), ['id' => 'leaderPostId']);
+        return $this->hasOne(AgencyPost::className(), ['id' => 'leaderPostId']);
     }
     
     public function getLicenses()
     {
-        return $this->hasOne(ConstitutionAgencyLicense::className(), ['agencyId' => 'agencyId']);
+        return $this->hasOne(AgencyConstitutionLicense::className(), ['agencyId' => 'agencyId']);
     }
         
 }

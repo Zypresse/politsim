@@ -5,7 +5,8 @@ namespace app\controllers;
 use Yii,
     app\components\MyController,
     app\models\State,
-    app\models\Agency;
+    app\models\Agency,
+    app\models\AgencyPost;
 
 /**
  * 
@@ -38,7 +39,7 @@ class StateController extends MyController
         if (!$state->constitution) {
             return $this->_r(Yii::t('app', 'State have not constitution'));
         }
-        
+                
         return $this->render('constitution', [
             'state' => $state,
             'constitution' => $state->constitution,

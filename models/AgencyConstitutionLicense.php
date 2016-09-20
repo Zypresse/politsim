@@ -72,7 +72,7 @@ class AgencyConstitutionLicense extends MyModel
     
     public static function primaryKey()
     {
-        return 'agencyId';
+        return ['agencyId'];
     }
     
     public function getAgency()

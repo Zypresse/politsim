@@ -12,7 +12,7 @@ use Yii,
  * @property integer $leaderPostId
  * 
  * @property Region $region
- * @property Post $leaderPost
+ * @property AgencyPost $leaderPost
  * 
  */
 class RegionConstitution extends MyModel
@@ -34,7 +34,7 @@ class RegionConstitution extends MyModel
             [['regionId'], 'required'],
             [['regionId', 'leaderPostId'], 'integer', 'min' => 0],
             [['regionId'], 'unique'],
-//            [['leaderPostId'], 'exist', 'skipOnError' => true, 'targetClass' => Post::className(), 'targetAttribute' => ['leaderPostId' => 'id']],
+            [['leaderPostId'], 'exist', 'skipOnError' => true, 'targetClass' => AgencyPost::className(), 'targetAttribute' => ['leaderPostId' => 'id']],
             [['regionId'], 'exist', 'skipOnError' => true, 'targetClass' => Region::className(), 'targetAttribute' => ['regionId' => 'id']],
         ];
     }
@@ -56,7 +56,7 @@ class RegionConstitution extends MyModel
     
     public static function primaryKey()
     {
-        return 'regionId';
+        return ['regionId'];
     }
     
     public function getRegion()
@@ -66,6 +66,6 @@ class RegionConstitution extends MyModel
     
     public function getLeaderPost()
     {
-        return $this->hasOne(Post::className(), ['id' => 'leaderPostId']);
+        return $this->hasOne(AgencyPost::className(), ['id' => 'leaderPostId']);
     }
 }

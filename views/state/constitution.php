@@ -54,11 +54,12 @@ use yii\helpers\Html,
                         <td><strong><?=$constitution->getAttributeLabel('isAllowMultipost')?>:</strong></td>
                         <td><?=MyHtmlHelper::booleanToYesNo($constitution->isAllowMultipost)?></td>
                     </tr>
-                    <?php /*@TODO if ($constitution->leaderPost): ?>
+                    <?php if ($constitution->leaderPost): ?>
                     <tr>
-                        
+                        <td><strong><?=$constitution->getAttributeLabel('leaderPostId')?>:</strong></td>
+                        <td><?=Html::encode($constitution->leaderPost->name)?></td>
                     </tr>
-                    <?php endif */?>
+                    <?php endif ?>
                     <tr>
                         <td><strong><?=$constitution->getAttributeLabel('regionsLeadersAssignmentRule')?>:</strong></td>
                         <td>
