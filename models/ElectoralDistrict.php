@@ -52,4 +52,29 @@ class ElectoralDistrict extends MyModel
         return $this->hasMany(Tile::className(), ['id' => 'tileId'])
                 ->viaTable('electoral-districts-to-tiles', ['districtId' => 'id']);
     }
+    
+    private function getPolygonFilePath()
+    {
+        return Yii::$app->basePath.'/data/polygons/electoral-districts/'.$this->id.'.json';        
+    }
+    
+    public function calcPolygon()
+    {
+        return TileCombiner::combine($this->getTiles());
+    }
+    
+    private $_polygon = null;
+    public function getPolygon()
+    {
+        if (is_null($this->_polygon)) {
+            $filePath = $this->getPolygonFilePath();
+            if (file_exists($filePath)) {
+                $this->_polygon = file_get_contents($filePath);
+            } else {
+                $this->_polygon = json_encode($this->calcPolygon());
+                file_put_contents($filePath, $this->_polygon);
+            }
+        }
+        return $this->_polygon;
+    }
 }
