@@ -14,10 +14,10 @@ use Yii,
 class MapController extends MyController
 {
     
-    public function actionIndex()
+    public function actionIndex($mode = '2d')
     {
         $states = State::find()->where(['dateDeleted' => null])->all();
-        return $this->render('index', [
+        return $this->render($mode == '2d' ? 'index' : 'index3d', [
             'states' => $states
         ]);
     }

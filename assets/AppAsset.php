@@ -49,6 +49,7 @@ class AppAsset extends AssetBundle
         'js/dataTables.bootstrap.min.js',
         'js/leaflet.js',
         'js/leaflet.label.js',
+        'js/leaflet3d.js',
         'js/script_all.js',
     ];
     public $depends = [

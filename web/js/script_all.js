@@ -272,7 +272,7 @@ function load_page(page, params, time) {
         current_page_params = params;
 
         $('#topmenu>li').removeClass('active');
-        $('.' + current_page.replace('/','-') + '_page').addClass('active');
+        $('.' + current_page.replace(/\//g,'-') + '_page').addClass('active');
 
         hash = '!' + page;
         for (var i in params) {
