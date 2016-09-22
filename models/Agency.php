@@ -19,6 +19,7 @@ use Yii,
  * @property State $state
  * @property AgencyConstitution $constitution
  * @property AgencyPost[] $posts
+ * @property Election[] $elections
  * 
  */
 class Agency extends TaxPayerModel
@@ -108,6 +109,16 @@ class Agency extends TaxPayerModel
                 ->viaTable('agencies-to-posts', ['agencyId' => 'id']);
     }
     
+    public function getElections()
+    {
+        return $this->hasMany(Election::className(), ['agencyId' => 'id']);
+    }
+    
+    public function getNextElection()
+    {
+        return $this->getElections()->orderBy(['id' => SORT_DESC])->where(['results' => null])->one();
+    }
+
     public function beforeSave($insert)
     {
         

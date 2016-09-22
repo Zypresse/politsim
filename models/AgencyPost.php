@@ -20,6 +20,7 @@ use Yii,
  * @property Party $party
  * @property User $user
  * @property AgencyPostConstitution $constitution
+ * @property Election[] $elections
  * 
  */
 class AgencyPost extends MyModel
@@ -85,4 +86,27 @@ class AgencyPost extends MyModel
         return $this->hasOne(AgencyPostConstitution::className(), ['postId' => 'id']);
     }
         
+    public function getElections()
+    {
+        return $this->hasMany(Election::className(), ['postId' => 'id']);
+    }
+    
+    public function getNextElection()
+    {
+        $election = $this->getElections()->orderBy(['id' => SORT_DESC])->where(['results' => null])->one();
+//        if (is_null($election) && $this->constitution->assignmentRule == AgencyConstitution::ASSIGNMENT_RULE_ELECTIONS_PLURARITY) {
+//            $election = new Election([
+//                'protoId' => $this->constitution->assignmentRule,
+//                'postId' => $this->id,
+//                'isIndividual' => true,
+//                'isOnlyParty' => !($this->constitution->electionsRules & AgencyPostConstitution::ELECTIONS_RULE_ALLOW_SELFREQUESTS),
+//                'dateRegistrationStart' => time(),
+//                'dateVotingStart' => time() + $this->constitution->termOfElectionsRegistration*60*60*24,
+//                'dateVotingEnd' => time() + $this->constitution->termOfElectionsRegistration*60*60*24 + $this->constitution->termOfElections*60*60*24,
+//            ]);
+//            $election->save();
+//        }
+        return $election;
+    }
+    
 }

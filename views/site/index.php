@@ -160,7 +160,7 @@ $this->title = 'Political Simulator';
                     </a>
                 </li>
                 <li>
-                    <a href="#!state/elections">
+                    <a href="#!elections">
                         <i class="fa fa-bullhorn"></i> Выборы
                     </a>
                 </li>
