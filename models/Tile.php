@@ -18,9 +18,11 @@ use Yii,
  * @property integer $population
  * @property integer $regionId
  * @property integer $cityId
+ * @property integer $electoralDistrictId
  * 
- * @property Region $regionId
- * @property City $cityId
+ * @property Region $region
+ * @property City $city
+ * @property ElectoralDistrict $electoralDistrict
  *
  * @author ilya
  */
@@ -42,10 +44,25 @@ class Tile extends MyModel
     {
         return [
             [['x', 'y', 'lat', 'lon', 'isWater', 'isLand', 'population'], 'required'],
-            [['population', 'regionId', 'cityId'], 'integer', 'min' => 0],
+            [['population', 'regionId', 'cityId', 'electoralDistrictId'], 'integer', 'min' => 0],
             [['lat', 'lon'], 'number'],
             [['isWater', 'isLand'], 'boolean'],
         ];
+    }
+    
+    public function getRegion()
+    {
+        return $this->hasOne(Region::className(), ['id' => 'regionId']);
+    }
+    
+    public function getCity()
+    {
+        return $this->hasOne(City::className(), ['id' => 'cityId']);
+    }
+    
+    public function getElectoralDistrict()
+    {
+        return $this->hasOne(ElectoralDistrict::className(), ['id' => 'electoralDistrictId']);
     }
         
 }

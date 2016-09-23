@@ -60,7 +60,7 @@ class ElectionRequestIndividual extends MyModel
         return $this->hasOne(User::className(), ['id' => 'userId']);
     }
     
-    public function primaryKey()
+    public static function primaryKey()
     {
         return ['electionId', 'variant'];
     }

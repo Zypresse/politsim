@@ -68,7 +68,7 @@ class ElectionVoteUser extends MyModel
         return $this->hasOne(ElectoralDistrict::className(), ['id' => 'districtId']);
     }
     
-    public function primaryKey()
+    public static function primaryKey()
     {
         return ['electionId', 'userId'];
     }

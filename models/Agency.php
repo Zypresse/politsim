@@ -128,5 +128,45 @@ class Agency extends TaxPayerModel
         
         return parent::beforeSave($insert);
     }
+    
+    public function updateTempPosts()
+    {
+        $count = $this->constitution ? $this->constitution->tempPostsCount : 0;
+        $leaderPostId = $this->constitution ? $this->constitution->leaderPostId : 0;
+        $tempPostId = $this->constitution ? $this->constitution->tempPostId : 0;
+        if ($count > 0 && $tempPostId) {
+            $tempPost = null;
+            foreach ($this->posts as $post) {
+                if ($post->id == $leaderPostId) {
+                    continue;
+                }
+                if ($post->id == $tempPostId) {
+                    $tempPost = $post;
+                    continue;
+                }
+                $post->delete();
+            }
+            if ($tempPost && $tempPost->constitution) {
+                for ($i = 0; $i < $count-1; $i++) {
+                    $post = new AgencyPost([
+                        'stateId' => $tempPost->stateId,
+                        'name' => $tempPost->name,
+                        'nameShort' => $tempPost->nameShort
+                    ]);
+                    $post->save();
+                    $postConstitution = AgencyPostConstitution::generate();
+                    $postConstitution->postId = $post->id;
+                    $postConstitution->assignmentRule = $tempPost->constitution->assignmentRule;
+                    $postConstitution->electionsRules = $tempPost->constitution->electionsRules;
+                    $postConstitution->powers = $tempPost->constitution->powers;
+                    $postConstitution->termOfElections = $tempPost->constitution->termOfElections;
+                    $postConstitution->termOfElectionsRegistration = $tempPost->constitution->termOfElectionsRegistration;
+                    $postConstitution->termOfOffice = $tempPost->constitution->termOfOffice;
+                    $postConstitution->save();
+                    $post->link('agencies', $this);
+                }
+            }
+        }
+    }
 
 }

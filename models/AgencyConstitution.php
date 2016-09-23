@@ -16,6 +16,7 @@ use Yii,
  * @property integer $termOfElections длительность выборов
  * @property integer $termOfElectionsRegistration длительность регистрации на выборы
  * @property integer $tempPostsCount число одинаковых постов типа парламентариев
+ * @property integer $tempPostId базовый пост для шаблонных
  * 
  * @property Agency $agency
  * @property Post $leaderPost
@@ -125,9 +126,9 @@ class AgencyConstitution extends MyModel
         return new static([
             'assignmentRule' => static::ASSIGNMENT_RULE_BY_LEADER,
             'powers' => 0,
-            'termOfOffice' => 0,
-            'termOfElections' => 0,
-            'termOfElectionsRegistration' => 0
+            'termOfOffice' => 30,
+            'termOfElections' => 1,
+            'termOfElectionsRegistration' => 7
         ]);
     }
     

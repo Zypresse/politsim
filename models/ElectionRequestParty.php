@@ -68,7 +68,7 @@ class ElectionRequestParty extends MyModel
         return $this->hasOne(PartyList::className(), ['id' => 'partyListId']);
     }
     
-    public function primaryKey()
+    public static function primaryKey()
     {
         return ['electionId', 'variant'];
     }
