@@ -7,6 +7,17 @@ use yii\helpers\Html;
 
 ?>
 
+<section class="content-header">
+    <h1>
+        <?=Yii::t('app', 'Wolrd political map')?>
+    </h1>
+    <ol class="breadcrumb">
+        <li><?=Yii::t('app', 'Wolrd political map')?></li>
+        <li class="active">            
+            <a href="#!map&mode=3d" class="btn btn-primary btn-xs"><?=Yii::t('app', 'Turn 3D')?></a>
+        </li>
+    </ol>
+</section>
 <section class="content">
     <div id="map" style="width:100%; min-height: 500px; height: auto"></div>
 </section>
@@ -14,7 +25,7 @@ use yii\helpers\Html;
 
 <script type="text/javascript">
 
-    var neg = $('.main-header').outerHeight() + $('.main-footer').outerHeight();
+    var neg = $('.main-header').outerHeight() + $('.main-footer').outerHeight() + $('.content-header').outerHeight();
     var window_height = $(window).height();
     $('#map').css('min-height', window_height - neg - 30);
     
@@ -39,37 +50,6 @@ use yii\helpers\Html;
         localStorage.setItem('center-lat',map.getCenter().lat);
         localStorage.setItem('center-lng',map.getCenter().lng);
     });
-
-    function roundd(lat, n) {
-        return parseFloat(lat.toFixed(n));
-    }
-
-    function correctLat(lat) {
-        return roundd(Math.cos(lat*0.0175)*1.025, 4);
-    }
-    
-    function calcCoords(lat, lon) {
-        var xFactor = correctLat(lat);
-        coords = [
-            [lat,lon+0.1], // east
-            [lat-0.087*xFactor,lon+0.05], // east-south
-            [lat-0.087*xFactor,lon-0.05], // west-south
-            [lat,lon-0.1], // west
-            [lat+0.087*xFactor,lon-0.05], // west-nord
-            [lat+0.087*xFactor,lon+0.05] // east-nord
-        ];
-        return coords;
-    }
-    
-    function createPolygon(lat, lon) {
-        return L.polygon(calcCoords(lat, lon), {
-            color: '#000',
-            opacity: 0.5,
-            fillColor: '#fff',
-            fillOpacity: 0.5,
-            weight: 1
-        }).addTo(map);
-    }
     
     var states = {};
     
@@ -82,8 +62,7 @@ use yii\helpers\Html;
             weight: 1,
             title: 'asd'
         }).bindLabel('<?=Html::encode($state->name)?>');
-        states[<?=$state->id?>].addTo(map);
-        
+        states[<?=$state->id?>].addTo(map);        
     <?php endforeach ?>
     
 </script>

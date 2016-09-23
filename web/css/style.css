@@ -774,3 +774,7 @@ ul.twPc-Arrange {
     text-overflow: ellipsis;
     line-height: 41px;
 }
+
+.content-header > .breadcrumb > li > a.btn-primary {
+    color: white;
+}
