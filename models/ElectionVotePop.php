@@ -63,9 +63,9 @@ class ElectionVotePop extends MyModel
         return $this->hasOne(ElectoralDistrict::className(), ['id' => 'districtId']);
     }
     
-    public function primaryKey()
+    public static function primaryKey()
     {
-        return null; // ???
+        return ['districtId', 'electionId', 'dateCreated', 'variant']; // ???
     }
     
 }

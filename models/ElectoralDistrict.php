@@ -49,8 +49,7 @@ class ElectoralDistrict extends MyModel
     
     public function getTiles()
     {
-        return $this->hasMany(Tile::className(), ['id' => 'tileId'])
-                ->viaTable('electoral-districts-to-tiles', ['districtId' => 'id']);
+        return $this->hasMany(Tile::className(), ['electoralDistrictId' => 'id']);
     }
     
     private function getPolygonFilePath()

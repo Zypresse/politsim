@@ -14,7 +14,7 @@ use Yii,
  * @property integer $termOfOffice срок полномочий 
  * @property integer $termOfElections длительность выборов
  * @property integer $termOfElectionsRegistration длительность регистрации на выборы
- * @property integer #electionsRules доп настройки выборов (bitmask)
+ * @property integer $electionsRules доп настройки выборов (bitmask)
  * @property integer $electoralDistrict округ к которому привязан пост
  * 
  * @property Post $post
@@ -71,9 +71,9 @@ class AgencyPostConstitution extends MyModel
         return new static([
             'assignmentRule' => AgencyConstitution::ASSIGNMENT_RULE_BY_LEADER,
             'powers' => 0,
-            'termOfOffice' => 0,
-            'termOfElections' => 0,
-            'termOfElectionsRegistration' => 0,
+            'termOfOffice' => 30,
+            'termOfElections' => 1,
+            'termOfElectionsRegistration' => 7,
             'electionsRules' => 0,            
         ]);
     }
