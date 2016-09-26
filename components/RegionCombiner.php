@@ -16,7 +16,7 @@ class RegionCombiner extends TileCombiner
         $list = $query->all();
         $conturs = [];
         foreach ($list as $region) {
-            $conturs += $region->calcPolygon();
+            $conturs += json_decode($region->getPolygon());
         }
         
         static::$lines = [];

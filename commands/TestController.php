@@ -201,6 +201,9 @@ class TestController extends Controller
             ], $where);
                         
             echo "region {$i} tiles updated".PHP_EOL;
+            
+            $electoralDistrict->getPolygon();        
+            echo "electoral district {$i} polygon saved".PHP_EOL;
         }
                         
         models\Tile::updateAll([
@@ -216,8 +219,6 @@ class TestController extends Controller
         }
         $state->getPolygon();
         echo "state polygon saved".PHP_EOL;
-        $electoralDistrict->getPolygon();        
-        echo "electoral district polygon saved".PHP_EOL;
         
     }
 }

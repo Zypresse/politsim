@@ -1,20 +1,22 @@
 <?php
 
 /* @var $this \yii\web\View */
-/* @var $states \app\models\State[] */
+/* @var $state \app\models\State */
 
-use yii\helpers\Html;
+use yii\helpers\Html,
+    app\components\LinkCreator;
 
 ?>
 
 <section class="content-header">
     <h1>
-        <?=Yii::t('app', 'Wolrd political map')?>
+        <?=Yii::t('app', 'Political map')?>
     </h1>
     <ol class="breadcrumb">
-        <li><?=Yii::t('app', 'Wolrd political map')?></li>
+        <li><?=Yii::t('app', 'Political map')?></li>
+        <li><?=LinkCreator::stateLink($state)?></li>
         <li class="active">            
-            <a href="#!map&mode=3d" class="btn btn-primary btn-xs"><?=Yii::t('app', 'Turn 3D')?></a>
+            <a href="#!map/state&id=<?=$state->id?>&mode=3d" class="btn btn-primary btn-xs"><?=Yii::t('app', 'Turn 3D')?></a>
         </li>
     </ol>
 </section>
@@ -51,18 +53,18 @@ use yii\helpers\Html;
         localStorage.setItem('center-lng',map.getCenter().lng);
     });
     
-    var states = {};
+    var regions = {};
     
-    <?php foreach($states as $state): ?>
-        states[<?=$state->id?>] = L.multiPolygon([<?=$state->polygon?>],{
+    <?php foreach($state->regions as $region): ?>
+        regions[<?=$region->id?>] = L.multiPolygon([<?=$region->polygon?>],{
             color: '#000',
             opacity: 0.5,
             fillColor: '#<?=$state->mapColor?$state->mapColor:'fff'?>',
             fillOpacity: 0.5,
             weight: 1,
             title: 'asd'
-        }).bindLabel('<?=Html::encode($state->name)?>');
-        states[<?=$state->id?>].addTo(map);        
+        }).bindLabel('<?=Html::encode($region->name)?>');
+        regions[<?=$region->id?>].addTo(map);  
     <?php endforeach ?>
-            
+    
 </script>

@@ -174,11 +174,11 @@ class State extends TaxPayerModel
     }
                 
     private $_polygon = null;
-    public function getPolygon()
+    public function getPolygon($update = false)
     {
-        if (is_null($this->_polygon)) {
+        if (is_null($this->_polygon) || $update) {
             $filePath = $this->getPolygonFilePath();
-            if (file_exists($filePath)) {
+            if (!$update && file_exists($filePath)) {
                 $this->_polygon = file_get_contents($filePath);
             } else {
                 $this->_polygon = json_encode($this->calcPolygon());
@@ -217,8 +217,7 @@ class State extends TaxPayerModel
             $this->population += $region->population;
         }
         
-        $this->_polygon = json_encode($this->calcPolygon());
-        file_put_contents($this->getPolygonFilePath(), $this->_polygon);
+        $this->getPolygon(true);
         
         if ($save) {
             return $this->save();

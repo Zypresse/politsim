@@ -3,7 +3,8 @@
 namespace app\models;
 
 use Yii,
-    app\components\MyModel;
+    app\components\MyModel,
+    app\components\TileCombiner;
 
 /**
  * Вещь, передаваемая в сделке
@@ -63,11 +64,11 @@ class ElectoralDistrict extends MyModel
     }
     
     private $_polygon = null;
-    public function getPolygon()
+    public function getPolygon($update = false)
     {
         if (is_null($this->_polygon)) {
             $filePath = $this->getPolygonFilePath();
-            if (file_exists($filePath)) {
+            if (!$update && file_exists($filePath)) {
                 $this->_polygon = file_get_contents($filePath);
             } else {
                 $this->_polygon = json_encode($this->calcPolygon());

@@ -22,4 +22,16 @@ class MapController extends MyController
         ]);
     }
     
+    public function actionState($id, $mode = '2d')
+    {
+        $state = State::findByPk($id);
+        if (is_null($state)) {
+            return $this->_r(Yii::t('app', 'State not found'));
+        }
+        
+        return $this->render($mode == '2d' ? 'state': 'state3d', [
+            'state' => $state
+        ]);
+    }
+    
 }
