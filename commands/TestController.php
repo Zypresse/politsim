@@ -16,7 +16,7 @@ class TestController extends Controller
 //        echo json_encode($conturs);
 //        echo models\Region::findByPk(1)->polygon;
 //        echo models\State::findByPk(1)->polygon;
-        echo "Hello, world!";        
+        echo "Hello, world!";    
     }
     
     public function actionActivate()
@@ -26,6 +26,15 @@ class TestController extends Controller
     
     public function actionCleanStart()
     {
+        
+//        models\Tile::deleteAll();
+//        $data = json_decode(file_get_contents(Yii::$app->basePath.'/data/tiles.json'));
+//        print_r(count($data));
+//        Yii::$app->db->createCommand()->batchInsert('tiles', ['x','y','lat','lon', 'isWater', 'isLand'], $data)->execute();
+//        echo "tiles inserted".PHP_EOL;
+//        unset($data);
+//        exit();
+        
         models\State::deleteAll();
         models\StateConstitution::deleteAll();
         models\StateConstitutionLicense::deleteAll();

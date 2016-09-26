@@ -116,8 +116,11 @@ abstract class TileCombiner {
     {
         /* @var $list \app\models\Tile[] */
         $list = $query->all();
-        if (count($list) == 0) {
+        $count = $query->count();
+        if ($count == 0) {
             return [];
+        } elseif ($count > 100000) {
+            throw new \yii\console\Exception("More than 100 000 tiles to combine");
         }
         $tilesByXY = [];
         foreach ($list as $tile) {
