@@ -16,7 +16,7 @@ class TestController extends Controller
 //        echo json_encode($conturs);
 //        echo models\Region::findByPk(1)->polygon;
 //        echo models\State::findByPk(1)->polygon;
-        echo "Hello, world!";
+        echo "Hello, world!";        
     }
     
     public function actionActivate()
@@ -123,124 +123,92 @@ class TestController extends Controller
         
         $legislature->updateTempPosts();
         
-        
-        $region1 = new models\Region([
-            'name' => 'Западная Антарктида',
-            'nameShort' => 'ЗА',
-            'stateId' => $state->id,
-        ]);
-        $region1->save();
-        
-        $region1post = new models\AgencyPost([
-            'stateId' => $state->id,
-            'name' => 'Губернатор Западной Антарктиды',
-            'nameShort' => 'ГБА'
-        ]);
-        $region1post->save();
-        
-        $region1postConstitution = models\AgencyPostConstitution::generate();
-        $region1postConstitution->assignmentRule = models\AgencyConstitution::ASSIGNMENT_RULE_BY_STATE_LEADER;
-        $region1postConstitution->postId = $region1post->id;
-        $region1postConstitution->save();
-        
-        $region1constitution = models\RegionConstitution::generate();
-        $region1constitution->regionId = $region1->id;
-        $region1constitution->leaderPostId = $region1post->id;
-        $region1constitution->save();
-        
-        
-        $region2 = new models\Region([
-            'name' => 'Центральная Антарктида',
-            'nameShort' => 'ЦА',
-            'stateId' => $state->id,
-        ]);
-        $region2->save();
-        
-        $region2post = new models\AgencyPost([
-            'stateId' => $state->id,
-            'name' => 'Губернатор Центральной Антарктиды',
-            'nameShort' => 'ГЦА'
-        ]);
-        $region2post->save();
-        
-        $region2postConstitution = models\AgencyPostConstitution::generate();
-        $region2postConstitution->assignmentRule = models\AgencyConstitution::ASSIGNMENT_RULE_BY_STATE_LEADER;
-        $region2postConstitution->postId = $region2post->id;
-        $region2postConstitution->save();
-        
-        $region2constitution = models\RegionConstitution::generate();
-        $region2constitution->regionId = $region2->id;
-        $region2constitution->leaderPostId = $region2post->id;
-        $region2constitution->save();
-        
-        $region3 = new models\Region([
-            'name' => 'Восточная Антарктида',
-            'nameShort' => 'ВА',
-            'stateId' => $state->id,
-        ]);
-        $region3->save();
-        
-        $region3post = new models\AgencyPost([
-            'stateId' => $state->id,
-            'name' => 'Губернатор Восточной Антарктиды',
-            'nameShort' => 'ГВА'
-        ]);
-        $region3post->save();
-        
-        $region3postConstitution = models\AgencyPostConstitution::generate();
-        $region3postConstitution->assignmentRule = models\AgencyConstitution::ASSIGNMENT_RULE_BY_STATE_LEADER;
-        $region3postConstitution->postId = $region3post->id;
-        $region3postConstitution->save();
-        
-        $region3constitution = models\RegionConstitution::generate();
-        $region3constitution->regionId = $region3->id;
-        $region3constitution->leaderPostId = $region3post->id;
-        $region3constitution->save();
-        
         $city = new models\City([
             'name' => 'Звёздный',
             'nameShort' => 'ЗВ',
-            'regionId' => $region2->id
         ]);
         $city->save();
         
-        $region2->cityId = $city->id;
-        $region2->save();
         $state->cityId = $city->id;
         $state->save();
-        
-        $electoralDistrict = new models\ElectoralDistrict([
-            'stateId' => $state->id,
-            'name' => 'Первый избирательный округ',
-            'nameShort' => '№1'
-        ]);
-        $electoralDistrict->save();
-        
+                
         echo "models saved".PHP_EOL;
         
-        models\Tile::updateAll([
-            'regionId' => $region1->id
-        ], ['and', ['isLand' => true], ['<=', 'x', -430], ['<', 'y', -100]]);
+        $regionBorders = [
+            [['<=', 'x', -430], ['>', 'x', -750], ['<=', 'y', -600]],
+            [['<=', 'x', -750], ['>', 'x', -900], ['<=', 'y', -600]],
+            [['<=', 'x', -900], ['<=', 'y', -600]],
+            [['<=', 'x', -430], ['>', 'x', -750], ['>', 'y', -600], ['<=', 'y', 0]],
+            [['<=', 'x', -750], ['>', 'x', -900], ['>', 'y', -600], ['<=', 'y', 0]],
+            [['<=', 'x', -900], ['>', 'y', -600], ['<=', 'y', 0]],
+            [['<=', 'x', -430], ['>', 'x', -600], ['>', 'y', 0], ['<=', 'y', 600]],
+            [['<=', 'x', -600], ['>', 'x', -750], ['>', 'y', 0], ['<=', 'y', 600]],
+            [['<=', 'x', -750], ['>', 'x', -900], ['>', 'y', 0], ['<=', 'y', 600]],
+            [['<=', 'x', -900], ['>', 'y', 0], ['<=', 'y', 600]],
+            [['<=', 'x', -430], ['>', 'x', -600], ['>', 'y', 600]],
+            [['<=', 'x', -600], ['>', 'x', -750], ['>', 'y', 600]],
+            [['<=', 'x', -750], ['>', 'x', -900], ['>', 'y', 600]],
+            [['<=', 'x', -900], ['>', 'y', 600]]            
+        ];
         
-        models\Tile::updateAll([
-            'regionId' => $region2->id
-        ], ['and', ['isLand' => true],['<=', 'x', -430], ['BETWEEN', 'y', -100, 100]]);
-        
-        models\Tile::updateAll([
-            'regionId' => $region3->id
-        ], ['and', ['isLand' => true],['<=', 'x', -430], ['>', 'y', 100]]);
-        
+        foreach ($regionBorders as $i => $borders) {
+            $where = array_merge(['and', ['isLand' => true]], $borders);            
+//            $query = models\Tile::find()->where($where);
+
+            $region = new models\Region([
+                'name' => 'Дистрикт №'.($i+1),
+                'nameShort' => 'Д'.($i+1),
+                'stateId' => $state->id,
+            ]);
+            if ($i == 5) {
+                $region->cityId = $city->id;
+            }
+            $region->save();
+            if ($i == 5) {
+                $city->regionId = $region->id;
+            }
+
+            $regionpost = new models\AgencyPost([
+                'stateId' => $state->id,
+                'name' => 'Губернатор Дистрикта №'.($i+1),
+                'nameShort' => 'ГД'.($i+1)
+            ]);
+            $regionpost->save();
+
+            $regionpostConstitution = models\AgencyPostConstitution::generate();
+            $regionpostConstitution->assignmentRule = models\AgencyConstitution::ASSIGNMENT_RULE_BY_STATE_LEADER;
+            $regionpostConstitution->postId = $regionpost->id;
+            $regionpostConstitution->save();
+
+            $regionconstitution = models\RegionConstitution::generate();
+            $regionconstitution->regionId = $region->id;
+            $regionconstitution->leaderPostId = $regionpost->id;
+            $regionconstitution->save();
+            
+            $electoralDistrict = new models\ElectoralDistrict([
+                'stateId' => $state->id,
+                'name' => 'Избирательный округ №'.($i+1),
+                'nameShort' => '№'.($i+1)
+            ]);
+            $electoralDistrict->save();
+            
+            echo "region {$i} saved".PHP_EOL;
+
+
+            models\Tile::updateAll([
+                'regionId' => $region->id,
+                'electoralDistrictId' => $electoralDistrict->id
+            ], $where);
+                        
+            echo "region {$i} tiles updated".PHP_EOL;
+        }
+                        
         models\Tile::updateAll([
             'cityId' => $city->id,
         ], ['x'=>-1025,'y'=>0]);
-        
-        models\Tile::updateAll([
-            'electoralDistrictId' => $electoralDistrict->id
-        ], ['and', ['isLand' => true], ['<=', 'x', -430]]);
-        
-        echo "tiles updated".PHP_EOL;
-        
-        
+                
+        echo "city tile updated".PHP_EOL;
+                
         $state->refresh();
         foreach ($state->regions as $region) {
             $region->getPolygon();
