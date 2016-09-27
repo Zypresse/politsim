@@ -3,7 +3,9 @@
 namespace app\controllers;
 
 use app\components\MyController,
-    yii\helpers\ArrayHelper;
+    app\models\Election,
+    yii\web\NotFoundHttpException,
+    Yii;
 
 /**
  * 
@@ -26,8 +28,28 @@ class ElectionsController extends MyController
         
         return $this->render('list', [
             'user' => $this->user,
-            'elections' => $elections
+            'elections' => $elections,
         ]);
+    }
+    
+    public function actionSendRequestForm($id)
+    {
+        $election = $this->getElection($id);
+        
+        return $this->render('request-form', [
+            'election' => $election,
+            'user' => $this->user,
+        ]);
+    }
+    
+    private function getElection($id)
+    {
+        $election = Election::findByPk($id);
+        if (is_null($election)) {
+            Yii::$app->response->format = 'json';
+            throw new NotFoundHttpException();
+        }
+        return $election;
     }
     
 }

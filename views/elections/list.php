@@ -22,7 +22,7 @@ use yii\helpers\Html,
     <?php foreach ($elections as $election): ?>
     <div class="box box-info">
         <div class="box-header">
-            <h3 class="box-title"><?=Yii::t('app', 'Elections of {0}', [Html::encode($election->post->name)])?></h3>
+            <h3 class="box-title"><?=Yii::t('app', 'Elections of {0}', [Html::encode($election->post ? $election->post->name : $election->agency->name)])?></h3>
         </div>
         <div class="box-body">
             <?php switch ($election->status): 
@@ -32,9 +32,9 @@ use yii\helpers\Html,
                 case Election::STATUS_REGISTRATION: ?>
                 <p><?=Yii::t('app', 'Going registration for elections')?>. <?=MyHtmlHelper::timeFormatFuture($election->dateVotingStart)?>.</p>
                 <p><?=Yii::t('app',($election->isOnlyParty)?'Only party leaders can make request':'Anyone can make request')?></p>
-                
+                <?php var_dump($election->id)?>
                 <div class="btn-group">
-                    <button class="btn btn-primary">Send request</button>
+                    <button id="send-election-request-modal-btn" data-id="<?=$election->id?>" class="btn btn-primary">Send request</button>
                 </div>
                 
                 <?php break;
@@ -55,3 +55,16 @@ use yii\helpers\Html,
         <?php var_dump($elections) ?>
     </pre>
 </section>
+<script type="text/javascript">
+    
+    function sendElectionRequestModal() {
+        createAjaxModal(
+            'elections/send-request-form',
+            {id: $(this).data('id')},
+            '<?=Yii::t('app', 'Election request')?>',
+            '<button class="btn btn-danger" data-dismiss="modal" aria-hidden="true"><?=Yii::t('app', 'Close')?></button>'
+        );
+    }
+    $('#send-election-request-modal-btn').click(sendElectionRequestModal);
+    
+</script>

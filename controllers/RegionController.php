@@ -18,7 +18,6 @@ class RegionController extends MyController {
         if (is_null($region)) {
             return $this->_r(Yii::t('app', 'Region not found'));
         }
-$region->updateParams();
         
         return $this->render('view', [
             'region' => $region,

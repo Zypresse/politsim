@@ -152,7 +152,11 @@ function show_error(e) {
         var r = $.parseJSON(e.responseText);
 
         if (r) {
-            text = JSON.stringify(r.error);
+            if (r.error) {
+                text = JSON.stringify(r.error);
+            } else if (r.type) { // yii exception
+                text = r.name+(r.message ? ': '+r.message : '');
+            }
         } else {
             text = e.responseText;
         }

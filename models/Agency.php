@@ -116,7 +116,22 @@ class Agency extends TaxPayerModel
     
     public function getNextElection()
     {
-        return $this->getElections()->orderBy(['id' => SORT_DESC])->where(['results' => null])->one();
+        if (!in_array($this->constitution->assignmentRule, [AgencyConstitution::ASSIGNMENT_RULE_ELECTIONS_PLURARITY, AgencyConstitution::ASSIGNMENT_RULE_ELECTIONS_PROPORTIONAL])) {
+            return null;
+        }
+        $election = $this->getElections()->orderBy(['id' => SORT_DESC])->where(['results' => null])->one();
+        if (is_null($election)) {
+            $election = new Election([
+                'protoId' => $this->constitution->assignmentRule,
+                'agencyId' => $this->id,
+                'isOnlyParty' => true,
+                'dateRegistrationStart' => time(),
+                'dateVotingStart' => time() + 24*60*60*$this->constitution->termOfElectionsRegistration,
+                'dateVotingEnd' => time() + 24*60*60*$this->constitution->termOfElectionsRegistration + 24*60*60*$this->constitution->termOfElections
+            ]);
+            $election->save();
+        }
+        return $election;
     }
 
     public function beforeSave($insert)
