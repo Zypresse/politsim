@@ -26,13 +26,15 @@ class TestController extends Controller
     
     public function actionCleanStart()
     {
-        
-//        models\Tile::deleteAll();
-//        $data = json_decode(file_get_contents(Yii::$app->basePath.'/data/tiles.json'));
-//        print_r(count($data));
-//        Yii::$app->db->createCommand()->batchInsert('tiles', ['x','y','lat','lon', 'isWater', 'isLand'], $data)->execute();
-//        echo "tiles inserted".PHP_EOL;
-//        unset($data);
+        echo "mda";
+        models\Tile::deleteAll();
+        for ($i = 0; $i < 36; $i++) {
+            $data = json_decode(file_get_contents(Yii::$app->basePath.'/data/tiles'.$i.'.json'));
+            array_pop($data);            
+            Yii::$app->db->createCommand()->batchInsert('tiles', ['x','y','lat','lon', 'isWater', 'isLand'], $data)->execute();
+            echo ($i+1)."/35 tiles inserted".PHP_EOL;
+        }
+        unset($data);
 //        exit();
         
         models\State::deleteAll();
