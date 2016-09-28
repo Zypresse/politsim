@@ -11,12 +11,16 @@ class TestController extends Controller
 {
     public function actionIndex()
     {
-//        $conturs = TileCombiner::combine(Tile::find());
+//        $conturs = TileCombiner::combine(models\Tile::find());
 //        $conturs = models\Region::findByPk(1)->calcPolygon();
 //        echo json_encode($conturs);
 //        echo models\Region::findByPk(1)->polygon;
 //        echo models\State::findByPk(1)->polygon;
         echo "Hello, world!";    
+//        echo json_encode([TileCombiner::combine(models\Tile::find()->where(['and', ['<=', 'x', -430], ['>', 'x', -750], ['<=', 'y', -600], ['isLand' => true]]))]);
+//        models\Tile::updateAll(['regionId' => 19], ['and', ['<=', 'x', -430], ['>', 'x', -750], ['<=', 'y', -600], ['isLand' => true]]);
+//        echo models\Region::findByPk(33)->getPolygon(true);
+        echo models\State::findByPk(5)->getPolygon(true);
     }
     
     public function actionActivate()
@@ -24,18 +28,20 @@ class TestController extends Controller
         echo models\User::updateAll(['isInvited' => 1]);
     }
     
-    public function actionCleanStart()
-    {
-        echo "mda";
+    public function actionImportTiles()
+    {        
         models\Tile::deleteAll();
         for ($i = 0; $i < 36; $i++) {
             $data = json_decode(file_get_contents(Yii::$app->basePath.'/data/tiles'.$i.'.json'));
             array_pop($data);            
             Yii::$app->db->createCommand()->batchInsert('tiles', ['x','y','lat','lon', 'isWater', 'isLand'], $data)->execute();
-            echo ($i+1)."/35 tiles inserted".PHP_EOL;
+            echo ($i+1)."/36 tiles inserted".PHP_EOL;
         }
         unset($data);
-//        exit();
+    }
+    
+    public function actionCleanStart()
+    {
         
         models\State::deleteAll();
         models\StateConstitution::deleteAll();
@@ -165,7 +171,7 @@ class TestController extends Controller
         foreach ($regionBorders as $i => $borders) {
             $where = array_merge(['and', ['isLand' => true]], $borders);            
 //            $query = models\Tile::find()->where($where);
-
+            
             $region = new models\Region([
                 'name' => 'Дистрикт №'.($i+1),
                 'nameShort' => 'Д'.($i+1),
@@ -204,7 +210,7 @@ class TestController extends Controller
             $electoralDistrict->save();
             
             echo "region {$i} saved".PHP_EOL;
-
+            var_dump($region->id, $where);
 
             models\Tile::updateAll([
                 'regionId' => $region->id,
@@ -225,10 +231,10 @@ class TestController extends Controller
                 
         $state->refresh();
         foreach ($state->regions as $region) {
-            $region->getPolygon();
+            $region->getPolygon(true);
             echo "{$region->name} polygon saved".PHP_EOL;
         }
-        $state->getPolygon();
+        $state->getPolygon(true);
         echo "state polygon saved".PHP_EOL;
         
     }
