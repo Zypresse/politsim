@@ -20,26 +20,14 @@ class TestController extends Controller
 //        echo json_encode([TileCombiner::combine(models\Tile::find()->where(['and', ['<=', 'x', -430], ['>', 'x', -750], ['<=', 'y', -600], ['isLand' => true]]))]);
 //        models\Tile::updateAll(['regionId' => 19], ['and', ['<=', 'x', -430], ['>', 'x', -750], ['<=', 'y', -600], ['isLand' => true]]);
 //        echo models\Region::findByPk(33)->getPolygon(true);
-        echo models\State::findByPk(5)->getPolygon(true);
+//        echo models\State::findByPk(5)->getPolygon(true);
     }
     
     public function actionActivate()
     {
         echo models\User::updateAll(['isInvited' => 1]);
     }
-    
-    public function actionImportTiles()
-    {        
-        models\Tile::deleteAll();
-        for ($i = 0; $i < 36; $i++) {
-            $data = json_decode(file_get_contents(Yii::$app->basePath.'/data/tiles'.$i.'.json'));
-            array_pop($data);            
-            Yii::$app->db->createCommand()->batchInsert('tiles', ['x','y','lat','lon', 'isWater', 'isLand'], $data)->execute();
-            echo ($i+1)."/36 tiles inserted".PHP_EOL;
-        }
-        unset($data);
-    }
-    
+        
     public function actionCleanStart()
     {
         
@@ -64,20 +52,15 @@ class TestController extends Controller
         models\Party::deleteAll();
         models\PartyPost::deleteAll();
         models\Notification::deleteAll();
-        models\Region::deleteAll();
         models\RegionConstitution::deleteAll();
-        models\Tile::updateAll([
-            'regionId' => null,
-            'cityId' => null
-        ]);
         
         echo "models cleared".PHP_EOL;
         
         $state = new models\State([
-            'name' => 'Республика Южного Креста',
-            'nameShort' => 'РЮК',
-            'flag' => 'https://pp.vk.me/c421218/v421218658/75f0/T77ShYukfzw.jpg',
-            'mapColor' => '01008A'
+            'name' => 'Республика Беларусь',
+            'nameShort' => 'RB',
+            'flag' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Flag_of_Belarus.svg/640px-Flag_of_Belarus.svg.png',
+            'mapColor' => 'C8313E'
         ]);
         $state->save();
         
@@ -87,8 +70,8 @@ class TestController extends Controller
         
         $executive = new models\Agency([
             'stateId' => $state->id,
-            'name' => 'Правительство РЮК',
-            'nameShort' => 'ПРЮК',
+            'name' => 'Правительство Республики Беларусь',
+            'nameShort' => 'ПРБ',
         ]);
         $executive->save();
         $executiveConstitution = models\AgencyConstitution::generate();
@@ -97,8 +80,8 @@ class TestController extends Controller
         
         $leaderPost = new models\AgencyPost([
             'stateId' => $state->id,
-            'name' => 'Президент РЮК',
-            'nameShort' => 'ПРЮК'
+            'name' => 'Президент Республики Беларусь',
+            'nameShort' => 'ПРБ'
         ]);
         $leaderPost->save();
         
@@ -106,16 +89,15 @@ class TestController extends Controller
         $leaderPostConstitution->postId = $leaderPost->id;
         $leaderPostConstitution->assignmentRule = models\AgencyConstitution::ASSIGNMENT_RULE_ELECTIONS_PLURARITY;
         $leaderPostConstitution->electionsRules = models\AgencyPostConstitution::ELECTIONS_RULE_ALLOW_SELFREQUESTS + models\AgencyPostConstitution::ELECTIONS_RULE_SECOND_TOUR;
-        $leaderPostConstitution->powers = models\AgencyConstitution::POWER_BILLS_MAKE + models\AgencyConstitution::POWER_BILLS_VOTE + models\AgencyConstitution::POWER_BILLS_VETO;
+        $leaderPostConstitution->powers = models\AgencyConstitution::POWER_BILLS_ACCEPT + models\AgencyConstitution::POWER_BILLS_MAKE + models\AgencyConstitution::POWER_BILLS_VOTE + models\AgencyConstitution::POWER_BILLS_VETO;
         $leaderPostConstitution->save();
-        
         $leaderPost->link('agencies', $executive);
         $executiveConstitution->leaderPostId = $leaderPost->id;
         
         $legislature = new models\Agency([
             'stateId' => $state->id,
-            'name' => 'Парламент РЮК',
-            'nameShort' => 'ПРЮК',
+            'name' => 'Национальное собрание Республики Беларусь',
+            'nameShort' => 'НСРБ',
         ]);
         $legislature->save();
         $legislatureConstitution = models\AgencyConstitution::generate();
@@ -127,10 +109,14 @@ class TestController extends Controller
         
         $legislatureBasePost = new models\AgencyPost([
             'stateId' => $state->id,
-            'name' => 'Член Парламента РЮК',
-            'nameShort' => 'ЧПРЮК'
+            'name' => 'Член национального собрания Республики Беларусь',
+            'nameShort' => 'ЧНСРБ'
         ]);
         $legislatureBasePost->save();
+        
+        $legislatureConstitution->tempPostId = $legislatureBasePost->id;
+        $legislatureConstitution->save();
+        
         $legislatureBasePostConstiturion = models\AgencyPostConstitution::generate();
         $legislatureBasePostConstiturion->postId = $legislatureBasePost->id;
         $legislatureBasePostConstiturion->assignmentRule = $legislatureConstitution->assignmentRule;
@@ -140,55 +126,24 @@ class TestController extends Controller
         
         $legislature->updateTempPosts();
         
-        $city = new models\City([
-            'name' => 'Звёздный',
-            'nameShort' => 'ЗВ',
-        ]);
-        $city->save();
+        $city = models\City::find()->where(['name' => 'Минск'])->one();
         
         $state->cityId = $city->id;
         $state->save();
                 
         echo "models saved".PHP_EOL;
         
-        $regionBorders = [
-            [['<=', 'x', -430], ['>', 'x', -750], ['<=', 'y', -600]],
-            [['<=', 'x', -750], ['>', 'x', -900], ['<=', 'y', -600]],
-            [['<=', 'x', -900], ['<=', 'y', -600]],
-            [['<=', 'x', -430], ['>', 'x', -750], ['>', 'y', -600], ['<=', 'y', 0]],
-            [['<=', 'x', -750], ['>', 'x', -900], ['>', 'y', -600], ['<=', 'y', 0]],
-            [['<=', 'x', -900], ['>', 'y', -600], ['<=', 'y', 0]],
-            [['<=', 'x', -430], ['>', 'x', -600], ['>', 'y', 0], ['<=', 'y', 600]],
-            [['<=', 'x', -600], ['>', 'x', -750], ['>', 'y', 0], ['<=', 'y', 600]],
-            [['<=', 'x', -750], ['>', 'x', -900], ['>', 'y', 0], ['<=', 'y', 600]],
-            [['<=', 'x', -900], ['>', 'y', 0], ['<=', 'y', 600]],
-            [['<=', 'x', -430], ['>', 'x', -600], ['>', 'y', 600]],
-            [['<=', 'x', -600], ['>', 'x', -750], ['>', 'y', 600]],
-            [['<=', 'x', -750], ['>', 'x', -900], ['>', 'y', 600]],
-            [['<=', 'x', -900], ['>', 'y', 600]]            
-        ];
-        
-        foreach ($regionBorders as $i => $borders) {
-            $where = array_merge(['and', ['isLand' => true]], $borders);            
-//            $query = models\Tile::find()->where($where);
-            
-            $region = new models\Region([
-                'name' => 'Дистрикт №'.($i+1),
-                'nameShort' => 'Д'.($i+1),
-                'stateId' => $state->id,
-            ]);
-            if ($i == 5) {
-                $region->cityId = $city->id;
-            }
-            $region->save();
-            if ($i == 5) {
-                $city->regionId = $region->id;
-            }
+        $regions = models\Region::find()->where(['IN', 'nameShort', ['BY-MI', 'BY-HO', 'BY-MA', 'BY-VI', 'BY-HR', 'BY-BR']])->all();
 
+        /* @var $region models\Region */
+        foreach ($regions as $i => $region) {
+            $region->stateId = $state->id;
+            $region->save();
+            
             $regionpost = new models\AgencyPost([
                 'stateId' => $state->id,
-                'name' => 'Губернатор Дистрикта №'.($i+1),
-                'nameShort' => 'ГД'.($i+1)
+                'name' => 'Губернатор региона «'.$region->name.'»',
+                'nameShort' => 'Г'.$region->nameShort
             ]);
             $regionpost->save();
 
@@ -205,37 +160,26 @@ class TestController extends Controller
             $electoralDistrict = new models\ElectoralDistrict([
                 'stateId' => $state->id,
                 'name' => 'Избирательный округ №'.($i+1),
-                'nameShort' => '№'.($i+1)
+                'nameShort' => 'ОИК №'.($i+1)
             ]);
             $electoralDistrict->save();
             
-            echo "region {$i} saved".PHP_EOL;
-            var_dump($region->id, $where);
-
-            models\Tile::updateAll([
-                'regionId' => $region->id,
-                'electoralDistrictId' => $electoralDistrict->id
-            ], $where);
-                        
-            echo "region {$i} tiles updated".PHP_EOL;
+            echo "region {$region->name} saved".PHP_EOL;
             
-            $electoralDistrict->getPolygon();        
-            echo "electoral district {$i} polygon saved".PHP_EOL;
+//            var_dump($region->getPolygon(true));
+            echo "region {$region->name} polygon saved".PHP_EOL;
+            
+            $electoralDistrict->getPolygon(true);            
+            echo "{$electoralDistrict->name} polygon saved".PHP_EOL;
+            
+            foreach ($region->cities as $city) {
+                $city->getPolygon(true);
+                echo "{$city->name} polygon saved".PHP_EOL;                
+            }
         }
-                        
-        models\Tile::updateAll([
-            'cityId' => $city->id,
-        ], ['x'=>-1025,'y'=>0]);
-                
-        echo "city tile updated".PHP_EOL;
-                
         $state->refresh();
-        foreach ($state->regions as $region) {
-            $region->getPolygon(true);
-            echo "{$region->name} polygon saved".PHP_EOL;
-        }
         $state->getPolygon(true);
-        echo "state polygon saved".PHP_EOL;
-        
+        echo "{$state->name} polygon saved".PHP_EOL;
+                
     }
 }

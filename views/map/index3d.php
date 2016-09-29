@@ -59,7 +59,7 @@ use yii\helpers\Html;
         <?php foreach (json_decode($state->polygon) as $polygon): ?>
             states[<?=$state->id?>] = WE.polygon(<?=json_encode($polygon)?>,{
                 color: '#000',
-                opacity: 0.5,
+                opacity: 1,
                 fillColor: '#<?=$state->mapColor?$state->mapColor:'fff'?>',
                 fillOpacity: 0.5,
                 weight: 1

@@ -32,9 +32,14 @@ class RegionCombiner extends TileCombiner
         
         /* @var $list \app\models\Region[] */
         $list = $query->all();
+        $count = $query->count();
+        if ($count == 0) {
+            return [];
+        }
         $conturs = [];
         foreach ($list as $region) {
             $polygons = json_decode($region->getPolygon());
+            var_dump($polygons);
             foreach ($polygons as $polygon) {
                 $conturs[] = $polygon;
             }

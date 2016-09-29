@@ -14,8 +14,8 @@ class m160929_113945_default_regions_and_cities extends Migration
             'cityId' => 'UNSIGNED INTEGER REFERENCES cities(id) DEFAULT NULL',
             'name' => 'VARCHAR(255) NOT NULL',
             'nameShort' => 'VARCHAR(6) NOT NULL',
-            'flag' => 'TEXT NOT NULL',
-            'athem' => 'TEXT NOT NULL',
+            'flag' => 'TEXT DEFAULT NULL',
+            'anthem' => 'TEXT DEFAULT NULL',
             'population' => 'UNSIGNED INTEGER NOT NULL DEFAULT 0',
             'usersCount' => 'UNSIGNED INTEGER NOT NULL DEFAULT 0',
             'usersFame' => 'UNSIGNED INTEGER NOT NULL DEFAULT 0',
@@ -28,7 +28,7 @@ class m160929_113945_default_regions_and_cities extends Migration
         
         $data = json_decode(file_get_contents(Yii::$app->basePath.'/data/default/cities.json'));
         array_pop($data);
-        $this->batchInsert('cities', ['name', 'nameShort', 'regionId', 'population'], $data);
+        $this->batchInsert('cities', ['id', 'name', 'nameShort', 'regionId', 'population'], $data);
         
         /* @var $region app\models\Region */
         foreach (app\models\Region::findAll() as $region) {

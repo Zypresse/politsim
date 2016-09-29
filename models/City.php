@@ -3,7 +3,8 @@
 namespace app\models;
 
 use Yii,
-    app\components\TaxPayerModel;
+    app\components\TaxPayerModel,
+    app\components\TileCombiner;
 
 /**
  * Город

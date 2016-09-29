@@ -56,11 +56,11 @@ use yii\helpers\Html;
     <?php foreach($states as $state): ?>
         states[<?=$state->id?>] = L.multiPolygon([<?=$state->polygon?>],{
             color: '#000',
-            opacity: 0.5,
+            opacity: 1,
             fillColor: '#<?=$state->mapColor?$state->mapColor:'fff'?>',
             fillOpacity: 0.5,
             weight: 1,
-            title: 'asd'
+            title: '<?=Html::encode($state->name)?>'
         }).bindLabel('<?=Html::encode($state->name)?>');
         states[<?=$state->id?>].addTo(map);        
     <?php endforeach ?>

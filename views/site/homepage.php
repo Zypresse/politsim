@@ -18,7 +18,8 @@ $this->title = 'Political Simulator';
                 <p>Так же рекомендуется к прочтению: <a href="http://politsim.tumblr.com">официальный блог разработки</a>, <a href="http://wiki.politsim.lazzyteam.pw">вики по игре</a>.</p>
                 <h3>Вход через соц. сети:</h3>
                 <?=AuthChoice::widget([
-                    'baseAuthUrl' => ['site/auth']
+                    'baseAuthUrl' => ['site/auth'],
+                    'popupMode' => false,
                 ]);?>
             </div>
         </div>
