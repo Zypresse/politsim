@@ -10,7 +10,7 @@ class m160928_131139_tiles_map extends Migration
         $this->delete('tiles');
         
         for ($i = 0; $i < 36; $i++) {
-            $data = json_decode(file_get_contents(Yii::$app->basePath.'/data/tiles'.$i.'.json'));
+            $data = json_decode(file_get_contents(Yii::$app->basePath.'/data/default/tiles/part'.$i.'.json'));
             array_pop($data);
             $this->batchInsert('tiles', ['x','y','lat','lon', 'isWater', 'isLand'], $data);
         }

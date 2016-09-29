@@ -25,6 +25,7 @@ use Yii,
  *
  * @property State $state
  * @property City $city
+ * @property City[] $cities
  * @property Tile[] $tiles
  * @property RegionConstitution $constitution
  * 
@@ -46,7 +47,7 @@ class Region extends TaxPayerModel
     public function rules()
     {
         return [
-            [['stateId', 'name', 'nameShort'], 'required'],
+            [['name', 'nameShort'], 'required'],
             [['name'], 'string', 'max' => 255],
             [['nameShort'], 'string', 'max' => 6],
             [['flag', 'anthem'], 'string'],
@@ -125,6 +126,11 @@ class Region extends TaxPayerModel
     public function getCity()
     {
         return $this->hasOne(City::className(), ['id' => 'cityId']);
+    }
+    
+    public function getCities()
+    {
+        return $this->hasMany(City::className(), ['regionId' => 'id']);
     }
     
     public function getConstitution()
