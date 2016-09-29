@@ -182,4 +182,25 @@ class TestController extends Controller
         echo "{$state->name} polygon saved".PHP_EOL;
                 
     }
+    
+    public function actionUpdatePopulation()
+    {
+        
+        /* @var $state models\State */
+        $state = models\State::find()->one();
+        foreach ($state->regions as $region) {
+            $regionTilesCount = intval($region->getTiles()->count());
+            $population = $region->population;
+            echo $region->name.' — '.$region->population.' / '.$regionTilesCount.PHP_EOL;
+            foreach ($region->cities as $city) {
+                $cityTilesCount = intval($city->getTiles()->count());
+                echo '  '.$city->name.' — '.$city->population.' / '.$cityTilesCount.PHP_EOL;
+                
+                models\Tile::updateAll(['population' => round($city->population/$cityTilesCount)], ['cityId' => $city->id]);
+                $population -= $city->population;
+                $regionTilesCount -= $cityTilesCount;
+            }
+            models\Tile::updateAll(['population' => round($population/$regionTilesCount)], ['cityId' => null, 'regionId' => $region->id]);
+        }
+    }
 }

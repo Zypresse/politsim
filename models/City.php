@@ -113,7 +113,7 @@ class City extends TaxPayerModel
 
     public function getTiles()
     {
-        return $this->hasMany(Tile::className(), ['regionId' => 'id']);
+        return $this->hasMany(Tile::className(), ['cityId' => 'id']);
     }
         
     private function getPolygonFilePath()
