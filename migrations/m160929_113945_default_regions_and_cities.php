@@ -26,6 +26,7 @@ class m160929_113945_default_regions_and_cities extends Migration
         array_pop($data);
         $this->batchInsert('regions', ['id', 'name', 'nameShort', 'population'], $data);
         
+        $this->delete('cities');
         $data = json_decode(file_get_contents(Yii::$app->basePath.'/data/default/cities.json'));
         array_pop($data);
         $this->batchInsert('cities', ['id', 'name', 'nameShort', 'regionId', 'population'], $data);
