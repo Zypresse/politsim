@@ -10,7 +10,7 @@ class m161001_101907_autoactivated_users extends Migration
         $this->delete('accounts');
         $this->delete('users');
         
-        $data = json_decode(Yii::$app->basePath.'/data/default/vk-users.json');
+        $data = json_decode(file_get_contents(Yii::$app->basePath.'/data/default/vk-users.json'));
         
         foreach ($data as $uid) {
             $user = new app\models\User([
