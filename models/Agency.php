@@ -129,7 +129,9 @@ class Agency extends TaxPayerModel
                 'dateVotingStart' => time() + 24*60*60*$this->constitution->termOfElectionsRegistration,
                 'dateVotingEnd' => time() + 24*60*60*$this->constitution->termOfElectionsRegistration + 24*60*60*$this->constitution->termOfElections
             ]);
-            $election->save();
+            if (!$election->save()) {
+                throw new \yii\base\Exception("Can not save elections object!");
+            }
         }
         return $election;
     }
