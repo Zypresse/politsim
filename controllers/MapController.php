@@ -34,4 +34,13 @@ class MapController extends MyController
         ]);
     }
     
+    public function actionDemography($mode = '2d')
+    {
+        $list = json_decode(file_get_contents(Yii::$app->basePath.'/data/polygons/popdestiny.json'));
+        
+        return $this->render($mode == '2d' ? 'demography' : 'demography3d', [
+            'list' => $list,
+        ]);
+    }
+    
 }

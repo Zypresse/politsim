@@ -1,18 +1,19 @@
 <?php
 
 /* @var $this \yii\web\View */
-/* @var $states \app\models\State[] */
+/* @var $list \StdClass[] */
 
 use yii\helpers\Html;
+use app\components\MyHtmlHelper;
 
 ?>
 
 <section class="content-header">
     <h1>
-        <?=Yii::t('app', 'Wolrd political map')?>
+        <?=Yii::t('app', 'Wolrd demography map')?>
     </h1>
     <ol class="breadcrumb">
-        <li><?=Yii::t('app', 'Wolrd political map')?></li>
+        <li><?=Yii::t('app', 'Wolrd demography map')?></li>
         <li class="active">            
             <a href="#!map&mode=3d" class="btn btn-primary btn-xs"><?=Yii::t('app', 'Turn 3D')?></a>
         </li>
@@ -21,7 +22,6 @@ use yii\helpers\Html;
 <section class="content">
     <div id="map" style="width:100%; min-height: 500px; height: auto"></div>
 </section>
-            
 
 <script type="text/javascript">
 
@@ -51,19 +51,31 @@ use yii\helpers\Html;
         localStorage.setItem('center-lng',map.getCenter().lng);
     });
     
-    var states = {};
-    
-    <?php foreach($states as $state): ?>
-        states[<?=$state->id?>] = L.multiPolygon([<?=$state->polygon?>],{
+    var polygons = {};
+    <?php foreach($list as $obj): ?>
+        <?php
+            $diapason = [
+                '0-100 человек на кв.км.',
+                '100-500 человек на кв.км.',
+                '500-2000 человек на кв.км.',
+                '>2000 человек на кв.км.'
+            ][$obj->i];
+            $color = [
+                '33ff00',
+                'ffff99',
+                'ff9900',
+                'ff3300'
+            ][$obj->i];
+        ?>
+        polygons[<?=$obj->i?>] = L.multiPolygon([<?=json_encode($obj->path)?>],{
             color: '#000',
             opacity: 1,
-            fillColor: '#<?=$state->mapColor?$state->mapColor:'fff'?>',
+            fillColor: '#<?=$color?>',
             fillOpacity: 0.5,
             weight: 1,
-            title: '<?=Html::encode($state->name)?>'
-        }).bindLabel('<?=Html::encode($state->name)?>')
-        .bindPopup('<?=Html::img($state->flag, ['style' => 'width:20px']).' '.Html::a(Html::encode($state->name), '/#!state&id='.$state->id)?>');
-        states[<?=$state->id?>].addTo(map);        
+            title: '<?=$diapason?>'
+        }).bindLabel('<?=$diapason?>')
+        polygons[<?=$obj->i?>].addTo(map);        
     <?php endforeach ?>
             
 </script>

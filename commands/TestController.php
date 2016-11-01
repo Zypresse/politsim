@@ -203,4 +203,42 @@ class TestController extends Controller
             models\Tile::updateAll(['population' => round($population/$regionTilesCount)], ['cityId' => null, 'regionId' => $region->id]);
         }
     }
+        
+    public function actionPopulationDestinyPolygons()
+    {
+        
+        /* @var $tiles models\Tile[] */
+        $tiles = models\Tile::find()->where(['>', 'population', 0])->all();
+        
+        $uniques = [];
+        foreach ($tiles as $tile) {
+            $pop = (int)round( intval($tile->population) / $tile->area );
+            if ($pop < 100) {
+                $i = 0;
+            } elseif ($pop < 500) {
+                $i = 1;
+            } elseif ($pop < 2000) {
+                $i = 2;
+            } else {
+                $i = 3;
+            }
+            if (isset($uniques[$i])) {
+                $uniques[$i][] = $tile;
+            } else {
+                $uniques[$i] = [$tile];
+            }
+        }
+        
+        $popdestiny = [];
+        foreach ($uniques as $i => $tiles) {
+            $path = TileCombiner::combineList($tiles);
+            $popdestiny[] = [
+                'i' => $i,
+                'path' => $path
+            ];
+            echo "path for $i saved".PHP_EOL;
+        }
+        
+        file_put_contents(Yii::$app->basePath.'/data/polygons/popdestiny.json', json_encode($popdestiny));
+    }
 }

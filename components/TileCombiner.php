@@ -116,7 +116,18 @@ abstract class TileCombiner {
     {
         /* @var $list \app\models\Tile[] */
         $list = $query->all();
-        $count = $query->count();
+        return static::combineList($list);
+    }
+        
+    /**
+     * 
+     * @param app\models\Tile[] $list
+     * @return array
+     * @throws \yii\console\Exception
+     */
+    public static function combineList(array $list)
+    {
+        $count = count($list);
         if ($count == 0) {
             return [];
         } elseif ($count > 100000) {
