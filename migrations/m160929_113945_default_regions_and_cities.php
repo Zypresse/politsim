@@ -23,13 +23,17 @@ class m160929_113945_default_regions_and_cities extends Migration
         ]);
         
         $data = json_decode(file_get_contents(Yii::$app->basePath.'/data/default/regions.json'));
-        array_pop($data);
-        $this->batchInsert('regions', ['id', 'name', 'nameShort', 'population'], $data);
+        array_pop($data);        
+        foreach (array_chunk($data, 500) as $regions) {
+            $this->batchInsert('regions', ['id', 'name', 'nameShort', 'population'], $regions);
+        }
         
         $this->delete('cities');
         $data = json_decode(file_get_contents(Yii::$app->basePath.'/data/default/cities.json'));
         array_pop($data);
-        $this->batchInsert('cities', ['id', 'name', 'nameShort', 'regionId', 'population'], $data);
+        foreach (array_chunk($data, 500) as $cities) {
+            $this->batchInsert('cities', ['id', 'name', 'nameShort', 'regionId', 'population'], $data);
+        }
         
         /* @var $region app\models\Region */
         foreach (app\models\Region::findAll() as $region) {

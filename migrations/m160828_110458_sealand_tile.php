@@ -50,18 +50,18 @@ class m160828_110458_sealand_tile extends Migration
         ]);
         $this->createIndex('tilesXY', 'tiles', ['x', 'y'], true);
         
-        $this->insert('tiles', [
-            'id' => 1,
-            'x' => 343,
-            'y' => 10,
-            'lat' => 51.8688,
-            'lon' => 1.5,
-            'isWater' => 1,
-            'isLand' => 0,
-            'cityId' => 1,
-            'regionId' => 1,
-            'population' => 11
-        ]);
+//        $this->insert('tiles', [
+//            'id' => 1,
+//            'x' => 343,
+//            'y' => 10,
+//            'lat' => 51.8688,
+//            'lon' => 1.5,
+//            'isWater' => 1,
+//            'isLand' => 0,
+//            'cityId' => 1,
+//            'regionId' => 1,
+//            'population' => 11
+//        ]);
         
     }
 

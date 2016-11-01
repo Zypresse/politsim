@@ -345,6 +345,10 @@ class m160915_094339_constitutions_update extends Migration
             'licensesControlling' => 'UNSIGNED INTEGER DEFAULT NULL'
 
         ]);
+        
+        $this->dropTable('constitutions-licenses');
+        $this->dropTable('constitutions-agencies-licenses');
+        
     }
 
 }

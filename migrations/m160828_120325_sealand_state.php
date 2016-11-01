@@ -26,18 +26,18 @@ class m160828_120325_sealand_state extends Migration
             'dateDeleted' => 'UNSIGNED INTEGER DEFAULT NULL',
             'utr' => 'UNSIGNED INTEGER REFERENCES utr(id) DEFAULT NULL'
         ]);
-        
-        $this->insert('states', [
-            'id' => 1,
-            'cityId' => 1,
-            'name' => 'Principality of Sealand',
-            'nameShort' => 'SEA',
-            'flag' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Flag_of_Sealand.svg/320px-Flag_of_Sealand.svg.png',
-            'anthem' => 'https://soundcloud.com/sien69/e-mare-libertas',
-            'mapColor' => 'ff0000',
-            'population' => 11,
-            'dateCreated' => time()
-        ]);
+//        
+//        $this->insert('states', [
+//            'id' => 1,
+//            'cityId' => 1,
+//            'name' => 'Principality of Sealand',
+//            'nameShort' => 'SEA',
+//            'flag' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Flag_of_Sealand.svg/320px-Flag_of_Sealand.svg.png',
+//            'anthem' => 'https://soundcloud.com/sien69/e-mare-libertas',
+//            'mapColor' => 'ff0000',
+//            'population' => 11,
+//            'dateCreated' => time()
+//        ]);
     }
 
     public function down()

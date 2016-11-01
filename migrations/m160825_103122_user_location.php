@@ -32,16 +32,16 @@ class m160825_103122_user_location extends Migration
             'isInvited' => 'BOOLEAN NOT NULL DEFAULT 0',
             'utr' => 'UNSIGNED INTEGER REFERENCES utr(id) DEFAULT NULL'
         ]);
-        $this->insert('users', [
-            'name' => 'Ilya Gorokhov',
-            'avatar' => 'http://placehold.it/50x50',
-            'avatarBig' => 'http://placehold.it/400x600',
-            'genderId' => 2,
-            'cityId' => 1,
-            'dateCreated' => time(),
-            'dateLastLogin' => time(),
-            'isInvited' => 1
-        ]);
+//        $this->insert('users', [
+//            'name' => 'Ilya Gorokhov',
+//            'avatar' => 'http://placehold.it/50x50',
+//            'avatarBig' => 'http://placehold.it/400x600',
+//            'genderId' => 2,
+//            'cityId' => 1,
+//            'dateCreated' => time(),
+//            'dateLastLogin' => time(),
+//            'isInvited' => 1
+//        ]);
 
     }
 
