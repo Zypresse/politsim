@@ -16,11 +16,20 @@ class TestController extends Controller
 //        echo json_encode($conturs);
 //        echo models\Region::findByPk(1)->polygon;
 //        echo models\State::findByPk(1)->polygon;
-        echo "Hello, world!";    
+        echo "Hello, world!".PHP_EOL; 
 //        echo json_encode([TileCombiner::combine(models\Tile::find()->where(['and', ['<=', 'x', -430], ['>', 'x', -750], ['<=', 'y', -600], ['isLand' => true]]))]);
 //        models\Tile::updateAll(['regionId' => 19], ['and', ['<=', 'x', -430], ['>', 'x', -750], ['<=', 'y', -600], ['isLand' => true]]);
 //        echo models\Region::findByPk(33)->getPolygon(true);
 //        echo models\State::findByPk(5)->getPolygon(true);
+        
+        $state = models\State::find()->one();
+        $pop = 0;
+        foreach ($state->regions as $region) {
+            foreach ($region->tiles as $tile) {
+                $pop += $tile->population;
+            }
+        }
+        echo $pop;
     }
     
     public function actionActivate()
