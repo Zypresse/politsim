@@ -75,7 +75,7 @@ $viewer = Yii::$app->user->identity;
                     <p>
                         <i class="fa">☪</i>
                         <?php if ($user->religion) : ?>
-                            Придерживается идеологии «<?= $user->religion->name ?>»
+                            Придерживается религии «<?= $user->religion->name ?>»
                         <?php endif ?>
                     </p>
                     <?php endif ?>

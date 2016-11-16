@@ -3,7 +3,8 @@
 namespace app\models;
 
 use Yii,
-    yii\base\Object;
+    yii\base\Object,
+    yii\base\ErrorException;
 
 /**
  * Description of ObjectWithFixedPrototypes
@@ -13,7 +14,10 @@ use Yii,
 abstract class ObjectWithFixedPrototypes extends Object
 {
     
-    abstract protected static function getList();
+    protected static function getList()
+    {
+        throw new ErrorException("Method ".static::className()."::getList() should be overrided!");
+    }
     
     public static function findOne($id)
     {
