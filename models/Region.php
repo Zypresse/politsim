@@ -25,6 +25,7 @@ use Yii,
  *
  * @property State $state
  * @property City $city
+ * @property City $biggestCity
  * @property City[] $cities
  * @property Tile[] $tiles
  * @property RegionConstitution $constitution
@@ -126,6 +127,11 @@ class Region extends TaxPayerModel
     public function getCity()
     {
         return $this->hasOne(City::className(), ['id' => 'cityId']);
+    }
+    
+    public function getBiggestCity()
+    {
+        return $this->hasOne(City::className(), ['regionId' => 'id'])->orderBy(['population' => SORT_DESC]);
     }
     
     public function getCities()

@@ -32,6 +32,55 @@ class TestController extends Controller
         echo $pop;
     }
     
+    public function actionUpdateTiles()
+    {
+        Yii::$app->db->createCommand('DELETE FROM tiles WHERE 1')->execute();
+        for ($i = 0; $i < 36; $i++) {
+            $data = json_decode(file_get_contents(Yii::$app->basePath.'/data/default/tiles/part'.$i.'.json'));
+            array_pop($data);
+            foreach (array_chunk($data, 500) as $tiles) {
+                Yii::$app->db->createCommand()->batchInsert('tiles', ['x','y','lat','lon', 'isWater', 'isLand', 'regionId', 'cityId'], $tiles)->execute();
+            }
+        }
+    }
+    
+    public function actionUpdateRegionsAndCities()
+    {
+        Yii::$app->db->createCommand('DELETE FROM regions WHERE 1')->execute();
+        $data = json_decode(file_get_contents(Yii::$app->basePath.'/data/default/regions.json'));
+        array_pop($data);        
+        foreach (array_chunk($data, 500) as $regions) {
+            $regions = array_map(function($region) {
+                for ($i = 4; $i <= 7; $i++) {
+                    $region[$i] = $region[$i] ? json_encode($region[$i]) : null;
+                }
+                return $region;
+            }, $regions);
+            Yii::$app->db->createCommand()->batchInsert('regions', ['id', 'name', 'nameShort', 'population', 'nations', 'religions', 'ages', 'genders'], $regions)->execute();
+        }
+        
+        Yii::$app->db->createCommand('DELETE FROM cities WHERE 1')->execute();
+        $data = json_decode(file_get_contents(Yii::$app->basePath.'/data/default/cities.json'));
+        array_pop($data);
+        foreach (array_chunk($data, 500) as $cities) {
+            
+            $cities = array_map(function($city) {
+                for ($i = 5; $i <= 8; $i++) {
+                    $city[$i] = $city[$i] ? json_encode($city[$i]) : null;
+                }
+                return $city;
+            }, $cities);
+            Yii::$app->db->createCommand()->batchInsert('cities', ['id', 'name', 'nameShort', 'regionId', 'population', 'nations', 'religions', 'ages', 'genders'], $cities)->execute();
+        }
+        
+        /* @var $region models\Region */
+        foreach (models\Region::find()->all() as $region) {
+            if ($region->biggestCity) {
+                $region->link('city', $region->biggestCity);
+            }
+        }
+    }
+    
     public function actionActivate()
     {
         echo models\User::updateAll(['isInvited' => 1]);
