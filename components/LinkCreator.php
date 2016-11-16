@@ -63,12 +63,32 @@ abstract class LinkCreator
     
     /**
      * 
+     * @param State $state
+     * @return string
+     */
+    public static function statePopulationLink(State $state)
+    {
+        return static::render($state->flag, $state->name, '#!population/state&id='.$state->id);
+    }
+    
+    /**
+     * 
      * @param Region $region
      * @return string
      */
     public static function regionLink(Region $region)
     {
         return static::render($region->flag, $region->name, '#!region&id='.$region->id);
+    }
+    
+    /**
+     * 
+     * @param State $state
+     * @return string
+     */
+    public static function regionPopulationLink(State $state)
+    {
+        return static::render($region->flag, $region->name, '#!population/region&id='.$region->id);
     }
     
     /**
