@@ -21,15 +21,15 @@ class TestController extends Controller
 //        models\Tile::updateAll(['regionId' => 19], ['and', ['<=', 'x', -430], ['>', 'x', -750], ['<=', 'y', -600], ['isLand' => true]]);
 //        echo models\Region::findByPk(33)->getPolygon(true);
 //        echo models\State::findByPk(5)->getPolygon(true);
-        
-        $state = models\State::find()->one();
-        $pop = 0;
-        foreach ($state->regions as $region) {
-            foreach ($region->tiles as $tile) {
-                $pop += $tile->population;
-            }
-        }
-        echo $pop;
+        echo models\Tile::find()->count('id');
+//        $state = models\State::find()->one();
+//        $pop = 0;
+//        foreach ($state->regions as $region) {
+//            foreach ($region->tiles as $tile) {
+//                $pop += $tile->population;
+//            }
+//        }
+//        echo $pop;
     }
     
     public function actionUpdateTiles()
@@ -197,6 +197,7 @@ class TestController extends Controller
 
         /* @var $region models\Region */
         foreach ($regions as $i => $region) {
+            echo $region->getTiles()->count('id').PHP_EOL;
             $region->stateId = $state->id;
             $region->save();
             
@@ -226,7 +227,7 @@ class TestController extends Controller
             
             echo "region {$region->name} saved".PHP_EOL;
             
-//            var_dump($region->getPolygon(true));
+            $region->getPolygon(true);
             echo "region {$region->name} polygon saved".PHP_EOL;
             
             $electoralDistrict->getPolygon(true);            
@@ -304,13 +305,15 @@ class TestController extends Controller
     
     public function actionUpdatePops()
     {
+        Yii::$app->db->createCommand()->truncateTable('pops')->execute();
         /* @var $state models\State */
         $state = models\State::find()->one();
         foreach ($state->regions as $region) {
             /* @var $region models\Region */
             foreach ($region->cities as $city) {
-                foreach ($city->tiles as $tile) {
-                    foreach (json_decode($city->nations) as $nationId => $percents) {
+                $nations = json_decode($city->nations, true);
+                if (is_array($nations)) foreach ($city->tiles as $tile) {
+                    foreach ($nations as $nationId => $percents) {
                         $pop = new models\Pop([
                             'count' => round($tile->population * $percents / 100),
                             'classId' => models\PopClass::LUMPEN,
@@ -330,8 +333,9 @@ class TestController extends Controller
             }
             $tilesNotInCities = $region->getTiles()->where(['cityId' => null])->all();
             
-            foreach ($tilesNotInCities as $tile) {
-                foreach (json_decode($region->nations) as $nationId => $percents) {
+            $nations = json_decode($region->nations, true);
+            if (is_array($nations)) foreach ($tilesNotInCities as $tile) {
+                foreach ($nations as $nationId => $percents) {
                     $pop = new models\Pop([
                         'count' => round($tile->population * $percents / 100),
                         'classId' => models\PopClass::LUMPEN,

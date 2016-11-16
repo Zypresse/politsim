@@ -83,10 +83,10 @@ abstract class LinkCreator
     
     /**
      * 
-     * @param State $state
+     * @param Region $region
      * @return string
      */
-    public static function regionPopulationLink(State $state)
+    public static function regionPopulationLink(Region $region)
     {
         return static::render($region->flag, $region->name, '#!population/region&id='.$region->id);
     }
@@ -99,6 +99,16 @@ abstract class LinkCreator
     public static function cityLink(City $city)
     {
         return static::render($city->flag, $city->name, '#!city&id='.$city->id);
+    }
+    
+    /**
+     * 
+     * @param City $city
+     * @return string
+     */
+    public static function cityPopulationLink(City $city)
+    {
+        return static::render($city->flag, $city->name, '#!population/city&id='.$city->id);
     }
     
     /**

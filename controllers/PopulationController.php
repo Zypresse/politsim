@@ -5,7 +5,9 @@ namespace app\controllers;
 use Yii,
     yii\web\NotFoundHttpException,
     app\components\MyController,
-    app\models\State;
+    app\models\State,
+    app\models\Region,
+    app\models\City;
 
 /**
  * 
