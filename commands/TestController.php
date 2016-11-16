@@ -38,9 +38,11 @@ class TestController extends Controller
         for ($i = 0; $i < 36; $i++) {
             $data = json_decode(file_get_contents(Yii::$app->basePath.'/data/default/tiles/part'.$i.'.json'));
             array_pop($data);
+            echo "part$i loaded".PHP_EOL;
             foreach (array_chunk($data, 500) as $tiles) {
                 Yii::$app->db->createCommand()->batchInsert('tiles', ['x','y','lat','lon', 'isWater', 'isLand', 'regionId', 'cityId'], $tiles)->execute();
             }
+            echo "part$i inserted".PHP_EOL;
         }
     }
     
@@ -298,5 +300,54 @@ class TestController extends Controller
         }
         
         file_put_contents(Yii::$app->basePath.'/data/polygons/popdestiny.json', json_encode($popdestiny));
+    }
+    
+    public function actionUpdatePops()
+    {
+        /* @var $state models\State */
+        $state = models\State::find()->one();
+        foreach ($state->regions as $region) {
+            /* @var $region models\Region */
+            foreach ($region->cities as $city) {
+                foreach ($city->tiles as $tile) {
+                    foreach (json_decode($city->nations) as $nationId => $percents) {
+                        $pop = new models\Pop([
+                            'count' => round($tile->population * $percents / 100),
+                            'classId' => models\PopClass::LUMPEN,
+                            'nationId' => $nationId,
+                            'tileId' => $tile->id,
+                            'ideologies' => null,
+                            'religions' => $city->religions,
+                            'genders' => $city->genders,
+                            'ages' => $city->ages,
+                            'contentment' => 0,
+                            'agression' => 0,
+                            'consciousness' => 0,
+                        ]);
+                        $pop->save();
+                    }
+                }                
+            }
+            $tilesNotInCities = $region->getTiles()->where(['cityId' => null])->all();
+            
+            foreach ($tilesNotInCities as $tile) {
+                foreach (json_decode($region->nations) as $nationId => $percents) {
+                    $pop = new models\Pop([
+                        'count' => round($tile->population * $percents / 100),
+                        'classId' => models\PopClass::LUMPEN,
+                        'nationId' => $nationId,
+                        'tileId' => $tile->id,
+                        'ideologies' => null,
+                        'religions' => $region->religions,
+                        'genders' => $region->genders,
+                        'ages' => $region->ages,
+                        'contentment' => 0,
+                        'agression' => 0,
+                        'consciousness' => 0,
+                    ]);
+                    $pop->save();
+                }
+            }
+        }
     }
 }
