@@ -42,4 +42,35 @@ class MyMathHelper {
         return static::HE_K*pow(static::E, $x) + static::HE_C;
     }
     
+    /**
+     * 
+     * @param \yii\base\Model[] $objects
+     * @param string $attributeJSON
+     * @param string $attributeCount
+     * @param integer $sumCount
+     * @return string JSON
+     */
+    public static function sumPercents($objects, $attributeJSON, $attributeCount, $sumCount)
+    {
+        $values = [];
+        foreach ($objects as $object) {
+            if ($object->$attributeJSON) {
+                $objectValues = json_decode($object->$attributeJSON, true);
+                foreach ($objectValues as $id => $percents) {
+                    $count = (int)round($object->$attributeCount*$percents/100);
+                    if (isset($values[$id])) {
+                        $values[$id] += $count;
+                    } else {
+                        $values[$id] = $count;
+                    }
+                }
+            }
+        }
+        foreach ($values as $id => $count) {
+            $percents = round(100 * $count / $sumCount,2);
+            $values[$id] = $percents;
+        }
+        return json_encode($values);
+    }
+    
 }

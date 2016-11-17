@@ -185,6 +185,8 @@ class Region extends TaxPayerModel
             $this->population += $tile->population;
         }
         
+        
+        
         $this->getPolygon(true);
         
         if ($save) {

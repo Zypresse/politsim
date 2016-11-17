@@ -21,8 +21,10 @@ class TestController extends Controller
 //        models\Tile::updateAll(['regionId' => 19], ['and', ['<=', 'x', -430], ['>', 'x', -750], ['<=', 'y', -600], ['isLand' => true]]);
 //        echo models\Region::findByPk(33)->getPolygon(true);
 //        echo models\State::findByPk(5)->getPolygon(true);
-        echo models\Tile::find()->count('id');
-//        $state = models\State::find()->one();
+//        echo models\Tile::find()->count('id');
+        $state = models\State::find()->one();
+        
+        $state->updateParams(true, false);
 //        $pop = 0;
 //        foreach ($state->regions as $region) {
 //            foreach ($region->tiles as $tile) {
@@ -263,6 +265,7 @@ class TestController extends Controller
             }
             models\Tile::updateAll(['population' => round($population/$regionTilesCount)], ['cityId' => null, 'regionId' => $region->id]);
         }
+        $state->updateParams(true, false);
     }
         
     public function actionPopulationDestinyPolygons()
