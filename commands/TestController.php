@@ -22,9 +22,9 @@ class TestController extends Controller
 //        echo models\Region::findByPk(33)->getPolygon(true);
 //        echo models\State::findByPk(5)->getPolygon(true);
 //        echo models\Tile::find()->count('id');
-        $state = models\State::find()->one();
-        
-        $state->updateParams(true, false);
+//        $state = models\State::find()->one();
+//        
+//        $state->updateParams(true, false);
 //        $pop = 0;
 //        foreach ($state->regions as $region) {
 //            foreach ($region->tiles as $tile) {
@@ -32,6 +32,7 @@ class TestController extends Controller
 //            }
 //        }
 //        echo $pop;
+        echo models\Pop::find()->count();
     }
     
     public function actionUpdateTiles()
@@ -115,6 +116,7 @@ class TestController extends Controller
         models\PartyPost::deleteAll();
         models\Notification::deleteAll();
         models\RegionConstitution::deleteAll();
+        models\Pop::deleteAll();
         
         echo "models cleared".PHP_EOL;
         
@@ -330,9 +332,13 @@ class TestController extends Controller
                             'agression' => 0,
                             'consciousness' => 0,
                         ]);
-                        $pop->save();
+                        if (!$pop->save()) {
+                            var_dump($pop->getErrors());
+                            die();
+                        }
                     }
-                }                
+                }
+                $city->updateParams(true, false);
             }
             $tilesNotInCities = $region->getTiles()->where(['cityId' => null])->all();
             
@@ -353,8 +359,14 @@ class TestController extends Controller
                         'consciousness' => 0,
                     ]);
                     $pop->save();
+                    if (!$pop->save()) {
+                        var_dump($pop->getErrors());
+                        die();
+                    }
                 }
             }
+            $region->updateParams(true, false);
         }
+        $state->updateParams(true, false);
     }
 }

@@ -26,6 +26,15 @@ use yii\helpers\Html,
                 <?php foreach($city->region->state->regions as $currentRegion): ?>
                 <li <?=$currentRegion->id == $city->region->id?'class="active"':''?>>
                     <?=LinkCreator::regionPopulationLink($currentRegion)?>
+                    <?php if ($currentRegion->id == $city->region->id): ?>
+                    <ul>
+                        <?php foreach ($city->region->cities as $currentCity): ?>
+                        <li <?=$currentCity->id == $city->id?'class="active"':''?>>
+                            <?=LinkCreator::cityPopulationLink($currentCity)?>
+                        </li>
+                        <?php endforeach ?>
+                    </ul>
+                    <?php endif ?>
                 </li>
                 <?php endforeach ?>
             </ul>
@@ -34,18 +43,16 @@ use yii\helpers\Html,
             <div class="box">
                 <div class="box-header">
                     <h2 class="box-title">
-                        <?=Yii::t('app', 'Population of {0}', [$city->name])?>
+                        <?=Yii::t('app', 'Population of city {0}', [$city->name])?>
                     </h2>
+                    <div class="box-tools pull-right">
+                        <?=MyHtmlHelper::formateNumberword($city->population, 'h')?>
+                    </div>
                 </div>
                 <div class="box-body">
-                    <p>
-                        <strong><?=Yii::t('app', 'Population')?>:</strong>
-                        <?=MyHtmlHelper::formateNumberword($city->population, 'h')?>
-                    </p>
-                    <p>
-                        <strong><?=Yii::t('app', 'Nations')?></strong>
-                        <?=$city->nations?>
-                    </p>
+                    <pre>
+                        <?php var_dump($city->attributes) ?>
+                    </pre>
                 </div>
             </div>
             <div class="box">

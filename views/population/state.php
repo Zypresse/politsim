@@ -32,14 +32,16 @@ use yii\helpers\Html,
             <div class="box">
                 <div class="box-header">
                     <h2 class="box-title">
-                        <?=Yii::t('app', 'Population of {0}', [$state->name])?>
+                        <?=Yii::t('app', 'Population of state {0}', [$state->name])?>
                     </h2>
+                    <div class="box-tools pull-right">
+                        <?=MyHtmlHelper::formateNumberword($state->population, 'h')?>
+                    </div>
                 </div>
                 <div class="box-body">
-                    <p>
-                        <strong><?=Yii::t('app', 'Population')?>:</strong>
-                        <?=MyHtmlHelper::formateNumberword($state->population, 'h')?>
-                    </p>
+                    <pre>
+                        <?php var_dump($state->attributes) ?>
+                    </pre>
                 </div>
             </div>
         </div>
