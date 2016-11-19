@@ -1079,7 +1079,7 @@ a:focus {
   padding: 10px;
   text-align: center;
 }
-.navbar-nav > .user-menu > .dropdown-menu > li.user-header > img {
+.navbar-nav > .user-menu > .dropdown-menu > li.user-header img.img-circle {
   z-index: 5;
   height: 90px;
   width: 90px;
@@ -1087,14 +1087,14 @@ a:focus {
   border-color: transparent;
   border-color: rgba(255, 255, 255, 0.2);
 }
-.navbar-nav > .user-menu > .dropdown-menu > li.user-header > p {
+.navbar-nav > .user-menu > .dropdown-menu > li.user-header p {
   z-index: 5;
   color: #fff;
   color: rgba(255, 255, 255, 0.8);
   font-size: 17px;
   margin-top: 10px;
 }
-.navbar-nav > .user-menu > .dropdown-menu > li.user-header > p > small {
+.navbar-nav > .user-menu > .dropdown-menu > li.user-header p > small {
   display: block;
   font-size: 12px;
 }

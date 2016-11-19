@@ -49,12 +49,9 @@ $RECYCLE.BIN/
 config/db.php
 config/params.php
 config/auth-clients.php
-web/assets
 web/.htaccess
 mail
-runtime
 vendor
-database
 
 nbproject
 sftp-config.json
@@ -65,4 +62,5 @@ tests/codeception.yml
 tests/codeception/
 yii.bat
 
+composer.lock
 all-lands.json

@@ -2,15 +2,18 @@
 
 namespace app\models;
 
-use app\components\MyModel;
+use app\components\MyModel,
+    app\models\User;
 
 /**
  * This is the model class for table "invites".
  *
  * @property integer $id
- * @property string $hash
- * @property integer $uid
- * @property integer $time
+ * @property string $code
+ * @property integer $userId
+ * @property integer $dateActivated
+ * 
+ * @property User $user
  */
 class Invite extends MyModel
 {
@@ -28,23 +31,10 @@ class Invite extends MyModel
     public function rules()
     {
         return [
-            [['hash'], 'required'],
-            [['hash'], 'string'],
-            [['uid', 'time'], 'integer'],
-            [['hash'], 'unique']
-        ];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => 'ID',
-            'hash' => 'Hash',
-            'uid' => 'Uid',
-            'time' => 'Time',
+            [['code'], 'required'],
+            [['code'], 'string', 'max' => 255],
+            [['userId', 'dateActivated'], 'integer', 'min' => 0],
+            [['code', 'userId'], 'unique']
         ];
     }
     
@@ -54,16 +44,25 @@ class Invite extends MyModel
      */
     public function isUsed()
     {
-        return !!$this->uid;
+        return !!$this->userId;
+    }
+    
+    /**
+     * Активировать инвайт
+     */
+    public function activateUser(User &$user)
+    {
+        $this->userId = $user->id;
+        $this->dateActivated = time();
+        $this->save();
+        
+        $user->isInvited = true;
+        $user->save();
+    }
+    
+    public function getUser()
+    {
+        return $this->hasOne(User::className(), array('id' => 'userId'));
     }
 
-    /**
-     * 
-     * @param string $hash
-     * @return Invite
-     */
-    public static function findByHash($hash)
-    {
-        return static::find()->where(['hash' => $hash])->one();
-    }
 }

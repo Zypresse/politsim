@@ -9,8 +9,9 @@
 
 namespace app\components;
 
-use Yii;
-use yii\db\ActiveRecord;
+use Yii,
+    yii\db\ActiveRecord,
+    app\components\LinkHelper;
 
 abstract class MyModel extends ActiveRecord
 {
@@ -73,6 +74,33 @@ abstract class MyModel extends ActiveRecord
         }
         
         return $m;
+    }
+    
+    public static function findAll($condition = false)
+    {
+        if ($condition === false) {
+            return static::find()->all();
+        } else {
+            return parent::findAll($condition);
+        }
+    }
+    
+    public function validateAnthem()
+    {
+        if (!LinkHelper::isSoundCloudLink($this->anthem)) {
+            $this->addError('anthem', Yii::t('app', 'Anthem are not valid SoundCloud link'));
+            return false;
+        }
+        return true;
+    }
+    
+    public function validateFlag()
+    {
+        if (!LinkHelper::isImageLink($this->flag)) {
+            $this->addError('flag', Yii::t('app', 'Flag are not valid image link'));
+            return false;
+        }
+        return true;
     }
     
 }

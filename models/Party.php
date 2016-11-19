@@ -2,62 +2,72 @@
 
 namespace app\models;
 
-use app\components\TaxPayer,
-    app\components\MyModel,
-    app\components\MyHtmlHelper,
-    app\models\User,
-    app\models\Utr,
-    app\models\ElectRequest,
-    app\models\State,
-    app\models\Post,
-    app\models\Ideology;
+use Yii,
+    app\components\TaxPayerModel,
+    bupy7\bbcode\BBCodeBehavior;
 
 /**
- * Партия. Таблица "parties".
- *
- * @property integer $id
- * @property string $name Название
- * @property string $short_name Короткое название (2-3 буквы)
- * @property string $image Ссылка на логотип
- * @property integer $state_id ID государства
- * @property integer $leader ID лидера
- * @property integer $ideology ID идеологии
- * @property integer $star Известность
- * @property integer $heart Доверие
- * @property integer $chart_pie Успешность
- * @property integer $unnp
- * @property double $balance
+ * Политическая партия
  * 
- * @property User[] $members Члены партии
- * @property ElectRequest[] $requests Заявки на выборы участников организаций
- * @property ElectRequest[] $lrequests Заявки на выборы лидеров организаций
- * @property User $leaderInfo Лидер
- * @property State $state Государство
- * @property Ideology $ideologyInfo Идеология
- * @property Post[] $postsReserved 
+ * @property integer $id 
+ * @property integer $stateId 
+ * @property string $name
+ * @property string $nameShort
+ * @property string $flag
+ * @property string $anthem
+ * @property integer $ideologyId
+ * @property string $text
+ * @property string $textHTML
+ * @property integer $fame
+ * @property integer $trust
+ * @property integer $success
+ * @property integer $membersCount
+ * @property integer $leaderPostId
+ * @property integer $joiningRules
+ * @property integer $listCreationRules
+ * @property integer $dateCreated
+ * @property integer $dateDeleted
+ * @property integer $utr
+ * 
+ * @property State $state
+ * @property PartyPost $leaderPost
+ * @property PartyPost[] $posts
+ * @property PartyList[] $lists
+ * @property Ideology $ideology
+ * @property User[] $members
+ * 
  */
-class Party extends MyModel implements TaxPayer
+class Party extends TaxPayerModel
 {
-
-    public function getUnnpType()
-    {
-        return Utr::TYPE_PARTY;
-    }
     
-    public function getUnnp() {
-        if (is_null($this->utr)) {
-            $u = Utr::findOneOrCreate(['p_id' => $this->id, 'type' => $this->getUnnpType()]);
-            $this->utr = ($u) ? $u->id : 0;
-            $this->save();
-        } 
-        return $this->utr;
-    }
-
-    public function isGoverment($stateId)
-    {
-        return false;
-    }
+    public $purified_text;
     
+    /**
+     * Частная (заявки запрещены)
+     */
+    const JOINING_RULES_PRIVATE = 0;
+    
+    /**
+     * Закрытая (заявки утверждаются)
+     */
+    const JOINING_RULES_CLOSED = 1;
+    
+    /**
+     * Открытая (заявки автоподтверждаются)
+     */
+    const JOINING_RULES_OPEN = 2;
+    
+    /**
+     * Избирательный список составляется лидером
+     */
+    const LIST_CREATION_RULES_LEADER = 1;
+    
+    /**
+     * Избирательный список составляется по праймериз
+     */
+    const LIST_CREATION_RULES_PRIMARIES = 2;
+
+
     /**
      * @inheritdoc
      */
@@ -72,163 +82,243 @@ class Party extends MyModel implements TaxPayer
     public function rules()
     {
         return [
-            [['name', 'short_name', 'state_id', 'leader', 'ideology'], 'required'],
-            [['state_id', 'leader', 'ideology', 'star', 'heart', 'chart_pie', 'utr'], 'integer'],
-            [['balance'], 'number'],
-            [['name'], 'string', 'max' => 500],
-            [['short_name'], 'string', 'max' => 4],
-            [['image'], 'string', 'max' => 1000]
+            [['name', 'nameShort', 'stateId', 'ideologyId', 'joiningRules', 'listCreationRules'], 'required'],
+            [['name'], 'string', 'max' => 255],
+            [['nameShort'], 'string', 'max' => 6],
+            [['flag', 'anthem', 'text', 'textHTML'], 'string'],
+            [['stateId', 'ideologyId', 'leaderPostId', 'joiningRules', 'listCreationRules', 'membersCount', 'dateCreated', 'dateDeleted', 'utr'], 'integer', 'min' => 0],
+            [['fame', 'trust', 'success'], 'integer'],
+            [['anthem'], 'validateAnthem'],
+            [['flag'], 'validateFlag'],
+        ];
+    }
+    
+    public function attributeLabels() {
+        return [
+            'name' => Yii::t('app', 'Party name'),
+            'nameShort' => Yii::t('app', 'Party short name'),
+            'ideologyId' => Yii::t('app', 'Ideology'),
+            'joiningRules' => Yii::t('app', 'Joining'),
+            'listCreationRules' => Yii::t('app', 'Election list creation'),
+            'flag' => Yii::t('app', 'Flag'),
+            'anthem' => Yii::t('app', 'Anthem'),
+            'text' => Yii::t('app', 'Political program'),
+        ];
+    }
+    
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => BBCodeBehavior::className(),
+                'attribute' => 'text',
+                'saveAttribute' => 'textHTML',
+                'codeDefinitionBuilder' => [
+                    ['quote', '<blockquote>{param}</blockquote>'],
+                    ['code', '<code>{param}</code>'],
+                    ['sup', '<sup>{param}</sup>'],
+                    ['sub', '<sub>{param}</sub>'],
+                    ['ul', '<ul>{param}</ul>'],
+                    ['ol', '<ol>{param}</ol>'],
+                    ['li', '<li>{param}</li>'],
+                ],
+            ],
         ];
     }
 
     /**
-     * @inheritdoc
+     * Возвращает константное значение типа налогоплательщика
+     * @return integer
      */
-    public function attributeLabels()
+    public function getUtrType()
     {
-        return [
-            'id'         => 'ID',
-            'name'       => 'Name',
-            'short_name' => 'Short Name',
-            'image'      => 'Image',
-            'state_id'   => 'State ID',
-            'leader'     => 'Leader',
-            'ideology'   => 'Ideology',
-            'star'       => 'Star',
-            'heart'      => 'Heart',
-            'chart_pie'  => 'Chart Pie',
-        ];
+        return Utr::TYPE_PARTY;
+    }
+    
+    /**
+     * Является ли плательщик правительством страны
+     * @param integer $stateId
+     * @return boolean
+     */
+    public function isGoverment($stateId)
+    {
+        return false;
+    }
+            
+    /**
+     * ID страны, в которой он платит налоги
+     * @return integer
+     */
+    public function getTaxStateId()
+    {
+        return $this->stateId;
+    }
+    
+    /**
+     * Является ли налогоплательщиком государства
+     * @param integer $stateId
+     * @return boolean
+     */
+    public function isTaxedInState($stateId)
+    {
+        return $this->stateId === $stateId;
+    }
+    
+    /**
+     * ID юзера, который управляет этим налогоплательщиком
+     */
+    public function getUserControllerId()
+    {
+        return $this->leaderPost->userId;
+    }
+    
+    /**
+     * Может ли юзер управлять этим налогоплательщиком
+     * @param integer $userId
+     * @return boolean
+     */
+    public function isUserController($userId)
+    {
+        return $this->leaderPost->userId == $userId;
+    }    
+    
+    public function beforeSave($insert)
+    {
+        $this->text = \yii\helpers\Html::encode($this->text);
+        if ($insert) {
+            $this->dateCreated = time();
+        }
+        return parent::beforeSave($insert);
+    }         
+
+    public function getState()
+    {
+        return $this->hasOne(State::classname(), ['id' => 'stateId']);
+    }
+         
+    public function getLeaderPost()
+    {
+        return $this->hasOne(PartyPost::classname(), ['id' => 'leaderPostId']);
+    }
+         
+    public function getPosts()
+    {
+        return $this->hasMany(PartyPost::classname(), ['partyId' => 'id'])->orderBy(['id' => SORT_ASC]);
+    }
+    
+    /**
+     * 
+     * @param integer $userId
+     * @return PartyPost
+     */
+    public function getPostByUserId($userId)
+    {
+        return $this->getPosts()->where(['userId' => $userId])->one();
     }
 
     public function getMembers()
     {
-        return $this->hasMany(User::className(), array('party_id' => 'id'))->orderBy('`star` + `heart`/10 + `chart_pie`/100 DESC');
-    }
-
-    public function getLeaderInfo()
-    {
-        return $this->hasOne(User::className(), array('id' => 'leader'));
-    }
-
-    public function getRequests()
-    {
-        return $this->hasMany(ElectRequest::className(), array('party_id' => 'id'))->where(['leader' => 0]);
-    }
-
-    public function getLrequests()
-    {
-        return $this->hasMany(ElectRequest::className(), array('party_id' => 'id'))->where(['leader' => 1]);
-    }
-
-    public function getState()
-    {
-        return $this->hasOne(State::className(), array('id' => 'state_id'));
-    }
-
-    public function getIdeologyInfo()
-    {
-        return $this->hasOne(Ideology::className(), array('id' => 'ideology'));
+        return $this->hasMany(User::classname(), ['id' => 'userId'])
+                 ->via('approvedMemberships');
     }
     
-    public function getPostsReserved()
+    public function getMemberships()
     {
-        return $this->hasMany(Post::className(), array('party_reserve' => 'id'));
-    }
-
-    /**
-     * Возвращает число членов
-     * @return integer
-     */
-    public function getMembersCount()
-    {
-        return intval(User::find()->where(['party_id' => $this->id])->count());
+	return $this->hasMany(Membership::classname(), ['partyId' => 'id']);
     }
     
-    
-    private $_isParlamentarian = null;
-    public function isParlamentarian()
+    public function getApprovedMemberships()
     {
-        if (is_null($this->_isParlamentarian)) {
-            $this->_isParlamentarian = false;
-            foreach ($this->postsReserved as $post) {
-                if ($post->org_id === $this->state->legislature) {
-                    $this->_isParlamentarian = true;
-                    break;
-                }
-            }
+        return $this->hasMany(Membership::classname(), ['partyId' => 'id'])->where(['>', 'dateApproved', 0]);
+    }
+    
+    public function getRequestedMemberships()
+    {
+        return $this->hasMany(Membership::classname(), ['partyId' => 'id'])->where(['dateApproved' => null]);
+    }
+         
+    public function getLists()
+    {
+        return $this->hasMany(PartyList::classname(), ['partyId' => 'id']);
+    }
+    
+    private $_ideology = null;
+    public function getIdeology()
+    {
+        if (is_null($this->_ideology)) {
+            $this->_ideology = Ideology::findOne($this->ideologyId);
+        }
+        return $this->_ideology;
+    }
+    
+    public function updateParams($save = true)
+    {
+        
+        $this->fame = 0;
+        $this->trust = 0;
+        $this->success = 0;
+        $this->membersCount = 0;
+        
+        foreach ($this->members as $member) {
+            $this->membersCount++;
+            $this->fame += $member->fame;
+            $this->trust += $member->trust;
+            $this->success += $member->success;
         }
         
-        return $this->_isParlamentarian;
+        if ($this->membersCount == 0) {
+            $this->dateDeleted = time();
+        }
+        
+        if ($save) {
+            $this->save();
+        }
     }
-
+    
     /**
-     * Подчистка после удаления
+     * 
+     * @param \app\models\User $creator
+     * @return boolean
      */
-    public function afterDelete()
+    public function createNew(User $creator)
     {
-        foreach ($this->requests as $request) {
-            $request->delete();
+        
+        if ($this->save()) {
+        
+            $membership = new Membership([
+                'partyId' => $this->id,
+                'userId' => $creator->id,
+                'dateApproved' => time()
+            ]);
+
+            if ($membership->save()) {
+
+                $post = new PartyPost([
+                    'partyId' => $this->id,
+                    'userId' => $creator->id,
+                    'name' => Yii::t('app', 'Party leader'),
+                    'nameShort' => Yii::t('app', 'leader'),
+                    'powers' => PartyPost::POWER_CHANGE_FIELDS + PartyPost::POWER_EDIT_POSTS + PartyPost::POWER_APPROVE_REQUESTS,
+                    'appointmentType' => PartyPost::APPOINTMENT_TYPE_INHERITANCE
+                ]);
+
+                if ($post->save()) {
+                    
+                    $this->leaderPostId = $post->id;
+                    
+                    if ($this->save()) {
+                        $creator->noticy(5, \app\components\LinkCreator::partyLink($this)).Yii::t('app', ' created');
+                        return true;
+                    }
+                }
+
+                $this->addErrors($post->getErrors());
+            }
+
+            $this->addErrors($membership->getErrors());
         }
-        foreach ($this->lrequests as $request) {
-            $request->delete();
-        }
-    }
-
-    public function changeBalance($delta)
-    {
-        $this->balance += $delta;
-    }
-
-    public function getBalance()
-    {
-        return $this->balance;
-    }
-
-    public function getHtmlName()
-    {
-        return MyHtmlHelper::a($this->name, "load_page('party-info',{'id':{$this->id}})");
+        
+        return false;
     }
     
-    public function getHtmlShortName()
-    {
-        return MyHtmlHelper::a($this->short_name, "load_page('party-info',{'id':{$this->id}})");
-	}
-
-    public function getTaxStateId()
-    {
-        return $this->state_id;
-    }
-
-    public function isTaxedInState($stateId)
-    {
-        return $this->state_id == $stateId;
-    }
-
-    public function getUserControllerId()
-    {
-        return $this->leader;
-    }
-
-    public function isUserController($userId)
-    {
-        return $this->leader === $userId;
-    }
-    
-    public function calcRating()
-    {
-        $this->star = 0;
-        $this->heart = 0;
-        $this->chart_pie = 0;
-        $k = 1.0;
-        foreach ($this->members as $user) {
-            $this->star += $user->star*$k;
-            $this->heart += $user->heart*$k;
-            $this->chart_pie += $user->chart_pie*$k;
-            $k *= 0.9;
-        }
-        $this->star = round($this->star);
-        $this->heart = round($this->heart);
-        $this->chart_pie = round($this->chart_pie);
-    }
-
 }

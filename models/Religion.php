@@ -2,48 +2,39 @@
 
 namespace app\models;
 
-use app\components\MyModel;
+use Yii,
+    app\models\ObjectWithFixedPrototypes;
 
 /**
- * Религии населения и игроков. Таблица "religions".
+ * Религия
  *
- * @property integer $id
- * @property string $name
- * @property string $color
- * @property double $aggression
+ * @author ilya
  */
-class Religion extends MyModel
+class Religion extends ObjectWithFixedPrototypes
 {
-    /**
-     * @inheritdoc
-     */
-    public static function tableName()
-    {
-        return 'religions';
-    }
+    public $id;
+    public $name;
+    
+    const NOT_SET = 0;
+    const ATHEISM = 1;
+    const ORTHODOX = 2;
 
-    /**
-     * @inheritdoc
-     */
-    public function rules()
+    protected static function getList()
     {
         return [
-            [['name', 'color', 'aggression'], 'required'],
-            [['name', 'color'], 'string'],
-            [['aggression'], 'number']
+            [
+                'id' => static::NOT_SET,
+                'name' => Yii::t('app', 'No religion'),
+            ],
+            [
+                'id' => static::ATHEISM,
+                'name' => Yii::t('app', 'Atheism'),
+            ],
+            [
+                'id' => static::ORTHODOX,
+                'name' => Yii::t('app', 'Orthodox'),
+            ],
         ];
     }
-
-    /**
-     * @inheritdoc
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => 'ID',
-            'name' => 'Name',
-            'color' => 'Color',
-            'aggression' => 'Aggression',
-        ];
-    }
+    
 }

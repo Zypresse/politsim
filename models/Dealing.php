@@ -2,33 +2,26 @@
 
 namespace app\models;
 
-use app\components\MyModel,
-    app\models\Stock,
-    app\models\factories\Factory,
-    app\models\DealingProto,
-    app\components\TaxPayer,
-    app\models\Utr;
+use Yii,
+    app\components\MyModel;
 
 /**
- * Сделка между игроками. Таблица "dealings".
+ * Сделка
  *
  * @property integer $id
- * @property integer $proto_id ID типа сделки
- * @property integer $from_unnp ID отправителя
- * @property integer $to_unnp ID получателя
- * @property double $sum Сумма (сколько отправил отправитель)
- * @property string $items Список вещей в JSON
- * @property integer $is_anonim Является ли сделка анонимной
- * @property integer $is_secret Является ли сделка тайной
- * @property integer $time Время совершения сделки (-1 для непринятой)
+ * @property integer $protoId
+ * @property integer $initiator
+ * @property integer $receiver
+ * @property integer $dateCreated
+ * @property integer $dateApproved
  * 
- * @property TaxPayer $sender Отправитель
- * @property TaxPayer $recipient Получатель
- * @property DealingProto $proto Тип сделки
+ * @property \app\components\TaxPayer $initiatorObject
+ * @property \app\components\TaxPayer $receiverObject
+ * @property DealingItem[] $items
+ * 
  */
 class Dealing extends MyModel
 {
-
     /**
      * @inheritdoc
      */
@@ -43,164 +36,34 @@ class Dealing extends MyModel
     public function rules()
     {
         return [
-            [['from_unnp', 'to_unnp'], 'required'],
-            [['from_unnp', 'to_unnp', 'is_anonim', 'is_secret', 'time', 'proto_id'], 'integer'],
-            [['sum'], 'number'],
-            [['items'], 'string']
+            [['protoId', 'initiator', 'receiver'], 'required'],
+            [['protoId', 'initiator', 'receiver', 'dateCreated', 'dateApproved'], 'integer', 'min' => 0],
+            [['receiver'], 'exist', 'skipOnError' => true, 'targetClass' => Utr::className(), 'targetAttribute' => ['receiver' => 'id']],
+            [['initiator'], 'exist', 'skipOnError' => true, 'targetClass' => Utr::className(), 'targetAttribute' => ['initiator' => 'id']],
         ];
     }
-
-    /**
-     * @inheritdoc
-     */
-    public function attributeLabels()
+    
+    public function getInitiatorObject()
     {
-        return [
-            'id'        => 'ID',
-            'from_unnp'  => 'From UNNP',
-            'to_unnp'    => 'To UNNP',
-            'sum'       => 'Sum',
-            'items'     => 'Items',
-            'is_anonim' => 'Is Anonim',
-            'is_secret' => 'Is Secret',
-            'time'      => 'Time',
-        ];
-    }
-
-    public function getSender()
-    {
-        return Utr::findByPk($this->from_unnp)->getMaster();
-    }
-
-    public function getRecipient()
-    {
-        return Utr::findByPk($this->to_unnp)->getMaster();
+        return $this->hasOne(Utr::className(), ['id' => 'initiator'])->one()->object();
     }
     
-    public function getProto()
+    public function getReceiverObject()
     {
-        return $this->hasOne(State::className(), array('id' => 'proto_id'));
-    }
-
-    /**
-     * Получить видимый для игрока viewer_id список сделок игрока uid
-     * @param integer $uid
-     * @param integer $viewer_id
-     * @return Dealing[]
-     */
-    public static function getMyList($uid, $viewer_id = false)
-    {
-        if ($viewer_id === false) {
-            $viewer_id = $uid;
-        }
-        $is_own    = ($viewer_id === $uid);
-        
-        $user = User::findByPk($uid);
-
-        $dealings = static::find()->where("(to_unnp = {$user->unnp} OR from_unnp = {$user->unnp}) AND time>0")->orderBy('time DESC')->limit(30)->all();
-        foreach ($dealings as $i => $d) {
-            // Some magic
-            if (!(((!$d->is_secret) || ($d->is_secret && $is_own)) && ((!$d->is_anonim) || ($d->to_unnp === $user->unnp)))) {
-                unset($dealings[$i]);
-            }
-        }
-        return $dealings;
+        return $this->hasOne(Utr::className(), ['id' => 'receiver'])->one()->object();
     }
     
-    public static function findByUnnp($unnp, $limit)
+    public function getItems()
     {
-        return static::find()
-                ->where(['or',['to_unnp'=>$unnp],['from_unnp'=>$unnp]])
-                ->andWhere(['is_secret'=>0])
-                ->orderBy('time DESC')
-                ->limit($limit)
-                ->all();
-    }
-    
-    public function getMyBalanceDelta($unnp)
-    {
-        if ($this->to_unnp === $unnp) {
-            return $this->sum;
-        } else {
-            return -1*$this->sum;
-        }
-    }
-    
-    public function isSender($unnp)
-    {
-        return $this->from_unnp === $unnp;
+        return $this->hasMany(DealingItem::classname(), ['dealingId' => 'id']);
     }
 
-    /**
-     * 
-     */
-    public function accept()
+    public function beforeSave($insert)
     {
-        
-        if (is_null($this->sender) || is_null($this->recipient)) {
-            return false;
+        if ($insert) {
+            $this->dateCreated = time();
         }
         
-        if ($this->sum) {
-            if ($this->sender->getBalance()-1*$this->sum >= 0 &&
-                $this->recipient->getBalance()+$this->sum >= 0 ) {
-                $this->recipient->changeBalance($this->sum);
-                $this->sender->changeBalance(-1*$this->sum);
-            } else {
-                return false;
-            }
-        }
-
-        $items = json_decode($this->items, true);
-        if (is_array($items)) {
-            foreach ($items as $item) {
-                switch ($item['type']) {
-                    case "stock":
-                        $stock = Stock::find()->where(['holding_id' => $item['holding_id'], 'unnp' => $this->sender->unnp])->one();
-                        $recStock = Stock::findOrCreate(['holding_id' => $item['holding_id'], 'unnp' => $this->recipient->unnp], false, ['count' => 0]);
-                        
-                        if ($stock && $stock->count >= $item['count']) {
-                            $stock->count -= $item['count'];
-                            $recStock->count += $item['count'];
-
-                            if ($stock->count > 0) {
-                                $stock->save();
-                            } else {
-                                $stock->delete();
-                            }
-                            $recStock->save();
-                        } else {
-                            return false;
-                        }
-                        break;
-                    case "factory":
-                        $factory = Factory::findByPk($item['factory_id']);
-                        
-                        if ($factory->holding->unnp === $this->from_unnp && $this->recipient->getUnnpType() === Utr::TYPE_HOLDING) {
-                            $factory->holding_id = $this->recipient->id;
-                            $factory->save();
-                        } else {
-                            return false;
-                        }
-                        break;
-                    case "resource":
-                        $store = $this->sender->getStorage($item['proto_id'],$item['quality']);
-                        if ($store && $store->count >= $item['count']) {
-                            $this->sender->delFromStorage($item['proto_id'],$item['count'],$item['quality']);
-                            $this->recipient->pushToStorage($item['proto_id'],$item['count'],$item['quality']);
-                        } else {
-                            return false;
-                        }
-                        break;
-                }
-            }
-        }
-        
-        $this->sender->save();
-        $this->recipient->save();
-        $this->time = time();
-        $this->save();
-        return true;
+        return parent::beforeSave($insert);
     }
-    
 }

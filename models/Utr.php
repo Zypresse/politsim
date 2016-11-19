@@ -9,24 +9,35 @@ use app\components\MyModel,
  * Универсальный ИНН для всех платежей. Таблица "utr".
  *
  * @property integer $id
- * @property integer $type тип плательщика
- * @property integer $p_id ID плательщика
+ * @property integer $objectType тип плательщика
+ * @property integer $objectId ID плательщика
  * 
- * @property TaxPayer $master Владелец
+ * @property TaxPayer $object Владелец
  */
 class Utr extends MyModel
 {
 
     const TYPE_USER = 1;
-    const TYPE_FACTORY = 2;
-    const TYPE_HOLDING = 3;
-    const TYPE_ORG = 4;
+    const TYPE_BUILDING = 2;
+    const TYPE_COMPANY = 3;
+    const TYPE_AGENCY = 4;
     const TYPE_PARTY = 5;
     const TYPE_POP = 6;
     const TYPE_POST = 7;
     const TYPE_REGION = 8;
     const TYPE_STATE = 9;
-    const TYPE_LINE = 10;
+    const TYPE_BUILDINGTWOTILED = 10;
+    const TYPE_UNIT = 11;
+    const TYPE_CITY = 12;
+    
+    private function typeToClass()
+    {
+        return [
+            static::TYPE_USER => User::className(),
+            static::TYPE_STATE => State::className(),
+            static::TYPE_CITY => City::className(),
+        ];
+    }
 
     /**
      * @inheritdoc
@@ -40,30 +51,9 @@ class Utr extends MyModel
      * 
      * @return TaxPayer
      */
-    public function getMaster()
+    public function getObject()
     {
-        switch ($this->type) {
-            case static::TYPE_USER:
-                return $this->hasOne('app\models\User', ['id' => 'p_id']);
-            case static::TYPE_HOLDING:
-                return $this->hasOne('app\models\Holding', ['id' => 'p_id']);
-            case static::TYPE_STATE:
-                return $this->hasOne('app\models\State', ['id' => 'p_id']);
-            case static::TYPE_FACTORY:
-                return $this->hasOne('app\models\factories\Factory', ['id' => 'p_id']);
-            case static::TYPE_ORG:
-                return $this->hasOne('app\models\Org', ['id' => 'p_id']);
-            case static::TYPE_PARTY:
-                return $this->hasOne('app\models\Party', ['id' => 'p_id']);
-            case static::TYPE_POP:
-                return $this->hasOne('app\models\Population', ['id' => 'p_id']);
-            case static::TYPE_POST:
-                return $this->hasOne('app\models\Post', ['id' => 'p_id']);
-            case static::TYPE_REGION:
-                return $this->hasOne('app\models\Region', ['id' => 'p_id']);
-            case static::TYPE_LINE:
-                return $this->hasOne('app\models\factories\Line', ['id' => 'p_id']);
-        }
+        $this->hasOne($this->typeToClass($this->objectType), ['id' => 'objectId']);
     }
 
     /**
@@ -72,32 +62,8 @@ class Utr extends MyModel
     public function rules()
     {
         return [
-            [['type','p_id'], 'integer']
+            [['objectType','objectId'], 'integer']
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => 'ID',
-            'type' => 'Type',
-            'p_id' => 'Payer Id',
-        ];
-    }
-
-    public static function findOneOrCreate($fields)
-    {
-        $u = self::find()->where($fields)->one();
-        if (is_null($u)) {
-            $u = new Utr($fields);
-            if (!$u->save()) {
-                $u = null;
-            }
-        }
-
-        return $u;
-    }
 }

@@ -1,48 +1,53 @@
 <?php
 
-// @todo Вроде не используется, удалить
-
 namespace app\models;
 
-use app\components\MyModel;
+use Yii,
+    app\models\ObjectWithFixedPrototypes;
 
 /**
- * Форма правления. Таблица "goverment_forms".
+ * Форма правления
  *
- * @property integer $id
- * @property string $name
  */
-class GovermentForm extends MyModel
-{
-
-    /**
-     * @inheritdoc
-     */
-    public static function tableName()
-    {
-        return 'goverment_forms';
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function rules()
-    {
+class GovermentForm extends ObjectWithFixedPrototypes {
+    
+    public $id;
+    public $name;
+    
+    const UNKNOWN = 0;
+    const REPUBLIC = 1;
+    const DICTATURE = 2;
+    
+    protected static function getList() {
         return [
-            [['name'], 'required'],
-            [['name'], 'string', 'max' => 100]
-        ];
+            [
+                'id' => static::UNKNOWN,
+                'name' => Yii::t('app', 'Unknown goverment form')
+            ],
+            [
+                'id' => static::REPUBLIC,
+                'name' => Yii::t('app', 'Republic')
+            ],
+            [
+                'id' => static::DICTATURE,
+                'name' => Yii::t('app', 'Dictature')
+            ]
+        ];        
     }
 
     /**
-     * @inheritdoc
+     * Вычисляет id формы правления государства
+     * @param \app\models\State $state
+     * @return integer
      */
-    public function attributeLabels()
+    public function calcForState(State $state)
     {
-        return [
-            'id'                     => 'ID',
-            'name'                   => 'Name',
-        ];
+        $constitution = $state->constitution;
+        if (is_null($constitution)) {
+            return static::UNKNOWN;
+        }
+        
+        return static::DICTATURE;
     }
-
+    
 }

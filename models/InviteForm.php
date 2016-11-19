@@ -2,7 +2,8 @@
 
 namespace app\models;
 
-use yii\base\Model,
+use Yii,
+    yii\base\Model,
     yii\web\UploadedFile;
 
 /**
@@ -30,18 +31,18 @@ class InviteForm  extends Model {
     public function attributeLabels()
     {
         return [
-            'imageFile' => 'Картинка-инвайт',
+            'imageFile' => Yii::t('app', 'Invite picture'),
         ];
     }
 
     /**
      * 
-     * @return Invite
+     * @return app\models\Invite
      */
     public function getInvite()
     {
         $hash = md5_file($this->imageFile->tempName);
-        $invite = Invite::findByHash($hash);
+        $invite = Invite::findByCode($hash);
 
         if (!is_null($invite) && !$invite->isUsed()) {
             return $invite;

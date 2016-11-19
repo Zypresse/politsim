@@ -152,7 +152,11 @@ function show_error(e) {
         var r = $.parseJSON(e.responseText);
 
         if (r) {
-            text = JSON.stringify(r.error);
+            if (r.error) {
+                text = JSON.stringify(r.error);
+            } else if (r.type) { // yii exception
+                text = r.name+(r.message ? ': '+r.message : '');
+            }
         } else {
             text = e.responseText;
         }
@@ -162,7 +166,7 @@ function show_error(e) {
     $('.modal-backdrop').hide();
     $('.modal').modal('hide');
     $('#error_text').html('Ошибка при соединении с сервером<br>' + text + '<br><strong>Статус</strong> — ' + e.status + ': ' + e.statusText);
-    $('#error_block').slideDown();
+    $('#error_block').stop().hide().slideDown();
     $("html, body").animate({scrollTop: 0}, "fast");
 //    $("#spinner").fadeOut("fast");
 }
@@ -171,7 +175,7 @@ function show_custom_error(text) {
     $('.modal-backdrop').hide();
     $('.modal').modal('hide');
     $('#error_text').html(text);
-    $('#error_block').slideDown();
+    $('#error_block').stop().hide().slideDown();
     $("html, body").animate({scrollTop: 0}, "fast");
 //    $("#spinner").fadeOut("fast");
 }
@@ -181,11 +185,16 @@ function request(pageUrl,postParams,requestType,callback,noError,method)
     method = method || 'GET';
     noError = noError || false;
     postParams = postParams || {};
-    postParams.viewer_id = viewer_id;
-    postParams.auth_key = auth_key;
+    if (method === 'POST') {
+        postParams[yii.getCsrfParam()] = yii.getCsrfToken();
+    }
+//    postParams.viewer_id = viewer_id;
+//    postParams.auth_key = auth_key;
     
 //    $("#spinner").fadeIn("fast");
     $('#error_block').slideUp();
+    $(window).off('hashchange');
+    
     $.ajax({
         method: method,
         dataType: requestType,
@@ -221,32 +230,30 @@ function request(pageUrl,postParams,requestType,callback,noError,method)
             }
 //            $("#spinner").fadeOut("fast");
         },
-        error: (noError) ? function(e) {console.log(e);$("#spinner").fadeOut("fast");} : show_error
+        error: (noError) ? function(e) {console.log(e);/*$("#spinner").fadeOut("fast");*/} : show_error,
+        complete: function() { console.log('finished'); $(window).on('hashchange',loadPageFromHash);}
     });
 }
 
 function update_header() {
-    get_json('header-info-updates',{},function(d){
+    get_json('notifications/get-updates',{},function(d){
         var d = d.result;
 
-        $('#head_star').text(d.star);
-        $('#head_heart').text(d.heart);
-        $('#head_chart_pie').text(d.chart_pie);
-        $('#head_money').text(number_format(d.money, 0, '', ' '));
-        
-        var new_dealings_count = d.new_dealings_count ? parseInt(d.new_dealings_count) : 0
-        if (new_dealings_count) {
-            $('#new_dealings_count').text(new_dealings_count);
-            $('#new_dealings_count').show();
+        $('.autoupdated-fame').text(d.fame);
+        $('.autoupdated-trust').text(d.trust);
+        $('.autoupdated-success').text(d.success);
+//        $('.autoupdated-money').text(number_format(d.money, 0, '', ' '));
+
+        $('.autoupdated-notifications').text(d.notificationsCount);
+        $('#new_notifications_list').empty();
+        if (d.notificationsCount > 0) {
+            $('#new_notifications_count').removeClass('hide');
+            for (var i in d.notifications) {
+                var n = d.notifications[i];
+                $('#new_notifications_list').append('<li><a href="#!notifications&id='+n.id+'">'+n.icon+' '+n.textShort+'</a></li>');
+            }
         } else {
-            $('#new_dealings_count').hide();
-        }
-        var profile_badge = new_dealings_count;
-        if (profile_badge) {
-            $('#profile_badge').text(profile_badge);
-            $('#profile_badge').show();
-        } else {
-            $('#profile_badge').hide();
+            $('#new_notifications_count').addClass('hide');
         }
     })
 }
@@ -269,16 +276,16 @@ function load_page(page, params, time) {
         current_page_params = params;
 
         $('#topmenu>li').removeClass('active');
-        $('.' + current_page + '_page').addClass('active');
+        $('.' + current_page.replace(/\//g,'-') + '_page').addClass('active');
 
-        url = '/#!' + page;
+        hash = '!' + page;
         for (var i in params) {
             if (i !== 'viewer_id' && i !== 'auth_key')
-                url += '&' + i + '=' + encodeURIComponent(params[i]);
+                hash += '&' + i + '=' + encodeURIComponent(params[i]);
         }
-        history.pushState({}, page, url);
+        document.location.hash = hash;      
         $('#page_content').empty();
-        request('/html/'+page,params,'html',function(d){
+        request('/'+page,params,'html',function(d){  
             $('#page_content').html(d);
             prettyDates();
         })
@@ -308,7 +315,7 @@ function json_request(page, params, noReload, noError, callback, method) {
         console.log(e);
     };
 
-    request('/json/'+page,params,'json',function(result){
+    request('/'+page,params,'json',function(result){
         if (result.result !== 'error') {
             if (!noReload) {
                 reload_page(100);
@@ -331,7 +338,7 @@ function get_json(page, params, callback, noError) {
         console.log(e);
     };
     
-    request('/json/'+page,params,'json',callback,noError);
+    request('/'+page,params,'json',callback,noError);
 }
 function get_html(page, params, callback, noError) {
     params = params || {};
@@ -340,10 +347,10 @@ function get_html(page, params, callback, noError) {
         console.log(e);
     };
     
-    request('/modal/'+page,params,'html',callback,noError);
+    request('/'+page,params,'html',callback,noError);
 }
 
-function load_modal(page,params,modalId,bodyId) {
+function load_modal(page, params, modalId, bodyId) {
     bodyId = bodyId ? bodyId : modalId + '-body';
     $('#'+bodyId).html('<br><br><br>Загрузка...<br><br><br><br><br>');
     get_html(page,params,function(d){
@@ -360,28 +367,30 @@ function subscribeLinksInModal(modalId, bodyId) {
     $('#'+bodyId).off('click');
     
     $('#'+bodyId).on('submit','form', function(){
-        var action = $(this).attr('action').split('/');
-        return makeActionInModal(action, $(this).serializeObject(), modalId, bodyId);
+        var action = $(this).attr('action'),
+            actionType = $(this).data('actionType');
+        return makeActionInModal(actionType, action, $(this).serializeObject(), modalId, bodyId);
     });
     
-    $('#'+bodyId).on('click','a[href!=#]', function(){
-        var action = $(this).attr('href').split('/');
-        return makeActionInModal(action, {}, modalId, bodyId);
+    $('#'+bodyId).on('click','a', function(){
+        var action = $(this).attr('href'),
+            actionType = $(this).data('actionType');
+        if (action !== '#')
+            return makeActionInModal(actionType, action, {}, modalId, bodyId);
     });
 }
 
-function makeActionInModal(action, data, modalId, bodyId) {
-    var actionType = action[1];
-    var actionMethod = action[2];
+function makeActionInModal(actionType, action, data, modalId, bodyId) {
+    actionType = actionType ? actionType : 'html';
     switch (actionType) {
         case 'modal':
-            load_modal(actionMethod,data,modalId,bodyId);
+            load_modal(action,data,modalId,bodyId);
             break;
         case 'html':
-            load_page(actionMethod,data);
+            load_page(action,data);
             break;
         case 'json':
-            json_request(actionMethod,data);
+            json_request(action,data);
             break;
     }
 
@@ -391,4 +400,25 @@ function makeActionInModal(action, data, modalId, bodyId) {
 
 function show_region(region) {
     load_modal('region-info',{'id':region},'region_info','region_info_body');
+}
+
+function createAjaxModal(action, params, title, buttons, modalId, bodyId, modalClass) {
+    modalId = modalId ? modalId : action.replace('/', '-') + '-modal';
+    bodyId = bodyId ? bodyId : modalId + '-body';
+    buttons = buttons ? buttons : '';
+    if ($('#'+modalId)[0]) {
+        $('#'+bodyId).html('<div class="text-center"><br><br><br>Загрузка...<br><br><br><br><br></div>');
+        $('#'+modalId+'-footer').html(buttons);
+    } else {
+        $(document.body).append(
+            '<div style="display:none" class="modal fade" id="'+modalId+'" tabindex="-1" role="dialog" aria-labelledby="'+modalId+'-label" aria-hidden="true"><div class="modal-dialog '+modalClass+'"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button><h3 id="'+modalId+'-label">'+title+'</h3></div><div id="'+bodyId+'" class="modal-body"><div class="text-center"><br><br><br>Загрузка...<br><br><br><br><br></div></div><div id="'+modalId+'-footer" class="modal-footer">'+buttons+'</div></div></div></div>'
+        );        
+    }
+    get_html(action,params,function(d){
+        $('#'+bodyId).html(d);
+        $('#'+modalId).modal();        
+        prettyDates();
+        $('#'+bodyId).find('[autofocus]').focus();
+//        subscribeLinksInModal(modalId, bodyId);
+    });
 }

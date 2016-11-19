@@ -2,13 +2,15 @@
 
 namespace app\components;
 
-use yii\helpers\Html;
+use Yii,
+    yii\helpers\Html;
 
 class MyHtmlHelper {
 
-    public static function a($text, $onclick)
+    public static function a($text, $onclick, $params)
     {
-        return Html::a($text, '#', ['onclick' => $onclick]);
+        $params['onclick'] = $onclick;
+        return Html::a($text, '#', $params);
     }
 
     public static function getSomeColor($i, $hash = false)
@@ -31,7 +33,7 @@ class MyHtmlHelper {
         return "<img src='/img/{$file}.png' alt='{$title}' title='{$title}' style='{$style}' {$attrs_str} />";
     }
 
-    public static function icon($str, $style = '', $attrs = [])
+    public static function icon($str, $style = 'vertical-align: baseline;', $attrs = [])
     {
 
         $lang = [
@@ -110,7 +112,7 @@ class MyHtmlHelper {
             return 'высочайшее';
         }
     }
-
+    
     public static function zeroOne2Stars($n)
     {
         if ($n === 0) {
@@ -148,35 +150,48 @@ class MyHtmlHelper {
             return '<span style="color:gold" title="высочайшее качество" >★★★★★</span>';
         }
     }
+    
+    public static function zeroOne2Percents($n)
+    {
+        return number_format($n*100, 0, '.', ' ').'%';
+    }
 
     // Функция которая возвращает правильное русское форматирование слов, стоящие после чисел
     // Например 0 комментариев, 1 комментарий, 2 комментария
     // На вход подается число и 3 варианта написание соответствующие 0,1 и 2
     // На выходе - строка в правильного вида.
-    public static function formateNumberword($n, $s1, $s2 = false, $s3 = false)
+    public static function formateNumberword($n, $s1 = false, $s2 = false, $s3 = false)
     {
+        $pref = ($n < 0) ? '-' : '';
+        $n = abs($n);
+        $number = $pref . number_format($n, 0, '', ' ');
+        
+        if ($s1 === false) {
+            return $number;
+        }
+        
         if ($s1 === 'h') {
             $s1 = 'человек';
             $s2 = 'человек';
             $s3 = 'человека';
         }
-        if ($s2 === false)
+        if ($s2 === false) {
             $s2 = $s1;
-        if ($s3 === false)
+        }
+        if ($s3 === false) {
             $s3 = $s1;
+        }
 
-        $pref = ($n < 0) ? '-' : '';
-        $n = abs($n);
         if ($n === 0) {
             return '0 ' . $s1;
-        } else if ($n === 1 || ($n % 10 === 1 && $n % 100 != 11 && $n != 11)) {
-            return $pref . number_format($n, 0, '', ' ') . ' ' . $s2;
-        } else if ($n > 100 && $n % 100 >= 12 && $n % 100 <= 14) {
-            return $pref . number_format($n, 0, '', ' ') . ' ' . $s1;
-        } else if (($n % 10 >= 2 && $n % 10 <= 4 && $n > 20) || ($n >= 2 && $n <= 4)) {
-            return $pref . number_format($n, 0, '', ' ') . ' ' . $s3;
+        } elseif ($n === 1 || ($n % 10 === 1 && $n % 100 != 11 && $n != 11)) {
+            return $number . ' ' . $s2;
+        } elseif ($n > 100 && $n % 100 >= 12 && $n % 100 <= 14) {
+            return $number . ' ' . $s1;
+        } elseif (($n % 10 >= 2 && $n % 10 <= 4 && $n > 20) || ($n >= 2 && $n <= 4)) {
+            return $number . ' ' . $s3;
         } else {
-            return $pref . number_format($n, 0, '', ' ') . ' ' . $s1;
+            return $number . ' ' . $s1;
         }
     }
 
@@ -263,30 +278,6 @@ class MyHtmlHelper {
         return '<span class="status-'.($money>0?'success':'error').'">'.number_format($money, $decimals, '.', '&nbsp;') . ' ' . static::icon('money').'</span>';
     }
 
-    /**
-     * 
-     * @param string $link
-     * @return boolean
-     */
-    public static function isImageLink($link)
-    {
-        $ar = explode('.', trim($link));
-        
-        return (is_array($ar) && count($ar)>1 && in_array(end($ar),['jpg','png','gif','jpeg']));
-    }
-    
-    /**
-     * 
-     * @param string $link
-     * @return boolean
-     */
-    public static function isSoundCloudLink($link)
-    {
-        $re = "/https:\\/\\/soundcloud\\.com\\/[A-z\\d\\-]*\\/[A-z\\d\\-]*/i"; 
-        return !!preg_match($re, $link);
-    }
-
-
     public static function timeFormatFuture($time)
     {
         $current = time();
@@ -302,84 +293,14 @@ class MyHtmlHelper {
         }
     }
     
-    public static function filterTags($source) {
-        $ra1 = array('applet', 'body', 'bgsound', 'base', 'basefont', 'embed', 'frame', 'frameset', 'head', 'html',
-                     'id', 'iframe', 'ilayer', 'layer', 'link', 'meta', 'name', 'object', 'script', 'style', 'title', 'xml');
-        $ra2 = array('javascript', 'vbscript', 'expression', 'applet', 'meta', 'xml', 'blink', 'link', 'style', 'script',
-                    'embed', 'object', 'iframe', 'frame', 'frameset', 'ilayer', 'layer', 'bgsound', 'title', 'base',
-                    'onabort', 'onactivate', 'onafterprint', 'onafterupdate', 'onbeforeactivate', 'onbeforecopy',
-                    'onbeforecut', 'onbeforedeactivate', 'onbeforeeditfocus', 'onbeforepaste', 'onbeforeprint',
-                    'onbeforeunload', 'onbeforeupdate', 'onblur', 'onbounce', 'oncellchange', 'onchange', 'onclick',
-                    'oncontextmenu', 'oncontrolselect', 'oncopy', 'oncut', 'ondataavailable', 'ondatasetchanged',
-                    'ondatasetcomplete', 'ondblclick', 'ondeactivate', 'ondrag', 'ondragend', 'ondragenter', 'ondragleave',
-                    'ondragover', 'ondragstart', 'ondrop', 'onerror', 'onerrorupdate', 'onfilterchange', 'onfinish', 'onfocus',
-                    'onfocusin', 'onfocusout', 'onhelp', 'onkeydown', 'onkeypress', 'onkeyup', 'onlayoutcomplete', 'onload',
-                    'onlosecapture', 'onmousedown', 'onmouseenter', 'onmouseleave', 'onmousemove', 'onmouseout', 'onmouseover',
-                    'onmouseup', 'onmousewheel', 'onmove', 'onmoveend', 'onmovestart', 'onpaste', 'onpropertychange',
-                    'onreadystatechange', 'onreset', 'onresize', 'onresizeend', 'onresizestart', 'onrowenter', 'onrowexit',
-                    'onrowsdelete', 'onrowsinserted', 'onscroll', 'onselect', 'onselectionchange', 'onselectstart', 'onstart',
-                    'onstop', 'onsubmit', 'onunload');
-        $tagBlacklist = array_merge($ra1, $ra2);
-
-	$preTag = NULL;
-	$postTag = $source;
-	$tagOpen_start = strpos($source, '<');
-	while($tagOpen_start !== FALSE) {
-            $preTag .= substr($postTag, 0, $tagOpen_start);
-            $postTag = substr($postTag, $tagOpen_start);
-            $fromTagOpen = substr($postTag, 1);
-            $tagOpen_end = strpos($fromTagOpen, '>');
-            if ($tagOpen_end === false) break;
-            $tagOpen_nested = strpos($fromTagOpen, '<');
-            if (($tagOpen_nested !== false) && ($tagOpen_nested < $tagOpen_end)) {
-                    $preTag .= substr($postTag, 0, ($tagOpen_nested+1));
-                    $postTag = substr($postTag, ($tagOpen_nested+1));
-                    $tagOpen_start = strpos($postTag, '<');
-                    continue;
-            }
-            $tagOpen_nested = (strpos($fromTagOpen, '<') + $tagOpen_start + 1);
-            $currentTag = substr($fromTagOpen, 0, $tagOpen_end);
-            $tagLength = strlen($currentTag);
-            if (!$tagOpen_end) {
-                    $preTag .= $postTag;
-                    $tagOpen_start = strpos($postTag, '<');
-            }
-            $tagLeft = $currentTag;
-            $attrSet = array();
-            $currentSpace = strpos($tagLeft, ' ');
-            if (substr($currentTag, 0, 1) == '/') {
-                    $isCloseTag = TRUE;
-                    list($tagName) = explode(' ', $currentTag);
-                    $tagName = substr($tagName, 1);
-            } else {
-                    $isCloseTag = FALSE;
-                    list($tagName) = explode(' ', $currentTag);
-            }
-            if ((!preg_match('/^[a-z][a-z0-9]*$/i',$tagName)) || (!$tagName) || ((in_array(strtolower($tagName), $tagBlacklist)))) {
-                    $postTag = substr($postTag, ($tagLength + 2));
-                    $tagOpen_start = strpos($postTag, '<');
-                    continue;
-            }
-            while ($currentSpace !== FALSE) {
-                    $fromSpace = substr($tagLeft, ($currentSpace+1));
-                    $nextSpace = strpos($fromSpace, ' ');
-                    $openQuotes = strpos($fromSpace, '"');
-                    $closeQuotes = strpos(substr($fromSpace, ($openQuotes+1)), '"') + $openQuotes + 1;
-                    if (strpos($fromSpace, '=') !== FALSE) {
-                            if (($openQuotes !== FALSE) && (strpos(substr($fromSpace, ($openQuotes+1)), '"') !== FALSE))
-                                    $attr = substr($fromSpace, 0, ($closeQuotes+1));
-                                    else $attr = substr($fromSpace, 0, $nextSpace);
-                    } else $attr = substr($fromSpace, 0, $nextSpace);
-                    if (!$attr) $attr = $fromSpace;
-                            $attrSet[] = $attr;
-                            $tagLeft = substr($fromSpace, strlen($attr));
-                            $currentSpace = strpos($tagLeft, ' ');
-            }
-            $postTag = substr($postTag, ($tagLength + 2));
-            $tagOpen_start = strpos($postTag, '<');
-	}
-	$preTag .= $postTag;
-	return $preTag;
+    public static function timeAutoFormat($time)
+    {
+        return "<span class='prettyDate' data-unixtime='{$time}'>".date('d-m-Y H:i', $time)."</span>";
     }
-
+    
+    public static function booleanToYesNo($value)
+    {
+        return $value ? Yii::t('app', 'Yes') : Yii::t('app', 'No');
+    }
+    
 }
