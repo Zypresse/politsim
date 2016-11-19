@@ -21,15 +21,69 @@ class TestController extends Controller
 //        models\Tile::updateAll(['regionId' => 19], ['and', ['<=', 'x', -430], ['>', 'x', -750], ['<=', 'y', -600], ['isLand' => true]]);
 //        echo models\Region::findByPk(33)->getPolygon(true);
 //        echo models\State::findByPk(5)->getPolygon(true);
+//        echo models\Tile::find()->count('id');
+//        $state = models\State::find()->one();
+//        
+//        $state->updateParams(true, false);
+//        $pop = 0;
+//        foreach ($state->regions as $region) {
+//            foreach ($region->tiles as $tile) {
+//                $pop += $tile->population;
+//            }
+//        }
+//        echo $pop;
+        echo models\Pop::find()->count();
+    }
+    
+    public function actionUpdateTiles()
+    {
+        Yii::$app->db->createCommand('DELETE FROM tiles WHERE 1')->execute();
+        for ($i = 0; $i < 36; $i++) {
+            $data = json_decode(file_get_contents(Yii::$app->basePath.'/data/default/tiles/part'.$i.'.json'));
+            array_pop($data);
+            echo "part$i loaded".PHP_EOL;
+            foreach (array_chunk($data, 500) as $tiles) {
+                Yii::$app->db->createCommand()->batchInsert('tiles', ['x','y','lat','lon', 'isWater', 'isLand', 'regionId', 'cityId'], $tiles)->execute();
+            }
+            echo "part$i inserted".PHP_EOL;
+        }
+    }
+    
+    public function actionUpdateRegionsAndCities()
+    {
+        Yii::$app->db->createCommand('DELETE FROM regions WHERE 1')->execute();
+        $data = json_decode(file_get_contents(Yii::$app->basePath.'/data/default/regions.json'));
+        array_pop($data);        
+        foreach (array_chunk($data, 500) as $regions) {
+            $regions = array_map(function($region) {
+                for ($i = 4; $i <= 7; $i++) {
+                    $region[$i] = $region[$i] ? json_encode($region[$i]) : null;
+                }
+                return $region;
+            }, $regions);
+            Yii::$app->db->createCommand()->batchInsert('regions', ['id', 'name', 'nameShort', 'population', 'nations', 'religions', 'ages', 'genders'], $regions)->execute();
+        }
         
-        $state = models\State::find()->one();
-        $pop = 0;
-        foreach ($state->regions as $region) {
-            foreach ($region->tiles as $tile) {
-                $pop += $tile->population;
+        Yii::$app->db->createCommand('DELETE FROM cities WHERE 1')->execute();
+        $data = json_decode(file_get_contents(Yii::$app->basePath.'/data/default/cities.json'));
+        array_pop($data);
+        foreach (array_chunk($data, 500) as $cities) {
+            
+            $cities = array_map(function($city) {
+                for ($i = 5; $i <= 8; $i++) {
+                    $city[$i] = $city[$i] ? json_encode($city[$i]) : null;
+                }
+                return $city;
+            }, $cities);
+            Yii::$app->db->createCommand()->batchInsert('cities', ['id', 'name', 'nameShort', 'regionId', 'population', 'nations', 'religions', 'ages', 'genders'], $cities)->execute();
+        }
+        
+        /* @var $region models\Region */
+        foreach (models\Region::find()->all() as $region) {
+            if ($region->biggestCity) {
+                $region->link('city', $region->biggestCity);
             }
         }
-        echo $pop;
     }
     
     public function actionActivate()
@@ -62,6 +116,7 @@ class TestController extends Controller
         models\PartyPost::deleteAll();
         models\Notification::deleteAll();
         models\RegionConstitution::deleteAll();
+        models\Pop::deleteAll();
         
         echo "models cleared".PHP_EOL;
         
@@ -146,6 +201,7 @@ class TestController extends Controller
 
         /* @var $region models\Region */
         foreach ($regions as $i => $region) {
+            echo $region->getTiles()->count('id').PHP_EOL;
             $region->stateId = $state->id;
             $region->save();
             
@@ -175,7 +231,7 @@ class TestController extends Controller
             
             echo "region {$region->name} saved".PHP_EOL;
             
-//            var_dump($region->getPolygon(true));
+            $region->getPolygon(true);
             echo "region {$region->name} polygon saved".PHP_EOL;
             
             $electoralDistrict->getPolygon(true);            
@@ -211,6 +267,7 @@ class TestController extends Controller
             }
             models\Tile::updateAll(['population' => round($population/$regionTilesCount)], ['cityId' => null, 'regionId' => $region->id]);
         }
+        $state->updateParams(true, false);
     }
         
     public function actionPopulationDestinyPolygons()
@@ -249,5 +306,67 @@ class TestController extends Controller
         }
         
         file_put_contents(Yii::$app->basePath.'/data/polygons/popdestiny.json', json_encode($popdestiny));
+    }
+    
+    public function actionUpdatePops()
+    {
+        Yii::$app->db->createCommand()->truncateTable('pops')->execute();
+        /* @var $state models\State */
+        $state = models\State::find()->one();
+        foreach ($state->regions as $region) {
+            /* @var $region models\Region */
+            foreach ($region->cities as $city) {
+                $nations = json_decode($city->nations, true);
+                if (is_array($nations)) foreach ($city->tiles as $tile) {
+                    foreach ($nations as $nationId => $percents) {
+                        $pop = new models\Pop([
+                            'count' => round($tile->population * $percents / 100),
+                            'classId' => models\PopClass::LUMPEN,
+                            'nationId' => $nationId,
+                            'tileId' => $tile->id,
+                            'ideologies' => null,
+                            'religions' => $city->religions,
+                            'genders' => $city->genders,
+                            'ages' => $city->ages,
+                            'contentment' => 0,
+                            'agression' => 0,
+                            'consciousness' => 0,
+                        ]);
+                        if (!$pop->save()) {
+                            var_dump($pop->getErrors());
+                            die();
+                        }
+                    }
+                }
+                $city->updateParams(true, false);
+            }
+            $tilesNotInCities = $region->getTiles()->where(['cityId' => null])->all();
+            
+            $nations = json_decode($region->nations, true);
+            if (is_array($nations)) foreach ($tilesNotInCities as $tile) {
+                foreach ($nations as $nationId => $percents) {
+                    $pop = new models\Pop([
+                        'count' => round($tile->population * $percents / 100),
+                        'classId' => models\PopClass::LUMPEN,
+                        'nationId' => $nationId,
+                        'tileId' => $tile->id,
+                        'ideologies' => null,
+                        'religions' => $region->religions,
+                        'genders' => $region->genders,
+                        'ages' => $region->ages,
+                        'contentment' => 0,
+                        'agression' => 0,
+                        'consciousness' => 0,
+                    ]);
+                    $pop->save();
+                    if (!$pop->save()) {
+                        var_dump($pop->getErrors());
+                        die();
+                    }
+                }
+            }
+            $region->updateParams(true, false);
+        }
+        $state->updateParams(true, false);
     }
 }

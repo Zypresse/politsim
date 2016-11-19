@@ -4,7 +4,8 @@ namespace app\models;
 
 use Yii,
     app\components\TaxPayerModel,
-    app\components\RegionCombiner;
+    app\components\RegionCombiner,
+    app\components\MyMathHelper;
 
 /**
  * Государство
@@ -196,7 +197,7 @@ class State extends TaxPayerModel
         return parent::beforeSave($insert);
     }
     
-    public function updateParams($save = true)
+    public function updateParams($save = true, $polygon = true)
     {
         
         if (!$this->constitution) {
@@ -217,7 +218,16 @@ class State extends TaxPayerModel
             $this->population += $region->population;
         }
         
-        $this->getPolygon(true);
+        $this->nations = MyMathHelper::sumPercents($this->regions, 'nations', 'population', $this->population);
+        $this->religions = MyMathHelper::sumPercents($this->regions, 'religions', 'population', $this->population);
+        $this->classes = MyMathHelper::sumPercents($this->regions, 'classes', 'population', $this->population);
+        $this->ideologies = MyMathHelper::sumPercents($this->regions, 'ideologies', 'population', $this->population);
+        $this->genders = MyMathHelper::sumPercents($this->regions, 'genders', 'population', $this->population);
+        $this->ages = MyMathHelper::sumPercents($this->regions, 'ages', 'population', $this->population);
+        
+        if ($polygon) {
+            $this->getPolygon(true);
+        }
         
         if ($save) {
             return $this->save();

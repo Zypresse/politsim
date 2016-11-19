@@ -4,7 +4,8 @@ namespace app\models;
 
 use Yii,
     app\components\TaxPayerModel,
-    app\components\TileCombiner;
+    app\components\TileCombiner,
+    app\components\MyMathHelper;
 
 /**
  * Административный регион
@@ -25,6 +26,7 @@ use Yii,
  *
  * @property State $state
  * @property City $city
+ * @property City $biggestCity
  * @property City[] $cities
  * @property Tile[] $tiles
  * @property RegionConstitution $constitution
@@ -128,6 +130,11 @@ class Region extends TaxPayerModel
         return $this->hasOne(City::className(), ['id' => 'cityId']);
     }
     
+    public function getBiggestCity()
+    {
+        return $this->hasOne(City::className(), ['regionId' => 'id'])->orderBy(['population' => SORT_DESC]);
+    }
+    
     public function getCities()
     {
         return $this->hasMany(City::className(), ['regionId' => 'id']);
@@ -136,6 +143,11 @@ class Region extends TaxPayerModel
     public function getConstitution()
     {
         return $this->hasOne(RegionConstitution::classname(), ['regionId' => 'id']);
+    }
+    
+    public function getPops()
+    {
+        return $this->hasMany(Pop::className(), ['tileId' => 'id'])->via('tiles');
     }
     
     private function getPolygonFilePath()
@@ -164,7 +176,7 @@ class Region extends TaxPayerModel
     }
     
     
-    public function updateParams($save = true)
+    public function updateParams($save = true, $polygon = true)
     {
         
         if (!$this->constitution) {
@@ -179,7 +191,38 @@ class Region extends TaxPayerModel
             $this->population += $tile->population;
         }
         
-        $this->getPolygon(true);
+        $this->religions = MyMathHelper::sumPercents($this->pops, 'religions', 'count', $this->population);
+        $this->ideologies = MyMathHelper::sumPercents($this->pops, 'ideologies', 'count', $this->population);
+        $this->genders = MyMathHelper::sumPercents($this->pops, 'genders', 'count', $this->population);
+        $this->ages = MyMathHelper::sumPercents($this->pops, 'ages', 'count', $this->population);
+        
+        $nations = [];
+        $classes = [];
+        foreach ($this->pops as $pop) {
+            if (isset($nations[$pop->nationId])) {
+                $nations[$pop->nationId] += $pop->count;
+            } else {
+                $nations[$pop->nationId] = $pop->count;
+            }
+            if (isset($classes[$pop->classId])) {
+                $classes[$pop->classId] += $pop->count;
+            } else {
+                $classes[$pop->classId] = $pop->count;
+            }
+        }
+        
+        foreach ($nations as $nationId => $count) {
+            $nations[$nationId] = round($count / $this->population * 100,2);
+        }
+        foreach ($classes as $classId => $count) {
+            $classes[$classId] = round($count / $this->population * 100,2);
+        }
+        $this->nations = json_encode($nations);
+        $this->classes = json_encode($classes);
+        
+        if ($polygon) {
+            $this->getPolygon(true);
+        }
         
         if ($save) {
             return $this->save();
