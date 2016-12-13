@@ -314,7 +314,7 @@ class TestController extends Controller
         Yii::$app->db->createCommand()->truncateTable('pops')->execute();
         /* @var $state models\State */
         $state = models\State::find()->one();
-        var_dump($state->regions);
+        
         foreach ($state->regions as $region) {
             /* @var $region models\Region */
             foreach ($region->cities as $city) {
@@ -323,7 +323,7 @@ class TestController extends Controller
                     foreach ($nations as $nationId => $percents) {
                         $ideologies = '{"0":100}';
                         $religions = $city->religions ? $city->religions : '{"0":100}';
-                        $genders = $city->genders ? $city->genders : '{"1":55,"2":45}';
+                        $genders = $city->genders ? $city->genders : '{"2":55,"1":45}';
                         $ages = $city->ages ? $city->ages : '{"18":100}';
                         
                         $pop = new models\Pop([
@@ -349,6 +349,7 @@ class TestController extends Controller
                     }
                 }
                 $city->updateParams(true, false);
+                echo $city->name.' updated'.PHP_EOL;
             }
             $tilesNotInCities = $region->getTiles()->where(['cityId' => null])->all();
             
@@ -357,7 +358,7 @@ class TestController extends Controller
                 foreach ($nations as $nationId => $percents) {
                     $ideologies = '{"0":100}';
                     $religions = $region->religions ? $region->religions : '{"0":100}';
-                    $genders = $region->genders ? $region->genders : '{"1":55,"2":45}';
+                    $genders = $region->genders ? $region->genders : '{"2":55,"1":45}';
                     $ages = $region->ages ? $region->ages : '{"18":100}';
                     $pop = new models\Pop([
                         'count' => round($tile->population * $percents / 100),
@@ -372,15 +373,19 @@ class TestController extends Controller
                         'agression' => 0,
                         'consciousness' => 0,
                     ]);
-                    $pop->save();
                     if (!$pop->save()) {
+                        var_dump($pop->attributes);
                         var_dump($pop->getErrors());
                         die();
+                    } else {
+                        echo $pop->count.PHP_EOL;
                     }
                 }
             }
             $region->updateParams(true, false);
+            echo $region->name.' updated'.PHP_EOL;
         }
         $state->updateParams(true, false);
+        echo $state->name.' updated'.PHP_EOL;
     }
 }
