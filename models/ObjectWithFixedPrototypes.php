@@ -21,7 +21,10 @@ abstract class ObjectWithFixedPrototypes extends Object
     
     public static function findOne($id)
     {
-        return new static(static::getList()[intval($id)]);
+        if (isset(static::getList()[intval($id)])) {
+            return new static(static::getList()[intval($id)]);
+        }
+        return null;
     }
     
     public static function findAll()

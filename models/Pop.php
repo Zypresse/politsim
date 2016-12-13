@@ -49,7 +49,6 @@ class Pop extends TaxPayerModel
             [['tileId', 'classId', 'nationId'], 'unique', 'targetAttribute' => ['tileId', 'classId', 'nationId'], 'message' => 'The combination of Class ID, Nation ID and Tile ID has already been taken.'],
             [['utr'], 'exist', 'skipOnError' => true, 'targetClass' => Utr::className(), 'targetAttribute' => ['utr' => 'id']],
             [['tileId'], 'exist', 'skipOnError' => true, 'targetClass' => Tile::className(), 'targetAttribute' => ['tileId' => 'id']],
-            [['nationId'], 'exist', 'skipOnError' => true, 'targetClass' => Nation::className(), 'targetAttribute' => ['nationId' => 'id']],
         ];
     }
 
@@ -82,7 +81,7 @@ class Pop extends TaxPayerModel
     
     public function getNation()
     {
-        return $this->hasOne(Nation::className(), ['id' => 'nationId']);
+        return Nation::findOne($this->nationId);
     }
     
     public function getTaxStateId()
@@ -113,6 +112,10 @@ class Pop extends TaxPayerModel
     public function isGoverment($stateId)
     {
         return false;
+    }
+    
+    public static function primaryKey() {
+        return ['classId', 'nationId', 'tileId'];
     }
 
 }
