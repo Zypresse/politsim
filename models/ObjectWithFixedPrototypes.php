@@ -16,14 +16,17 @@ abstract class ObjectWithFixedPrototypes extends Object
     
     protected static function getList()
     {
-        throw new ErrorException("Method ".static::className()."::getList() should be overrided!");
+        throw new ErrorException("Method ".static::className()."::getList() not overrided in class ".static::className()."!");
     }
     
     public static function findOne($id)
     {
-        if (isset(static::getList()[intval($id)])) {
-            return new static(static::getList()[intval($id)]);
+        foreach (static::getList() as $object) {
+            if ($object['id'] == $id) {
+                return new static($object);
+            }
         }
+        
         return null;
     }
     

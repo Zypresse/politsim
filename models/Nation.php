@@ -16,7 +16,7 @@ class Nation extends ObjectWithFixedPrototypes
     public $groupId;
     public $agressionBase;
     public $consciousnessBase;
-    
+    public $color;
     
     protected static function getList()
     {
@@ -27,6 +27,7 @@ class Nation extends ObjectWithFixedPrototypes
                 'groupId' => NationGroup::NOT_SET,
                 'agressionBase' => 0,
                 'consciousnessBase' => 0,
+                'color' => '#999',
             ],
             [
                 'id' => 2,
@@ -34,6 +35,7 @@ class Nation extends ObjectWithFixedPrototypes
                 'groupId' => NationGroup::EASTERN_SLAVISH,
                 'agressionBase' => 0.7,
                 'consciousnessBase' => 0.1,
+                'color' => '#f00',
             ],
             [
                 'id' => 3,
@@ -41,6 +43,7 @@ class Nation extends ObjectWithFixedPrototypes
                 'groupId' => NationGroup::EASTERN_SLAVISH,
                 'agressionBase' => 0.3,
                 'consciousnessBase' => 0.2,
+                'color' => '#0f0',
             ],
             [
                 'id' => 4,
@@ -48,6 +51,7 @@ class Nation extends ObjectWithFixedPrototypes
                 'groupId' => NationGroup::WESTERN_SLAVISH,
                 'agressionBase' => 0.4,
                 'consciousnessBase' => 0.4,
+                'color' => '#fe0',
             ],
             [
                 'id' => 5,
@@ -55,6 +59,7 @@ class Nation extends ObjectWithFixedPrototypes
                 'groupId' => NationGroup::EASTERN_SLAVISH,
                 'agressionBase' => 0.7,
                 'consciousnessBase' => 0.1,
+                'color' => '#f0f',
             ],
             [
                 'id' => 6,
@@ -62,6 +67,7 @@ class Nation extends ObjectWithFixedPrototypes
                 'groupId' => NationGroup::SEMIT,
                 'agressionBase' => 0.7,
                 'consciousnessBase' => 1.0,
+                'color' => '#3f3',
             ],
             [
                 'id' => 7,
@@ -69,6 +75,7 @@ class Nation extends ObjectWithFixedPrototypes
                 'groupId' => NationGroup::NOT_SET,
                 'agressionBase' => 0.6,
                 'consciousnessBase' => 0.2,
+                'color' => '#f09',
             ],
             [
                 'id' => 8,
@@ -76,6 +83,7 @@ class Nation extends ObjectWithFixedPrototypes
                 'groupId' => NationGroup::NOT_SET,
                 'agressionBase' => 0.9,
                 'consciousnessBase' => 0.1,
+                'color' => '#90f',
             ],
             [
                 'id' => 9,
@@ -83,6 +91,7 @@ class Nation extends ObjectWithFixedPrototypes
                 'groupId' => NationGroup::TURKISH,
                 'agressionBase' => 0.7,
                 'consciousnessBase' => 0.1,
+                'color' => '#f99',
             ],
             [
                 'id' => 10,
@@ -90,6 +99,7 @@ class Nation extends ObjectWithFixedPrototypes
                 'groupId' => NationGroup::BALTISH,
                 'agressionBase' => 0.2,
                 'consciousnessBase' => 0.7,
+                'color' => '#0f9',
             ],
             [
                 'id' => 11,
@@ -97,6 +107,7 @@ class Nation extends ObjectWithFixedPrototypes
                 'groupId' => NationGroup::BALTISH,
                 'agressionBase' => 0.2,
                 'consciousnessBase' => 0.8,
+                'color' => '#0fe',
             ],
             [
                 'id' => 12,
@@ -104,6 +115,7 @@ class Nation extends ObjectWithFixedPrototypes
                 'groupId' => NationGroup::SEMIT,
                 'agressionBase' => 1.0,
                 'consciousnessBase' => 0.4,
+                'color' => '#e0e',
             ],
         ];
     }

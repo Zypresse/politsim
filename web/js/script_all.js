@@ -136,13 +136,14 @@ function escapeHtml(text) {
 function prettyDates() {
     $('.prettyDate').each(function (idx, elem) {
         $(elem).text($.format.prettyDate(new Date($(elem).data('unixtime') * 1000)));
-    })
+    });
     $('.formatDate').each(function (idx, elem) {
         $(elem).text($.format.date(new Date($(elem).data('unixtime') * 1000), 'HH:mm dd-MM-yyyy'));
-    })
+    });
     $('.formatDateCustom').each(function (idx, elem) {
         $(elem).text($.format.date(new Date($(elem).data('unixtime') * 1000), $(elem).data('timeformat')));
-    })
+    });
+    $('.pie').peity('pie');
 }
 
 function show_error(e) {

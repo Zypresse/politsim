@@ -38,7 +38,7 @@ class AppAsset extends AssetBundle
         'js/app.js',
         'js/fullscreen.js',
 //        'js/icheck.js',
-//        'js/jquery.peity.min.js',
+        'js/jquery.peity.min.js',
         'js/jquery-dateFormat.min.js',
         'js/serialize-object.js',
         'js/pace.min.js',
