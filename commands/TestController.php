@@ -51,27 +51,31 @@ class TestController extends Controller
     
     public function actionUpdateRegionsAndCities()
     {
-        Yii::$app->db->createCommand('DELETE FROM regions WHERE 1')->execute();
+        Yii::$app->db->createCommand()->truncateTable('regions')->execute();
         $data = json_decode(file_get_contents(Yii::$app->basePath.'/data/default/regions.json'));
         array_pop($data);        
         foreach (array_chunk($data, 500) as $regions) {
             $regions = array_map(function($region) {
-                for ($i = 4; $i <= 7; $i++) {
-                    $region[$i] = $region[$i] ? json_encode($region[$i]) : null;
+                foreach($region as $i => $val) {
+                    if (is_object($val)) {
+                        $region[$i] = json_encode($val);
+                    }
                 }
                 return $region;
             }, $regions);
             Yii::$app->db->createCommand()->batchInsert('regions', ['id', 'name', 'nameShort', 'population', 'nations', 'religions', 'ages', 'genders'], $regions)->execute();
         }
         
-        Yii::$app->db->createCommand('DELETE FROM cities WHERE 1')->execute();
+        Yii::$app->db->createCommand()->truncateTable('cities')->execute();
         $data = json_decode(file_get_contents(Yii::$app->basePath.'/data/default/cities.json'));
         array_pop($data);
         foreach (array_chunk($data, 500) as $cities) {
             
             $cities = array_map(function($city) {
-                for ($i = 5; $i <= 8; $i++) {
-                    $city[$i] = $city[$i] ? json_encode($city[$i]) : null;
+                foreach($city as $i => $val) {
+                    if (is_object($val)) {
+                        $city[$i] = json_encode($val);
+                    }
                 }
                 return $city;
             }, $cities);
@@ -94,29 +98,28 @@ class TestController extends Controller
     public function actionCleanStart()
     {
         
-        models\State::deleteAll();
-        models\StateConstitution::deleteAll();
-        models\StateConstitutionLicense::deleteAll();
-        models\Agency::deleteAll();
-        models\AgencyConstitution::deleteAll();
-        models\AgencyConstitutionLicense::deleteAll();
-        models\Agency::deleteAll();
-        models\AgencyPost::deleteAll();
-        models\AgencyPostConstitution::deleteAll();
-        models\AgencyPostConstitutionLicense::deleteAll();
-        models\Election::deleteAll();
-        models\ElectionRequestIndividual::deleteAll();
-        models\ElectionRequestParty::deleteAll();
-        models\ElectionVotePop::deleteAll();
-        models\ElectionVoteUser::deleteAll();
-        models\ElectoralDistrict::deleteAll();
-        models\Citizenship::deleteAll();
-        models\Membership::deleteAll();
-        models\Party::deleteAll();
-        models\PartyPost::deleteAll();
-        models\Notification::deleteAll();
-        models\RegionConstitution::deleteAll();
-        models\Pop::deleteAll();
+        Yii::$app->db->createCommand()->truncateTable('states')->execute();
+        Yii::$app->db->createCommand()->truncateTable('constitutions')->execute();
+        Yii::$app->db->createCommand()->truncateTable('constitutions-licenses')->execute();
+        Yii::$app->db->createCommand()->truncateTable('agencies')->execute();
+        Yii::$app->db->createCommand()->truncateTable('constitutions-agencies')->execute();
+        Yii::$app->db->createCommand()->truncateTable('constitutions-agencies-licenses')->execute();
+        Yii::$app->db->createCommand()->truncateTable('agencies-posts')->execute();
+        Yii::$app->db->createCommand()->truncateTable('constitutions-agencies-posts')->execute();
+        Yii::$app->db->createCommand()->truncateTable('constitutions-agencies-posts-licenses')->execute();
+        Yii::$app->db->createCommand()->truncateTable('elections')->execute();
+        Yii::$app->db->createCommand()->truncateTable('elections-requests-individual')->execute();
+        Yii::$app->db->createCommand()->truncateTable('elections-requests-party')->execute();
+        Yii::$app->db->createCommand()->truncateTable('elections-votes-pops')->execute();
+        Yii::$app->db->createCommand()->truncateTable('elections-votes-users')->execute();
+        Yii::$app->db->createCommand()->truncateTable('electoral-districts')->execute();
+        Yii::$app->db->createCommand()->truncateTable('citizenships')->execute();
+        Yii::$app->db->createCommand()->truncateTable('memberships')->execute();
+        Yii::$app->db->createCommand()->truncateTable('parties')->execute();
+        Yii::$app->db->createCommand()->truncateTable('parties-posts')->execute();
+        Yii::$app->db->createCommand()->truncateTable('notifications')->execute();
+        Yii::$app->db->createCommand()->truncateTable('constitutions-regions')->execute();
+        Yii::$app->db->createCommand()->truncateTable('pops')->execute();
         
         echo "models cleared".PHP_EOL;
         
