@@ -22,9 +22,9 @@ class TestController extends Controller
 //        echo models\Region::findByPk(33)->getPolygon(true);
 //        echo models\State::findByPk(5)->getPolygon(true);
 //        echo models\Tile::find()->count('id');
-        $state = models\State::find()->one();
-        
-        $state->updateParams(true, false);
+//        $state = models\State::find()->one();
+//        
+//        $state->updateParams(true, false);
 //        $pop = 0;
 //        foreach ($state->regions as $region) {
 //            foreach ($region->tiles as $tile) {
@@ -32,6 +32,7 @@ class TestController extends Controller
 //            }
 //        }
 //        echo $pop;
+        echo models\Pop::find()->count();
     }
     
     public function actionUpdateTiles()
@@ -115,6 +116,7 @@ class TestController extends Controller
         models\PartyPost::deleteAll();
         models\Notification::deleteAll();
         models\RegionConstitution::deleteAll();
+        models\Pop::deleteAll();
         
         echo "models cleared".PHP_EOL;
         
@@ -201,7 +203,8 @@ class TestController extends Controller
         foreach ($regions as $i => $region) {
             echo $region->getTiles()->count('id').PHP_EOL;
             $region->stateId = $state->id;
-            $region->save();
+            if (!$region->save()) var_dump ($region->getErrors());
+            
             
             $regionpost = new models\AgencyPost([
                 'stateId' => $state->id,
@@ -311,50 +314,78 @@ class TestController extends Controller
         Yii::$app->db->createCommand()->truncateTable('pops')->execute();
         /* @var $state models\State */
         $state = models\State::find()->one();
+        
         foreach ($state->regions as $region) {
             /* @var $region models\Region */
             foreach ($region->cities as $city) {
                 $nations = json_decode($city->nations, true);
                 if (is_array($nations)) foreach ($city->tiles as $tile) {
                     foreach ($nations as $nationId => $percents) {
+                        $ideologies = '{"0":100}';
+                        $religions = $city->religions ? $city->religions : '{"0":100}';
+                        $genders = $city->genders ? $city->genders : '{"2":55,"1":45}';
+                        $ages = $city->ages ? $city->ages : '{"18":100}';
+                        
                         $pop = new models\Pop([
                             'count' => round($tile->population * $percents / 100),
                             'classId' => models\PopClass::LUMPEN,
                             'nationId' => $nationId,
                             'tileId' => $tile->id,
-                            'ideologies' => null,
-                            'religions' => $city->religions,
-                            'genders' => $city->genders,
-                            'ages' => $city->ages,
+                            'ideologies' => $ideologies,
+                            'religions' => $religions,
+                            'genders' => $genders,
+                            'ages' => $ages,
                             'contentment' => 0,
                             'agression' => 0,
                             'consciousness' => 0,
                         ]);
-                        $pop->save();
+                        if (!$pop->save()) {
+                            var_dump($pop->attributes);
+                            var_dump($pop->getErrors());
+                            die();
+                        } else {
+                            echo $pop->count.PHP_EOL;
+                        }
                     }
-                }                
+                }
+                $city->updateParams(true, false);
+                echo $city->name.' updated'.PHP_EOL;
             }
             $tilesNotInCities = $region->getTiles()->where(['cityId' => null])->all();
             
             $nations = json_decode($region->nations, true);
             if (is_array($nations)) foreach ($tilesNotInCities as $tile) {
                 foreach ($nations as $nationId => $percents) {
+                    $ideologies = '{"0":100}';
+                    $religions = $region->religions ? $region->religions : '{"0":100}';
+                    $genders = $region->genders ? $region->genders : '{"2":55,"1":45}';
+                    $ages = $region->ages ? $region->ages : '{"18":100}';
                     $pop = new models\Pop([
                         'count' => round($tile->population * $percents / 100),
                         'classId' => models\PopClass::LUMPEN,
                         'nationId' => $nationId,
                         'tileId' => $tile->id,
-                        'ideologies' => null,
-                        'religions' => $region->religions,
-                        'genders' => $region->genders,
-                        'ages' => $region->ages,
+                        'ideologies' => $ideologies,
+                        'religions' => $religions,
+                        'genders' => $genders,
+                        'ages' => $ages,
                         'contentment' => 0,
                         'agression' => 0,
                         'consciousness' => 0,
                     ]);
-                    $pop->save();
+                    if (!$pop->save()) {
+                        var_dump($pop->attributes);
+                        var_dump($pop->getErrors());
+                        die();
+                    } else {
+                        echo $pop->count.PHP_EOL;
+                    }
                 }
             }
+            $region->updateParams(true, false);
+            echo $region->name.' updated'.PHP_EOL;
         }
+        $state->updateParams(true, false);
+        echo $state->name.' updated'.PHP_EOL;
     }
 }

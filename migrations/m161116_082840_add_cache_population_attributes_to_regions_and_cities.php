@@ -39,7 +39,7 @@ class m161116_082840_add_cache_population_attributes_to_regions_and_cities exten
             'name' => 'VARCHAR(255) NOT NULL',
             'nameShort' => 'VARCHAR(6) NOT NULL',
             'flag' => 'TEXT DEFAULT NULL',
-            'athem' => 'TEXT DEFAULT NULL',
+            'anthem' => 'TEXT DEFAULT NULL',
             'population' => 'UNSIGNED INTEGER NOT NULL DEFAULT 0',
             
             'classes' => 'TEXT DEFAULT NULL',

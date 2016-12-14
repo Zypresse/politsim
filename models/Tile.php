@@ -23,6 +23,7 @@ use Yii,
  * @property Region $region
  * @property City $city
  * @property ElectoralDistrict $electoralDistrict
+ * @property Pop[] $pops
  * 
  * @property double $latFactor
  * @property array $coords
@@ -73,6 +74,11 @@ class Tile extends MyModel
     public function getElectoralDistrict()
     {
         return $this->hasOne(ElectoralDistrict::className(), ['id' => 'electoralDistrictId']);
+    }
+    
+    public function getPops()
+    {
+        return $this->hasMany(Pop::className(), ['tileId' => 'id']);
     }
     
     public function getLatFactor()
