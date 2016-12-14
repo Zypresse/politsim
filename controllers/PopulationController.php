@@ -84,5 +84,5 @@ class PopulationController extends MyController {
             throw new NotFoundHttpException(Yii::t('app', 'City not found'));
         }
         return $city;
-    }
+    }    
 }

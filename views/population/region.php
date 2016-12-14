@@ -2,7 +2,8 @@
 
 use yii\helpers\Html,
     app\components\MyHtmlHelper,
-    app\components\LinkCreator;
+    app\components\LinkCreator,
+    app\components\widgets\PopInfoMenuWidget;
 
 /* @var $this \yii\web\View */
 /* @var $region \app\models\Region */
@@ -21,20 +22,7 @@ use yii\helpers\Html,
 <section class="content">
     <div class="row">
         <div class="col-md-3">
-            <ul>
-                <?php foreach($region->state->regions as $currentRegion): ?>
-                <li <?=$currentRegion->id == $region->id?'class="active"':''?>>
-                    <?=LinkCreator::regionPopulationLink($currentRegion)?>
-                    <?php if ($currentRegion->id == $region->id): ?>
-                    <ul>
-                        <?php foreach ($region->cities as $city): ?>
-                        <li><?=LinkCreator::cityPopulationLink($city)?></li>
-                        <?php endforeach ?>
-                    </ul>
-                    <?php endif ?>
-                </li>
-                <?php endforeach ?>
-            </ul>
+            <?=PopInfoMenuWidget::widget(['activeRegion' => $region])?>
         </div>
         <div class="col-md-9">
             <div class="box">
