@@ -3,7 +3,7 @@
 namespace app\components\widgets;
 
 use Yii;
-use app\models\Nation;
+use app\models\population\Nation;
 
 /**
  * 

@@ -3,7 +3,7 @@
 namespace app\models;
 
 use Yii,
-    app\components\MyModel;
+    app\models\base\MyActiveRecord;
 
 /**
  * Специальный модификатор юзера (баффы напр.)
@@ -24,7 +24,7 @@ use Yii,
  * @property ModifierProto $proto
  * 
  */
-class Modifier extends MyModel
+class Modifier extends MyActiveRecord
 {
     /**
      * @inheritdoc

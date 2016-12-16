@@ -5,7 +5,7 @@ use yii\helpers\Url,
     franciscomaya\sceditor\SCEditor;
 
 /* @var $this \yii\web\View */
-/* @var $model \app\models\Party */
+/* @var $model \app\models\politics\Party */
 /* @var $user \app\models\User */
 
 $form = new ActiveForm();

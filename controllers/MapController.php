@@ -4,7 +4,7 @@ namespace app\controllers;
 
 use Yii,
     app\components\MyController,
-    app\models\State;
+    app\models\politics\State;
 
 /**
  * Description of MapController

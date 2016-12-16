@@ -7,8 +7,8 @@ use yii\helpers\Html,
     app\models\AgencyConstitution;
 
 /* @var $this yii\base\View */
-/* @var $state app\models\State */
-/* @var $constitution app\models\StateConstitution */
+/* @var $state app\models\politics\State */
+/* @var $constitution app\models\politics\constitution\StateConstitution */
 /* @var $user app\models\User */
 
 ?>

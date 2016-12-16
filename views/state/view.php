@@ -5,7 +5,7 @@ use yii\helpers\Html,
     app\components\LinkCreator;
 
 /* @var $this yii\base\View */
-/* @var $state app\models\State */
+/* @var $state app\models\politics\State */
 /* @var $user app\models\User */
 
 $isHaveCitizenship = $user->isHaveCitizenship($state->id);

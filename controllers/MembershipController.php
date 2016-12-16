@@ -4,9 +4,9 @@ namespace app\controllers;
 
 use Yii,
     app\components\MyController,
-    app\models\Party,
-    app\models\PartyPost,
-    app\models\Membership;
+    app\models\politics\Party,
+    app\models\politics\PartyPost,
+    app\models\politics\Membership;
 
 /**
  * 

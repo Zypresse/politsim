@@ -1,13 +1,11 @@
 <?php
 
 use yii\helpers\Html,
-    app\components\LinkCreator,
-    app\components\MyHtmlHelper,
-    app\models\StateConstitution;
+    app\components\LinkCreator;
 
 /* @var $this yii\base\View */
-/* @var $region app\models\Region */
-/* @var $constitution app\models\RegionConstitution */
+/* @var $region app\models\politics\Region */
+/* @var $constitution app\models\politics\constitution\RegionConstitution */
 /* @var $user app\models\User */
 
 ?>

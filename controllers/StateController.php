@@ -4,9 +4,8 @@ namespace app\controllers;
 
 use Yii,
     app\components\MyController,
-    app\models\State,
-    app\models\Agency,
-    app\models\AgencyPost;
+    app\models\politics\State,
+    app\models\politics\Agency;
 
 /**
  * 

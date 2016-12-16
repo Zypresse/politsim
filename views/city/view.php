@@ -5,7 +5,7 @@ use yii\helpers\Html,
     app\components\LinkCreator;
 
 /* @var $this yii\base\View */
-/* @var $city app\models\City */
+/* @var $city app\models\politics\City */
 /* @var $user app\models\User */
 
 ?>

@@ -2,9 +2,7 @@
 
 namespace app\controllers;
 
-use Yii,
-    app\components\MyController,
-    app\models\User,
+use app\components\MyController,
     app\models\Notification;
 
 /**

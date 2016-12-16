@@ -4,10 +4,10 @@ namespace app\controllers;
 
 use Yii,
     app\components\MyController,
-    app\models\Party,
+    app\models\politics\Party,
     app\models\User,
-    app\models\PartyPost,
-    app\models\State,
+    app\models\politics\PartyPost,
+    app\models\politics\State,
     yii\web\Response,
     yii\widgets\ActiveForm;
 

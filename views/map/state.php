@@ -1,7 +1,7 @@
 <?php
 
 /* @var $this \yii\web\View */
-/* @var $state \app\models\State */
+/* @var $state \app\models\politics\State */
 
 use yii\helpers\Html,
     app\components\LinkCreator;

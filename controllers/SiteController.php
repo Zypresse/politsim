@@ -7,7 +7,7 @@ use Yii,
     yii\filters\AccessControl,
     yii\filters\VerbFilter,
     yii\web\UploadedFile,
-    app\models\Account,
+    app\models\account\Account,
     app\models\User,
     app\models\InviteForm,
     app\components\vkapi\VkApi;

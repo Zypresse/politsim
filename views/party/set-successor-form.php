@@ -4,7 +4,7 @@ use yii\helpers\Html,
     yii\jui\AutoComplete;
 
 /* @var $this \yii\web\View */
-/* @var $model \app\models\PartyPost */
+/* @var $model \app\models\politics\PartyPost */
 /* @var $user \app\models\User */
 /* @var $candidats \app\models\User[] */
 

@@ -1,12 +1,11 @@
 <?php
 
-use yii\helpers\Html,
-    app\components\MyHtmlHelper,
+use app\components\MyHtmlHelper,
     app\components\LinkCreator;
 
 /* @var $this \yii\web\View */
 /* @var $user \app\models\User */
-/* @var $parties \app\models\Party[] */
+/* @var $parties \app\models\politics\Party[] */
 
 ?>
 <section class="content-header">

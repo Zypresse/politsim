@@ -4,7 +4,7 @@ namespace app\controllers;
 
 use Yii,
     app\components\MyController,
-    app\models\Region;
+    app\models\politics\Region;
 
 /**
  * 

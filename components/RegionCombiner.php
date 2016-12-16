@@ -2,6 +2,8 @@
 
 namespace app\components;
 
+use app\models\politics\Region;
+
 /**
  * Объединитель регионов
  *
@@ -30,7 +32,7 @@ class RegionCombiner extends TileCombiner
         static::$lines = [];
         static::$linesAdded = [];
         
-        /* @var $list \app\models\Region[] */
+        /* @var $list Region[] */
         $list = $query->all();
         $count = $query->count();
         if ($count == 0) {

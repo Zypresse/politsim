@@ -1,7 +1,6 @@
 <?php
 
-use yii\bootstrap\ActiveForm,
-    app\components\MyHtmlHelper;
+use yii\bootstrap\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\InviteForm */

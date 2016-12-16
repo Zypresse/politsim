@@ -1,11 +1,10 @@
 <?php
 
 use yii\helpers\Html,
-    app\components\MyHtmlHelper,
     app\components\LinkCreator;
 
 /* @var $this yii\base\View */
-/* @var $agency app\models\Agency */
+/* @var $agency app\models\politics\Agency */
 /* @var $user app\models\User */
 
 ?>

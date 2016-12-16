@@ -5,8 +5,8 @@ use app\components\MyHtmlHelper,
 
 /* @var $this \yii\web\View */
 /* @var $user \app\models\User */
-/* @var $requests \app\models\Membership[] */
-/* @var $party \app\models\Party */
+/* @var $requests \app\models\politics\Membership[] */
+/* @var $party \app\models\politics\Party */
 
 ?>
 <table class="table table-bordered table-condensed table-hover">

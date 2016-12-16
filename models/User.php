@@ -4,8 +4,17 @@ namespace app\models;
 
 use Yii,
     yii\web\IdentityInterface,
-    app\components\TaxPayerModel,
-    app\models\Ideology;
+    app\models\economics\UtrType,
+    app\models\economics\TaxPayerModel,
+    app\models\account\Account,
+    app\models\politics\State,
+    app\models\politics\Citizenship,
+    app\models\politics\Party,
+    app\models\politics\AgencyPost,
+    app\models\politics\PartyPost,
+    app\models\politics\City,
+    app\models\politics\Membership,
+    app\models\economics\Dealing;
 
 /**
  * Пользователь игры. Таблица "users".
@@ -36,7 +45,7 @@ use Yii,
  * @property Citizenship[] $approvedCitizenships Гражданства (подтверждённые)
  * @property Citizenship[] $requestedCitizenships Гражданства (неподтверждённые)
  * @property Party[] $parties Партии
- * @property Post[] $posts Посты
+ * @property AgencyPost[] $posts Посты
  * @property PartyPost[] $partyPosts Посты в партиях
  * @property Notification[] $notifications Уведомления
  * @property Building[] $buildings Здания которыми он управляет
@@ -59,7 +68,7 @@ class User extends TaxPayerModel implements IdentityInterface
      */
     public function getUtrType()
     {
-        return Utr::TYPE_USER;
+        return UtrType::USER;
     }
         
     /**

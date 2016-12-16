@@ -1,12 +1,11 @@
 <?php
 
-use yii\helpers\Html,
-    yii\helpers\Url,
+use yii\helpers\Url,
     yii\bootstrap\ActiveForm,
-    app\models\PartyPost;
+    app\models\politics\PartyPost;
 
 /* @var $this \yii\web\View */
-/* @var $model \app\models\PartyPost */
+/* @var $model PartyPost */
 /* @var $user \app\models\User */
 
 $form = new ActiveForm();
