@@ -2,9 +2,8 @@
 
 namespace app\controllers;
 
-use Yii,
-    app\components\MyController,
-    app\models\City;
+use app\components\MyController,
+    app\models\politics\City;
 
 /**
  * 

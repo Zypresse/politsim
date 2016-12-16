@@ -3,7 +3,7 @@
 namespace app\models;
 
 use Yii,
-    app\models\ObjectWithFixedPrototypes;
+    app\models\base\ObjectWithFixedPrototypes;
 
 /**
  * Религия

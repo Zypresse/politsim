@@ -3,12 +3,12 @@
 namespace app\components;
 
 use yii\helpers\Html,
-    app\models\State,
-    app\models\Region,
-    app\models\City,
+    app\models\politics\State,
+    app\models\politics\Region,
+    app\models\politics\City,
     app\models\User,
-    app\models\Party,
-    app\models\Agency;
+    app\models\politics\Party,
+    app\models\politics\Agency;
 
 /**
  * 

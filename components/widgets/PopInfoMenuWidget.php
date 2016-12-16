@@ -3,7 +3,9 @@
 namespace app\components\widgets;
 
 use yii\base\Widget;
-use app\models\State;
+use app\models\politics\State;
+use app\models\politics\Region;
+use app\models\politics\City;
 
 /**
  * 

@@ -1,7 +1,7 @@
 <?php
 
 /* @var $this \yii\web\View */
-/* @var $states \app\models\State[] */
+/* @var $states \app\models\politics\State[] */
 
 use yii\helpers\Html;
 

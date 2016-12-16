@@ -1,14 +1,13 @@
 <?php
 
-use yii\helpers\Html,
-    yii\helpers\Url,
+use yii\helpers\Url,
     yii\helpers\ArrayHelper,
     yii\bootstrap\ActiveForm,
     app\models\Ideology,
-    app\models\Party;
+    app\models\politics\Party;
 
 /* @var $this \yii\web\View */
-/* @var $model \app\models\Party */
+/* @var $model Party */
 /* @var $user \app\models\User */
 
 $form = new ActiveForm();

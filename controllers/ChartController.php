@@ -2,10 +2,9 @@
 
 namespace app\controllers;
 
-use Yii,
-    app\components\MyController,
-    app\models\Party,
-    app\models\State;
+use app\components\MyController,
+    app\models\politics\Party,
+    app\models\politics\State;
 
 /**
  * Рейтинги

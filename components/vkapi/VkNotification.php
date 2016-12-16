@@ -1,11 +1,7 @@
 <?php
 
-/*
- * Copyleft license
- * I dont care how you use it
- */
-
 namespace app\components\vkapi;
+
 use Yii,
     app\components\vkapi\VkApi;
 

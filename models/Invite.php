@@ -2,7 +2,7 @@
 
 namespace app\models;
 
-use app\components\MyModel,
+use app\models\base\MyActiveRecord,
     app\models\User;
 
 /**
@@ -15,7 +15,7 @@ use app\components\MyModel,
  * 
  * @property User $user
  */
-class Invite extends MyModel
+class Invite extends MyActiveRecord
 {
     /**
      * @inheritdoc

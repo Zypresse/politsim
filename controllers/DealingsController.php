@@ -2,8 +2,7 @@
 
 namespace app\controllers;
 
-use Yii,
-    app\components\MyController;
+use app\components\MyController;
 
 /**
  * 

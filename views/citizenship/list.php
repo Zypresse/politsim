@@ -5,8 +5,8 @@ use yii\helpers\Html,
     app\components\LinkCreator;
 
 /* @var $this yii\base\View */
-/* @var $approved app\models\Citizenship[] */
-/* @var $requested app\models\Citizenship[] */
+/* @var $approved app\models\politics\Citizenship[] */
+/* @var $requested app\models\politics\Citizenship[] */
 /* @var $user \app\models\User */
 
 ?>

@@ -3,11 +3,11 @@
 use yii\helpers\Html,
     app\components\MyHtmlHelper,
     app\components\LinkCreator,
-    app\models\Party,
-    app\models\PartyPost;
+    app\models\politics\Party,
+    app\models\politics\PartyPost;
 
 /* @var $this yii\base\View */
-/* @var $party app\models\Party */
+/* @var $party Party */
 /* @var $user app\models\User */
 
 $isHaveMembership = $user->isHaveMembership($party->id);

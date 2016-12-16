@@ -3,7 +3,11 @@
 namespace app\models;
 
 use Yii,
-    app\components\MyModel;
+    app\models\politics\Region,
+    app\models\politics\City,
+    app\models\population\Pop,
+    app\models\politics\elections\ElectoralDistrict,
+    app\models\base\MyActiveRecord;
 
 /**
  * Тайо

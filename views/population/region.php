@@ -3,10 +3,12 @@
 use yii\helpers\Html,
     app\components\MyHtmlHelper,
     app\components\LinkCreator,
-    app\components\widgets\PopInfoMenuWidget;
+    app\components\widgets\PopInfoMenuWidget,
+    app\components\widgets\NationsPieChartWidget,
+    app\components\widgets\GendersPieChartWidget;
 
 /* @var $this \yii\web\View */
-/* @var $region \app\models\Region */
+/* @var $region \app\models\politics\Region */
 
 ?>
 <section class="content-header">
@@ -35,12 +37,31 @@ use yii\helpers\Html,
                     </div>
                 </div>
                 <div class="box-body">
-                    <pre>
-                        <?php var_dump($region->attributes) ?>
-                    </pre>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="box box-info">
+                                <div class="box-header">
+                                    <h3 class="box-title"><?=Yii::t('app', 'Nations')?></h3>
+                                </div>
+                                <div class="box-body text-center">
+                                    <?= NationsPieChartWidget::widget(['data' => $region->nations]) ?>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="box box-info">
+                                <div class="box-header">
+                                    <h3 class="box-title"><?=Yii::t('app', 'Genders structure')?></h3>
+                                </div>
+                                <div class="box-body text-center">
+                                    <?= GendersPieChartWidget::widget(['data' => $region->genders]) ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="box">
+<!--            <div class="box">
                 <div class="box-header">
                     <h2 class="box-title">
                         <?=Yii::t('app', 'Population groups')?>
@@ -49,7 +70,7 @@ use yii\helpers\Html,
                 <div class="box-body">
                     
                 </div>
-            </div>
+            </div>-->
         </div>
     </div>
 </section>

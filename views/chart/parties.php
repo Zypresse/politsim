@@ -5,7 +5,7 @@ use yii\helpers\Html,
     app\components\LinkCreator;
 
 /* @var $this yii\base\View */
-/* @var $list app\models\Party[] */
+/* @var $list app\models\politics\Party[] */
 
 ?>
 <section class="content-header">

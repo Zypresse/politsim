@@ -2,11 +2,10 @@
 
 use yii\helpers\Html,
     app\components\MyHtmlHelper,
-    app\components\LinkCreator,
-    app\models\Election;
+    app\models\politics\elections\Election;
 
 /* @var $this yii\base\View */
-/* @var $elections app\models\Election[] */
+/* @var $elections Election[] */
 /* @var $user app\models\User */
 
 ?>

@@ -8,7 +8,7 @@ use yii\helpers\Html,
     app\components\widgets\GendersPieChartWidget;
 
 /* @var $this \yii\web\View */
-/* @var $state \app\models\State */
+/* @var $state \app\models\politics\State */
 
 ?>
 <section class="content-header">
@@ -58,9 +58,6 @@ use yii\helpers\Html,
                             </div>
                         </div>
                     </div>
-                    <pre>
-                        <?php var_dump($state->attributes) ?>
-                    </pre>
                 </div>
             </div>
         </div>

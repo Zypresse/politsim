@@ -1,11 +1,10 @@
 <?php
 
-use yii\helpers\Html,
-    app\components\LinkCreator;
+use app\components\LinkCreator;
 
 /* @var $this yii\base\View */
-/* @var $initiated app\models\Dealing[] */
-/* @var $received app\models\Dealing[] */
+/* @var $initiated app\models\economics\Dealing[] */
+/* @var $received app\models\economics\Dealing[] */
 /* @var $user app\models\User */
 
 ?>

@@ -2,8 +2,8 @@
 
 use app\components\LinkCreator;
 
-/* @var $state \app\models\State */
-/* @var $states \app\models\State[] */
+/* @var $state \app\models\politics\State */
+/* @var $states \app\models\politics\State[] */
 
 ?>
 <div class="box box-info">

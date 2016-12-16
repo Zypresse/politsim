@@ -114,14 +114,14 @@ abstract class TileCombiner {
 
     public static function combine(\yii\db\ActiveQuery $query)
     {
-        /* @var $list \app\models\Tile[] */
+        /* @var $list Tile[] */
         $list = $query->all();
         return static::combineList($list);
     }
         
     /**
      * 
-     * @param app\models\Tile[] $list
+     * @param Tile[] $list
      * @return array
      * @throws \yii\console\Exception
      */

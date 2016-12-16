@@ -4,7 +4,7 @@ use yii\helpers\Html,
     app\components\MyHtmlHelper;
 
 /* @var $this yii\base\View */
-/* @var $list app\models\State[] */
+/* @var $list app\models\politics\State[] */
 
 ?>
 <section class="content-header">

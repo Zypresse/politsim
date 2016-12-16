@@ -3,9 +3,6 @@
 /* @var $this \yii\web\View */
 /* @var $list \StdClass[] */
 
-use yii\helpers\Html;
-use app\components\MyHtmlHelper;
-
 ?>
 
 <section class="content-header">
