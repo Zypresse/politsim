@@ -2,6 +2,7 @@
 
 namespace app\components\widgets;
 
+use Yii;
 use app\models\Nation;
 
 /**
@@ -12,15 +13,27 @@ class NationsPieChartWidget extends PieChartWidget
     
     public function init()
     {
-        uasort($this->data, function($a, $b) {return $b <=> $a;});
+        parent::init();
+        
+        $this->colName = Yii::t('app', 'Nation');
         $this->colors = [];
-        foreach (array_keys($this->data) as $nationId)
-        {
+        $this->table = [];
+        $i = 0;
+        foreach (array_keys($this->data) as $nationId) {
             $nation = Nation::findOne($nationId);
             $this->colors[] = $nation->color;
+            $this->table[] = [
+                'id' => $nationId,
+                'name' => $nation->name,
+                'color' => $nation->color,
+                'percents' => $this->data[$nationId],
+            ];
+            
+            $i++;
+            if ($i > 4) {
+//                break;
+            }
         }
-        $this->colors = json_encode($this->colors);
-        parent::init();
     }
     
 }

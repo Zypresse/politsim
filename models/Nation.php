@@ -43,7 +43,7 @@ class Nation extends ObjectWithFixedPrototypes
                 'groupId' => NationGroup::EASTERN_SLAVISH,
                 'agressionBase' => 0.3,
                 'consciousnessBase' => 0.2,
-                'color' => '#0f0',
+                'color' => '#fe0',
             ],
             [
                 'id' => 4,
@@ -51,7 +51,7 @@ class Nation extends ObjectWithFixedPrototypes
                 'groupId' => NationGroup::WESTERN_SLAVISH,
                 'agressionBase' => 0.4,
                 'consciousnessBase' => 0.4,
-                'color' => '#fe0',
+                'color' => '#f90',
             ],
             [
                 'id' => 5,
