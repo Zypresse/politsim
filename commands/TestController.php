@@ -37,7 +37,7 @@ class TestController extends Controller
     
     public function actionUpdateTiles()
     {
-        Yii::$app->db->createCommand('DELETE FROM tiles WHERE 1')->execute();
+        Yii::$app->db->createCommand()->truncateTable('tiles')->execute();
         for ($i = 0; $i < 36; $i++) {
             $data = json_decode(file_get_contents(Yii::$app->basePath.'/data/default/tiles/part'.$i.'.json'));
             array_pop($data);
