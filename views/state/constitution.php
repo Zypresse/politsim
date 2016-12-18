@@ -3,12 +3,12 @@
 use yii\helpers\Html,
     app\components\LinkCreator,
     app\components\MyHtmlHelper,
-    app\models\StateConstitution,
-    app\models\AgencyConstitution;
+    app\models\politics\constitution\StateConstitution,
+    app\models\politics\constitution\AgencyConstitution;
 
 /* @var $this yii\base\View */
 /* @var $state app\models\politics\State */
-/* @var $constitution app\models\politics\constitution\StateConstitution */
+/* @var $constitution StateConstitution */
 /* @var $user app\models\User */
 
 ?>
