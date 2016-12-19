@@ -8,9 +8,16 @@ use Yii,
 /**
  * Голос нпц на выборах
  *
+ * @property integer $id
  * @property integer $electionId
  * @property integer $count
- * @property string $popData
+ * @property integer $tileId
+ * @property integer $classId
+ * @property integer $nationId
+ * @property integer $ideologyId
+ * @property integer $religionId
+ * @property integer $gender
+ * @property integer $age
  * @property integer $districtId
  * @property integer $variant
  * @property integer $dateCreated
@@ -35,9 +42,8 @@ class ElectionVotePop extends MyActiveRecord
     public function rules()
     {
         return [
-            [['electionId', 'count', 'popData', 'districtId', 'variant'], 'required'],
-            [['electionId', 'count', 'districtId', 'variant', 'dateCreated'], 'integer', 'min' => 0],
-            [['popData'], 'string'],
+            [['electionId', 'count', 'tileId', 'classId', 'nationId', 'ideologyId', 'religionId', 'gender', 'age', 'districtId', 'variant'], 'required'],
+            [['electionId', 'count', 'tileId', 'classId', 'nationId', 'ideologyId', 'religionId', 'gender', 'age', 'districtId', 'variant', 'dateCreated'], 'integer', 'min' => 0],
             [['electionId'], 'exist', 'skipOnError' => true, 'targetClass' => Election::className(), 'targetAttribute' => ['electionId' => 'id']],
             [['districtId'], 'exist', 'skipOnError' => true, 'targetClass' => ElectoralDistrict::className(), 'targetAttribute' => ['districtId' => 'id']],
         ];
@@ -62,10 +68,5 @@ class ElectionVotePop extends MyActiveRecord
     {
         return $this->hasOne(ElectoralDistrict::className(), ['id' => 'districtId']);
     }
-    
-    public static function primaryKey()
-    {
-        return ['districtId', 'electionId', 'dateCreated', 'variant']; // ???
-    }
-    
+        
 }

@@ -2,60 +2,32 @@
 
 namespace app\models\politics\elections;
 
-use app\models\politics\Agency,
-    app\models\politics\AgencyPost,
-    app\models\base\MyActiveRecord;
+use app\models\base\MyActiveRecord;
 
 /**
  * Объект выборов
  *
  * @property integer $id
- * @property integer $protoId
- * @property integer $agencyId
- * @property integer $postId
- * @property boolean $isIndividual
- * @property boolean $isOnlyParty
+ * @property integer $whomType const from ElectionWhomType Кого выбираем
+ * @property integer $whomId id поста / агенства / референдума / ...
+ * @property integer $whoType const from ElectionWhoType кто выбирает
+ * @property integer $whoId id страны / округа / неба / аллаха
+ * @property integer $settings bitmask с настройкам (второй тур, что-то ещё)
+ * @property integer $initiatorElectionId связанные выборы (сюда ставится id первого тура у второго напр.)
  * @property integer $dateRegistrationStart
+ * @property integer $dateRegistrationEnd
  * @property integer $dateVotingStart
  * @property integer $dateVotingEnd
  * @property string $results
  * 
- * @property ElectionRequestIndividual[] $requestsIndividual
- * @property ElectionRequestParty[] $requestsParty
- * @property Agency $agency
- * @property AgencyPost $post
+ * @property Election $initiator
+ * @property ElectionRequest[] $requests
  * 
  * @property integer $status
  * 
  */
 class Election extends MyActiveRecord
 {
-    
-    /**
-     * выборы ещё не начались
-     */
-    const STATUS_NOT_STARTED = 0;
-    
-    /**
-     * идёт регистрация на выборы
-     */
-    const STATUS_REGISTRATION = 1;
-    
-    /**
-     * идёт голосование
-     */
-    const STATUS_VOTING = 2;
-    
-    /**
-     * идёт подвод итогов выборов
-     */
-    const STATUS_CALCULATING = 3;
-    
-    /**
-     * выборы окончены
-     */
-    const STATUS_ENDED = 4;
-    
     /**
      * @inheritdoc
      */
@@ -70,49 +42,61 @@ class Election extends MyActiveRecord
     public function rules()
     {
         return [
-            [['protoId', 'isIndividual', 'isOnlyParty', 'dateRegistrationStart', 'dateVotingStart', 'dateVotingEnd'], 'required'],
-            [['protoId', 'agencyId', 'postId', 'dateRegistrationStart', 'dateVotingStart', 'dateVotingEnd'], 'integer', 'min' => 0],
+            [['whomType', 'whoType', 'settings', 'dateRegistrationStart', 'dateRegistrationEnd', 'dateVotingStart', 'dateVotingEnd'], 'required'],
+            [['whomType', 'whomId', 'whoType', 'whoId', 'settings', 'initiatorElectionId', 'dateRegistrationStart', 'dateRegistrationEnd', 'dateVotingStart', 'dateVotingEnd'], 'integer', 'min' => 0],
             [['results'], 'string'],
-            [['isIndividual', 'isOnlyParty'], 'boolean'],
-            [['agencyId'], 'exist', 'skipOnError' => true, 'targetClass' => Agency::className(), 'targetAttribute' => ['agencyId' => 'id']],
+            [['initiatorElectionId'], 'exist', 'skipOnError' => true, 'targetClass' => Election::className(), 'targetAttribute' => ['initiatorElectionId' => 'id']],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => Yii::t('app', 'ID'),
+            'whomType' => Yii::t('app', 'Whom Type'),
+            'whomId' => Yii::t('app', 'Whom ID'),
+            'whoType' => Yii::t('app', 'Who Type'),
+            'whoId' => Yii::t('app', 'Who ID'),
+            'settings' => Yii::t('app', 'Settings'),
+            'initiatorElectionId' => Yii::t('app', 'Initiator Election ID'),
+            'dateRegistrationStart' => Yii::t('app', 'Date Registration Start'),
+            'dateRegistrationEnd' => Yii::t('app', 'Date Registration End'),
+            'dateVotingStart' => Yii::t('app', 'Date Voting Start'),
+            'dateVotingEnd' => Yii::t('app', 'Date Voting End'),
+            'results' => Yii::t('app', 'Results'),
         ];
     }
     
-    public function getPost()
+    public function getInitiator()
     {
-        return $this->hasOne(AgencyPost::className(), ['id' => 'postId']);
+        return $this->hasOne(Election::className(), ['id' => 'initiatorElectionId']);
     }
     
-    public function getAgency()
+    public function getRequests()
     {
-        return $this->hasOne(Agency::className(), ['id' => 'agencyId']);
-    }
-    
-    public function getRequestsIndividual()
-    {
-        return $this->hasMany(ElectionRequestIndividual::className(), ['electionId' => 'id']);
-    }
-    
-    public function getRequestsParty()
-    {
-        return $this->hasMany(ElectionRequestParty::className(), ['electionId' => 'id']);
+        return $this->hasMany(ElectionRequest::className(), ['electionId' => 'id']);
     }
     
     public function getStatus()
     {
         if ($this->results) {
-            return static::STATUS_ENDED;
+            return ElectionStatus::ENDED;
         }
+        
         $time = time();
         if ($time < $this->dateRegistrationStart) {
-            return static::STATUS_NOT_STARTED;
+            return ElectionStatus::NOT_STARTED;
+        } elseif ($time < $this->dateRegistrationEnd) {
+            return ElectionStatus::REGISTRATION;
         } elseif ($time < $this->dateVotingStart) {
-            return static::STATUS_REGISTRATION;
+            return ElectionStatus::REGISTRATION_ENDED;
         } elseif ($time < $this->dateVotingEnd) {
-            return static::STATUS_VOTING;
+            return ElectionStatus::VOTING;
         } else {
-            return static::STATUS_CALCULATING;
+            return ElectionStatus::CALCULATING;
         }
     }
-    
 }
