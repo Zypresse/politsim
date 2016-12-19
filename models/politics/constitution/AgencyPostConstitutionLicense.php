@@ -25,7 +25,7 @@ class AgencyPostConstitutionLicense extends MyActiveRecord
      */
     public static function tableName()
     {
-        return 'constitutions-agencies-posts-licenses';
+        return 'constitutionsAgenciesPostsLicenses';
     }
 
     /**

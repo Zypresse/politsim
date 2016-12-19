@@ -7,7 +7,7 @@ class m160920_131556_update_agency_posts extends Migration
     public function up()
     {
         $this->dropTable('posts');
-        $this->createTable('agencies-posts', [
+        $this->createTable('agenciesPosts', [
             'id' => 'INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL',
             'stateId' => 'UNSIGNED INTEGER REFERENCES states(id) NOT NULL',
             'partyId' => 'UNSIGNED INTEGER REFERENCES parties(id) DEFAULT NULL',
@@ -16,16 +16,16 @@ class m160920_131556_update_agency_posts extends Migration
             'nameShort' => 'VARCHAR(6) NOT NULL'
         ]);
         
-        $this->createTable('agencies-to-posts', [
-            'postId' => 'UNSIGNED INTEGER REFERENCES `agencies-posts`(id) NOT NULL',
+        $this->createTable('agenciesToPosts', [
+            'postId' => 'UNSIGNED INTEGER REFERENCES `agenciesPosts`(id) NOT NULL',
             'agencyId' => 'UNSIGNED INTEGER REFERENCES agencies(id) NOT NULL',
         ]);
-        $this->createIndex('agenciesToPosts', 'agencies-to-posts', ['postId', 'agencyId'], true);
+        $this->createIndex('agenciesToPostsPrimary', 'agenciesToPosts', ['postId', 'agencyId'], true);
 
-        $this->dropTable('constitutions-posts');
-        $this->createTable('constitutions-agencies-posts', [
+        $this->dropTable('constitutionsPosts');
+        $this->createTable('constitutionsAgenciesPosts', [
 
-            'postId' => 'UNSIGNED INTEGER PRIMARY KEY REFERENCES `agencies-posts`(id) NOT NULL',
+            'postId' => 'UNSIGNED INTEGER PRIMARY KEY REFERENCES `agenciesPosts`(id) NOT NULL',
 
             // способ назначения
             // 0 - не назначается
@@ -54,12 +54,12 @@ class m160920_131556_update_agency_posts extends Migration
             // 2 право участия в выборах беспартийных (корректно только для выборов лидера)
             'electionsRules' => 'UNSIGNED INTEGER(3) NOT NULL',
             // округ к которому привязан пост
-            'electoralDistrict' => 'UNSIGNED INTEGER REFERENCES `electoral-districts`(id) DEFAULT NULL'
+            'electoralDistrict' => 'UNSIGNED INTEGER REFERENCES `electoralDistricts`(id) DEFAULT NULL'
             
         ]);
         
-        $this->createTable('constitutions-agencies-posts-licenses', [
-            'postId' => 'UNSIGNED INTEGER PRIMARY KEY REFERENCES `agencies-posts`(id) NOT NULL',
+        $this->createTable('constitutionsAgenciesPostsLicenses', [
+            'postId' => 'UNSIGNED INTEGER PRIMARY KEY REFERENCES `agenciesPosts`(id) NOT NULL',
             'licenseProtoId' => 'UNSIGNED INTEGER NOT NULL',
             // права (bitmask)
             // 1 - заниматься деятельностью по лицензии
@@ -69,24 +69,24 @@ class m160920_131556_update_agency_posts extends Migration
             'powers' => 'UNSIGNED INTEGER(2) NOT NULL',
         ]);
         
-        $this->createTable('electoral-districts', [
+        $this->createTable('electoralDistricts', [
             'id' => 'INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL',
             'stateId' => 'UNSIGNED INTEGER REFERENCES states(id) NOT NULL',
             'name' => 'VARCHAR(255) NOT NULL',
             'nameShort' => 'VARCHAR(6) NOT NULL'
         ]);
         
-        $this->createTable('electoral-districts-to-tiles', [
-            'districtId' => 'UNSIGNED INTEGER REFERENCES `electoral-districts`(id) NOT NULL',
+        $this->createTable('electoralDistrictsToTiles', [
+            'districtId' => 'UNSIGNED INTEGER REFERENCES `electoralDistricts`(id) NOT NULL',
             'tileId' => 'UNSIGNED INTEGER REFERENCES tiles(id) NOT NULL',
         ]);
-        $this->createIndex('electoralDistrictsToTiles', 'electoral-districts-to-tiles', ['districtId', 'tileId'], true);
+        $this->createIndex('electoralDistrictsToTilesPrimary', 'electoralDistrictsToTiles', ['districtId', 'tileId'], true);
         
     }
 
     public function down()
     {
-        $this->dropTable('agencies-posts');
+        $this->dropTable('agenciesPosts');
         $this->createTable('posts', [
             'id' => 'INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL',
             'partyId' => 'UNSIGNED INTEGER REFERENCES parties(id) DEFAULT NULL',
@@ -95,10 +95,10 @@ class m160920_131556_update_agency_posts extends Migration
             'nameShort' => 'VARCHAR(6) NOT NULL'
         ]);
         
-        $this->dropTable('agencies-to-posts');
+        $this->dropTable('agenciesToPosts');
         
-        $this->dropTable('constitutions-agencies-posts');
-        $this->createTable('constitutions-posts', [
+        $this->dropTable('constitutionsAgenciesPosts');
+        $this->createTable('constitutionsPosts', [
 
             'postId' => 'UNSIGNED INTEGER PRIMARY KEY REFERENCES posts(id) NOT NULL',
 
@@ -131,9 +131,9 @@ class m160920_131556_update_agency_posts extends Migration
             
         ]);
         
-        $this->dropTable('constitutions-agencies-posts-licenses');
+        $this->dropTable('constitutionsAgenciesPostsLicenses');
         
-        $this->dropTable('electoral-districts');
-        $this->dropTable('electoral-districts-to-tiles');
+        $this->dropTable('electoralDistricts');
+        $this->dropTable('electoralDistrictsToTiles');
     }
 }

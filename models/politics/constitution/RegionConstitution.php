@@ -24,7 +24,7 @@ class RegionConstitution extends MyActiveRecord
      */
     public static function tableName()
     {
-        return 'constitutions-regions';
+        return 'constitutionsRegions';
     }
 
     /**

@@ -33,7 +33,7 @@ class ElectionVotePop extends MyActiveRecord
      */
     public static function tableName()
     {
-        return 'elections-votes-pops';
+        return 'electionsVotesPops';
     }
 
     /**

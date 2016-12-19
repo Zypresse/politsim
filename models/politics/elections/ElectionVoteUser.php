@@ -26,7 +26,7 @@ class ElectionVoteUser extends MyActiveRecord
      */
     public static function tableName()
     {
-        return 'elections-votes-users';
+        return 'electionsVotesUsers';
     }
 
     /**

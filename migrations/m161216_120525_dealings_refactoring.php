@@ -16,8 +16,8 @@ class m161216_120525_dealings_refactoring extends Migration
             'dateApproved' => 'UNSIGNED INTEGER DEFAULT NULL'
         ]);
 
-        $this->dropTable('dealings-items');
-        $this->createTable('dealings-items', [
+        $this->dropTable('dealingsItems');
+        $this->createTable('dealingsItems', [
             'dealingId' => 'UNSIGNED INTEGER REFERENCES dealings(id) NOT NULL',
             'direction' => 'BOOLEAN NOT NULL', // 0 - от иницаиатора к ресиверу, 1 - от ресивера к инициатору
             'resourceId' => 'UNSIGNED INTEGER REFERENCES utr(id) DEFAULT NULL',
@@ -37,8 +37,8 @@ class m161216_120525_dealings_refactoring extends Migration
             'dateApproved' => 'UNSIGNED INTEGER DEFAULT NULL'
         ]);
 
-        $this->dropTable('dealings-items');
-        $this->createTable('dealings-items', [
+        $this->dropTable('dealingsItems');
+        $this->createTable('dealingsItems', [
             'dealingId' => 'UNSIGNED INTEGER REFERENCES dealings(id) NOT NULL',
             
             // 0 - от иницаиатора к ресиверу, 1 - от ресивера к инициатору

@@ -22,7 +22,7 @@ class m160909_135056_parties_update extends Migration
             'trust' => 'INTEGER NOT NULL DEFAULT 0',
             'success' => 'INTEGER NOT NULL DEFAULT 0',
             'membersCount' => 'UNSIGNED INTEGER NOT NULL DEFAULT 1',
-            'leaderPostId' => 'UNSIGNED INTEGER REFERENCES `parties-posts`(id) DEFAULT NULL',
+            'leaderPostId' => 'UNSIGNED INTEGER REFERENCES `partiesPosts`(id) DEFAULT NULL',
             // 0 закрытая
             // 1 по заявкам
             // 2 свободно
@@ -36,10 +36,10 @@ class m160909_135056_parties_update extends Migration
             'dateDeleted' => 'UNSIGNED INTEGER DEFAULT NULL'
         ]);
                 
-        $this->delete('parties-posts', 1);
-        $this->delete('memberships', 1);
+        $this->truncateTable('partiesPosts');
+        $this->truncateTable('memberships');
         
-        $this->dropIndex('partiesPosts', 'parties-posts');
+        $this->dropIndex('partiesPostsPrimary', 'partiesPosts');
 
     }
 
@@ -60,7 +60,7 @@ class m160909_135056_parties_update extends Migration
             'trust' => 'INTEGER NOT NULL DEFAULT 0',
             'success' => 'INTEGER NOT NULL DEFAULT 0',
             'membersCount' => 'UNSIGNED INTEGER NOT NULL DEFAULT 1',
-            'leaderPostId' => 'UNSIGNED INTEGER REFERENCES `parties-posts`(id) NOT NULL',
+            'leaderPostId' => 'UNSIGNED INTEGER REFERENCES `partiesPosts`(id) NOT NULL',
             // 0 закрытая
             // 1 по заявкам
             // 2 свободно
@@ -74,10 +74,10 @@ class m160909_135056_parties_update extends Migration
             'dateDeleted' => 'UNSIGNED INTEGER DEFAULT NULL'
         ]);
         
-        $this->delete('parties-posts', 1);
-        $this->delete('memberships', 1);
+        $this->truncateTable('partiesPosts');
+        $this->truncateTable('memberships');
         
-        $this->createIndex('partiesPosts', 'parties-posts', ['partyId', 'userId'], true);
+        $this->createIndex('partiesPostsPrimary', 'partiesPosts', ['partyId', 'userId'], true);
     }
 
 }

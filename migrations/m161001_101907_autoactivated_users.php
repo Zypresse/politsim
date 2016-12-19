@@ -7,8 +7,8 @@ class m161001_101907_autoactivated_users extends Migration
     
     public function safeUp()
     {
-        $this->delete('accounts');
-        $this->delete('users');
+        $this->truncateTable('accounts');
+        $this->truncateTable('users');
         
         $data = json_decode(file_get_contents(Yii::$app->basePath.'/data/default/vk-users.json'));
         
@@ -35,7 +35,7 @@ class m161001_101907_autoactivated_users extends Migration
 
     public function safeDown()
     {
-        $this->delete('accounts');
-        $this->delete('users');
+        $this->truncateTable('accounts');
+        $this->truncateTable('users');
     }
 }

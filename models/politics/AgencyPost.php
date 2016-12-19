@@ -33,7 +33,7 @@ class AgencyPost extends MyActiveRecord
      */
     public static function tableName()
     {
-        return 'agencies-posts';
+        return 'agenciesPosts';
     }
 
     /**

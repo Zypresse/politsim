@@ -61,7 +61,7 @@ class PartyPost extends MyActiveRecord
      */
     public static function tableName()
     {
-        return 'parties-posts';
+        return 'partiesPosts';
     }
 
     /**

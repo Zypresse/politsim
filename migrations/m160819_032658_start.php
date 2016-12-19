@@ -136,7 +136,7 @@ class m160819_032658_start extends Migration
             
         ]); 
         
-        $this->createTable('constitutions-agencies', [ // куски конституции для агенств
+        $this->createTable('constitutionsAgencies', [ // куски конституции для агенств
             
             'agencyId' => 'UNSIGNED INTEGER PRIMARY KEY REFERENCES agencies(id) NOT NULL',
 
@@ -208,7 +208,7 @@ class m160819_032658_start extends Migration
 
         ]);
         
-        $this->createTable('constitutions-posts', [
+        $this->createTable('constitutionsPosts', [
 
             'postId' => 'UNSIGNED INTEGER PRIMARY KEY REFERENCES posts(id) NOT NULL',
 
@@ -241,7 +241,7 @@ class m160819_032658_start extends Migration
             
         ]);
         
-        $this->createTable('constitutions-regions', [
+        $this->createTable('constitutionsRegions', [
 
             'regionId' => 'UNSIGNED INTEGER PRIMARY KEY REFERENCES regions(id) NOT NULL',
 
@@ -329,35 +329,35 @@ class m160819_032658_start extends Migration
         ]);
         
 
-        $this->createTable('bills-votes', [
+        $this->createTable('billsVotes', [
             'billId' => 'UNSIGNED INTEGER REFERENCES bills(id) NOT NULL',
             'postId' => 'UNSIGNED INTEGER REFERENCES posts(id) NOT NULL',
             'variant' => 'UNSIGNED INTEGER(1) NOT NULL'
         ]);
-        $this->createIndex('billVotePost', 'bills-votes', ['billId', 'postId'], true);
+        $this->createIndex('billVotePost', 'billsVotes', ['billId', 'postId'], true);
     }
 
     private function createHistoricalCountriesTables()
     {
-        $this->createTable('historical-countries', [
+        $this->createTable('historicalCountries', [
             'id' => 'INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL',
             'name' => 'VARCHAR(255) NOT NULL',
             'nameShort' => 'VARCHAR(6) NOT NULL',
             'tilesCount' => 'UNSIGNED INTEGER NOT NULL DEFAULT 0'
         ]);
 
-        $this->createTable('historical-countries-to-tiles', [
-            'historicalCountryId' => 'UNSIGNED INTEGER REFERENCES `historical-countries`(id) NOT NULL',
+        $this->createTable('historicalCountriesToTiles', [
+            'historicalCountryId' => 'UNSIGNED INTEGER REFERENCES `historicalCountries`(id) NOT NULL',
             'tileId' => 'UNSIGNED INTEGER REFERENCES tiles(id) NOT NULL'
         ]);
-        $this->createIndex('historicalCountriesToTiles', 'historical-countries-to-tiles', ['historicalCountryId', 'tileId'], true);
+        $this->createIndex('historicalCountriesToTilesPrimary', 'historicalCountriesToTiles', ['historicalCountryId', 'tileId'], true);
 
-        $this->createTable('historical-countries-claims', [
-            'historicalCountryId' => 'UNSIGNED INTEGER REFERENCES `historical-countries`(id) NOT NULL',
+        $this->createTable('historicalCountriesClaims', [
+            'historicalCountryId' => 'UNSIGNED INTEGER REFERENCES `historicalCountries`(id) NOT NULL',
             'stateId' => 'UNSIGNED INTEGER REFERENCES states(id) NOT NULL',
             'controlledTiles' => 'UNSIGNED INTEGER(5) NOT NULL'
         ]);
-        $this->createIndex('historicalCountriesClaims', 'historical-countries-claims', ['historicalCountryId', 'stateId'], true);
+        $this->createIndex('historicalCountriesClaimsPrimary', 'historicalCountriesClaims', ['historicalCountryId', 'stateId'], true);
     }
 
     private function createDealingsTables()
@@ -371,7 +371,7 @@ class m160819_032658_start extends Migration
             'dateApproved' => 'UNSIGNED INTEGER DEFAULT NULL'
         ]);
 
-        $this->createTable('dealings-items', [
+        $this->createTable('dealingsItems', [
             'dealingId' => 'UNSIGNED INTEGER REFERENCES dealings(id) NOT NULL',
             
             // 0 - от иницаиатора к ресиверу, 1 - от ресивера к инициатору
@@ -413,19 +413,19 @@ class m160819_032658_start extends Migration
             'results' => 'TEXT DEFAULT NULL'
         ]);
 
-        $this->createTable('elections-requests-party', [
+        $this->createTable('electionsRequestsParty', [
             'electionId' => 'UNSIGNED INTEGER REFERENCES elections(id) NOT NULL',
             'partyId' => 'UNSIGNED INTEGER REFERENCES parties(id) NOT NULL',
 
-            'partyListId' => 'UNSIGNED INTEGER REFERENCES `parties-lists`(id) NOT NULL',
+            'partyListId' => 'UNSIGNED INTEGER REFERENCES `partiesLists`(id) NOT NULL',
             // порядковый номер заявки
             'variant' => 'UNSIGNED INTEGER(3) NOT NULL',
             'dateCreated' => 'UNSIGNED INTEGER NOT NULL'
         ]);
-        $this->createIndex('electionsRequestsParty', 'elections-requests-party', ['electionId', 'partyId'], true);
-        $this->createIndex('electionsRequestsPartyVariant', 'elections-requests-party', ['electionId', 'variant'], true);
+        $this->createIndex('electionsRequestsPartyPrimary', 'electionsRequestsParty', ['electionId', 'partyId'], true);
+        $this->createIndex('electionsRequestsPartyVariant', 'electionsRequestsParty', ['electionId', 'variant'], true);
 
-        $this->createTable('elections-requests-individual', [
+        $this->createTable('electionsRequestsIndividual', [
             'electionId' => 'UNSIGNED INTEGER REFERENCES elections(id) NOT NULL',
             'userId' => 'UNSIGNED INTEGER REFERENCES users(id) NOT NULL',
 
@@ -433,18 +433,18 @@ class m160819_032658_start extends Migration
             'variant' => 'UNSIGNED INTEGER(3) NOT NULL',
             'dateCreated' => 'UNSIGNED INTEGER NOT NULL'
         ]);
-        $this->createIndex('electionsRequestsIndividual', 'elections-requests-individual', ['electionId', 'userId'], true);
-        $this->createIndex('electionsRequestsIndividualVariant', 'elections-requests-individual', ['electionId', 'variant'], true);
+        $this->createIndex('electionsRequestsIndividualPrimary', 'electionsRequestsIndividual', ['electionId', 'userId'], true);
+        $this->createIndex('electionsRequestsIndividualVariant', 'electionsRequestsIndividual', ['electionId', 'variant'], true);
 
-        $this->createTable('elections-votes-users', [
+        $this->createTable('electionsVotesUsers', [
             'electionId' => 'UNSIGNED INTEGER REFERENCES elections(id) NOT NULL',
             'userId' => 'UNSIGNED INTEGER REFERENCES users(id) NOT NULL',
             'variant' => 'UNSIGNED INTEGER(3) NOT NULL',
             'dateCreated' => 'UNSIGNED INTEGER NOT NULL'
         ]);
-        $this->createIndex('electionsVotesUsers', 'elections-votes-users', ['electionId', 'userId'], true);
+        $this->createIndex('electionsVotesUsersPrimary', 'electionsVotesUsers', ['electionId', 'userId'], true);
 
-        $this->createTable('elections-votes-pops', [
+        $this->createTable('electionsVotesPops', [
             'electionId' => 'UNSIGNED INTEGER REFERENCES elections(id) NOT NULL',
             
             'count' => 'UNSIGNED INTEGER NOT NULL',
@@ -467,7 +467,7 @@ class m160819_032658_start extends Migration
             'dateEnded' => 'UNSIGNED INTEGER DEFAULT NULL'
         ]);
 
-        $this->createTable('pops-requests', [
+        $this->createTable('popsRequests', [
             'id' => 'INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL',
             'protoId' => 'UNSIGNED INTEGER(4) NOT NULL',
             'data' => 'TEXT DEFAULT NULL',
@@ -477,13 +477,13 @@ class m160819_032658_start extends Migration
             'isApproved' => 'BOOLEAN NOT NULL DEFAULT 0',
         ]);
 
-        $this->createTable('pops-requests-power', [
-            'requestId' => 'UNSIGNED INTEGER REFERENCES `pops-requests`(id) NOT NULL',
+        $this->createTable('popsRequestsPower', [
+            'requestId' => 'UNSIGNED INTEGER REFERENCES `popsRequests`(id) NOT NULL',
             'popId' => 'UNSIGNED INTEGER REFERENCES pops(id) NOT NULL',
             'powerAbsolute' => 'UNSIGNED INTEGER NOT NULL',
             'powerRelative' => 'UNSIGNED REAL NOT NULL'
         ]);
-        $this->createIndex('popsRequestsPower', 'pops-requests-power', ['requestId', 'popId'], true);
+        $this->createIndex('popsRequestsPowerPrimary', 'popsRequestsPower', ['requestId', 'popId'], true);
 
     }
 
@@ -526,7 +526,7 @@ class m160819_032658_start extends Migration
             'utr' => 'UNSIGNED INTEGER REFERENCES utr(id) DEFAULT NULL'
         ]);
     
-        $this->createTable('buildings-twotiled', [            
+        $this->createTable('buildingsTwotiled', [            
             'id' => 'INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL',
             'protoId' => 'UNSIGNED INTEGER(4) NOT NULL',
             'masterId' => 'UNSIGNED INTEGER REFERENCES utr(id) DEFAULT NULL',
@@ -621,24 +621,24 @@ class m160819_032658_start extends Migration
             'winner' => 'UNSIGNED INTEGER REFERENCES utr(id) DEFAULT NULL'
         ]);
 
-        $this->createTable('auctions-bets', [
+        $this->createTable('auctionsBets', [
             'auctionId' => 'UNSIGNED INTEGER REFERENCES auctions(id) NOT NULL',
             'betterId' => 'UNSIGNED INTEGER REFERENCES utr(id) NOT NULL',
             'value' => 'UNSIGNED REAL NOT NULL',
             'dateCreated' => 'UNSIGNED INTEGER'
         ]);
-        $this->createIndex('auctionsBets', 'auctions-bets', ['auctionId', 'betterId'], true);
+        $this->createIndex('auctionsBetsPrimary', 'auctionsBets', ['auctionId', 'betterId'], true);
 
-        $this->createTable('objects-settings-autoselling', [
+        $this->createTable('objectsSettingsAutoselling', [
             'objectId' => 'UNSIGNED INTEGER REFERENCES utr(id) NOT NULL',
             'resourceProtoId' => 'INTEGER NOT NULL', // услуги имеют отрицательные ID прототипа
             
             'currencyId' => 'UNSIGNED INTEGER REFERENCES currencies(id) NOT NULL',
             'price' => 'UNSIGNED REAL NOT NULL' // цена за единицу
         ]);
-        $this->createIndex('ObjectsSettingsAutoselling', 'objects-settings-autoselling', ['objectId', 'resourceProtoId'], true);
+        $this->createIndex('ObjectsSettingsAutosellingPrimary', 'objectsSettingsAutoselling', ['objectId', 'resourceProtoId'], true);
 
-        $this->createTable('objects-settings-autopurchase', [ 
+        $this->createTable('objectsSettingsAutopurchase', [ 
             'objectId' => 'UNSIGNED INTEGER REFERENCES utr(id) NOT NULL',
             'resourceProtoId' => 'INTEGER NOT NULL', // услуги имеют отрицательные ID прототипа
 
@@ -647,9 +647,9 @@ class m160819_032658_start extends Migration
             'maxPrice' => 'UNSIGNED REAL NOT NULL', // максимальная цена за единицу
             'minQuality' => 'UNSIGNED INTEGER NOT NULL' // минимальное качество
         ]);
-        $this->createIndex('ObjectsSettingsAutopurchase', 'objects-settings-autopurchase', ['objectId', 'resourceProtoId'], true);
+        $this->createIndex('ObjectsSettingsAutopurchasePrimary', 'objectsSettingsAutopurchase', ['objectId', 'resourceProtoId'], true);
 
-        $this->createTable('pops-vacancies', [
+        $this->createTable('popsVacancies', [
             'objectId' => 'UNSIGNED INTEGER REFERENCES utr(id) NOT NULL',
             'popClassId' => 'UNSIGNED INTEGER(2) NOT NULL',
 
@@ -666,7 +666,7 @@ class m160819_032658_start extends Migration
             'popAgeMin' => 'UNSIGNED INTEGER(3) DEFAULT NULL',
             'popAgeMax' => 'UNSIGNED INTEGER(3) DEFAULT NULL'
         ]);
-        $this->createIndex('popsVacancies', 'pops-vacancies', ['objectId', 'popClassId'], true);
+        $this->createIndex('popsVacanciesPrimary', 'popsVacancies', ['objectId', 'popClassId'], true);
 
     }
 
@@ -686,7 +686,7 @@ class m160819_032658_start extends Migration
             'utr' => 'UNSIGNED INTEGER REFERENCES utr(id) DEFAULT NULL'
         ]);
 
-        $this->createTable('companies-decisions', [
+        $this->createTable('companiesDecisions', [
             'id' => 'INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL',
             'companyId' => 'UNSIGNED INTEGER REFERENCES companies(id) NOT NULL',
             'protoId' => 'UNSIGNED INTEGER(3) NOT NULL',
@@ -699,12 +699,12 @@ class m160819_032658_start extends Migration
             'percentDisagreement' => 'UNSIGNED REAL NOT NULL DEFAULT 0'
         ]);
 
-        $this->createTable('companies-decisions-votes', [
-            'decisionId' => 'UNSIGNED INTEGER REFERENCES `companies-decisions`(id) NOT NULL',
+        $this->createTable('companiesDecisionsVotes', [
+            'decisionId' => 'UNSIGNED INTEGER REFERENCES `companiesDecisions`(id) NOT NULL',
             'shareholderId' => 'UNSIGNED INTEGER REFERENCES utr(id) NOT NULL',
             'variant' => 'UNSIGNED INTEGER(1) NOT NULL' // 0 - воздержался, 1 - за, 2 - против или номера вариантов решения
         ]);
-        $this->createIndex('companiesDecisionsVotes', 'companies-decisions-votes', ['decisionId', 'shareholderId'], true);
+        $this->createIndex('companiesDecisionsVotesPrimary', 'companiesDecisionsVotes', ['decisionId', 'shareholderId'], true);
 
     }
 
@@ -732,7 +732,7 @@ class m160819_032658_start extends Migration
             'dateExpired' => 'UNSIGNED INTEGER DEFAULT NULL' // срок действия лицензии истёкает
         ]);
 
-        $this->createTable('licenses-rules', [
+        $this->createTable('licensesRules', [
             'protoId' => 'INTEGER NOT NULL',
             'stateId' => 'UNSIGNED INTEGER REFERENCES states(id) NOT NULL',
             // bitmask
@@ -745,7 +745,7 @@ class m160819_032658_start extends Migration
             'priceForResidents' => 'UNSIGNED REAL DEFAULT NULL',
             'priceForNonresidents' => 'UNSIGNED REAL DEFAULT NULL'
         ]);
-        $this->createIndex('licensesRules', 'licenses-rules', ['protoId', 'stateId'], true);
+        $this->createIndex('licensesRulesPrimary', 'licensesRules', ['protoId', 'stateId'], true);
 
     }
 
@@ -784,14 +784,14 @@ class m160819_032658_start extends Migration
             'utr' => 'UNSIGNED INTEGER REFERENCES utr(id) DEFAULT NULL'
         ]);
 
-        $this->createTable('massmedias-subscribes', [
+        $this->createTable('massmediasSubscribes', [
             'massmediaId' => 'UNSIGNED INTEGER REFERENCES massmedias(id) NOT NULL',
             'userId' => 'UNSIGNED INTEGER REFERENCES users(id) NOT NULL',
             'dateSubcribed' => 'UNSIGNED INTEGER NOT NULL'
         ]);
-        $this->createIndex('massmediasSubscribes', 'massmedias-subscribes', ['massmediaId', 'userId'], true);
+        $this->createIndex('massmediasSubscribesPrimary', 'massmediasSubscribes', ['massmediaId', 'userId'], true);
 
-        $this->createTable('massmedias-posts', [
+        $this->createTable('massmediasPosts', [
             'id' =>'INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL',
             'massmediaId' => 'UNSIGNED INTEGER REFERENCES massmedias(id) NOT NULL',
             'authorId' => 'UNSIGNED INTEGER REFERENCES users(id) NOT NULL',
@@ -802,7 +802,7 @@ class m160819_032658_start extends Migration
             'value' => 'TEXT DEFAULT NULL',
 
             'eventId' => 'UNSIGNED INTEGER REFERENCES events(id) DEFAULT NULL',
-            'popRequestId' => 'UNSIGNED INTEGER REFERENCES `pops-requests`(id) DEFAULT NULL',
+            'popRequestId' => 'UNSIGNED INTEGER REFERENCES `popsRequests`(id) DEFAULT NULL',
 
             'votesPlus' => 'UNSIGNED INTEGER(5) NOT NULL DEFAULT 0',
             'votesMinus' => 'UNSIGNED INTEGER(5) NOT NULL DEFAULT 0',
@@ -816,23 +816,23 @@ class m160819_032658_start extends Migration
             'dateDeleted' => 'UNSIGNED INTEGER DEFAULT NULL'
         ]);
 
-        $this->createTable('massmedias-posts-votes', [
-            'postId' => 'UNSIGNED INTEGER REFERENCES `massmedias-posts`(id) NOT NULL',
+        $this->createTable('massmediasPostsVotes', [
+            'postId' => 'UNSIGNED INTEGER REFERENCES `massmediasPosts`(id) NOT NULL',
             'userId' => 'UNSIGNED INTEGER REFERENCES users(id) NOT NULL',
             'variant' => 'UNSIGNED INTEGER(1) NOT NULL'
         ]);
-        $this->createIndex('massmediasPostsVotes', 'massmedias-posts-votes', ['postId', 'userId'], true);
+        $this->createIndex('massmediasPostsVotesPrimary', 'massmediasPostsVotes', ['postId', 'userId'], true);
 
-        $this->createTable('massmedias-posts-comments', [
+        $this->createTable('massmediasPostsComments', [
             'id' => 'INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL',            
-            'postId' => 'UNSIGNED INTEGER REFERENCES `massmedias-posts`(id) NOT NULL',
+            'postId' => 'UNSIGNED INTEGER REFERENCES `massmediasPosts`(id) NOT NULL',
             'userId' => 'UNSIGNED INTEGER REFERENCES users(id) NOT NULL',
             'text' => 'TEXT NOT NULL',
             'dateCreated' => 'UNSIGNED INTEGER NOT NULL',
             'dateEdited' => 'UNSIGNED INTEGER DEFAULT NULL'
         ]);
         
-        $this->createTable('massmedias-editors', [
+        $this->createTable('massmediasEditors', [
             'massmediaId' => 'UNSIGNED INTEGER REFERENCES massmedias(id) NOT NULL',
             'userId' => 'UNSIGNED INTEGER REFERENCES users(id) NOT NULL',
             'name' => 'VARCHAR(255) DEFAULT NULL',
@@ -842,7 +842,7 @@ class m160819_032658_start extends Migration
             'rating' => 'INTEGER NOT NULL DEFAULT 0',
             'isHiding' => 'BOOLEAN NOT NULL DEFAULT 0'
         ]);
-        $this->createIndex('massmediasEditors', 'massmedias-editors', ['massmediaId', 'userId'], true);
+        $this->createIndex('massmediasEditorsPrimary', 'massmediasEditors', ['massmediaId', 'userId'], true);
     }
 
     private function createModifiersTable()
@@ -896,7 +896,7 @@ class m160819_032658_start extends Migration
             'trust' => 'INTEGER NOT NULL DEFAULT 0',
             'success' => 'INTEGER NOT NULL DEFAULT 0',
             'membersCount' => 'UNSIGNED INTEGER NOT NULL DEFAULT 1',
-            'leaderPostId' => 'UNSIGNED INTEGER REFERENCES `parties-posts`(id) NOT NULL',
+            'leaderPostId' => 'UNSIGNED INTEGER REFERENCES `partiesPosts`(id) NOT NULL',
             // 0 закрытая
             // 1 по заявкам
             // 2 свободно
@@ -910,7 +910,7 @@ class m160819_032658_start extends Migration
             'dateDeleted' => 'UNSIGNED INTEGER DEFAULT NULL'
         ]);
 
-        $this->createTable('parties-posts', [
+        $this->createTable('partiesPosts', [
             'id' => 'INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL',
             'partyId' => 'UNSIGNED INTEGER REFERENCES parties(id) NOT NULL',
             'userId' => 'UNSIGNED INTEGER REFERENCES users(id) DEFAULT NULL',
@@ -927,9 +927,9 @@ class m160819_032658_start extends Migration
             'appointmentType' => 'UNSIGNED INTEGER(1) NOT NULL',
             'successorId' => 'UNSIGNED INTEGER REFERENCES users(id) DEFAULT NULL'
         ]);
-        $this->createIndex('partiesPosts', 'parties-posts', ['partyId', 'userId'], true);
+        $this->createIndex('partiesPostsPrimary', 'partiesPosts', ['partyId', 'userId'], true);
 
-        $this->createTable('parties-lists', [
+        $this->createTable('partiesLists', [
             'id' => 'INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL',
             'partyId' => 'UNSIGNED INTEGER REFERENCES parties(id) NOT NULL',
             'isPrimaries' => 'BOOLEAN NOT NULL',
@@ -938,21 +938,21 @@ class m160819_032658_start extends Migration
             'dateEdited' => 'UNSIGNED INTEGER DEFAULT NULL'
         ]);
         
-        $this->createTable('parties-lists-members', [
+        $this->createTable('partiesListsMembers', [
             'id' => 'INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL',
             'userId' => 'UNSIGNED INTEGER REFERENCES users(id) NOT NULL',
-            'listId' => 'UNSIGNED INTEGER REFERENCES `parties-list`(id) NOT NULL',
+            'listId' => 'UNSIGNED INTEGER REFERENCES `partiesList`(id) NOT NULL',
             'position' => 'UNSIGNED INTEGER NOT NULL',
             'votes' => 'UNSIGNED INTEGER DEFAULT NULL'
         ]);
-        $this->createIndex('partiesListsMembersUser', 'parties-lists-members', ['userId', 'listId'], true);
-        $this->createIndex('partiesListsMembersPosition', 'parties-lists-members', ['position', 'listId'], true);
+        $this->createIndex('partiesListsMembersUserPrimary', 'partiesListsMembers', ['userId', 'listId'], true);
+        $this->createIndex('partiesListsMembersPositionPrimary', 'partiesListsMembers', ['position', 'listId'], true);
         
-        $this->createTable('parties-lists-members-votes', [
-            'memberId' => 'UNSIGNED INTEGER REFERENCES `parties-lists-members`(id) NOT NULL',
+        $this->createTable('partiesListsMembersVotes', [
+            'memberId' => 'UNSIGNED INTEGER REFERENCES `partiesListsMembers`(id) NOT NULL',
             'userId' => 'UNSIGNED INTEGER REFERENCES users(id) NOT NULL'
         ]);
-        $this->createIndex('partiesListsMembersVotes', 'parties-lists-members-votes', ['userId', 'memberId'], true);
+        $this->createIndex('partiesListsMembersVotesPrimary', 'partiesListsMembersVotes', ['userId', 'memberId'], true);
         
     }
 
@@ -985,7 +985,7 @@ class m160819_032658_start extends Migration
             'count' => 'UNSIGNED INTEGER NOT NULL',
             'utr' => 'UNSIGNED INTEGER REFERENCES utr(id) DEFAULT NULL'
         ]);
-        $this->createIndex('popsUnique', 'pops', ['tileId', 'workplaceId', 'livingplaceId', 'classId', 'nationId', 'ideologyId', 'religionId', 'genderId', 'age'], true);
+        $this->createIndex('popsPrimary', 'pops', ['tileId', 'workplaceId', 'livingplaceId', 'classId', 'nationId', 'ideologyId', 'religionId', 'genderId', 'age'], true);
     }
 
     private function createMapTables()
@@ -1032,12 +1032,12 @@ class m160819_032658_start extends Migration
         ]);
         $this->createIndex('tilesXY', 'tiles', ['x', 'y'], true);
 
-        $this->createTable('tiles-resources', [
+        $this->createTable('tilesResources', [
             'tileId' => 'UNSIGNED INTEGER REFERENCES tiles(id) NOT NULL',
             'resourceProtoId' => 'UNSIGNED INTEGER NOT NULL',
             'miningFactor' => 'UNSIGNED REAL NOT NULL DEFAULT 1'
         ]);
-        $this->createIndex('tilesResources', 'tiles-resources', ['tileId', 'resourceProtoId'], true);
+        $this->createIndex('tilesResourcesPrimary', 'tilesResources', ['tileId', 'resourceProtoId'], true);
 
     }
 
@@ -1065,7 +1065,7 @@ class m160819_032658_start extends Migration
             'exchangeRateReal' => 'REAL NOT NULL DEFAULT 1'
         ]);
 
-        $this->createTable('resources-prices', [
+        $this->createTable('resourcesPrices', [
             'resourceId' => 'UNSIGNED INTEGER PRIMARY KEY REFERENCES resources(id) NOT NULL',
             'currencyId' => 'UNSIGNED INTEGER REFERENCES currencies(id) NOT NULL',
             'price' => 'UNSIGNED REAL NOT NULL' // за единицу
@@ -1074,19 +1074,19 @@ class m160819_032658_start extends Migration
 
     private function createTaxesTables()
     {
-        $this->createTable('taxes-resources-selling', [
+        $this->createTable('taxesResourcesSelling', [
             'stateId' => 'UNSIGNED INTEGER REFERENCES states(id) NOT NULL',
             'protoId' => 'INTEGER NOT NULL',
             'value' => 'UNSIGNED REAL NOT NULL'
         ]);
-        $this->createIndex('taxesResourcesSellingUnique', 'taxes-resources-selling', ['stateId', 'protoId'], true);
+        $this->createIndex('taxesResourcesSellingUnique', 'taxesResourcesSelling', ['stateId', 'protoId'], true);
 
-        $this->createTable('taxes-buildings-holding', [
+        $this->createTable('taxesBuildingsHolding', [
             'stateId' => 'UNSIGNED INTEGER REFERENCES states(id) NOT NULL',
             'protoId' => 'INTEGER NOT NULL',
             'value' => 'UNSIGNED REAL NOT NULL'
         ]);
-        $this->createIndex('taxesBuildingsHoldingUnique', 'taxes-buildings-holding', ['stateId', 'protoId'], true);
+        $this->createIndex('taxesBuildingsHoldingUnique', 'taxesBuildingsHolding', ['stateId', 'protoId'], true);
     }
 
     private function createTwitterTables()
@@ -1102,20 +1102,20 @@ class m160819_032658_start extends Migration
             'dateDeleted' => 'UNSIGNED INTEGER DEFAULT NULL'
         ]);
 
-        $this->createTable('twitter-profiles', [
+        $this->createTable('twitterProfiles', [
             'userId' => 'UNSIGNED INTEGER PRIMARY KEY REFERENCES users(id) NOT NULL',
             'nickname' => 'VARCHAR(255) NOT NULL',
             'followersCount' => 'UNSIGNED INTEGER NOT NULL DEFAULT 0',
             'dateLastTweet' => 'UNSIGNED INTEGER DEFAULT NULL'
         ]);
-        $this->createIndex('twitterProfilesNickname', 'twitter-profiles', ['nickname'], true);
+        $this->createIndex('twitterProfilesNickname', 'twitterProfiles', ['nickname'], true);
 
-        $this->createTable('twitter-subscribes', [
+        $this->createTable('twitterSubscribes', [
             'userId' => 'UNSIGNED INTEGER REFERENCES users(id) NOT NULL',
             'followerId' => 'UNSIGNED INTEGER REFERENCES users(id) NOT NULL',
             'dateSubcribed' => 'UNSIGNED INTEGER NOT NULL'
         ]);
-        $this->createIndex('twitterSubscribes', 'twitter-subscribes', ['userId', 'followerId'], true);
+        $this->createIndex('twitterSubscribesPrimary', 'twitterSubscribes', ['userId', 'followerId'], true);
     }
 
     private function createUsersTables()
@@ -1165,7 +1165,7 @@ class m160819_032658_start extends Migration
 
     private function createMilitaryTables()
     {
-        $this->createTable('military-units', [
+        $this->createTable('militaryUnits', [
             'id' => 'INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL',
 
             'unitId' => 'UNSIGNED INTEGER REFERENCES units(id) NOT NULL',
@@ -1189,97 +1189,6 @@ class m160819_032658_start extends Migration
 
     public function safeDown()
     {
-        $this->dropTable('constitutions');
-        $this->dropTable('constitutions-agencies');
-        $this->dropTable('constitutions-posts');
-        $this->dropTable('constitutions-regions');
-
-        $this->dropTable('accounts');
-
-        $this->dropTable('bills');
-        $this->dropTable('bills-votes');
-
-        $this->dropTable('historical-countries');
-        $this->dropTable('historical-countries-claims');
-        $this->dropTable('historical-countries-to-tiles');
-
-        $this->dropTable('dealings');
-        $this->dropTable('dealings-items');
-
-        $this->dropTable('elections');
-        $this->dropTable('elections-requests-party');
-        $this->dropTable('elections-requests-individual');
-        $this->dropTable('elections-votes-users');
-        $this->dropTable('elections-votes-pops');
-
-        $this->dropTable('events');
-        $this->dropTable('pops-requests');
-        $this->dropTable('pops-requests-power');
-
-        $this->dropTable('buildings');
-        $this->dropTable('buildings-twotiled');
-        $this->dropTable('units');
-        $this->dropTable('auctions');
-        $this->dropTable('auctions-bets');
-        $this->dropTable('objects-settings-autopurchase');
-        $this->dropTable('objects-settings-autoselling');
-        $this->dropTable('pops-vacancies');
-
-        $this->dropTable('companies');
-        $this->dropTable('companies-decisions');
-        $this->dropTable('companies-decisions-votes');
-
-        $this->dropTable('invites');
-
-        $this->dropTable('licenses');
-        $this->dropTable('licenses-rules');
-
-        $this->dropTable('massmedias');
-        $this->dropTable('massmedias-subscribes');
-        $this->dropTable('massmedias-posts');
-        $this->dropTable('massmedias-posts-votes');
-        $this->dropTable('massmedias-posts-comments');
-        $this->dropTable('massmedias-editors');
-
-        $this->dropTable('modifiers');
-
-        $this->dropTable('notifications');
-
-        $this->dropTable('agencies');
-
-        $this->dropTable('parties');
-        $this->dropTable('parties-lists');
-        $this->dropTable('parties-lists-members');
-        $this->dropTable('parties-lists-members-votes');
-        $this->dropTable('parties-posts');
-
-        $this->dropTable('posts');
-
-        $this->dropTable('pops');
-
-        $this->dropTable('regions');
-        $this->dropTable('cities');
-        $this->dropTable('tiles');
-        $this->dropTable('tiles-resources');
-
-        $this->dropTable('resources');
-        $this->dropTable('currencies');
-        $this->dropTable('resources-prices');
-
-        $this->dropTable('taxes-buildings-holding');
-        $this->dropTable('taxes-resources-selling');
-
-        $this->dropTable('tweets');
-        $this->dropTable('twitter-subscribes');
-        $this->dropTable('twitter-profiles');
-
-        $this->dropTable('users');
-        $this->dropTable('memberships');
-        $this->dropTable('citizenships');
-
-        $this->dropTable('military-units');
-
-        $this->dropTable('utr');
-        
+        return true;        
     }
 }

@@ -7,9 +7,9 @@ class m160923_133604_update_agency_constitutions extends Migration
     public function up()
     {
 
-        $this->dropTable('constitutions-agencies');
+        $this->dropTable('constitutionsAgencies');
         
-        $this->createTable('constitutions-agencies', [ // куски конституции для агенств
+        $this->createTable('constitutionsAgencies', [ // куски конституции для агенств
             
             'agencyId' => 'UNSIGNED INTEGER PRIMARY KEY REFERENCES agencies(id) NOT NULL',
 
@@ -49,9 +49,9 @@ class m160923_133604_update_agency_constitutions extends Migration
     public function down()
     {
         
-        $this->dropTable('constitutions-agencies');
+        $this->dropTable('constitutionsAgencies');
         
-        $this->createTable('constitutions-agencies', [ // куски конституции для агенств
+        $this->createTable('constitutionsAgencies', [ // куски конституции для агенств
             
             'agencyId' => 'UNSIGNED INTEGER PRIMARY KEY REFERENCES agencies(id) NOT NULL',
 

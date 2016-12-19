@@ -61,7 +61,7 @@ class m160915_094339_constitutions_update extends Migration
             
         ]); 
         
-        $this->createTable('constitutions-licenses', [
+        $this->createTable('constitutionsLicenses', [
             'stateId' => 'UNSIGNED INTEGER PRIMARY KEY REFERENCES states(id) NOT NULL',
             'licenseProtoId' => 'UNSIGNED INTEGER NOT NULL',
             // права на ведение бизнеса
@@ -78,11 +78,11 @@ class m160915_094339_constitutions_update extends Migration
             'localMinCapital' => 'UNSIGNED REAL DEFAULT NULL',
             'foreignMinCapital' => 'UNSIGNED REAL DEFAULT NULL',
         ]);
-        $this->createIndex('stateToLicense', 'constitutions-licenses', ['stateId', 'licenseProtoId'], true);
+        $this->createIndex('stateToLicense', 'constitutionsLicenses', ['stateId', 'licenseProtoId'], true);
         
-        $this->dropTable('constitutions-agencies');
+        $this->dropTable('constitutionsAgencies');
         
-        $this->createTable('constitutions-agencies', [ // куски конституции для агенств
+        $this->createTable('constitutionsAgencies', [ // куски конституции для агенств
             
             'agencyId' => 'UNSIGNED INTEGER PRIMARY KEY REFERENCES agencies(id) NOT NULL',
 
@@ -116,7 +116,7 @@ class m160915_094339_constitutions_update extends Migration
             
         ]);
         
-        $this->createTable('constitutions-agencies-licenses', [
+        $this->createTable('constitutionsAgenciesLicenses', [
             'agencyId' => 'UNSIGNED INTEGER PRIMARY KEY REFERENCES agencies(id) NOT NULL',
             'licenseProtoId' => 'UNSIGNED INTEGER NOT NULL',
             // права (bitmask)
@@ -127,9 +127,9 @@ class m160915_094339_constitutions_update extends Migration
             'powers' => 'UNSIGNED INTEGER(2) NOT NULL',
         ]);
         
-        $this->dropTable('constitutions-regions');
+        $this->dropTable('constitutionsRegions');
         
-        $this->createTable('constitutions-regions', [
+        $this->createTable('constitutionsRegions', [
             'regionId' => 'UNSIGNED INTEGER PRIMARY KEY REFERENCES regions(id) NOT NULL',
 
             // пост формального лидера региона
@@ -219,9 +219,9 @@ class m160915_094339_constitutions_update extends Migration
             
         ]); 
                 
-        $this->dropTable('constitutions-regions');
+        $this->dropTable('constitutionsRegions');
         
-        $this->createTable('constitutions-regions', [
+        $this->createTable('constitutionsRegions', [
 
             'regionId' => 'UNSIGNED INTEGER PRIMARY KEY REFERENCES regions(id) NOT NULL',
 
@@ -272,9 +272,9 @@ class m160915_094339_constitutions_update extends Migration
             'retirementAge' => 'UNSIGNED INTEGER(3) DEFAULT 65'
         ]);
         
-        $this->dropTable('constitutions-agencies');
+        $this->dropTable('constitutionsAgencies');
         
-        $this->createTable('constitutions-agencies', [ // куски конституции для агенств
+        $this->createTable('constitutionsAgencies', [ // куски конституции для агенств
             
             'agencyId' => 'UNSIGNED INTEGER PRIMARY KEY REFERENCES agencies(id) NOT NULL',
 
@@ -346,8 +346,8 @@ class m160915_094339_constitutions_update extends Migration
 
         ]);
         
-        $this->dropTable('constitutions-licenses');
-        $this->dropTable('constitutions-agencies-licenses');
+        $this->dropTable('constitutionsLicenses');
+        $this->dropTable('constitutionsAgenciesLicenses');
         
     }
 

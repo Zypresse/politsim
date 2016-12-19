@@ -96,7 +96,7 @@ class AgencyConstitution extends MyActiveRecord
      */
     public static function tableName()
     {
-        return 'constitutions-agencies';
+        return 'constitutionsAgencies';
     }
 
     /**

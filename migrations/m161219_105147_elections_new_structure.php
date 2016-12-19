@@ -37,10 +37,10 @@ class m161219_105147_elections_new_structure extends Migration
             'results' => 'TEXT DEFAULT NULL'
         ]);
         
-        $this->dropTable('elections-requests-individual');
-        $this->dropTable('elections-requests-party');
+        $this->dropTable('electionsRequestsIndividual');
+        $this->dropTable('electionsRequestsParty');
         
-        $this->createTable('elections-requests', [
+        $this->createTable('electionsRequests', [
             'electionId' => 'UNSIGNED INTEGER REFERENCES elections(id) NOT NULL',
             // тип заявки
             // 1 — юзер за себя
@@ -54,11 +54,11 @@ class m161219_105147_elections_new_structure extends Migration
             'variant' => 'UNSIGNED INTEGER(3) NOT NULL',
             'dateCreated' => 'UNSIGNED INTEGER NOT NULL'
         ]);
-        $this->createIndex('electionsRequests', 'elections-requests', ['electionId', 'type', 'objectId'], true);
-        $this->createIndex('electionsRequestsVariant', 'elections-requests', ['electionId', 'variant'], true);
+        $this->createIndex('electionsRequestsPrimary', 'electionsRequests', ['electionId', 'type', 'objectId'], true);
+        $this->createIndex('electionsRequestsVariant', 'electionsRequests', ['electionId', 'variant'], true);
         
-        $this->dropTable('elections-votes-pops');
-        $this->createTable('elections-votes-pops', [
+        $this->dropTable('electionsVotesPops');
+        $this->createTable('electionsVotesPops', [
             'id' => 'INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL',
             'electionId' => 'UNSIGNED INTEGER REFERENCES elections(id) NOT NULL',
             'count' => 'UNSIGNED INTEGER NOT NULL',
@@ -70,19 +70,19 @@ class m161219_105147_elections_new_structure extends Migration
             'gender' => 'UNSIGNED INTEGER(1) NOT NULL',
             'age' => 'UNSIGNED INTEGER(3) NOT NULL',
             'variant' => 'UNSIGNED INTEGER(3) NOT NULL',
-            'districtId' => 'UNSIGNED INTEGER REFERENCES `electoral-districts`(id) NOT NULL',
+            'districtId' => 'UNSIGNED INTEGER REFERENCES `electoralDistricts`(id) NOT NULL',
             'dateCreated' => 'UNSIGNED INTEGER NOT NULL'
         ]);
         
-        $this->dropTable('elections-votes-users');        
-        $this->createTable('elections-votes-users', [
+        $this->dropTable('electionsVotesUsers');        
+        $this->createTable('electionsVotesUsers', [
             'electionId' => 'UNSIGNED INTEGER REFERENCES elections(id) NOT NULL',
             'userId' => 'UNSIGNED INTEGER REFERENCES users(id) NOT NULL',
             'variant' => 'UNSIGNED INTEGER(3) NOT NULL',
-            'districtId' => 'UNSIGNED INTEGER REFERENCES `electoral-districts`(id) NOT NULL',
+            'districtId' => 'UNSIGNED INTEGER REFERENCES `electoralDistricts`(id) NOT NULL',
             'dateCreated' => 'UNSIGNED INTEGER NOT NULL'
         ]);
-        $this->createIndex('electionsVotesUsers', 'elections-votes-users', ['electionId', 'userId'], true);
+        $this->createIndex('electionsVotesUsersPrimary', 'electionsVotesUsers', ['electionId', 'userId'], true);
 
     }
 
@@ -106,21 +106,21 @@ class m161219_105147_elections_new_structure extends Migration
             'results' => 'TEXT DEFAULT NULL'
         ]);
 
-        $this->dropTable('elections-requests');
+        $this->dropTable('electionsRequests');
         
-        $this->createTable('elections-requests-party', [
+        $this->createTable('electionsRequestsParty', [
             'electionId' => 'UNSIGNED INTEGER REFERENCES elections(id) NOT NULL',
             'partyId' => 'UNSIGNED INTEGER REFERENCES parties(id) NOT NULL',
 
-            'partyListId' => 'UNSIGNED INTEGER REFERENCES `parties-lists`(id) NOT NULL',
+            'partyListId' => 'UNSIGNED INTEGER REFERENCES `partiesLists`(id) NOT NULL',
             // порядковый номер заявки
             'variant' => 'UNSIGNED INTEGER(3) NOT NULL',
             'dateCreated' => 'UNSIGNED INTEGER NOT NULL'
         ]);
-        $this->createIndex('electionsRequestsParty', 'elections-requests-party', ['electionId', 'partyId'], true);
-        $this->createIndex('electionsRequestsPartyVariant', 'elections-requests-party', ['electionId', 'variant'], true);
+        $this->createIndex('electionsRequestsPartyPrimary', 'electionsRequestsParty', ['electionId', 'partyId'], true);
+        $this->createIndex('electionsRequestsPartyVariant', 'electionsRequestsParty', ['electionId', 'variant'], true);
 
-        $this->createTable('elections-requests-individual', [
+        $this->createTable('electionsRequestsIndividual', [
             'electionId' => 'UNSIGNED INTEGER REFERENCES elections(id) NOT NULL',
             'userId' => 'UNSIGNED INTEGER REFERENCES users(id) NOT NULL',
 
@@ -128,23 +128,23 @@ class m161219_105147_elections_new_structure extends Migration
             'variant' => 'UNSIGNED INTEGER(3) NOT NULL',
             'dateCreated' => 'UNSIGNED INTEGER NOT NULL'
         ]);
-        $this->createIndex('electionsRequestsIndividual', 'elections-requests-individual', ['electionId', 'userId'], true);
-        $this->createIndex('electionsRequestsIndividualVariant', 'elections-requests-individual', ['electionId', 'variant'], true);
+        $this->createIndex('electionsRequestsIndividualPrimary', 'electionsRequestsIndividual', ['electionId', 'userId'], true);
+        $this->createIndex('electionsRequestsIndividualVariant', 'electionsRequestsIndividual', ['electionId', 'variant'], true);
 
-        $this->dropTable('elections-votes-users');
-        $this->createTable('elections-votes-users', [
+        $this->dropTable('electionsVotesUsers');
+        $this->createTable('electionsVotesUsers', [
             'electionId' => 'UNSIGNED INTEGER REFERENCES elections(id) NOT NULL',
             'userId' => 'UNSIGNED INTEGER REFERENCES users(id) NOT NULL',
-            'districtId' => 'UNSIGNED INTEGER REFERENCES `electoral-districts`(id) NOT NULL',
+            'districtId' => 'UNSIGNED INTEGER REFERENCES `electoralDistricts`(id) NOT NULL',
             'variant' => 'UNSIGNED INTEGER(3) NOT NULL',
             'dateCreated' => 'UNSIGNED INTEGER NOT NULL'
         ]);
-        $this->createIndex('electionsVotesUsers', 'elections-votes-users', ['electionId', 'userId'], true);
+        $this->createIndex('electionsVotesUsersPrimary', 'electionsVotesUsers', ['electionId', 'userId'], true);
 
-        $this->dropTable('elections-votes-pops');
-        $this->createTable('elections-votes-pops', [
+        $this->dropTable('electionsVotesPops');
+        $this->createTable('electionsVotesPops', [
             'electionId' => 'UNSIGNED INTEGER REFERENCES elections(id) NOT NULL',
-            'districtId' => 'UNSIGNED INTEGER REFERENCES `electoral-districts`(id) NOT NULL',
+            'districtId' => 'UNSIGNED INTEGER REFERENCES `electoralDistricts`(id) NOT NULL',
             
             'count' => 'UNSIGNED INTEGER NOT NULL',
             'popData' => 'TEXT NOT NULL',

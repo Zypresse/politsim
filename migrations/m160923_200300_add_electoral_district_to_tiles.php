@@ -7,7 +7,7 @@ class m160923_200300_add_electoral_district_to_tiles extends Migration
     public function safeUp()
     {
         $this->dropIndex('tilesXY', 'tiles');
-        $this->renameTable('tiles', 'tmp-tiles');
+        $this->renameTable('tiles', 'tmpTiles');
         
         $this->createTable('tiles', [
             'id' => 'INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL',
@@ -20,24 +20,24 @@ class m160923_200300_add_electoral_district_to_tiles extends Migration
             'population' => 'UNSIGNED INTEGER NOT NULL DEFAULT 0',
             'regionId' => 'UNSIGNED INTEGER REFERENCES regions(id) DEFAULT NULL',
             'cityId' => 'UNSIGNED INTEGER REFERENCES cities(id) DEFAULT NULL',
-            'electoralDistrictId' => 'UNSIGNED INTEGER REFERENCES `electoral-districts`(id) DEFAULT NULL'
+            'electoralDistrictId' => 'UNSIGNED INTEGER REFERENCES `electoralDistricts`(id) DEFAULT NULL'
         ]);
         $this->createIndex('tilesXY', 'tiles', ['x', 'y'], true);
         
         $this->execute("
             INSERT INTO tiles 
             (id,x,y,lat,lon,isWater,isLand,population,regionId,cityId)
-            SELECT id,x,y,lat,lon,isWater,isLand,population,regionId,cityId FROM `tmp-tiles`
+            SELECT id,x,y,lat,lon,isWater,isLand,population,regionId,cityId FROM `tmpTiles`
         ");
-        $this->dropTable('tmp-tiles');
+        $this->dropTable('tmpTiles');
         
-        $this->dropTable('electoral-districts-to-tiles');
+        $this->dropTable('electoralDistrictsToTiles');
     }
 
     public function safeDown()
     {
         $this->dropIndex('tilesXY', 'tiles');
-        $this->renameTable('tiles', 'tmp-tiles');
+        $this->renameTable('tiles', 'tmpTiles');
         
         $this->createTable('tiles', [
             'id' => 'INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL',
@@ -57,16 +57,16 @@ class m160923_200300_add_electoral_district_to_tiles extends Migration
         $this->execute("
             INSERT INTO tiles 
             (id,x,y,lat,lon,isWater,isLand,population,regionId,cityId)
-            SELECT id,x,y,lat,lon,isWater,isLand,population,regionId,cityId FROM `tmp-tiles`
+            SELECT id,x,y,lat,lon,isWater,isLand,population,regionId,cityId FROM `tmpTiles`
         ");
-        $this->dropTable('tmp-tiles');
+        $this->dropTable('tmpTiles');
         
         
-        $this->createTable('electoral-districts-to-tiles', [
-            'districtId' => 'UNSIGNED INTEGER REFERENCES `electoral-districts`(id) NOT NULL',
+        $this->createTable('electoralDistrictsToTiles', [
+            'districtId' => 'UNSIGNED INTEGER REFERENCES `electoralDistricts`(id) NOT NULL',
             'tileId' => 'UNSIGNED INTEGER REFERENCES tiles(id) NOT NULL',
         ]);
-        $this->createIndex('electoralDistrictsToTiles', 'electoral-districts-to-tiles', ['districtId', 'tileId'], true);
+        $this->createIndex('electoralDistrictsToTilesPrimary', 'electoralDistrictsToTiles', ['districtId', 'tileId'], true);
     }
 
 }

@@ -23,7 +23,7 @@ class ElectionRequest extends MyActiveRecord
      */
     public static function tableName()
     {
-        return 'elections-requests';
+        return 'electionsRequests';
     }
 
     /**

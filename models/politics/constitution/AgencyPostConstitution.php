@@ -40,7 +40,7 @@ class AgencyPostConstitution extends MyActiveRecord
      */
     public static function tableName()
     {
-        return 'constitutions-agencies-posts';
+        return 'constitutionsAgenciesPosts';
     }
 
     /**

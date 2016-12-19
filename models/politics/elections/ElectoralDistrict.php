@@ -28,7 +28,7 @@ class ElectoralDistrict extends MyActiveRecord
      */
     public static function tableName()
     {
-        return 'electoral-districts';
+        return 'electoralDistricts';
     }
 
     /**

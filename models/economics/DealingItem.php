@@ -24,7 +24,7 @@ class DealingItem extends MyActiveRecord
      */
     public static function tableName()
     {
-        return 'dealings-items';
+        return 'dealingsItems';
     }
 
     /**

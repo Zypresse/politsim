@@ -27,7 +27,7 @@ class StateConstitutionLicense extends MyActiveRecord
      */
     public static function tableName()
     {
-        return 'constitutions-licenses';
+        return 'constitutionsLicenses';
     }
 
     /**
