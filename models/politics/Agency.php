@@ -129,6 +129,7 @@ class Agency extends TaxPayerModel
             $election = new Election([
                 'protoId' => $this->constitution->assignmentRule,
                 'agencyId' => $this->id,
+                'isIndividual' => false,
                 'isOnlyParty' => true,
                 'dateRegistrationStart' => time(),
                 'dateVotingStart' => time() + 24*60*60*$this->constitution->termOfElectionsRegistration,

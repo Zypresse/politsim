@@ -13,7 +13,7 @@ class NotificationProto extends ObjectWithFixedPrototypes
     public $icon;
     public $iconBg;
     
-    private static function getList()
+    protected static function getList()
     {
         return [
             [
