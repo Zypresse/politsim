@@ -36,7 +36,7 @@ use Yii,
  *
  * @author ilya
  */
-class Tile extends MyModel
+class Tile extends MyActiveRecord
 {
     
     /**
@@ -197,12 +197,12 @@ class Tile extends MyModel
         90 => 0,
     ];
     
-    public function getH()
+    private function getH()
     {
         return static::$FUCK[round($this->lat)]*$this->latFactor;
     }
     
-    public function getA()
+    private function getA()
     {
         return static::$FUCK[round($this->lat)]*static::R;
     }
