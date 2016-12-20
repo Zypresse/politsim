@@ -4,11 +4,12 @@ namespace app\models\politics;
 
 use Yii,
     app\models\economics\UtrType,
-    app\models\economics\TaxPayerModel,
+    app\models\politics\constitution\Constitution,
+    app\models\politics\constitution\ConstitutionOwner,
+    app\models\politics\constitution\ConstitutionOwnerType,
     app\components\TileCombiner,
     app\models\Tile,
     app\models\population\Pop,
-    app\models\politics\constitution\RegionConstitution,
     app\components\MyMathHelper;
 
 /**
@@ -34,10 +35,10 @@ use Yii,
  * @property City[] $cities
  * @property Tile[] $tiles
  * @property Pop[] $pops
- * @property RegionConstitution $constitution
+ * @property Constitution $constitution
  * 
  */
-class Region extends TaxPayerModel
+class Region extends ConstitutionOwner
 {
         
     /**
@@ -144,12 +145,7 @@ class Region extends TaxPayerModel
     {
         return $this->hasMany(City::className(), ['regionId' => 'id']);
     }
-    
-    public function getConstitution()
-    {
-        return $this->hasOne(RegionConstitution::classname(), ['regionId' => 'id']);
-    }
-    
+        
     public function getPops()
     {
         return $this->hasMany(Pop::className(), ['tileId' => 'id'])->via('tiles');
@@ -233,4 +229,10 @@ class Region extends TaxPayerModel
             return $this->save();
         }
     }
+
+    public static function getConstitutionOwnerType(): integer
+    {
+        return ConstitutionOwnerType::REGION;
+    }
+
 }

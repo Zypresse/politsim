@@ -3,9 +3,11 @@
 namespace app\models\politics;
 
 use Yii,
-    app\models\base\MyActiveRecord,
+    app\models\economics\UtrType,
+    app\models\politics\constitution\Constitution,
+    app\models\politics\constitution\ConstitutionOwner,
+    app\models\politics\constitution\ConstitutionOwnerType,
     app\models\politics\elections\Election,
-    app\models\politics\constitution\AgencyPostConstitution,
     app\models\User;
 
 /**
@@ -17,16 +19,17 @@ use Yii,
  * @property integer $userId
  * @property string $name
  * @property string $nameShort
+ * @property integer $utr
  * 
  * @property Agency[] $agencies
  * @property State $state
  * @property Party $party
  * @property User $user
- * @property AgencyPostConstitution $constitution
  * @property Election[] $elections
+ * @property Constitution $constitution
  * 
  */
-class AgencyPost extends MyActiveRecord
+class AgencyPost extends ConstitutionOwner
 {
     /**
      * @inheritdoc
@@ -83,33 +86,45 @@ class AgencyPost extends MyActiveRecord
     {
         return $this->hasOne(User::className(), ['id' => 'userId']);
     }
-    
-    public function getConstitution()
-    {
-        return $this->hasOne(AgencyPostConstitution::className(), ['postId' => 'id']);
-    }
-        
+            
     public function getElections()
     {
         return $this->hasMany(Election::className(), ['postId' => 'id']);
     }
-    
-    public function getNextElection()
+
+    public function getTaxStateId(): integer
     {
-        $election = $this->getElections()->orderBy(['id' => SORT_DESC])->where(['results' => null])->one();
-//        if (is_null($election) && $this->constitution->assignmentRule == AgencyConstitution::ASSIGNMENT_RULE_ELECTIONS_PLURARITY) {
-//            $election = new Election([
-//                'protoId' => $this->constitution->assignmentRule,
-//                'postId' => $this->id,
-//                'isIndividual' => true,
-//                'isOnlyParty' => !($this->constitution->electionsRules & AgencyPostConstitution::ELECTIONS_RULE_ALLOW_SELFREQUESTS),
-//                'dateRegistrationStart' => time(),
-//                'dateVotingStart' => time() + $this->constitution->termOfElectionsRegistration*60*60*24,
-//                'dateVotingEnd' => time() + $this->constitution->termOfElectionsRegistration*60*60*24 + $this->constitution->termOfElections*60*60*24,
-//            ]);
-//            $election->save();
-//        }
-        return $election;
+        return $this->stateId;
     }
-    
+
+    public function getUserControllerId()
+    {
+        return $this->userId;
+    }
+
+    public function getUtrType(): integer
+    {
+        return UtrType::POST;
+    }
+
+    public function isGoverment($stateId): boolean
+    {
+        return $this->stateId == $stateId;
+    }
+
+    public function isTaxedInState($stateId): boolean
+    {
+        return $this->stateId == $stateId;
+    }
+
+    public function isUserController($userId): boolean
+    {
+        return $this->userId == $userId;
+    }
+
+    public static function getConstitutionOwnerType(): integer
+    {
+        return ConstitutionOwnerType::POST;
+    }
+
 }

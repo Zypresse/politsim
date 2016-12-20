@@ -4,9 +4,9 @@ namespace app\models\politics;
 
 use Yii,
     app\models\politics\elections\Election,
-    app\models\politics\constitution\AgencyConstitution,
-    app\models\politics\constitution\AgencyPostConstitution,
-    app\models\economics\TaxPayerModel,
+    app\models\politics\constitution\Constitution,
+    app\models\politics\constitution\ConstitutionOwner,
+    app\models\politics\constitution\ConstitutionOwnerType,
     app\models\economics\Utr,
     app\models\economics\UtrType;
 
@@ -22,12 +22,12 @@ use Yii,
  * @property integer $utr
  * 
  * @property State $state
- * @property AgencyConstitution $constitution
  * @property AgencyPost[] $posts
  * @property Election[] $elections
+ * @property Constitution $constitution
  * 
  */
-class Agency extends TaxPayerModel
+class Agency extends ConstitutionOwner
 {
     /**
      * @inheritdoc
@@ -103,11 +103,6 @@ class Agency extends TaxPayerModel
         return $this->hasOne(State::className(), ['id' => 'stateId']);
     }
     
-    public function getConstitution()
-    {
-        return $this->hasOne(AgencyConstitution::className(), ['agencyId' => 'id']);
-    }
-    
     public function getPosts()
     {
         return $this->hasMany(AgencyPost::className(), ['id' => 'postId'])
@@ -119,29 +114,6 @@ class Agency extends TaxPayerModel
         return $this->hasMany(Election::className(), ['agencyId' => 'id']);
     }
     
-    public function getNextElection()
-    {
-        if (!in_array($this->constitution->assignmentRule, [AgencyConstitution::ASSIGNMENT_RULE_ELECTIONS_PLURARITY, AgencyConstitution::ASSIGNMENT_RULE_ELECTIONS_PROPORTIONAL])) {
-            return null;
-        }
-        $election = $this->getElections()->orderBy(['id' => SORT_DESC])->where(['results' => null])->one();
-        if (is_null($election)) {
-            $election = new Election([
-                'protoId' => $this->constitution->assignmentRule,
-                'agencyId' => $this->id,
-                'isIndividual' => false,
-                'isOnlyParty' => true,
-                'dateRegistrationStart' => time(),
-                'dateVotingStart' => time() + 24*60*60*$this->constitution->termOfElectionsRegistration,
-                'dateVotingEnd' => time() + 24*60*60*$this->constitution->termOfElectionsRegistration + 24*60*60*$this->constitution->termOfElections
-            ]);
-            if (!$election->save()) {
-                throw new \yii\base\Exception("Can not save elections object!");
-            }
-        }
-        return $election;
-    }
-
     public function beforeSave($insert)
     {
         
@@ -151,45 +123,10 @@ class Agency extends TaxPayerModel
         
         return parent::beforeSave($insert);
     }
-    
-    public function updateTempPosts()
+
+    public static function getConstitutionOwnerType(): integer
     {
-        $count = $this->constitution ? $this->constitution->tempPostsCount : 0;
-        $leaderPostId = $this->constitution ? $this->constitution->leaderPostId : 0;
-        $tempPostId = $this->constitution ? $this->constitution->tempPostId : 0;
-        if ($count > 0 && $tempPostId) {
-            $tempPost = null;
-            foreach ($this->posts as $post) {
-                if ($post->id == $leaderPostId) {
-                    continue;
-                }
-                if ($post->id == $tempPostId) {
-                    $tempPost = $post;
-                    continue;
-                }
-                $post->delete();
-            }
-            if ($tempPost && $tempPost->constitution) {
-                for ($i = 0; $i < $count-1; $i++) {
-                    $post = new AgencyPost([
-                        'stateId' => $tempPost->stateId,
-                        'name' => $tempPost->name,
-                        'nameShort' => $tempPost->nameShort
-                    ]);
-                    $post->save();
-                    $postConstitution = AgencyPostConstitution::generate();
-                    $postConstitution->postId = $post->id;
-                    $postConstitution->assignmentRule = $tempPost->constitution->assignmentRule;
-                    $postConstitution->electionsRules = $tempPost->constitution->electionsRules;
-                    $postConstitution->powers = $tempPost->constitution->powers;
-                    $postConstitution->termOfElections = $tempPost->constitution->termOfElections;
-                    $postConstitution->termOfElectionsRegistration = $tempPost->constitution->termOfElectionsRegistration;
-                    $postConstitution->termOfOffice = $tempPost->constitution->termOfOffice;
-                    $postConstitution->save();
-                    $post->link('agencies', $this);
-                }
-            }
-        }
+        return ConstitutionOwnerType::AGENCY;
     }
 
 }

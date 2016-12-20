@@ -4,8 +4,9 @@ namespace app\models\politics;
 
 use Yii,
     app\models\economics\UtrType,
-    app\models\economics\TaxPayerModel,
-    app\models\politics\constitution\StateConstitution,
+    app\models\politics\constitution\Constitution,
+    app\models\politics\constitution\ConstitutionOwnerType,
+    app\models\politics\constitution\ConstitutionOwner,
     app\components\RegionCombiner,
     app\components\MyMathHelper;
 
@@ -31,16 +32,16 @@ use Yii,
  * @property string $polygon
  * 
  * @property City $city
- * @property StateConstitution $constitution
  * @property GovermentForm $govermentForm
  * @property StateStructure $stateStructure
  * @property Region[] $regions
  * @property Agency[] $agencies
  * @property Party[] $parties
+ * @property Constitution $constitution
  *
  * @author ilya
  */
-class State extends TaxPayerModel
+class State extends ConstitutionOwner
 {
     
     /**
@@ -145,12 +146,7 @@ class State extends TaxPayerModel
     {
         return $this->hasOne(City::classname(), ['id' => 'cityId']);
     }
-    
-    public function getConstitution()
-    {
-        return $this->hasOne(StateConstitution::classname(), ['stateId' => 'id']);
-    }
-    
+        
     public function getRegions()
     {
         return $this->hasMany(Region::classname(), ['stateId' => 'id']);
@@ -232,5 +228,10 @@ class State extends TaxPayerModel
             return $this->save();
         }
     }
-        
+
+    public static function getConstitutionOwnerType(): integer
+    {
+        return ConstitutionOwnerType::STATE;
+    }
+
 }

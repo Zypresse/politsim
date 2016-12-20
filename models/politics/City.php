@@ -4,7 +4,9 @@ namespace app\models\politics;
 
 use Yii,
     app\models\economics\UtrType,
-    app\models\economics\TaxPayerModel,
+    app\models\politics\constitution\Constitution,
+    app\models\politics\constitution\ConstitutionOwner,
+    app\models\politics\constitution\ConstitutionOwnerType,
     app\components\TileCombiner,
     app\components\MyMathHelper,
     app\models\Tile,
@@ -27,8 +29,9 @@ use Yii,
  * @property Region $region
  * @property Tile[] $tiles
  * @property Pop[] $pops
+ * @property Constitution $constitution
  */
-class City extends TaxPayerModel
+class City extends ConstitutionOwner
 {
     
     /**
@@ -198,5 +201,10 @@ class City extends TaxPayerModel
             return $this->save();
         }
     }
-    
+
+    public static function getConstitutionOwnerType(): integer
+    {
+        return ConstitutionOwnerType::CITY;
+    }
+
 }
