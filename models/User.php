@@ -12,9 +12,9 @@ use Yii,
     app\models\politics\Party,
     app\models\politics\AgencyPost,
     app\models\politics\PartyPost,
-    app\models\politics\City,
     app\models\politics\Membership,
-    app\models\economics\Dealing;
+    app\models\economics\Dealing,
+    app\models\Tile;
 
 /**
  * Пользователь игры. Таблица "users".
@@ -24,7 +24,7 @@ use Yii,
  * @property string $avatar Маленькая фотография 50x50
  * @property string $avatarBig Большая фотография 400xn
  * @property integer $genderId Пол: 0 - неопр., 1 - женский, 2 - мужской
- * @property integer $cityId ID Города
+ * @property integer $tileId ID Тайла где он живёт
  * @property integer $ideologyId ID Идеологии
  * @property integer $religionId ID Религии
  * @property integer $fame Известность
@@ -56,7 +56,7 @@ use Yii,
  * @property Account[] $accounts Аккаунты
  * @property Ideology $ideology Идеология
  * @property Religion $religion Религия
- * @property City $city Город
+ * @property Tile $tile Тайл
  * @property Modifier[] $modifiers Модификаторы
  */
 class User extends TaxPayerModel implements IdentityInterface
@@ -308,6 +308,11 @@ class User extends TaxPayerModel implements IdentityInterface
     public function getModifiers()
     {
         return $this->hasMany(Modifier::className(), ['userId' => 'id']);
+    }
+    
+    public function getTile()
+    {
+        return $this->hasOne(Tile::className(), ['id' => 'tileId']);
     }
     
     /**

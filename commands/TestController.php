@@ -5,7 +5,10 @@ namespace app\commands;
 use Yii,
     yii\console\Controller,
     app\components\TileCombiner,
-    app\models;
+    app\models,
+    app\models\politics\State,
+    app\models\politics\Region,
+    app\models\population\Pop;
 
 class TestController extends Controller
 {
@@ -32,7 +35,7 @@ class TestController extends Controller
 //            }
 //        }
 //        echo $pop;
-        echo models\Pop::find()->count();
+        echo Pop::find()->count();
     }
     
     public function actionUpdateTiles()
@@ -82,8 +85,8 @@ class TestController extends Controller
             Yii::$app->db->createCommand()->batchInsert('cities', ['id', 'name', 'nameShort', 'regionId', 'population', 'nations', 'religions', 'ages', 'genders'], $cities)->execute();
         }
         
-        /* @var $region models\Region */
-        foreach (models\Region::find()->all() as $region) {
+        /* @var $region Region */
+        foreach (Region::find()->all() as $region) {
             if ($region->biggestCity) {
                 $region->link('city', $region->biggestCity);
             }
@@ -315,21 +318,22 @@ class TestController extends Controller
     public function actionUpdatePops()
     {
         Yii::$app->db->createCommand()->truncateTable('pops')->execute();
-        /* @var $state models\State */
-        $state = models\State::find()->one();
+        /* @var $state State */
+        $state = State::find()->one();
         
         foreach ($state->regions as $region) {
-            /* @var $region models\Region */
+            /* @var $region Region */
             foreach ($region->cities as $city) {
                 $nations = json_decode($city->nations, true);
-                if (is_array($nations)) foreach ($city->tiles as $tile) {
+                
+                $pops = [];
+                foreach ($city->tiles as $tile) {
                     foreach ($nations as $nationId => $percents) {
                         $ideologies = '{"0":100}';
                         $religions = $city->religions ? $city->religions : '{"0":100}';
                         $genders = $city->genders ? $city->genders : '{"2":55,"1":45}';
                         $ages = $city->ages ? $city->ages : '{"18":100}';
-                        
-                        $pop = new models\Pop([
+                        $pops[] = [
                             'count' => round($tile->population * $percents / 100),
                             'classId' => models\PopClass::LUMPEN,
                             'nationId' => $nationId,
@@ -341,29 +345,25 @@ class TestController extends Controller
                             'contentment' => 0,
                             'agression' => 0,
                             'consciousness' => 0,
-                        ]);
-                        if (!$pop->save()) {
-                            var_dump($pop->attributes);
-                            var_dump($pop->getErrors());
-                            die();
-                        } else {
-                            echo $pop->count.PHP_EOL;
-                        }
+                        ];
                     }
                 }
+                echo Yii::$app->db->createCommand()->batchInsert('pops', ['count', 'classId', 'nationId', 'tileId', 'ideologies', 'religions', 'genders', 'ages', 'contentment', 'agression', 'consciousness'], $pops);
+                
                 $city->updateParams(true, false);
                 echo $city->name.' updated'.PHP_EOL;
             }
             $tilesNotInCities = $region->getTiles()->where(['cityId' => null])->all();
             
             $nations = json_decode($region->nations, true);
-            if (is_array($nations)) foreach ($tilesNotInCities as $tile) {
+            $pops = [];
+            foreach ($tilesNotInCities as $tile) {
                 foreach ($nations as $nationId => $percents) {
                     $ideologies = '{"0":100}';
                     $religions = $region->religions ? $region->religions : '{"0":100}';
                     $genders = $region->genders ? $region->genders : '{"2":55,"1":45}';
                     $ages = $region->ages ? $region->ages : '{"18":100}';
-                    $pop = new models\Pop([
+                    $pops[] = [
                         'count' => round($tile->population * $percents / 100),
                         'classId' => models\PopClass::LUMPEN,
                         'nationId' => $nationId,
@@ -375,20 +375,44 @@ class TestController extends Controller
                         'contentment' => 0,
                         'agression' => 0,
                         'consciousness' => 0,
-                    ]);
-                    if (!$pop->save()) {
-                        var_dump($pop->attributes);
-                        var_dump($pop->getErrors());
-                        die();
-                    } else {
-                        echo $pop->count.PHP_EOL;
-                    }
+                    ];
                 }
             }
+            echo Yii::$app->db->createCommand()->batchInsert('pops', ['count', 'classId', 'nationId', 'tileId', 'ideologies', 'religions', 'genders', 'ages', 'contentment', 'agression', 'consciousness'], $pops);
             $region->updateParams(true, false);
             echo $region->name.' updated'.PHP_EOL;
         }
         $state->updateParams(true, false);
         echo $state->name.' updated'.PHP_EOL;
+    }
+    
+    public function actionUpdateUsers()
+    {
+        Yii::$app->db->createCommand()->truncateTable('users')->execute();
+        Yii::$app->db->createCommand()->truncateTable('accounts')->execute();
+        $data = json_decode(file_get_contents(Yii::$app->basePath.'/data/default/users.json'));
+        $users = [];
+        $accounts = [];
+        foreach ($data as $id => $user) {
+            $users[] = [
+                'id' => (int)$id,
+                'name' => $user->name,
+                'genderId' => $user->genderId,
+                'avatar' => $user->avatar,
+                'avatarBig' => $user->avatarBig,
+                'dateCreated' => time(),
+                'dateLastLogin' => 0,
+                'isInvited' => 1,
+            ];
+            foreach ((array)$user->accounts as $sourceType => $sourceId) {
+                $accounts[] = [
+                    'userId' => (int)$id,
+                    'sourceType' => (int)$sourceType,
+                    'sourceId' => $sourceId,
+                ];
+            }
+        }
+        Yii::$app->db->createCommand()->batchInsert('users', ['id', 'name', 'genderId', 'avatar', 'avatarBig', 'dateCreated', 'dateLastLogin', 'isInvited'], $users)->execute();
+        Yii::$app->db->createCommand()->batchInsert('accounts', ['userId', 'sourceType', 'sourceId'], $accounts)->execute();
     }
 }
