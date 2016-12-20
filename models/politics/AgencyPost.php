@@ -92,7 +92,7 @@ class AgencyPost extends ConstitutionOwner
         return $this->hasMany(Election::className(), ['postId' => 'id']);
     }
 
-    public function getTaxStateId(): integer
+    public function getTaxStateId(): int
     {
         return $this->stateId;
     }
@@ -102,27 +102,27 @@ class AgencyPost extends ConstitutionOwner
         return $this->userId;
     }
 
-    public function getUtrType(): integer
+    public function getUtrType(): int
     {
         return UtrType::POST;
     }
 
-    public function isGoverment($stateId): boolean
+    public function isGoverment($stateId): bool
     {
         return $this->stateId == $stateId;
     }
 
-    public function isTaxedInState($stateId): boolean
+    public function isTaxedInState($stateId): bool
     {
         return $this->stateId == $stateId;
     }
 
-    public function isUserController($userId): boolean
+    public function isUserController($userId): bool
     {
         return $this->userId == $userId;
     }
 
-    public static function getConstitutionOwnerType(): integer
+    public static function getConstitutionOwnerType(): int
     {
         return ConstitutionOwnerType::POST;
     }

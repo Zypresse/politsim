@@ -124,7 +124,7 @@ class Agency extends ConstitutionOwner
         return parent::beforeSave($insert);
     }
 
-    public static function getConstitutionOwnerType(): integer
+    public static function getConstitutionOwnerType(): int
     {
         return ConstitutionOwnerType::AGENCY;
     }

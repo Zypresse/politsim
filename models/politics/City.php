@@ -202,7 +202,7 @@ class City extends ConstitutionOwner
         }
     }
 
-    public static function getConstitutionOwnerType(): integer
+    public static function getConstitutionOwnerType(): int
     {
         return ConstitutionOwnerType::CITY;
     }

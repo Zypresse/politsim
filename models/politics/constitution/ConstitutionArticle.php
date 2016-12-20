@@ -22,6 +22,15 @@ class ConstitutionArticle extends MyActiveRecord
     /**
      * @inheritdoc
      */
+    public static function instantiate($row)
+    {
+        $className = ConstitutionArticleType::getClassNameByType($row['type']);
+        return new $className($row);
+    }
+
+    /**
+     * @inheritdoc
+     */
     public static function tableName()
     {
         return 'constitutionsArticles';
@@ -32,11 +41,11 @@ class ConstitutionArticle extends MyActiveRecord
      */
     public function rules()
     {
-        return [
+        return [ // не менять порядок строк! используется в наследниках
             [['ownerType', 'ownerId', 'type', 'value'], 'required'],
             [['ownerType', 'ownerId', 'type', 'subType'], 'integer', 'min' => 0],
-            [['value', 'value2', 'value3'], 'string'],
             [['ownerType', 'ownerId', 'type', 'subType'], 'unique', 'targetAttribute' => ['ownerType', 'ownerId', 'type', 'subType'], 'message' => 'The combination of Owner Type, Owner ID, Type and Sub Type has already been taken.'],
+            [['value', 'value2', 'value3'], 'string'],
         ];
     }
 

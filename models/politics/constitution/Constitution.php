@@ -36,8 +36,8 @@ class Constitution extends Model
         if (is_null($this->_articles)) {
             $this->_articles = ConstitutionArticle::find()
                     ->where([
-                        'ownerType' => static::getConstitutionOwnerType(),
-                        'ownerId' => $this->id,
+                        'ownerType' => $this->ownerType,
+                        'ownerId' => $this->ownerId,
                     ])
                     ->all();
         }
@@ -55,8 +55,8 @@ class Constitution extends Model
         return ConstitutionArticle::findOrCreate([
             'type' => $type,
             'subType' => $subType,
-            'ownerType' => static::getConstitutionOwnerType(),
-            'ownerId' => $this->id,
+            'ownerType' => $this->ownerType,
+            'ownerId' => $this->ownerId,
         ], false);
     }
     
@@ -75,6 +75,11 @@ class Constitution extends Model
         $article->value = $value;
         $article->value2 = $value2;
         $article->value3 = $value3;
-        return $article->save();
+        if ($article->save()) {
+            return true;
+        } else {
+            $this->addErrors($article->getErrors());
+            return false;
+        }
     }
 }

@@ -35,7 +35,17 @@ class TestController extends Controller
 //            }
 //        }
 //        echo $pop;
-        echo Pop::find()->count();
+        
+        Yii::$app->db->createCommand()->truncateTable('states')->execute();
+        $state = new State([
+            'name' => 'Test state',
+            'nameShort' => 'TEST',
+        ]);
+        $state->save();
+        var_dump($state->attributes);
+        var_dump($state->constitution);
+        var_dump($state->constitution->setArticleByType(models\politics\constitution\ConstitutionArticleType::LEADER_POST, null, 1));
+        var_dump($state->constitution->getErrors());
     }
     
     public function actionUpdateTiles()

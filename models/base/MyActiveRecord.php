@@ -54,7 +54,7 @@ abstract class MyActiveRecord extends ActiveRecord {
     public static function findOrCreate($params, $save = false, $paramsToCreate = [], $paramsToLoad = []) {
         $m = static::find()->where($params)->one();
         if (is_null($m)) {
-            $m = new static(array_merge($params, $paramsToCreate));
+            $m = static::instantiate(array_merge($params, $paramsToCreate));
         } else {
             if ($paramsToLoad === false) {
                 $paramsToLoad = $paramsToCreate;
