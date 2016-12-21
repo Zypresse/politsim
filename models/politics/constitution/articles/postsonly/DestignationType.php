@@ -50,5 +50,10 @@ class DestignationType extends DropdownArticle
         }
         return $rules;
     }
+    
+    public function getName()
+    {
+        return static::getList()[(int) $this->value];
+    }
 
 }

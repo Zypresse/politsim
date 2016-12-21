@@ -20,5 +20,10 @@ class LeaderPost extends UnsignedIntegerArticle
         return $rules;
     }
     
+    public function getPost()
+    {
+        return $this->hasOne(AgencyPost::className(), ['id' => 'value']);
+    }
+    
 }
 

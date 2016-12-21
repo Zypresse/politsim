@@ -35,7 +35,7 @@ class AbsoluteMonarchy extends ConstitutionTemplate
         
         $state->constitution->setArticleByType(ConstitutionArticleType::LEADER_POST, null, $leaderPost->id);
         $leaderPost->constitution->setArticleByType(ConstitutionArticleType::DESTIGNATION_TYPE, null, DestignationType::BY_PRECURSOR);
-        
+        $executive->constitution->setArticleByType(ConstitutionArticleType::LEADER_POST, null, $leaderPost->id);
     }
 
 }

@@ -34,14 +34,9 @@ class StateController extends MyController
         if (is_null($state)) {
             return $this->_r(Yii::t('app', 'State not found'));
         }
-        
-        if (!$state->constitution) {
-            return $this->_r(Yii::t('app', 'State have not constitution'));
-        }
-                
+                        
         return $this->render('constitution', [
             'state' => $state,
-            'constitution' => $state->constitution,
             'user' => $this->user
         ]);
     }
