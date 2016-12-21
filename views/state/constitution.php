@@ -72,7 +72,11 @@ use yii\helpers\Html,
                                 </tr>
                                 <tr>
                                     <th><?=Yii::t('app', 'Destignation type')?></th>
-                                    <td><?=$post->constitution->getArticleByType(ConstitutionArticleType::DESTIGNATION_TYPE)->getName()?></td>
+                                    <td><?=$post->constitution->getArticleByType(ConstitutionArticleType::DESTIGNATION_TYPE)->name?></td>
+                                </tr>
+                                <tr>
+                                    <th><?=Yii::t('app', 'Terms of office')?></th>
+                                    <td><?=$post->constitution->getArticleByType(ConstitutionArticleType::TERMS_OF_OFFICE)->value?></td>
                                 </tr>
                                 <?php endforeach ?>
                             </tbody>

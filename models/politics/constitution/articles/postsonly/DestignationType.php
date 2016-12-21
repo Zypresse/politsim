@@ -10,6 +10,8 @@ use Yii,
 
 /**
  * 
+ * @property ElectoralDistrict $district
+ * @property Agency $agency
  */
 class DestignationType extends DropdownArticle
 {
@@ -53,6 +55,16 @@ class DestignationType extends DropdownArticle
                 break;
         }
         return $rules;
+    }
+    
+    public function getDistrict()
+    {
+        return $this->hasOne(ElectoralDistrict::className(), ['id' => 'value2']);
+    }
+    
+    public function getAgency()
+    {
+        return $this->hasOne(Agency::className(), ['id' => 'value2']);
     }
 
 }

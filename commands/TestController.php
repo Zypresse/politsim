@@ -13,7 +13,7 @@ use Yii,
     app\models\politics\AgencyPost,
     app\models\politics\elections\ElectoralDistrict,
     app\models\politics\constitution\templates\ConstitutionGenerator,
-    app\models\politics\constitution\templates\AbsoluteMonarchy,
+    app\models\politics\constitution\templates\Bulbostan,
     app\models\population\Pop;
 
 class TestController extends Controller
@@ -175,7 +175,7 @@ class TestController extends Controller
         $leaderPost->save();
         $leaderPost->link('agencies', $executive);
         
-        ConstitutionGenerator::generate($state, AbsoluteMonarchy::className(), [
+        ConstitutionGenerator::generate($state, Bulbostan::className(), [
             'executive' => &$executive,
             'leaderPost' => &$leaderPost,
         ]);

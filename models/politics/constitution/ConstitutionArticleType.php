@@ -27,6 +27,16 @@ abstract class ConstitutionArticleType
      * Политика в отношении партий
      */
     const PARTIES = 4;
+    
+    /**
+     * Срок полномочий
+     */
+    const TERMS_OF_OFFICE = 5;
+    
+    /**
+     * Сроки выборов
+     */
+    const TERMS_OF_ELECTION = 6;
         
     /**
      * 
@@ -38,6 +48,8 @@ abstract class ConstitutionArticleType
         $classes = [
             static::LEADER_POST => 'LeaderPost',
             static::DESTIGNATION_TYPE => 'postsonly\\DestignationType',
+            static::TERMS_OF_OFFICE => 'postsonly\\TermsOfOffice',
+            static::TERMS_OF_ELECTION => 'postsonly\\TermsOfElection',
             static::MULTIPOST => 'statesonly\\Multipost',
             static::PARTIES => 'statesonly\\Parties',
         ];
