@@ -190,7 +190,7 @@ class TestController extends Controller
         $regions = Region::find()
                 ->where(['IN', 'nameShort', ['BY-MI', 'BY-HO', 'BY-MA', 'BY-VI', 'BY-HR', 'BY-BR']])
                 ->with('biggestCity')
-                ->with('ciies')
+                ->with('cities')
                 ->all();
 
         /* @var $region Region */

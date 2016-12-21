@@ -6,7 +6,8 @@ use yii\base\Exception,
     app\models\politics\State,
     app\models\politics\Agency,
     app\models\politics\AgencyPost,
-    app\models\politics\constitution\ConstitutionArticleType;
+    app\models\politics\constitution\ConstitutionArticleType,
+    app\models\politics\constitution\articles\postsonly\DestignationType;
 
 /**
  * 
@@ -27,12 +28,15 @@ class AbsoluteMonarchy extends ConstitutionTemplate
     public static function generate(State &$state, $params = [])
     {
         static::validateParams($params);
+        /* @var $leaderPost AgencyPost */
         $leaderPost = $params['leaderPost'];
+        /* @var $executive Agency */
         $executive = $params['executive'];
         
-        $constitution = $state->constitution;
-        $constitution->setArticleByType(ConstitutionArticleType::LEADER_POST, null, $leaderPost->id);
+        $state->constitution->setArticleByType(ConstitutionArticleType::LEADER_POST, null, $leaderPost->id);
+        $leaderPost->constitution->setArticleByType(ConstitutionArticleType::DESTIGNATION_TYPE, null, DestignationType::BY_PRECURSOR);
         
     }
 
 }
+

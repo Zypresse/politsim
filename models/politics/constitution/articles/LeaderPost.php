@@ -11,6 +11,7 @@ use Yii,
  */
 class LeaderPost extends UnsignedIntegerArticle
 {
+    
     public function rules()
     {
         $rules = parent::rules();
@@ -18,20 +19,6 @@ class LeaderPost extends UnsignedIntegerArticle
         $rules[] = ['value', 'validateAgencyPost'];
         return $rules;
     }
-    /**
-     * @param string $attribute the attribute currently being validated
-     * @param mixed $params the value of the "params" given in the rule
-     */
-    public function validateAgencyPost($attribute, $params)
-    {
-        $postInState = AgencyPost::find()
-                ->where(['id' => $this->$attribute, 'stateId' => $this->getStateId()])
-                ->exists();
-        if ($postInState) {
-            return true;
-        } else {
-            $this->addError($attribute, Yii::t('app', 'Agency post not found in state'));
-            return false;
-        }
-    }
+    
 }
+
