@@ -21,7 +21,7 @@ use yii\helpers\Html,
     <?php foreach ($elections as $election): ?>
     <div class="box box-info">
         <div class="box-header">
-            <h3 class="box-title"><?=Yii::t('app', 'Elections of {0}', [$election->whom->name])?></h3>
+            <h3 class="box-title"><?=Yii::t('app', 'Elections of agency post {0}', [$election->whom->name])?></h3>
         </div>
         <div class="box-body">
           <?= ElectionInfoWidget::widget(['election' => $election]) ?>

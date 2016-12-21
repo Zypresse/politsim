@@ -51,12 +51,10 @@ return [
     // boolean, whether the message file should be overwritten with the merged messages
     'overwrite' => true,
 
-    /*
     // Message categories to ignore
     'ignoreCategories' => [
         'yii',
     ],
-     */
 
     /*
     // 'db' output format is for saving messages to database.
