@@ -14,6 +14,7 @@ use app\models\base\MyActiveRecord;
  * @property integer $dateCreated
  * 
  * @property Election $election
+ * @property \app\models\User|\app\models\politics\PartyList $object
  * 
  */
 class ElectionRequest extends MyActiveRecord
@@ -53,6 +54,11 @@ class ElectionRequest extends MyActiveRecord
     public function getElection()
     {
         return $this->hasOne(Election::className(), ['id' => 'electionId']);
+    }
+    
+    public function getObject()
+    {
+        return $this->hasOne(ElectionRequestType::getClassByType($this->type), ['id' => 'objectId']);
     }
     
     public static function primaryKey()

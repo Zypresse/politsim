@@ -48,7 +48,11 @@ class ElectionsController extends MyController
             return $this->_r(Yii::t('app', 'You can not make request for this election'));
         }
         
-        
+        if ($election->sendUserRequest($this->user)) {
+            return $this->_rOk();
+        } else {
+            return $this->_r(Yii::t('app', 'Unknown error'));
+        }
     }
     
     private function getElection($id)

@@ -45,6 +45,6 @@ use yii\helpers\Html,
     }
     
     $('.send-election-request-modal-btn').click(sendElectionRequestModal);
-    $(body).on('click', '.send-election-request-confirm-btn', sendElectionRequestConfirm);
+    $(document.body).on('click', '.send-election-request-confirm-btn', sendElectionRequestConfirm);
     
 </script>

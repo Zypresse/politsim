@@ -1,5 +1,7 @@
 <?php
 
+use app\components\LinkCreator;
+
 /* @var $election \app\models\politics\elections\Election */
 /* @var $viewer \app\models\User */
 /* @var $showRegisterButton boolean */
@@ -21,7 +23,15 @@
                 <h4 class="box-title"><?=Yii::t('app', 'Candidats')?></h4>
             </div>
             <div class="box-body">
+                <?php if (count($election->requests)): ?>
+                <ul>
+                    <?php foreach ($election->requests as $request): ?>
+                    <li><?=LinkCreator::link($request->object)?></li>
+                    <?php endforeach ?>
+                </ul>
+                <?php else: ?>
                 <p><?=Yii::t('app', 'No one candidat registered')?></p>
+                <?php endif ?>
             </div>
         </div>
     </div>
