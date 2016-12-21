@@ -20,6 +20,8 @@ class DestignationType extends DropdownArticle
     const BY_STATE_ELECTION = 4;
     const BY_DISTRICT_ELECTION = 5;
     
+    const SECOND_TOUR = 1;
+    
     public static function getList(): array
     {
         return [
@@ -33,8 +35,10 @@ class DestignationType extends DropdownArticle
     
     public function rules()
     {
+        $type = (int)$this->value;
         $rules = parent::rules();
-        switch ((int)$this->value) {
+        $rules[3][0] = ['value3'];
+        switch ($type) {
             case static::BY_OTHER_POST:
                 $rules[] = [['value2'], 'exist', 'skipOnError' => false, 'targetClass' => AgencyPost::className(), 'targetAttribute' => ['value2' => 'id'], 'message' => 'Value2 must be valid Agency Post ID'];
                 $rules[] = ['value2', 'validateAgencyPost'];
@@ -49,11 +53,6 @@ class DestignationType extends DropdownArticle
                 break;
         }
         return $rules;
-    }
-    
-    public function getName()
-    {
-        return static::getList()[(int) $this->value];
     }
 
 }

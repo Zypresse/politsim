@@ -40,6 +40,14 @@ use yii\helpers\Html,
                                     <th><?=Yii::t('app', 'State leader')?></th>
                                     <td><?=$state->constitution->getArticleByType(ConstitutionArticleType::LEADER_POST)->post->name?></td>
                                 </tr>
+                                <tr>
+                                    <th><?=Yii::t('app', 'Allow more than one agency post to user')?></th>
+                                    <td><?=$state->constitution->getArticleByType(ConstitutionArticleType::MULTIPOST)->name?></td>
+                                </tr>
+                                <tr>
+                                    <th><?=Yii::t('app', 'Party politics')?></th>
+                                    <td><?=$state->constitution->getArticleByType(ConstitutionArticleType::PARTIES)->name?></td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>

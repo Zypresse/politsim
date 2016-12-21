@@ -20,4 +20,9 @@ abstract class DropdownArticle extends UnsignedIntegerArticle
         return $rules;
     }
     
+    public function getName()
+    {
+        return static::getList()[(int) $this->value];
+    }
+    
 }

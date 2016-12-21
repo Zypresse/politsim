@@ -2,7 +2,8 @@
 
 namespace app\models\politics\constitution\articles\base;
 
-use app\models\politics\constitution\ConstitutionArticle;
+use Yii,
+    app\models\politics\constitution\ConstitutionArticle;
 
 /**
  * 
@@ -16,6 +17,11 @@ abstract class CheckboxArticle extends ConstitutionArticle
         $rules[3][0] = ['value2', 'value3'];
         $rules[] = [['value'], 'boolean'];
         return $rules;
+    }
+    
+    public function getName()
+    {
+        return $this->value ? Yii::t('yii', 'Yes') : Yii::t('yii', 'No');
     }
     
 }

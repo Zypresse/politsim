@@ -3,6 +3,7 @@
 namespace app\models\politics\constitution;
 
 use Yii,
+    app\models\politics\Party,
     app\models\politics\Agency,
     app\models\politics\AgencyPost,
     app\models\politics\elections\ElectoralDistrict,
@@ -133,6 +134,23 @@ class ConstitutionArticle extends MyActiveRecord
             return true;
         } else {
             $this->addError($attribute, Yii::t('app', 'Electoral District not found in state'));
+            return false;
+        }
+    }
+    
+    /**
+     * @param string $attribute the attribute currently being validated
+     * @param mixed $params the value of the "params" given in the rule
+     */
+    public function validateParty($attribute, $params)
+    {
+        $partyInState = Party::find()
+                ->where(['id' => $this->$attribute, 'stateId' => $this->getStateId()])
+                ->exists();
+        if ($partyInState) {
+            return true;
+        } else {
+            $this->addError($attribute, Yii::t('app', 'Party not found in state'));
             return false;
         }
     }
