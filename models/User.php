@@ -168,15 +168,16 @@ class User extends TaxPayerModel implements IdentityInterface
     public function rules()
     {
         return [
-            [['name', 'avatar', 'avatarBig', 'genderId', 'cityId', 'dateLastLogin'], 'required'],
+            [['name', 'avatar', 'avatarBig', 'genderId', 'dateLastLogin'], 'required'],
             [['genderId'], 'integer', 'min' => 0, 'max' => 2],
-            [['cityId', 'ideologyId', 'religionId', 'dateCreated', 'dateLastLogin', 'utr'], 'integer', 'min' => 0],
+            [['tileId', 'ideologyId', 'religionId', 'dateCreated', 'dateLastLogin', 'utr'], 'integer', 'min' => 0],
             [['fame', 'trust', 'success', 'fameBase', 'trustBase', 'successBase'], 'integer'],
             [['fame', 'trust', 'success', 'fameBase', 'trustBase', 'successBase'], 'default', 'value' => 0],
             [['name'], 'string', 'max' => 255],
             [['avatar', 'avatarBig'], 'string'],
             [['isInvited'], 'boolean'],
             [['isInvited'], 'default', 'value' => false],
+            [['tileId'], 'exist', 'targetClass' => Tile::className(), 'targetAttribute' => ['tileId' => 'id']],
         ];
     }
 

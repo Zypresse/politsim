@@ -12,6 +12,8 @@ use Yii,
 class ModifierProto extends ObjectWithFixedPrototypes
 {
     
+    const OLDFAG = 1;
+
     public $id;
     public $name;
     public $icon;
@@ -23,9 +25,8 @@ class ModifierProto extends ObjectWithFixedPrototypes
     protected static function getList()
     {
         return [
-            null,
             [
-                'id' => 1,
+                'id' => static::OLDFAG,
                 'name' => Yii::t('app', 'Oldfag'),
                 'icon' => Url::to('img/user_oldman.png'),
                 'success' => 1
