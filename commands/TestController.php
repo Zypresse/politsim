@@ -36,15 +36,32 @@ class TestController extends Controller
 //        }
 //        echo $pop;
         
+    }
+    
+    public function actionSetConstitutionArticle()
+    {
+        
         Yii::$app->db->createCommand()->truncateTable('states')->execute();
+        Yii::$app->db->createCommand()->truncateTable('agenciesPosts')->execute();
         $state = new State([
             'name' => 'Test state',
             'nameShort' => 'TEST',
         ]);
         $state->save();
+        $state2 = new State([
+            'name' => 'Test state 2',
+            'nameShort' => 'TEST2',
+        ]);
+        $state2->save();
+        $post = new models\politics\AgencyPost([
+            'stateId' => $state2->id,
+            'name' => 'Test post',
+            'nameShort' => 'Test',
+        ]);
+        $post->save();
         var_dump($state->attributes);
         var_dump($state->constitution);
-        var_dump($state->constitution->setArticleByType(models\politics\constitution\ConstitutionArticleType::LEADER_POST, null, 1));
+        var_dump($state->constitution->setArticleByType(models\politics\constitution\ConstitutionArticleType::LEADER_POST, null, $post->id));
         var_dump($state->constitution->getErrors());
     }
     

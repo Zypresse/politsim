@@ -15,6 +15,9 @@ use Yii,
  * @property string $value значение 
  * @property string $value2 дополнительное значение если понадобится в сложных статьях
  * @property string $value3 дополнительное значение если понадобится в очень сложных статьях
+ * 
+ * @property ConstitutionOwner $owner
+ * 
  */
 class ConstitutionArticle extends MyActiveRecord
 {
@@ -68,6 +71,16 @@ class ConstitutionArticle extends MyActiveRecord
     public static function primaryKey()
     {
         return ['ownerType', 'ownerId', 'type', 'subType'];
+    }
+    
+    public function getOwner()
+    {
+        return $this->hasOne(ConstitutionOwnerType::getClassNameByType($this->ownerType), ['id' => 'ownerId']);
+    }
+    
+    public function getStateId()
+    {
+        return $this->owner->getTaxStateId();
     }
 
 }
