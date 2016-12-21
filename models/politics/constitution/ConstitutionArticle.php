@@ -3,6 +3,9 @@
 namespace app\models\politics\constitution;
 
 use Yii,
+    app\models\politics\Agency,
+    app\models\politics\AgencyPost,
+    app\models\politics\elections\ElectoralDistrict,
     app\models\base\MyActiveRecord;
 
 /**
@@ -81,6 +84,57 @@ class ConstitutionArticle extends MyActiveRecord
     public function getStateId()
     {
         return $this->owner->getTaxStateId();
+    }
+    
+    /**
+     * @param string $attribute the attribute currently being validated
+     * @param mixed $params the value of the "params" given in the rule
+     */
+    public function validateAgencyPost($attribute, $params)
+    {
+        $postInState = AgencyPost::find()
+                ->where(['id' => $this->$attribute, 'stateId' => $this->getStateId()])
+                ->exists();
+        if ($postInState) {
+            return true;
+        } else {
+            $this->addError($attribute, Yii::t('app', 'Agency post not found in state'));
+            return false;
+        }
+    }
+    
+    /**
+     * @param string $attribute the attribute currently being validated
+     * @param mixed $params the value of the "params" given in the rule
+     */
+    public function validateAgency($attribute, $params)
+    {
+        $agencyInState = Agency::find()
+                ->where(['id' => $this->$attribute, 'stateId' => $this->getStateId()])
+                ->exists();
+        if ($agencyInState) {
+            return true;
+        } else {
+            $this->addError($attribute, Yii::t('app', 'Agency not found in state'));
+            return false;
+        }
+    }
+    
+    /**
+     * @param string $attribute the attribute currently being validated
+     * @param mixed $params the value of the "params" given in the rule
+     */
+    public function validateElectoralDistrict($attribute, $params)
+    {
+        $districtInState = ElectoralDistrict::find()
+                ->where(['id' => $this->$attribute, 'stateId' => $this->getStateId()])
+                ->exists();
+        if ($districtInState) {
+            return true;
+        } else {
+            $this->addError($attribute, Yii::t('app', 'Electoral District not found in state'));
+            return false;
+        }
     }
 
 }
