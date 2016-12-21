@@ -69,7 +69,7 @@ class AgencyPost extends ConstitutionOwner
     public function getAgencies()
     {
         return $this->hasMany(Agency::className(), ['id' => 'agencyId'])
-                ->viaTable('agencies-to-posts', ['postId' => 'id']);
+                ->viaTable('agenciesToPosts', ['postId' => 'id']);
     }
     
     public function getState()

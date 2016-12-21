@@ -8,6 +8,12 @@ use Yii,
     app\models,
     app\models\politics\State,
     app\models\politics\Region,
+    app\models\politics\City,
+    app\models\politics\Agency,
+    app\models\politics\AgencyPost,
+    app\models\politics\elections\ElectoralDistrict,
+    app\models\politics\constitution\templates\ConstitutionGenerator,
+    app\models\politics\constitution\templates\AbsoluteMonarchy,
     app\models\population\Pop;
 
 class TestController extends Controller
@@ -125,138 +131,85 @@ class TestController extends Controller
         echo models\User::updateAll(['isInvited' => 1]);
     }
         
-    public function actionCleanStart()
+    public function actionCreateBulba()
     {
         
         Yii::$app->db->createCommand()->truncateTable('states')->execute();
-        Yii::$app->db->createCommand()->truncateTable('constitutions')->execute();
-        Yii::$app->db->createCommand()->truncateTable('constitutions-licenses')->execute();
+        Yii::$app->db->createCommand()->truncateTable('constitutionsArticles')->execute();
         Yii::$app->db->createCommand()->truncateTable('agencies')->execute();
-        Yii::$app->db->createCommand()->truncateTable('constitutions-agencies')->execute();
-        Yii::$app->db->createCommand()->truncateTable('constitutions-agencies-licenses')->execute();
-        Yii::$app->db->createCommand()->truncateTable('agencies-posts')->execute();
-        Yii::$app->db->createCommand()->truncateTable('constitutions-agencies-posts')->execute();
-        Yii::$app->db->createCommand()->truncateTable('constitutions-agencies-posts-licenses')->execute();
+        Yii::$app->db->createCommand()->truncateTable('agenciesPosts')->execute();
         Yii::$app->db->createCommand()->truncateTable('elections')->execute();
-        Yii::$app->db->createCommand()->truncateTable('elections-requests-individual')->execute();
-        Yii::$app->db->createCommand()->truncateTable('elections-requests-party')->execute();
-        Yii::$app->db->createCommand()->truncateTable('elections-votes-pops')->execute();
-        Yii::$app->db->createCommand()->truncateTable('elections-votes-users')->execute();
-        Yii::$app->db->createCommand()->truncateTable('electoral-districts')->execute();
+        Yii::$app->db->createCommand()->truncateTable('electionsRequests')->execute();
+        Yii::$app->db->createCommand()->truncateTable('electionsVotesPops')->execute();
+        Yii::$app->db->createCommand()->truncateTable('electionsVotesUsers')->execute();
+        Yii::$app->db->createCommand()->truncateTable('electoralDistricts')->execute();
         Yii::$app->db->createCommand()->truncateTable('citizenships')->execute();
         Yii::$app->db->createCommand()->truncateTable('memberships')->execute();
         Yii::$app->db->createCommand()->truncateTable('parties')->execute();
-        Yii::$app->db->createCommand()->truncateTable('parties-posts')->execute();
+        Yii::$app->db->createCommand()->truncateTable('partiesPosts')->execute();
         Yii::$app->db->createCommand()->truncateTable('notifications')->execute();
-        Yii::$app->db->createCommand()->truncateTable('constitutions-regions')->execute();
         Yii::$app->db->createCommand()->truncateTable('pops')->execute();
         
         echo "models cleared".PHP_EOL;
         
-        $state = new models\State([
+        $state = new State([
             'name' => 'Республика Беларусь',
-            'nameShort' => 'RB',
+            'nameShort' => 'РБ',
             'flag' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Flag_of_Belarus.svg/640px-Flag_of_Belarus.svg.png',
             'mapColor' => 'C8313E'
         ]);
         $state->save();
         
-        $constitution = models\StateConstitution::generate();
-        $constitution->stateId = $state->id;
-        $constitution->save();
-        
-        $executive = new models\Agency([
+        $executive = new Agency([
             'stateId' => $state->id,
             'name' => 'Правительство Республики Беларусь',
             'nameShort' => 'ПРБ',
         ]);
         $executive->save();
-        $executiveConstitution = models\AgencyConstitution::generate();
-        $executiveConstitution->agencyId = $executive->id;
-        $executiveConstitution->save();
         
-        $leaderPost = new models\AgencyPost([
+        $leaderPost = new AgencyPost([
             'stateId' => $state->id,
             'name' => 'Президент Республики Беларусь',
             'nameShort' => 'ПРБ'
         ]);
         $leaderPost->save();
-        
-        $leaderPostConstitution = models\AgencyPostConstitution::generate();
-        $leaderPostConstitution->postId = $leaderPost->id;
-        $leaderPostConstitution->assignmentRule = models\AgencyConstitution::ASSIGNMENT_RULE_ELECTIONS_PLURARITY;
-        $leaderPostConstitution->electionsRules = models\AgencyPostConstitution::ELECTIONS_RULE_ALLOW_SELFREQUESTS + models\AgencyPostConstitution::ELECTIONS_RULE_SECOND_TOUR;
-        $leaderPostConstitution->powers = models\AgencyConstitution::POWER_BILLS_ACCEPT + models\AgencyConstitution::POWER_BILLS_MAKE + models\AgencyConstitution::POWER_BILLS_VOTE + models\AgencyConstitution::POWER_BILLS_VETO;
-        $leaderPostConstitution->save();
         $leaderPost->link('agencies', $executive);
-        $executiveConstitution->leaderPostId = $leaderPost->id;
         
-        $legislature = new models\Agency([
-            'stateId' => $state->id,
-            'name' => 'Национальное собрание Республики Беларусь',
-            'nameShort' => 'НСРБ',
+        ConstitutionGenerator::generate($state, AbsoluteMonarchy::className(), [
+            'executive' => &$executive,
+            'leaderPost' => &$leaderPost,
         ]);
-        $legislature->save();
-        $legislatureConstitution = models\AgencyConstitution::generate();
-        $legislatureConstitution->tempPostsCount = 10;
-        $legislatureConstitution->powers = models\AgencyConstitution::POWER_BILLS_MAKE + models\AgencyConstitution::POWER_BILLS_VOTE;
-        $legislatureConstitution->assignmentRule = models\AgencyConstitution::ASSIGNMENT_RULE_ELECTIONS_PROPORTIONAL;
-        $legislatureConstitution->agencyId = $legislature->id;
-        $legislatureConstitution->save();
         
-        $legislatureBasePost = new models\AgencyPost([
-            'stateId' => $state->id,
-            'name' => 'Член национального собрания Республики Беларусь',
-            'nameShort' => 'ЧНСРБ'
-        ]);
-        $legislatureBasePost->save();
-        
-        $legislatureConstitution->tempPostId = $legislatureBasePost->id;
-        $legislatureConstitution->save();
-        
-        $legislatureBasePostConstiturion = models\AgencyPostConstitution::generate();
-        $legislatureBasePostConstiturion->postId = $legislatureBasePost->id;
-        $legislatureBasePostConstiturion->assignmentRule = $legislatureConstitution->assignmentRule;
-        $legislatureBasePostConstiturion->powers = $legislatureConstitution->powers;
-        $legislatureBasePostConstiturion->save();
-        $legislatureBasePost->link('agencies', $legislature);
-        
-        $legislature->updateTempPosts();
-        
-        $city = models\City::find()->where(['name' => 'Минск'])->one();
+        $city = City::find()->where(['name' => 'Минск'])->one();
         
         $state->cityId = $city->id;
         $state->save();
                 
         echo "models saved".PHP_EOL;
         
-        $regions = models\Region::find()->where(['IN', 'nameShort', ['BY-MI', 'BY-HO', 'BY-MA', 'BY-VI', 'BY-HR', 'BY-BR']])->all();
+        $regions = Region::find()
+                ->where(['IN', 'nameShort', ['BY-MI', 'BY-HO', 'BY-MA', 'BY-VI', 'BY-HR', 'BY-BR']])
+                ->with('biggestCity')
+                ->with('ciies')
+                ->all();
 
-        /* @var $region models\Region */
+        /* @var $region Region */
         foreach ($regions as $i => $region) {
             echo $region->getTiles()->count('id').PHP_EOL;
             $region->stateId = $state->id;
-            if (!$region->save()) var_dump ($region->getErrors());
+            $region->cityId = $region->biggestCity->id;
+            $region->save();
             
-            
-            $regionpost = new models\AgencyPost([
+            $regionpost = new AgencyPost([
                 'stateId' => $state->id,
                 'name' => 'Губернатор региона «'.$region->name.'»',
                 'nameShort' => 'Г'.$region->nameShort
             ]);
             $regionpost->save();
-
-            $regionpostConstitution = models\AgencyPostConstitution::generate();
-            $regionpostConstitution->assignmentRule = models\AgencyConstitution::ASSIGNMENT_RULE_BY_STATE_LEADER;
-            $regionpostConstitution->postId = $regionpost->id;
-            $regionpostConstitution->save();
-
-            $regionconstitution = models\RegionConstitution::generate();
-            $regionconstitution->regionId = $region->id;
-            $regionconstitution->leaderPostId = $regionpost->id;
-            $regionconstitution->save();
             
-            $electoralDistrict = new models\ElectoralDistrict([
+            // todo: конституции региона и его лидера
+            
+            $electoralDistrict = new ElectoralDistrict([
                 'stateId' => $state->id,
                 'name' => 'Избирательный округ №'.($i+1),
                 'nameShort' => 'ОИК №'.($i+1)
