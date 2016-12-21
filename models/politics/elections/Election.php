@@ -2,7 +2,9 @@
 
 namespace app\models\politics\elections;
 
-use app\models\base\MyActiveRecord;
+use Yii,
+    app\models\User,
+    app\models\base\MyActiveRecord;
 
 /**
  * Объект выборов
@@ -22,6 +24,7 @@ use app\models\base\MyActiveRecord;
  * 
  * @property Election $initiator
  * @property ElectionRequest[] $requests
+ * @property ElectionOwner $whom
  * 
  * @property integer $status
  * 
@@ -78,6 +81,49 @@ class Election extends MyActiveRecord
     public function getRequests()
     {
         return $this->hasMany(ElectionRequest::className(), ['electionId' => 'id']);
+    }
+    
+    public function getWhom()
+    {
+        return $this->hasOne(ElectionWhomType::getClassByType($this->whomType), ['id' => 'whomId']);
+    }
+    
+    public function canSendRequest(User &$user)
+    {
+        return $this->status == ElectionStatus::REGISTRATION &&
+                !$this->getRequests()
+                ->where([
+                    'type' => ElectionRequestType::USER_SELF,
+                    'objectId' => $user->id
+                ])
+                ->exists();
+    }
+    
+    /**
+     * 
+     * @param integer $type
+     * @param integer $objectId
+     * @return boolean
+     */
+    public function sendRequest($type, $objectId)
+    {
+        $request = new ElectionRequest([
+            'type' => $type,
+            'objectId' => $objectId,
+            'electionId' => $this->id,
+            'variant' => $this->getRequests()->count()+1,
+        ]);
+        return $request->save();
+    }
+    
+    /**
+     * 
+     * @param User $user
+     * @return boolean
+     */
+    public function sendUserRequest(User &$user)
+    {
+        return $this->sendRequest(ElectionRequestType::USER_SELF, $user->id);
     }
     
     public function getStatus()

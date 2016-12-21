@@ -68,6 +68,11 @@ abstract class MyActiveRecord extends ActiveRecord {
         return $m;
     }
 
+    /**
+     * 
+     * @param mixed $condition
+     * @return static[]
+     */
     public static function findAll($condition = false) {
         if ($condition === false) {
             return static::find()->all();

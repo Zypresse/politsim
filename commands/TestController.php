@@ -14,6 +14,7 @@ use Yii,
     app\models\politics\elections\ElectoralDistrict,
     app\models\politics\constitution\templates\ConstitutionGenerator,
     app\models\politics\constitution\templates\Bulbostan,
+    app\models\politics\elections\ElectionManager,
     app\models\population\Pop;
 
 class TestController extends Controller
@@ -41,6 +42,17 @@ class TestController extends Controller
 //            }
 //        }
 //        echo $pop;
+        $post = AgencyPost::find()->one();
+        $election = ElectionManager::createPostElection($post);
+        var_dump($election->id);
+        if (!$election->id) {
+            var_dump($election->getErrors());
+        } else {
+            echo date('d-m-Y', $election->dateRegistrationStart).PHP_EOL;
+            echo date('d-m-Y', $election->dateRegistrationEnd).PHP_EOL;
+            echo date('d-m-Y', $election->dateVotingStart).PHP_EOL;
+            echo date('d-m-Y', $election->dateVotingEnd).PHP_EOL;
+        }
         
     }
     

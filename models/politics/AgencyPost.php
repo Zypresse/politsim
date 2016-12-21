@@ -5,9 +5,10 @@ namespace app\models\politics;
 use Yii,
     app\models\economics\UtrType,
     app\models\politics\constitution\Constitution,
-    app\models\politics\constitution\ConstitutionOwner,
     app\models\politics\constitution\ConstitutionOwnerType,
     app\models\politics\elections\Election,
+    app\models\politics\elections\ElectionManager,
+    app\models\politics\elections\ElectionOwner,
     app\models\User;
 
 /**
@@ -29,7 +30,7 @@ use Yii,
  * @property Constitution $constitution
  * 
  */
-class AgencyPost extends ConstitutionOwner
+class AgencyPost extends ElectionOwner
 {
     /**
      * @inheritdoc
@@ -89,7 +90,16 @@ class AgencyPost extends ConstitutionOwner
             
     public function getElections()
     {
-        return $this->hasMany(Election::className(), ['postId' => 'id']);
+        return $this->hasMany(Election::className(), ['whomId' => 'id'])->where(['whomType' => elections\ElectionWhomType::POST]);
+    }
+    
+    public function getNextElection()
+    {
+        $election = $this->getElections()->where(['results' => null])->one();
+        if (is_null($election)) {
+            $election = ElectionManager::createPostElection($this);
+        }
+        return $election;
     }
 
     public function getTaxStateId(): int

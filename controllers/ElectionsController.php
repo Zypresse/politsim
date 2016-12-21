@@ -18,13 +18,12 @@ class ElectionsController extends MyController
         $elections = [];
         foreach ($this->user->states as $state) {
             foreach ($state->agencies as $agency) {
-                $elections[] = $agency->getNextElection();
+//                $elections[] = $agency->getNextElection();
                 foreach ($agency->posts as $post) {
                     $elections[] = $post->getNextElection();
                 }
             }
         }
-        $elections = array_filter($elections);
         
         return $this->render('list', [
             'user' => $this->user,
@@ -35,11 +34,21 @@ class ElectionsController extends MyController
     public function actionSendRequestForm($id)
     {
         $election = $this->getElection($id);
+        if (!$election->canSendRequest($this->user)) {
+            return $this->_r(Yii::t('app', 'You can not make request for this election'));
+        }
         
-        return $this->render('request-form', [
-            'election' => $election,
-            'user' => $this->user,
-        ]);
+        return $this->render('request-form');
+    }
+    
+    public function actionSendRequest($id)
+    {
+        $election = $this->getElection($id);
+        if (!$election->canSendRequest($this->user)) {
+            return $this->_r(Yii::t('app', 'You can not make request for this election'));
+        }
+        
+        
     }
     
     private function getElection($id)

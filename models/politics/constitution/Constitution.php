@@ -52,12 +52,12 @@ class Constitution extends Model
      */
     public function getArticleByType($type, $subType = null)
     {
-        return ConstitutionArticle::findOrCreate([
+        return ConstitutionArticle::findOne([
             'type' => $type,
             'subType' => $subType,
             'ownerType' => $this->ownerType,
             'ownerId' => $this->ownerId,
-        ], false);
+        ]);
     }
     
     /**
@@ -71,7 +71,12 @@ class Constitution extends Model
      */
     public function setArticleByType($type, $subType, $value, $value2 = null,  $value3 = null)
     {
-        $article = $this->getArticleByType($type, $subType);
+        $article = ConstitutionArticle::findOrCreate([
+            'type' => $type,
+            'subType' => $subType,
+            'ownerType' => $this->ownerType,
+            'ownerId' => $this->ownerId,
+        ], false);
         $article->value = $value;
         $article->value2 = $value2;
         $article->value3 = $value3;

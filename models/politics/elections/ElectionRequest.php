@@ -8,9 +8,9 @@ use app\models\base\MyActiveRecord;
  * Заявка на выборы
  *
  * @property integer $electionId
- * @property integer $type
- * @property integer $objectId
- * @property integer $variant
+ * @property integer $type тип заявки const из ElectionRequestType
+ * @property integer $objectId id заявителя / списка / проч.
+ * @property integer $variant порядковый номер заявки, выставляется автоматически. можно сделать потом редактирование типа случайного перемешивания
  * @property integer $dateCreated
  * 
  * @property Election $election

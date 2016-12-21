@@ -21,16 +21,13 @@ use yii\helpers\Html,
     <?php foreach ($elections as $election): ?>
     <div class="box box-info">
         <div class="box-header">
-            <h3 class="box-title"><?=Yii::t('app', 'Elections of {0}', [Html::encode($election->post ? $election->post->name : $election->agency->name)])?></h3>
+            <h3 class="box-title"><?=Yii::t('app', 'Elections of {0}', [$election->whom->name])?></h3>
         </div>
         <div class="box-body">
           <?= ElectionInfoWidget::widget(['election' => $election]) ?>
         </div>
     </div>
     <?php endforeach ?>
-    <pre>
-        <?php var_dump($elections) ?>
-    </pre>
 </section>
 <script type="text/javascript">
     
@@ -39,9 +36,15 @@ use yii\helpers\Html,
             'elections/send-request-form',
             {id: $(this).data('id')},
             '<?=Yii::t('app', 'Election request')?>',
-            '<button class="btn btn-danger" data-dismiss="modal" aria-hidden="true"><?=Yii::t('app', 'Close')?></button>'
+            '<button class="btn btn-primary send-election-request-confirm-btn" data-id="'+$(this).data('id')+'"><?=Yii::t('app', 'Send request')?></button><button class="btn btn-danger" data-dismiss="modal" aria-hidden="true"><?=Yii::t('app', 'Close')?></button>'
         );
     }
-    $('#send-election-request-modal-btn').click(sendElectionRequestModal);
+    
+    function sendElectionRequestConfirm() {
+        json_request('elections/send-request', {id: $(this).data('id')});
+    }
+    
+    $('.send-election-request-modal-btn').click(sendElectionRequestModal);
+    $(body).on('click', '.send-election-request-confirm-btn', sendElectionRequestConfirm);
     
 </script>

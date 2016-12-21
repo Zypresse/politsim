@@ -39,7 +39,8 @@ class DestignationType extends DropdownArticle
     {
         $type = (int)$this->value;
         $rules = parent::rules();
-        $rules[3][0] = ['value3'];
+        unset($rules[3]);
+        $rules[] = [['value3'], 'integer', 'min' => 0];
         switch ($type) {
             case static::BY_OTHER_POST:
                 $rules[] = [['value2'], 'exist', 'skipOnError' => false, 'targetClass' => AgencyPost::className(), 'targetAttribute' => ['value2' => 'id'], 'message' => 'Value2 must be valid Agency Post ID'];

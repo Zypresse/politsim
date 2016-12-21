@@ -166,8 +166,9 @@ function show_error(e) {
     }
     $('.modal-backdrop').hide();
     $('.modal').modal('hide');
+    $('#error_block').stop().slideUp();
     $('#error_text').html('Ошибка при соединении с сервером<br>' + text + '<br><strong>Статус</strong> — ' + e.status + ': ' + e.statusText);
-    $('#error_block').stop().hide().slideDown();
+    $('#error_block').slideDown();
     $("html, body").animate({scrollTop: 0}, "fast");
 //    $("#spinner").fadeOut("fast");
 }

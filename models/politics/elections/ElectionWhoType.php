@@ -17,4 +17,9 @@ abstract class ElectionWhoType
      */
     const ELECTORAL_DISTRICT = 2;
     
+    /**
+     * Члены агенства
+     */
+    const AGENCY_MEMBERS = 3;
+    
 }
