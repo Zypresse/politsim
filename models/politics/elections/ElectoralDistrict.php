@@ -6,6 +6,7 @@ use Yii,
     app\models\base\MyActiveRecord,
     app\models\politics\State,
     app\models\Tile,
+    app\models\population\Pop,
     app\components\TileCombiner;
 
 /**
@@ -18,6 +19,7 @@ use Yii,
  * 
  * @property State $state
  * @property Tile[] $tiles
+ * @property Pop[] $pops
  * 
  */
 class ElectoralDistrict extends MyActiveRecord
@@ -53,6 +55,12 @@ class ElectoralDistrict extends MyActiveRecord
     public function getTiles()
     {
         return $this->hasMany(Tile::className(), ['electoralDistrictId' => 'id']);
+    }
+    
+    public function getPops()
+    {
+        return $this->hasMany(Pop::className(), ['tileId' => 'id'])
+                ->via('tiles');
     }
     
     private function getPolygonFilePath()

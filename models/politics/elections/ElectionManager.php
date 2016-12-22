@@ -3,6 +3,7 @@
 namespace app\models\politics\elections;
 
 use app\models\politics\AgencyPost,
+    app\models\population\Pop,
     app\models\politics\constitution\articles\postsonly\DestignationType,
     app\models\politics\constitution\ConstitutionArticleType;
 
@@ -84,19 +85,28 @@ abstract class ElectionManager
         $requests = $election->requests;
         $who = $election->who;
         $votesByUsers = $election->votesByUsers;
+        $pops = [];
         
-        $sumRequestsFame = 0;
-        foreach ($requests as $request) {
-            $sumRequestsFame += $request->object->fame;
-        }
+        /* @var $pops \app\models\population\Pop[] */
         
         switch ($election->whoType) {
             case ElectionWhoType::STATE:
             case ElectionWhoType::ELECTORAL_DISTRICT: // TODO: add field ElectoralDistrict::$usersFame
                 /* @var $who ElectoralDistrict */
                 /* @var $who \app\models\politics\State */
-                $turnout = $who->usersFame > 0 ? $sumRequestsFame/$who->usersFame : 0;
-                
+                $sumRequestsFame = 0;
+                foreach ($requests as $request) {
+                    $sumRequestsFame += $request->object->fame;
+                }
+                $turnout = $who->usersFame > 0 ? $sumRequestsFame/$who->usersFame : 1;
+                $tiles = $who->tiles;
+                foreach ($tiles as $tile) {
+                    $pops = array_merge($pops, $tile->pops);
+                }
+                foreach ($pops as $i => $pop) {
+                    echo $pop->ideologies.PHP_EOL;
+                    if ($i > 10) break;
+                }
                 break;
             case ElectionWhoType::AGENCY_MEMBERS:
                 /* @var $who \app\models\politics\Agency */
@@ -104,6 +114,71 @@ abstract class ElectionManager
                 break;
         }
         
+        echo "Turnout: ".$turnout.PHP_EOL;
+        echo "NPC count all: ".count($pops).PHP_EOL;
+        $votersCount = round($turnout*count($pops));
+        if ($votersCount > 0) {
+            $pops = array_rand($pops, $votersCount);
+            echo "NPC count voted: ".count($pops).PHP_EOL;
+            
+            $npcCount = 0;
+            var_dump($pops[0]); die();
+            foreach ($pops as $pop) {
+                $npcCount += $pop->count;
+                $tmpPops = [];
+                $ideologies = json_decode($pop->ideologies);
+                foreach ($ideologies as $ideologyId => $percents) {
+                    $tmpPops[] = ['ideologyId' => $ideologyId, 'count' => $pop->count*$percents/100];
+                }
+                $tmpPopsWithReligions = [];
+                $religions = json_decode($pop->religions);
+                foreach ($religions as $religionId => $percents) {
+                    foreach ($tmpPops as $tmpPop) {
+                        $tmpPopsWithReligions[] = [
+                            'ideologyId' => $tmpPop['ideologyId'],
+                            'religionId' => $religionId,
+                            'count' => $tmpPop['count']*$percents/100
+                        ];
+                    }
+                }
+                unset($tmpPops);
+                $tmpPopsWithGenders = [];
+                $genders = json_decode($pop->genders);
+                foreach ($genders as $genderId => $percents) {
+                    foreach ($tmpPopsWithReligions as $tmpPop) {
+                        $tmpPopsWithGenders[] = [
+                            'ideologyId' => $tmpPop['ideologyId'],
+                            'religionId' => $tmpPop['religionId'],
+                            'gender' => $genderId,
+                            'count' => $tmpPop['count']*$percents/100
+                        ];
+                    }
+                }
+                unset($tmpPopsWithReligions);
+                $tmpPops = [];
+                $ages = json_decode($pop->ages);
+                foreach ($ages as $age => $percents) {
+                    foreach ($tmpPopsWithGenders as $tmpPop) {
+                        $tmpPops[] = [
+                            'ideologyId' => $tmpPop['ideologyId'],
+                            'religionId' => $tmpPop['religionId'],
+                            'gender' => $tmpPop['gender'],
+                            'age' => $age,
+                            'count' => $tmpPop['count']*$percents/100
+                        ];
+                    }
+                }
+                print_r($tmpPops); die();
+                $vote = new ElectionVotePop([
+                    'electionId' => $election->id,
+                    'count' => $pop->count,
+                    'tileId' => $pop->tileId,
+                    'classId' => $pop->classId,
+                    'nationId' => $pop->nationId,
+                ]);
+            }
+            
+        }
         
         
     }
