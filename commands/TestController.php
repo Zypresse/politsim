@@ -342,7 +342,7 @@ class TestController extends Controller
                         ];
                     }
                 }
-                echo Yii::$app->db->createCommand()->batchInsert('pops', ['count', 'classId', 'nationId', 'tileId', 'ideologies', 'religions', 'genders', 'ages', 'contentment', 'agression', 'consciousness'], $pops);
+                echo Yii::$app->db->createCommand()->batchInsert('pops', ['count', 'classId', 'nationId', 'tileId', 'ideologies', 'religions', 'genders', 'ages', 'contentment', 'agression', 'consciousness'], $pops)->execute();
                 
                 $city->updateParams(true, false);
                 echo $city->name.' updated'.PHP_EOL;
@@ -372,7 +372,7 @@ class TestController extends Controller
                     ];
                 }
             }
-            echo Yii::$app->db->createCommand()->batchInsert('pops', ['count', 'classId', 'nationId', 'tileId', 'ideologies', 'religions', 'genders', 'ages', 'contentment', 'agression', 'consciousness'], $pops);
+            echo Yii::$app->db->createCommand()->batchInsert('pops', ['count', 'classId', 'nationId', 'tileId', 'ideologies', 'religions', 'genders', 'ages', 'contentment', 'agression', 'consciousness'], $pops)->execute();
             $region->updateParams(true, false);
             echo $region->name.' updated'.PHP_EOL;
         }
