@@ -15,7 +15,9 @@ use Yii,
     app\models\politics\constitution\templates\ConstitutionGenerator,
     app\models\politics\constitution\templates\Bulbostan,
     app\models\politics\elections\ElectionManager,
-    app\models\population\Pop;
+    app\models\Tile,
+    app\models\population\Pop,
+    app\models\population\PopClass;
 
 class TestController extends Controller
 {
