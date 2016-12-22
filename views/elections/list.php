@@ -31,20 +31,30 @@ use yii\helpers\Html,
 </section>
 <script type="text/javascript">
     
-    function sendElectionRequestModal() {
+    function sendElectionRequestModal(id) {
         createAjaxModal(
             'elections/send-request-form',
-            {id: $(this).data('id')},
+            {id: id},
             '<?=Yii::t('app', 'Election request')?>',
-            '<button class="btn btn-primary send-election-request-confirm-btn" data-id="'+$(this).data('id')+'"><?=Yii::t('app', 'Send request')?></button><button class="btn btn-danger" data-dismiss="modal" aria-hidden="true"><?=Yii::t('app', 'Close')?></button>'
+            '<button class="btn btn-primary send-election-request-confirm-btn" onclick="sendElectionRequestConfirm('+id+')" data-id="'+$(this).data('id')+'"><?=Yii::t('app', 'Send request')?></button><button class="btn btn-danger" data-dismiss="modal" aria-hidden="true"><?=Yii::t('app', 'Close')?></button>'
         );
     }
     
-    function sendElectionRequestConfirm() {
-        json_request('elections/send-request', {id: $(this).data('id')});
+    function sendElectionRequestConfirm(id) {
+        json_request('elections/send-request', {id: id});
     }
     
-    $('.send-election-request-modal-btn').click(sendElectionRequestModal);
-    $(document.body).on('click', '.send-election-request-confirm-btn', sendElectionRequestConfirm);
+    function electionVoteModal(id) {
+        createAjaxModal(
+            'elections/vote-form',
+            {id: id},
+            '<?=Yii::t('app', 'Ballot')?>',
+            '<button class="btn btn-primary election-vote-confirm-btn" onclick="electionVoteConfirm('+id+')" disabled="disabled" data-id="'+$(this).data('id')+'"><?=Yii::t('app', 'Vote')?></button><button class="btn btn-danger" data-dismiss="modal" aria-hidden="true"><?=Yii::t('app', 'Close')?></button>'
+        );
+    }
+    
+    function electionVoteConfirm(id) {
+        json_request('elections/vote', {id: id, variant: $('#election-variant-selected').val()});
+    }
     
 </script>

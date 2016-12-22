@@ -14,25 +14,17 @@ $canVote = $election->canVote($viewer);
         <p><strong><?=Yii::t('app', 'Voting finish:')?></strong> <span class="formatDate" data-unixtime="<?=$election->dateVotingEnd?>"><?=date('d-m-y', $election->dateVotingEnd)?></span></p>
         <?php if ($canVote): ?>
         <div class="btn-group">
-            <button class="btn btn-primary elections-vote-modal-btn" data-id="<?=$election->id?>" ><?=Yii::t('app', 'Vote')?></button>
+            <button class="btn btn-primary election-vote-modal-btn" onclick="electionVoteModal(<?=$election->id?>)" ><?=Yii::t('app', 'Vote')?></button>
         </div>
         <?php endif ?>
     </div>
     <div class="col-md-6 col-sm-12">
         <div class="box box-solid box-info">
             <div class="box-header">
-                <h4 class="box-title"><?=Yii::t('app', 'Candidats')?></h4>
+                <h4 class="box-title"><?=Yii::t('app', 'Exitpolls')?></h4>
             </div>
             <div class="box-body">
-                <?php if (count($election->requests)): ?>
-                <ul>
-                    <?php foreach ($election->requests as $request): ?>
-                    <li><?=LinkCreator::link($request->object)?></li>
-                    <?php endforeach ?>
-                </ul>
-                <?php else: ?>
-                <p><?=Yii::t('app', 'No one candidat registered')?></p>
-                <?php endif ?>
+                <p>Тут будут экситполлы</p>
             </div>
         </div>
     </div>

@@ -35,7 +35,7 @@ class ElectionVoteUser extends MyActiveRecord
     public function rules()
     {
         return [
-            [['electionId', 'userId', 'districtId', 'variant'], 'required'],
+            [['electionId', 'userId', 'variant'], 'required'],
             [['electionId', 'userId', 'districtId', 'variant', 'dateCreated'], 'integer', 'min' => 0],
             [['electionId'], 'exist', 'skipOnError' => true, 'targetClass' => Election::className(), 'targetAttribute' => ['electionId' => 'id']],
             [['userId'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['userId' => 'id']],

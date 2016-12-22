@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\components\MyController,
     app\models\politics\elections\Election,
+    app\models\politics\elections\ElectionVoteUser,
     app\models\politics\State,
     yii\web\NotFoundHttpException,
     Yii;
@@ -73,6 +74,47 @@ class ElectionsController extends MyController
             return $this->_rOk();
         } else {
             return $this->_r(Yii::t('app', 'Unknown error'));
+        }
+    }
+    
+    public function actionVoteForm($id)
+    {
+        $election = $this->getElection($id);
+        if (!$election->canVote($this->user)) {
+            return $this->_r(Yii::t('app', 'You can not vote in this election'));
+        }
+        
+        return $this->render('vote-form', [
+            'election' => $election,
+        ]);
+    }
+    
+    public function actionVote($id, $variant)
+    {
+        $election = $this->getElection($id);
+        if (!$election->canVote($this->user)) {
+            return $this->_r(Yii::t('app', 'You can not vote in this election'));
+        }
+        
+        $request = $election->getRequests()
+                ->where([
+                    'variant' => $variant,
+                ])
+                ->one();
+        if (is_null($request)) {
+            return $this->_r(Yii::t('app', 'Invalid variant'));
+        }
+        
+        $vote = new ElectionVoteUser([
+            'electionId' => $election->id,
+            'userId' => $this->user->id,
+            'districtId' => $this->user->tile ? $this->user->tile->electoralDistrictId : null,
+            'variant' => $variant,
+        ]);
+        if ($vote->save()) {
+            return $this->_rOk();
+        } else {
+            return $this->_r($vote->getErrors());
         }
     }
     

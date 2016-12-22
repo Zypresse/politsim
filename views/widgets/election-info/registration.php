@@ -14,7 +14,7 @@ $showRegisterButton = $election->canSendRequest($viewer);
         <p><strong><?=Yii::t('app', 'Registration finish:')?></strong> <span class="formatDate" data-unixtime="<?=$election->dateRegistrationEnd?>"><?=date('d-m-y', $election->dateRegistrationEnd)?></span></p>
         <?php if ($showRegisterButton): ?>
         <div class="btn-group">
-            <button class="btn btn-primary send-election-request-modal-btn" data-id="<?=$election->id?>" ><?=Yii::t('app', 'Register to this elections')?></button>
+            <button class="btn btn-primary send-election-request-modal-btn" onclick="sendElectionRequestModal(<?=$election->id?>)" ><?=Yii::t('app', 'Register to this elections')?></button>
         </div>
         <?php endif ?>
     </div>
