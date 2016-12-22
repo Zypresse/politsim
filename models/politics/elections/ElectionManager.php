@@ -77,4 +77,35 @@ abstract class ElectionManager
     }
     
     
+    public static function calculateResults(Election &$election)
+    {
+        /* @var $post AgencyPost */
+        $post = $election->whom;
+        $requests = $election->requests;
+        $who = $election->who;
+        $votesByUsers = $election->votesByUsers;
+        
+        $sumRequestsFame = 0;
+        foreach ($requests as $request) {
+            $sumRequestsFame += $request->object->fame;
+        }
+        
+        switch ($election->whoType) {
+            case ElectionWhoType::STATE:
+            case ElectionWhoType::ELECTORAL_DISTRICT: // TODO: add field ElectoralDistrict::$usersFame
+                /* @var $who ElectoralDistrict */
+                /* @var $who \app\models\politics\State */
+                $turnout = $who->usersFame > 0 ? $sumRequestsFame/$who->usersFame : 0;
+                
+                break;
+            case ElectionWhoType::AGENCY_MEMBERS:
+                /* @var $who \app\models\politics\Agency */
+                $turnout = count($votesByUsers) / $who->getPosts()->count();
+                break;
+        }
+        
+        
+        
+    }
+    
 }

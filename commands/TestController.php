@@ -34,7 +34,7 @@ class TestController extends Controller
 //        echo models\Region::findByPk(33)->getPolygon(true);
 //        echo models\State::findByPk(5)->getPolygon(true);
 //        echo models\Tile::find()->count('id');
-//        $state = models\State::find()->one();
+        $state = State::find()->one();
 //        
 //        $state->updateParams(true, false);
 //        $pop = 0;
@@ -44,6 +44,13 @@ class TestController extends Controller
 //            }
 //        }
 //        echo $pop;
+        echo count($state->tiles);
+        echo count($state->pops);
+    }
+    
+    public function actionCreateElectionsObject()
+    {
+        
         $post = AgencyPost::find()->one();
         $election = ElectionManager::createPostElection($post);
         var_dump($election->id);
@@ -55,7 +62,6 @@ class TestController extends Controller
             echo date('d-m-Y', $election->dateVotingStart).PHP_EOL;
             echo date('d-m-Y', $election->dateVotingEnd).PHP_EOL;
         }
-        
     }
     
     public function actionSetConstitutionArticle()

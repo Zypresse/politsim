@@ -5,6 +5,7 @@ namespace app\models\politics;
 use Yii,
     app\models\economics\UtrType,
     app\models\politics\constitution\Constitution,
+    app\models\politics\constitution\ConstitutionArticle,
     app\models\politics\constitution\ConstitutionOwnerType,
     app\models\politics\elections\Election,
     app\models\politics\elections\ElectionManager,
@@ -28,6 +29,7 @@ use Yii,
  * @property User $user
  * @property Election[] $elections
  * @property Constitution $constitution
+ * @property ConstitutionArticle[] $articles
  * 
  */
 class AgencyPost extends ElectionOwner
@@ -93,6 +95,10 @@ class AgencyPost extends ElectionOwner
         return $this->hasMany(Election::className(), ['whomId' => 'id'])->where(['whomType' => elections\ElectionWhomType::POST]);
     }
     
+    /**
+     * 
+     * @return Election
+     */
     public function getNextElection()
     {
         $election = $this->getElections()->where(['results' => null])->one();

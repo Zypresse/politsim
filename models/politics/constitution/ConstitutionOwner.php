@@ -2,7 +2,8 @@
 
 namespace app\models\politics\constitution;
 
-use app\models\economics\TaxPayerModel;
+use app\models\economics\TaxPayerModel,
+    app\models\politics\constitution\ConstitutionArticle;
 
 /**
  * 
@@ -32,6 +33,11 @@ abstract class ConstitutionOwner extends TaxPayerModel
             $this->_constitution = Constitution::create(static::getConstitutionOwnerType(), $this->id);
         }
         return $this->_constitution;
+    }
+    
+    public function getArticles()
+    {
+        return $this->hasMany(ConstitutionArticle::className(), ['ownerId' => 'id'])->where(['ownerType' => static::getConstitutionOwnerType()]);
     }
 
 }

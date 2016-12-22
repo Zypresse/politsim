@@ -7,6 +7,8 @@ use Yii,
     app\models\politics\constitution\Constitution,
     app\models\politics\constitution\ConstitutionOwnerType,
     app\models\politics\constitution\ConstitutionOwner,
+    app\models\population\Pop,
+    app\models\Tile,
     app\components\RegionCombiner,
     app\components\MyMathHelper;
 
@@ -39,6 +41,8 @@ use Yii,
  * @property AgencyPost[] $posts
  * @property Party[] $parties
  * @property Constitution $constitution
+ * @property Tile[] $tiles
+ * @property Pop[] $pops
  *
  * @author ilya
  */
@@ -166,6 +170,18 @@ class State extends ConstitutionOwner
     public function getParties()
     {
         return $this->hasMany(Party::className(), ['stateId' => 'id'])->where(['dateDeleted' => null]);
+    }
+    
+    public function getTiles()
+    {
+        return $this->hasMany(Tile::className(), ['regionId' => 'id'])
+                ->via('regions');
+    }
+    
+    public function getPops()
+    {
+        return $this->hasMany(Pop::className(), ['tileId' => 'id'])
+                ->via('tiles');
     }
 
     private function getPolygonFilePath()

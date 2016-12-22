@@ -25,6 +25,7 @@ use Yii,
  * @property Election $initiator
  * @property ElectionRequest[] $requests
  * @property ElectionOwner $whom
+ * @property MyActiveRecord $who
  * @property ElectionVoteUser $votesByUsers
  * @property ElectionVotePop $votesByPops
  * 
@@ -98,6 +99,11 @@ class Election extends MyActiveRecord
     public function getWhom()
     {
         return $this->hasOne(ElectionWhomType::getClassByType($this->whomType), ['id' => 'whomId']);
+    }
+    
+    public function getWho()
+    {
+        return $this->hasOne(ElectionWhoType::getClassByType($this->whoType), ['id' => 'whoId']);
     }
     
     public function canSendRequest(User &$user)

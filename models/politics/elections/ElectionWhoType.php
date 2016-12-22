@@ -2,7 +2,9 @@
 
 namespace app\models\politics\elections;
 
-use app\models\User;
+use app\models\User,
+    app\models\politics\State,
+    app\models\politics\Agency;
 
 /**
  * Кто выбирает
@@ -40,6 +42,24 @@ abstract class ElectionWhoType
                 return $user->tile && $user->tile->electoralDistrictId == $id;
             case static::AGENCY_MEMBERS:
                 return $user->getPosts()->with('agencies')->where(['agencies.id' => $id])->exists();
+        }
+    }
+    
+    
+    /**
+     * 
+     * @param integer $type
+     * @return string
+     */
+    public static function getClassByType(int $type)
+    {
+        switch ($type) {
+            case static::STATE:
+                return State::className();
+            case static::ELECTORAL_DISTRICT:
+                return ElectoralDistrict::className();
+            case static::AGENCY_MEMBERS:
+                return Agency::className();
         }
     }
     
