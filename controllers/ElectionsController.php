@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\components\MyController,
     app\models\politics\elections\Election,
+    app\models\politics\State,
     yii\web\NotFoundHttpException,
     Yii;
 
@@ -17,11 +18,8 @@ class ElectionsController extends MyController
     {
         $elections = [];
         foreach ($this->user->states as $state) {
-            foreach ($state->agencies as $agency) {
-//                $elections[] = $agency->getNextElection();
-                foreach ($agency->posts as $post) {
-                    $elections[] = $post->getNextElection();
-                }
+            foreach ($state->posts as $post) {
+                $elections[] = $post->getNextElection();
             }
         }
         
@@ -31,6 +29,29 @@ class ElectionsController extends MyController
         ]);
     }
     
+    public function actionState($id)
+    {
+        $state = State::findByPk($id);
+        if (is_null($state)) {
+            return $this->_r(Yii::t('app', 'State not found'));
+        }
+        
+        $electionsNew = [];
+        $electionsAll = [];
+        foreach ($state->posts as $post) {
+            $electionsNew[] = $post->getNextElection();
+            $electionsAll = array_merge($electionsAll, $post->getElections()->where(['<', 'dateVotingEnd', time()])->orderBy(['dateVotingEnd' => SORT_DESC])->all());
+        }
+        
+        return $this->render('state-list', [
+            'user' => $this->user,
+            'state' => $state,
+            'new' => $electionsNew,
+            'all' => $electionsAll,
+        ]);
+    }
+
+
     public function actionSendRequestForm($id)
     {
         $election = $this->getElection($id);

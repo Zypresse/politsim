@@ -36,6 +36,7 @@ use Yii,
  * @property StateStructure $stateStructure
  * @property Region[] $regions
  * @property Agency[] $agencies
+ * @property AgencyPost[] $posts
  * @property Party[] $parties
  * @property Constitution $constitution
  *
@@ -155,6 +156,11 @@ class State extends ConstitutionOwner
     public function getAgencies()
     {
         return $this->hasMany(Agency::className(), ['stateId' => 'id'])->where(['dateDeleted' => null]);
+    }
+    
+    public function getPosts()
+    {
+        return $this->hasMany(AgencyPost::className(), ['stateId' => 'id']);
     }
     
     public function getParties()

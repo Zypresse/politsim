@@ -40,6 +40,44 @@ $isHaveCitizenship = $user->isHaveCitizenship($state->id);
                     </div>
                 </div>
             <?php endif ?>
+            <div class="box box-info">
+                <div class="box-header">
+                    <h3 class="box-title"><?=Yii::t('app', 'Goverment posts')?></h3>
+                </div>
+                <div class="box-body">
+                    <table class="table table-bordered no-margin">
+                        <thead>
+                            
+                        </thead>
+                        <tbody>
+                        <?php foreach ($state->posts as $post): ?>
+                            <tr>
+                                <td><?=Html::encode($post->name)?></td>
+                            </tr>
+                        <?php endforeach ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="box box-info">
+                <div class="box-header">
+                    <h3 class="box-title"><?=Yii::t('app', 'Goverment agencies')?></h3>
+                </div>
+                <div class="box-body">
+                    <table class="table table-bordered no-margin">
+                        <thead>
+                            
+                        </thead>
+                        <tbody>
+                        <?php foreach ($state->agencies as $agency): ?>
+                            <tr>
+                                <td><?=LinkCreator::agencyLink($agency)?></td>
+                            </tr>
+                        <?php endforeach ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
         <div class="col-md-8">
             <div class="box">
@@ -87,31 +125,12 @@ $isHaveCitizenship = $user->isHaveCitizenship($state->id);
                                     </tr>
                                     <tr>
                                         <td><strong><i class="fa fa-group"></i> <?=Yii::t('app', 'Population')?></strong></td>
-                                        <td><?=MyHtmlHelper::formateNumberword($state->population)?> <?=Html::a(Yii::t('app', 'Population info'),'#!population/state&id='.$state->id,['class' => 'btn btn-info btn-xs'])?></td>
+                                        <td><?=MyHtmlHelper::formateNumberword($state->population, 'h')?> <?=Html::a(Yii::t('app', 'Population info'),'#!population/state&id='.$state->id,['class' => 'btn btn-info btn-xs'])?></td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="box box-info">
-                <div class="box-header">
-                    <h3 class="box-title"><?=Yii::t('app', 'Goverment agencies')?></h3>
-                </div>
-                <div class="box-body">
-                    <table class="table table-bordered no-margin">
-                        <thead>
-                            
-                        </thead>
-                        <tbody>
-                        <?php foreach ($state->agencies as $agency): ?>
-                            <tr>
-                                <td><?=LinkCreator::agencyLink($agency)?></td>
-                            </tr>
-                        <?php endforeach ?>
-                        </tbody>
-                    </table>
                 </div>
             </div>
             <div class="box box-info">
@@ -130,7 +149,7 @@ $isHaveCitizenship = $user->isHaveCitizenship($state->id);
                             <?php foreach ($state->regions as $region): ?>
                             <tr>
                                 <td><?=LinkCreator::regionLink($region)?></td>
-                                <td><?=MyHtmlHelper::formateNumberword($region->population)?> <?=Html::a(Yii::t('app', 'Population info'),'#!population/region&id='.$region->id,['class' => 'btn btn-info btn-xs'])?></td>
+                                <td><?=MyHtmlHelper::formateNumberword($region->population, 'h')?> <?=Html::a(Yii::t('app', 'Population info'),'#!population/region&id='.$region->id,['class' => 'btn btn-info btn-xs'])?></td>
                             </tr>
                             <?php endforeach ?>
                         </tbody>
