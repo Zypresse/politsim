@@ -5,16 +5,16 @@ use app\components\LinkCreator;
 /* @var $election \app\models\politics\elections\Election */
 /* @var $viewer \app\models\User */
 
-$showRegisterButton = $election->canSendRequest($viewer);
+$canVote = $election->canVote($viewer);
 
 ?>
 <div class="row">
     <div class="col-md-6 col-sm-12">
-        <p><strong><?=Yii::t('app', 'Current status:')?></strong> <?=Yii::t('app', 'candidats registration')?></p>
-        <p><strong><?=Yii::t('app', 'Registration finish:')?></strong> <span class="formatDate" data-unixtime="<?=$election->dateRegistrationEnd?>"><?=date('d-m-y', $election->dateRegistrationEnd)?></span></p>
-        <?php if ($showRegisterButton): ?>
+        <p><strong><?=Yii::t('app', 'Current status:')?></strong> <?=Yii::t('app', 'going voting')?></p>
+        <p><strong><?=Yii::t('app', 'Voting finish:')?></strong> <span class="formatDate" data-unixtime="<?=$election->dateVotingEnd?>"><?=date('d-m-y', $election->dateVotingEnd)?></span></p>
+        <?php if ($canVote): ?>
         <div class="btn-group">
-            <button class="btn btn-primary send-election-request-modal-btn" data-id="<?=$election->id?>" ><?=Yii::t('app', 'Register to this elections')?></button>
+            <button class="btn btn-primary elections-vote-modal-btn" data-id="<?=$election->id?>" ><?=Yii::t('app', 'Vote')?></button>
         </div>
         <?php endif ?>
     </div>

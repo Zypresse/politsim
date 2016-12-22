@@ -30,8 +30,18 @@ class ElectionInfoWidget extends Widget
     private function getViewFile()
     {
         switch ($this->election->status) {
+            case ElectionStatus::NOT_STARTED:
+                return 'not-started';
             case ElectionStatus::REGISTRATION:
                 return 'registration';
+            case ElectionStatus::REGISTRATION_ENDED:
+                return 'registration-ended';
+            case ElectionStatus::VOTING:
+                return 'voting';
+            case ElectionStatus::CALCULATING:
+                return 'calculating';
+            case ElectionStatus::ENDED:
+                return 'ended';
         }
     }
     

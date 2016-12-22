@@ -5,18 +5,11 @@ use app\components\LinkCreator;
 /* @var $election \app\models\politics\elections\Election */
 /* @var $viewer \app\models\User */
 
-$showRegisterButton = $election->canSendRequest($viewer);
-
 ?>
 <div class="row">
     <div class="col-md-6 col-sm-12">
-        <p><strong><?=Yii::t('app', 'Current status:')?></strong> <?=Yii::t('app', 'candidats registration')?></p>
-        <p><strong><?=Yii::t('app', 'Registration finish:')?></strong> <span class="formatDate" data-unixtime="<?=$election->dateRegistrationEnd?>"><?=date('d-m-y', $election->dateRegistrationEnd)?></span></p>
-        <?php if ($showRegisterButton): ?>
-        <div class="btn-group">
-            <button class="btn btn-primary send-election-request-modal-btn" data-id="<?=$election->id?>" ><?=Yii::t('app', 'Register to this elections')?></button>
-        </div>
-        <?php endif ?>
+        <p><strong><?=Yii::t('app', 'Current status:')?></strong> <?=Yii::t('app', 'candidats registration finished')?></p>
+        <p><strong><?=Yii::t('app', 'Voting start:')?></strong> <span class="formatDate" data-unixtime="<?=$election->dateVotingStart?>"><?=date('d-m-y', $election->dateVotingStart)?></span></p>
     </div>
     <div class="col-md-6 col-sm-12">
         <div class="box box-solid box-info">

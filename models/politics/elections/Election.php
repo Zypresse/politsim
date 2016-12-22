@@ -4,7 +4,6 @@ namespace app\models\politics\elections;
 
 use Yii,
     app\models\User,
-    app\models\NotificationProto,
     app\models\base\MyActiveRecord;
 
 /**
@@ -26,6 +25,8 @@ use Yii,
  * @property Election $initiator
  * @property ElectionRequest[] $requests
  * @property ElectionOwner $whom
+ * @property ElectionVoteUser $votesByUsers
+ * @property ElectionVotePop $votesByPops
  * 
  * @property integer $status
  * 
@@ -84,6 +85,16 @@ class Election extends MyActiveRecord
         return $this->hasMany(ElectionRequest::className(), ['electionId' => 'id']);
     }
     
+    public function getVotesByUsers()
+    {
+        return $this->hasMany(ElectionVoteUser::className(), ['electionId' => 'id']);
+    }
+    
+    public function getVotesByPops()
+    {
+        return $this->hasMany(ElectionVotePop::className(), ['electionId' => 'id']);
+    }
+    
     public function getWhom()
     {
         return $this->hasOne(ElectionWhomType::getClassByType($this->whomType), ['id' => 'whomId']);
@@ -91,11 +102,23 @@ class Election extends MyActiveRecord
     
     public function canSendRequest(User &$user)
     {
-        return $this->status == ElectionStatus::REGISTRATION &&
-                !$this->getRequests()
+        return $this->status == ElectionStatus::REGISTRATION
+                && $user->isHaveCitizenship($this->whom->getTaxStateId())
+                && !$this->getRequests()
                 ->where([
                     'type' => ElectionRequestType::USER_SELF,
                     'objectId' => $user->id
+                ])
+                ->exists();
+    }
+    
+    public function canVote(User &$user)
+    {
+        return $this->status == ElectionStatus::VOTING
+                && ElectionWhoType::canVote($this->whoId, $this->whoType, $user)
+                && !$this->getVotesByUsers()
+                ->where([
+                    'userId' => $user->id,
                 ])
                 ->exists();
     }
