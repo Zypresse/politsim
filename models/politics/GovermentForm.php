@@ -3,7 +3,8 @@
 namespace app\models\politics;
 
 use Yii,
-    app\models\politics\constitution\StateConstitution,
+    app\models\politics\constitution\ConstitutionArticleType,
+    app\models\politics\constitution\articles\statesonly\Parties,
     app\models\base\ObjectWithFixedPrototypes;
 
 /**
@@ -41,17 +42,12 @@ class GovermentForm extends ObjectWithFixedPrototypes {
      * @param State $state
      * @return integer
      */
-    public static function calcForState(State $state)
+    public static function calcForState(State &$state)
     {
-        $constitution = $state->constitution;
-        if (is_null($constitution)) {
-            return static::UNKNOWN;
-        }
-        
-        if ($constitution->partyPolicy == StateConstitution::PARTY_POLICY_FREE) {
-            return GovermentForm::REPUBLIC;
+        if ($state->constitution->getArticleByType(ConstitutionArticleType::PARTIES)->value == Parties::ALLOWED) {
+            return static::REPUBLIC;
         } else {
-            return GovermentForm::DICTATURE;
+            return static::DICTATURE;
         }
     }
     

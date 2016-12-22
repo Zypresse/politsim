@@ -250,8 +250,8 @@ class TestController extends Controller
     public function actionUpdatePopulation()
     {
         
-        /* @var $state models\State */
-        $state = models\State::find()->one();
+        /* @var $state State */
+        $state = State::find()->one();
         foreach ($state->regions as $region) {
             $regionTilesCount = intval($region->getTiles()->count());
             $population = $region->population;
@@ -260,11 +260,11 @@ class TestController extends Controller
                 $cityTilesCount = intval($city->getTiles()->count());
                 echo '  '.$city->name.' — '.$city->population.' / '.$cityTilesCount.PHP_EOL;
                 
-                models\Tile::updateAll(['population' => round($city->population/$cityTilesCount)], ['cityId' => $city->id]);
+                Tile::updateAll(['population' => round($city->population/$cityTilesCount)], ['cityId' => $city->id]);
                 $population -= $city->population;
                 $regionTilesCount -= $cityTilesCount;
             }
-            models\Tile::updateAll(['population' => round($population/$regionTilesCount)], ['cityId' => null, 'regionId' => $region->id]);
+            Tile::updateAll(['population' => round($population/$regionTilesCount)], ['cityId' => null, 'regionId' => $region->id]);
         }
         $state->updateParams(true, false);
     }
@@ -272,8 +272,8 @@ class TestController extends Controller
     public function actionPopulationDestinyPolygons()
     {
         
-        /* @var $tiles models\Tile[] */
-        $tiles = models\Tile::find()->where(['>', 'population', 0])->all();
+        /* @var $tiles Tile[] */
+        $tiles = Tile::find()->where(['>', 'population', 0])->all();
         
         $uniques = [];
         foreach ($tiles as $tile) {
@@ -327,7 +327,7 @@ class TestController extends Controller
                         $ages = $city->ages ? $city->ages : '{"18":100}';
                         $pops[] = [
                             'count' => round($tile->population * $percents / 100),
-                            'classId' => models\PopClass::LUMPEN,
+                            'classId' => PopClass::LUMPEN,
                             'nationId' => $nationId,
                             'tileId' => $tile->id,
                             'ideologies' => $ideologies,
@@ -357,7 +357,7 @@ class TestController extends Controller
                     $ages = $region->ages ? $region->ages : '{"18":100}';
                     $pops[] = [
                         'count' => round($tile->population * $percents / 100),
-                        'classId' => models\PopClass::LUMPEN,
+                        'classId' => PopClass::LUMPEN,
                         'nationId' => $nationId,
                         'tileId' => $tile->id,
                         'ideologies' => $ideologies,

@@ -42,11 +42,6 @@ class StateStructure extends ObjectWithFixedPrototypes {
      */
     public static function calcForState(State $state)
     {
-        $constitution = $state->constitution;
-        if (is_null($constitution)) {
-            return static::UNKNOWN;
-        }
-        
         return static::UNITARY;
     }
     

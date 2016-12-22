@@ -197,14 +197,7 @@ class State extends ConstitutionOwner
     
     public function updateParams($save = true, $polygon = true)
     {
-        
-        if (!$this->constitution) {
-            $constitution = StateConstitution::generate();
-            $constitution->stateId = $this->id;
-            $constitution->save();
-            $this->refresh();
-        }
-        
+                
         $this->govermentFormId = GovermentForm::calcForState($this);
         $this->stateStructureId = StateStructure::calcForState($this);
         
