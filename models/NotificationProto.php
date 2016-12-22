@@ -6,7 +6,20 @@ use Yii,
     app\models\base\ObjectWithFixedPrototypes;
 
 class NotificationProto extends ObjectWithFixedPrototypes
-{    
+{
+    
+    const PIDOR = 0;
+    const CITIZENSHIP_APPROUVED = 1;
+    const CITIZENSHIP_LOST = 2;
+    const MEMBERSHIP_APPROUVED = 3;
+    const MEMBERSHIP_LOST = 4;
+    const PARTY_CREATED = 5;
+    const SETTED_TO_PARTY_POST = 6;
+    const DROPPED_FROM_PARTY_POST = 7;
+    const SETTED_AS_SUCCESSOR_TO_PARTY_POST = 8;
+    const DELETED_PARTY_POST = 9;
+    const REGISTERED_FOR_POST_ELECTIONS = 10;
+    
     public $id;
     public $text;
     public $textShort;
@@ -17,74 +30,81 @@ class NotificationProto extends ObjectWithFixedPrototypes
     {
         return [
             [
-                'id' => 0,
-                'text' => Yii::t('app', 'Просто уведомление о том, что ты пидор.'),
-                'textShort' => Yii::t('app', 'Ты пидор'),
+                'id' => static::PIDOR,
+                'text' => 'Просто уведомление о том, что ты пидор.',
+                'textShort' => 'Ты пидор',
                 'icon' => '<i class="fa fa-envelope text-blue"></i>',
                 'iconBg' => '<i class="fa fa-envelope bg-blue"></i>',
             ],
             [
-                'id' => 1,
-                'text' => Yii::t('app', 'Your citizenship request is approved'),
-                'textShort' => Yii::t('app', 'Citizenship approved'),
+                'id' => static::CITIZENSHIP_APPROUVED,
+                'text' => 'Now you are a citizenship of {0}',
+                'textShort' => 'Citizenship approved',
                 'icon' => '<i class="fa fa-flag text-green"></i>',
                 'iconBg' => '<i class="fa fa-flag bg-green"></i>',
             ],            
             [
-                'id' => 2,
-                'text' => Yii::t('app', 'Your have lost citizehship'),
-                'textShort' => Yii::t('app', 'Citizenship fired'),
+                'id' => static::CITIZENSHIP_LOST,
+                'text' => 'You have lost citizenship of {0}',
+                'textShort' => 'Citizenship fired',
                 'icon' => '<i class="fa fa-flag text-red"></i>',
                 'iconBg' => '<i class="fa fa-flag bg-red"></i>',
             ],
             [
-                'id' => 3,
-                'text' => Yii::t('app', 'Your membership request is approved'),
-                'textShort' => Yii::t('app', 'Membership approved'),
+                'id' => static::MEMBERSHIP_APPROUVED,
+                'text' => 'Your membership request to party {0} is approved',
+                'textShort' => 'Membership approved',
                 'icon' => '<i class="fa fa-group text-green"></i>',
                 'iconBg' => '<i class="fa fa-group bg-green"></i>',
             ],            
             [
-                'id' => 4,
-                'text' => Yii::t('app', 'Your have lost membership'),
-                'textShort' => Yii::t('app', 'Membership fired'),
+                'id' => static::MEMBERSHIP_LOST,
+                'text' => 'Your have lost membership of party {0}',
+                'textShort' => 'Membership fired',
                 'icon' => '<i class="fa fa-group text-red"></i>',
                 'iconBg' => '<i class="fa fa-group bg-red"></i>',
             ],
             [
-                'id' => 5,
-                'text' => Yii::t('app', 'Party successfully created'),
-                'textShort' => Yii::t('app', 'Party created'),
+                'id' => static::PARTY_CREATED,
+                'text' => 'Party {0} successfully created',
+                'textShort' => 'Party created',
                 'icon' => '<i class="fa fa-group text-green"></i>',
                 'iconBg' => '<i class="fa fa-group bg-green"></i>',
             ],
             [
-                'id' => 6,
-                'text' => Yii::t('app', 'You are setted to new party post'),
-                'textShort' => Yii::t('app', 'Setting to party post'),
+                'id' => static::SETTED_TO_PARTY_POST,
+                'text' => 'You are setted to post {0} in party {1}',
+                'textShort' => 'You are setted to party post',
                 'icon' => '<i class="fa fa-group text-green"></i>',
                 'iconBg' => '<i class="fa fa-group bg-green"></i>',
             ],
             [
-                'id' => 7,
-                'text' => Yii::t('app', 'You are dropped from party post'),
-                'textShort' => Yii::t('app', 'Dropped from party post'),
+                'id' => static::DROPPED_FROM_PARTY_POST,
+                'text' => 'You are dropped from post {0} in party {1}',
+                'textShort' => 'Dropped from party post',
                 'icon' => '<i class="fa fa-group text-red"></i>',
                 'iconBg' => '<i class="fa fa-group bg-red"></i>',
             ],
             [
-                'id' => 8,
-                'text' => Yii::t('app', 'You are setted as successor of party post'),
-                'textShort' => Yii::t('app', 'Setted as successor of party post'),
+                'id' => static::SETTED_AS_SUCCESSOR_TO_PARTY_POST,
+                'text' => 'You are setted as successor of post {0} in party {1}',
+                'textShort' => 'Setted as successor of party post',
                 'icon' => '<i class="fa fa-group text-blue"></i>',
                 'iconBg' => '<i class="fa fa-group bg-blue"></i>',
             ],
             [
-                'id' => 9,
-                'text' => Yii::t('app', 'Your party post was deleted'),
-                'textShort' => Yii::t('app', 'Your party post deleted'),
+                'id' => static::DELETED_PARTY_POST,
+                'text' => 'Your post {0} in party {1} was deleted',
+                'textShort' => 'Your party post deleted',
                 'icon' => '<i class="fa fa-group text-blue"></i>',
                 'iconBg' => '<i class="fa fa-group bg-blue"></i>',
+            ],
+            [
+                'id' => static::REGISTERED_FOR_POST_ELECTIONS,
+                'text' => 'You are registered for elections to post {0} in state {1}',
+                'textShort' => 'You are registered for elections',
+                'icon' => '<i class="fa fa-university text-green"></i>',
+                'iconBg' => '<i class="fa fa-university bg-green"></i>',
             ],
         ];
     }

@@ -311,7 +311,7 @@ class Party extends TaxPayerModel
                     $this->leaderPostId = $post->id;
                     
                     if ($this->save()) {
-                        $creator->noticy(5, \app\components\LinkCreator::partyLink($this)).Yii::t('app', ' created');
+                        Yii::$app->notificator->partyCreated($creator->id, $this, true);
                         return true;
                     }
                 }

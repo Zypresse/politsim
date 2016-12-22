@@ -63,26 +63,43 @@ class Membership extends MyActiveRecord
     }
     
     /**
-     * Подтвердить 
+     * Подтвердить
      * @param boolean $save
      */
     public function approve($save = true)
     {
         $this->dateApproved = time();
         if ($save) {
-            $this->save();
+            if ($this->save()) {
+                Yii::$app->notificator->membershipApprouved($this->userId, $this->party);
+                return true;
+            } else {
+                return false;
+            }
         }
-        
-        $this->user->noticy(3, Yii::t('app', 'Now you are a membership of ').LinkCreator::partyLink($this->party));
     }
     
-    public function fire() {
-        $this->user->noticy(4, Yii::t('app', 'You have lost membership of ').LinkCreator::partyLink($this->party));        
-        return $this->delete();
+    /**
+     * 
+     * @param boolean $self
+     * @return boolean
+     */
+    public function fire($self = false) {
+        $userId = $this->userId;
+        $party = $this->party;
+        if ($this->delete()) {
+            Yii::$app->notificator->membershipLost($userId, $party, $self);
+            return true;
+        } else {
+            return false;
+        }
     }
     
+    /**
+     * 
+     * @return boolean
+     */
     public function fireSelf() {
-        $this->user->noticyReaded(4, Yii::t('app', 'You have lost membership of ').LinkCreator::partyLink($this->party));
-        return $this->delete();
+        return $this->fire(true);
     }
 }

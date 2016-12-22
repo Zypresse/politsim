@@ -4,6 +4,7 @@ namespace app\models\politics\elections;
 
 use Yii,
     app\models\User,
+    app\models\NotificationProto,
     app\models\base\MyActiveRecord;
 
 /**
@@ -123,7 +124,12 @@ class Election extends MyActiveRecord
      */
     public function sendUserRequest(User &$user)
     {
-        return $this->sendRequest(ElectionRequestType::USER_SELF, $user->id);
+        if ($this->sendRequest(ElectionRequestType::USER_SELF, $user->id)) {
+            Yii::$app->notificator->registeredForPostElections($user->id, $this->whom, true);
+            return true;
+        } else {
+            return false;
+        }
     }
     
     public function getStatus()

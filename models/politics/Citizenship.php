@@ -71,20 +71,37 @@ class Citizenship extends MyActiveRecord {
     {
         $this->dateApproved = time();
         if ($save) {
-            $this->save();
+            if ($this->save()) {
+                Yii::$app->notificator->citizenshipApprouved($this->userId, $this->state);
+                return true;
+            } else {
+                return false;
+            }
         }
-        
-        $this->user->noticy(1, Yii::t('app', 'Now you are a citizenship of ').LinkCreator::stateLink($this->state));
     }
     
-    public function fire() {
-        $this->user->noticy(2, Yii::t('app', 'You have lost citizenship of ').LinkCreator::stateLink($this->state));        
-        return $this->delete();
+    /**
+     * 
+     * @param boolean $self
+     * @return boolean
+     */
+    public function fire($self = false) {
+        $userId = $this->userId;
+        $state = $this->state;
+        if ($this->delete()) {
+            Yii::$app->notificator->citizenshipLost($userId, $state, $self);
+            return true;
+        } else {
+            return false;
+        }
     }
     
+    /**
+     * 
+     * @return boolean
+     */
     public function fireSelf() {
-        $this->user->noticyReaded(2, Yii::t('app', 'You have lost citizenship of ').LinkCreator::stateLink($this->state));
-        return $this->delete();
+        return $this->fire(true);
     }
     
 }

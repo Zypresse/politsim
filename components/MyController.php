@@ -25,6 +25,7 @@ use Yii,
 /**
  * 
  * @property User $user
+ * @property \app\components\Notificator $notificator
  */
 
 class MyController extends Controller
@@ -85,5 +86,15 @@ class MyController extends Controller
             $this->_user = Yii::$app->user->identity;
         }
         return $this->_user;
+    }
+    
+    private $_notificator = null;
+    
+    protected function getNotificator()
+    {
+        if (is_null($this->_notificator)) {
+            $this->_notificator = &Yii::$app->notificator;
+        }
+        return $this->_notificator;
     }
 }

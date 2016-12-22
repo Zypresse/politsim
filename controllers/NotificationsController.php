@@ -2,7 +2,8 @@
 
 namespace app\controllers;
 
-use app\components\MyController,
+use Yii,
+    app\components\MyController,
     app\models\Notification;
 
 /**
@@ -47,9 +48,8 @@ class NotificationsController extends MyController
     {
         
         $notifications = Notification::findByUser($this->user->id)->orderBy(['id' => SORT_DESC])->limit(5)->all();
-        
-        Notification::markAllAsRead($this->user->id);
-        
+        Yii::$app->notificator->markReaded();
+
         return $this->render('index', [
             'notifications' => $notifications,
             'user' => $this->user

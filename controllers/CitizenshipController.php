@@ -34,9 +34,8 @@ class CitizenshipController extends MyController
         ]);
         
         // @TODO: принятие запросов на гражданство
-        $citizenship->approve(false);
         
-        if ($citizenship->save()) {
+        if ($citizenship->approve()) {
             return $this->_rOk();
         } else {
             return $this->_r($citizenship->getErrors());

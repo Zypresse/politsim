@@ -370,27 +370,4 @@ class User extends TaxPayerModel implements IdentityInterface
 	return $this->hasMany(Dealing::classname(), ['receiver' => 'utr']);
     }
     
-    public function noticy($protoId, $text = null, $textShort = null)
-    {
-        $n = new Notification([
-            'userId' => $this->id,
-            'protoId' => $protoId,
-            'text' => $text,
-            'textShort' => $textShort
-        ]);
-        return $n->save();
-    }
-    
-    public function noticyReaded($protoId, $text = null, $textShort = null)
-    {
-        $n = new Notification([
-            'userId' => $this->id,
-            'protoId' => $protoId,
-            'text' => $text,
-            'textShort' => $textShort,
-            'dateReaded' => time()
-        ]);
-        return $n->save();
-    }
-    
 }

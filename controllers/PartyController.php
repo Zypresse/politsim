@@ -222,10 +222,11 @@ class PartyController extends MyController
             return $this->_r(Yii::t('app', "Access denied"));
         }
         
-        $user = $model->user;
+        $userId = $model->userId;
+        $modelCopy = clone $model;
         if ($model->delete()) {
-            if ($user) {
-                $user->noticy(9, Yii::t('app', 'Your post {0} in party {1} was deleted', [\yii\helpers\Html::encode($model->name), \app\components\LinkCreator::partyLink($model->party)]));
+            if ($userId) {
+                $this->notificator->deletedPartyPost($userId, $modelCopy);
             }
             return $this->_rOk();
         }
@@ -258,7 +259,7 @@ class PartyController extends MyController
         
         $model->successorId = $user->id;
         if ($model->save()) {
-            $user->noticy(8, Yii::t('app', 'You are setted as successor to post {0} in party {1}', [\yii\helpers\Html::encode($model->name), \app\components\LinkCreator::partyLink($model->party)]));
+            $this->notificator->settedAsSuccessorToPartyPost($userId, $model);
             return $this->_rOk();
         } else {
             return $this->_r($model->getErrors());
@@ -310,7 +311,7 @@ class PartyController extends MyController
         
         $model->userId = $user->id;
         if ($model->save()) {
-            $user->noticy(6, Yii::t('app', 'You are setted to post {0} in party {1}', [\yii\helpers\Html::encode($model->name), \app\components\LinkCreator::partyLink($model->party)]));
+            $this->notificator->settedToPartyPost($userId, $model);
             return $this->_rOk();
         } else {
             return $this->_r($model->getErrors());
@@ -360,10 +361,10 @@ class PartyController extends MyController
         $model->userId = $model->successorId;
         if ($model->save()) {
             if ($dropedUser) {
-                $dropedUser->noticy(7, Yii::t('app', 'You are dropped from post {0} in party {1}', [\yii\helpers\Html::encode($model->name), \app\components\LinkCreator::partyLink($model->party)]));
+                $this->notificator->droppedFromPartyPost($dropedUser->id, $model);
             }
             if ($settedUser) {
-                $settedUser->noticy(6, Yii::t('app', 'You are setted to post {0} in party {1}', [\yii\helpers\Html::encode($model->name), \app\components\LinkCreator::partyLink($model->party)]));
+                $this->notificator->droppedFromPartyPost($settedUser->id, $model);
             }
             return $this->_rOk();
         } else {

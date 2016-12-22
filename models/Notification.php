@@ -87,15 +87,5 @@ class Notification extends MyActiveRecord
             'userId' => $userId
         ]);
     }
-    
-    public static function markAllAsRead($userId)
-    {
-        return static::updateAll([
-            'dateReaded' => time()
-        ], [
-            'userId' => $userId,
-            'dateReaded' => null
-        ]);
-    }
-    
+        
 }
