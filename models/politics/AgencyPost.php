@@ -113,11 +113,14 @@ class AgencyPost extends ElectionOwner
     
     public function isElected() : bool
     {
-        switch ((int) $this->constitution->getArticleByType(ConstitutionArticleType::DESTIGNATION_TYPE)->value) {
-            case DestignationType::BY_STATE_ELECTION:
-            case DestignationType::BY_AGENCY_ELECTION:
-            case DestignationType::BY_DISTRICT_ELECTION:
-                return true;
+        $article = $this->constitution->getArticleByType(ConstitutionArticleType::DESTIGNATION_TYPE);
+        if (!is_null($article)) {
+            switch ((int) $article->value) {
+                case DestignationType::BY_STATE_ELECTION:
+                case DestignationType::BY_AGENCY_ELECTION:
+                case DestignationType::BY_DISTRICT_ELECTION:
+                    return true;
+            }
         }
         return false;
     }
