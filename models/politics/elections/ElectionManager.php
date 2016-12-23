@@ -2,10 +2,12 @@
 
 namespace app\models\politics\elections;
 
-use app\models\politics\AgencyPost,
+use Yii,
+    app\models\politics\AgencyPost,
     app\models\population\Pop,
     app\models\politics\constitution\articles\postsonly\DestignationType,
-    app\models\politics\constitution\ConstitutionArticleType;
+    app\models\politics\constitution\ConstitutionArticleType,
+    app\components\MyMathHelper;
 
 /**
  * 
@@ -103,10 +105,6 @@ abstract class ElectionManager
                 foreach ($tiles as $tile) {
                     $pops = array_merge($pops, $tile->pops);
                 }
-                foreach ($pops as $i => $pop) {
-                    echo $pop->ideologies.PHP_EOL;
-                    if ($i > 10) break;
-                }
                 break;
             case ElectionWhoType::AGENCY_MEMBERS:
                 /* @var $who \app\models\politics\Agency */
@@ -116,71 +114,111 @@ abstract class ElectionManager
         
         echo "Turnout: ".$turnout.PHP_EOL;
         echo "NPC count all: ".count($pops).PHP_EOL;
+        $results = [];
+        foreach ($election->requests as $request) {
+            $results[$request->variant] = 0;
+        }
+        foreach ($votesByUsers as $vote) {
+            $results[$vote->variant]++;
+        }
+        
         $votersCount = round($turnout*count($pops));
+        $npcVotes = [];
         if ($votersCount > 0) {
-            $pops = array_rand($pops, $votersCount);
+            $popsSelected = array_rand($pops, $votersCount);
+            $tmpPops = [];
+            foreach ($popsSelected as $i) {
+                $tmpPops[] = $pops[$i];
+            }
+            $pops = $tmpPops;
+            unset($tmpPops);
             echo "NPC count voted: ".count($pops).PHP_EOL;
             
             $npcCount = 0;
-            var_dump($pops[0]); die();
             foreach ($pops as $pop) {
                 $npcCount += $pop->count;
-                $tmpPops = [];
-                $ideologies = json_decode($pop->ideologies);
-                foreach ($ideologies as $ideologyId => $percents) {
-                    $tmpPops[] = ['ideologyId' => $ideologyId, 'count' => $pop->count*$percents/100];
+                $pseudoGroup = $pop->getPseudoGroups();
+                foreach ($pseudoGroup as $popData) {
+                    $variant = static::calcPopVariant($election, $popData);
+                    $npcVotes[] = [
+                        'electionId' => $election->id,
+                        'count' => $popData['count'],
+                        'tileId' => $popData['tileId'],
+                        'classId' => $popData['classId'],
+                        'nationId' => $popData['nationId'],
+                        'ideologyId' => $popData['ideologyId'],
+                        'religionId' => $popData['religionId'],
+                        'age' => $popData['age'],
+                        'gender' => $popData['gender'],
+                        'districtId' => $pop->tile->electoralDistrictId,
+                        'variant' => $variant,
+                        'dateCreated' => time()
+                    ];
+                    $results[$variant] += $popData['count'];
                 }
-                $tmpPopsWithReligions = [];
-                $religions = json_decode($pop->religions);
-                foreach ($religions as $religionId => $percents) {
-                    foreach ($tmpPops as $tmpPop) {
-                        $tmpPopsWithReligions[] = [
-                            'ideologyId' => $tmpPop['ideologyId'],
-                            'religionId' => $religionId,
-                            'count' => $tmpPop['count']*$percents/100
-                        ];
-                    }
-                }
-                unset($tmpPops);
-                $tmpPopsWithGenders = [];
-                $genders = json_decode($pop->genders);
-                foreach ($genders as $genderId => $percents) {
-                    foreach ($tmpPopsWithReligions as $tmpPop) {
-                        $tmpPopsWithGenders[] = [
-                            'ideologyId' => $tmpPop['ideologyId'],
-                            'religionId' => $tmpPop['religionId'],
-                            'gender' => $genderId,
-                            'count' => $tmpPop['count']*$percents/100
-                        ];
-                    }
-                }
-                unset($tmpPopsWithReligions);
-                $tmpPops = [];
-                $ages = json_decode($pop->ages);
-                foreach ($ages as $age => $percents) {
-                    foreach ($tmpPopsWithGenders as $tmpPop) {
-                        $tmpPops[] = [
-                            'ideologyId' => $tmpPop['ideologyId'],
-                            'religionId' => $tmpPop['religionId'],
-                            'gender' => $tmpPop['gender'],
-                            'age' => $age,
-                            'count' => $tmpPop['count']*$percents/100
-                        ];
-                    }
-                }
-                print_r($tmpPops); die();
-                $vote = new ElectionVotePop([
-                    'electionId' => $election->id,
-                    'count' => $pop->count,
-                    'tileId' => $pop->tileId,
-                    'classId' => $pop->classId,
-                    'nationId' => $pop->nationId,
-                ]);
+                echo $npcCount.PHP_EOL;
             }
-            
+        }
+        Yii::$app->db->createCommand()->batchInsert('electionsVotesPops', ['electionId','count','tileId','classId','nationId','ideologyId','religionId','age','gender','districtId','variant','dateCreated'], $npcVotes)->execute();
+        
+        $election->results = json_encode([
+            'turnout' => $turnout,
+            'results' => $results
+        ]);
+        $election->save();
+
+        $max = 0;
+        $winnerVariant = 0;
+        foreach ($results as $variant => $count) {
+            if ($count > $max) {
+                $max = $count;
+                $winnerVariant = $variant;
+            }
+        }
+        $winner = $election->getRequests()->andWhere(['variant' => $winnerVariant])->one();
+        switch ((int) $election->whomType) {
+            case ElectionWhomType::POST:
+                $election->whom->userId = $winner->objectId;
+                $election->whom->save();
+                static::createPostElection($election->whom);
+                break;
         }
         
-        
+    }
+    
+    /**
+     * 
+     * @param \app\models\politics\elections\Election $election
+     * @param array $popData
+     * @return integer
+     */
+    public static function calcPopVariant(Election &$election, &$popData)
+    {
+        $potentials = [];
+        $sumRating = 0;
+        foreach ($election->requests as $request) {
+            $rating = static::calcRequestRating($request, $popData)+1;
+            $sumRating += $rating;
+            $potentials[$request->variant] = $rating;
+        }
+        foreach ($potentials as $variant => $rating) {
+            $potentials[$variant] = $rating/$sumRating;
+        }
+        return MyMathHelper::randomP($potentials);
+    }
+    
+    /**
+     * 
+     * @param \app\models\politics\elections\ElectionRequest $request
+     * @param array $popData
+     * @param double
+     */
+    public static function calcRequestRating(ElectionRequest &$request, &$popData)
+    {
+        /* @var $object \app\models\User */
+        $object = $request->object;
+        $rating = $object->trust + $object->success / 10 + $object->fame / 20;
+        return $rating;
     }
     
 }

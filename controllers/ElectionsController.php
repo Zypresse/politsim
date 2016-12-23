@@ -20,7 +20,9 @@ class ElectionsController extends MyController
         $elections = [];
         foreach ($this->user->states as $state) {
             foreach ($state->posts as $post) {
-                $elections[] = $post->getNextElection();
+                if ($post->isElected()) {
+                    $elections[] = $post->getNextElection();
+                }
             }
         }
         
@@ -40,8 +42,10 @@ class ElectionsController extends MyController
         $electionsNew = [];
         $electionsAll = [];
         foreach ($state->posts as $post) {
-            $electionsNew[] = $post->getNextElection();
-            $electionsAll = array_merge($electionsAll, $post->getElections()->where(['<', 'dateVotingEnd', time()])->orderBy(['dateVotingEnd' => SORT_DESC])->all());
+            if ($post->isElected()) {
+                $electionsNew[] = $post->getNextElection();
+                $electionsAll = array_merge($electionsAll, $post->getElections()->where(['<', 'dateVotingEnd', time()])->orderBy(['dateVotingEnd' => SORT_DESC])->all());
+            }
         }
         
         return $this->render('state-list', [

@@ -6,6 +6,8 @@ use Yii,
     app\models\economics\UtrType,
     app\models\politics\constitution\Constitution,
     app\models\politics\constitution\ConstitutionArticle,
+    app\models\politics\constitution\ConstitutionArticleType,
+    app\models\politics\constitution\articles\postsonly\DestignationType,
     app\models\politics\constitution\ConstitutionOwnerType,
     app\models\politics\elections\Election,
     app\models\politics\elections\ElectionManager,
@@ -106,6 +108,18 @@ class AgencyPost extends ElectionOwner
             $election = ElectionManager::createPostElection($this);
         }
         return $election;
+    }
+    
+    
+    public function isElected() : bool
+    {
+        switch ((int) $this->constitution->getArticleByType(ConstitutionArticleType::DESTIGNATION_TYPE)->value) {
+            case DestignationType::BY_STATE_ELECTION:
+            case DestignationType::BY_AGENCY_ELECTION:
+            case DestignationType::BY_DISTRICT_ELECTION:
+                return true;
+        }
+        return false;
     }
 
     public function getTaxStateId(): int

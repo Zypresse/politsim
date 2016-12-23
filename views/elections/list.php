@@ -24,7 +24,7 @@ use yii\helpers\Html,
             <h3 class="box-title"><?=Yii::t('app', 'Elections of agency post {0}', [Html::encode($election->whom->name)])?></h3>
         </div>
         <div class="box-body">
-          <?= ElectionInfoWidget::widget(['election' => $election]) ?>
+            <?= ElectionInfoWidget::widget(['election' => $election]) ?>
         </div>
     </div>
     <?php endforeach ?>

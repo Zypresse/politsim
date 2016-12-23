@@ -116,8 +116,68 @@ class Pop extends TaxPayerModel
         return false;
     }
     
-    public static function primaryKey() {
+    public static function primaryKey()
+    {
         return ['classId', 'nationId', 'tileId'];
+    }
+    
+    /**
+     * 
+     * @return array
+     */
+    public function getPseudoGroups()
+    {
+        $tmpPopsWithIdeologies = [];
+        $ideologies = json_decode($this->ideologies, true);
+        foreach ($ideologies as $ideologyId => $percents) {
+            $tmpPopsWithIdeologies[] = [
+                'ideologyId' => $ideologyId,
+                'count' => $this->count*$percents/100
+            ];
+        }
+        $tmpPopsWithReligions = [];
+        $religions = json_decode($this->religions, true);
+        foreach ($religions as $religionId => $percents) {
+            foreach ($tmpPopsWithIdeologies as $tmpPop) {
+                $tmpPopsWithReligions[] = [
+                    'ideologyId' => $tmpPop['ideologyId'],
+                    'religionId' => $religionId,
+                    'count' => $tmpPop['count']*$percents/100
+                ];
+            }
+        }
+        unset($tmpPopsWithIdeologies);
+        $tmpPopsWithGenders = [];
+        $genders = json_decode($this->genders, true);
+        foreach ($genders as $gender => $percents) {
+            foreach ($tmpPopsWithReligions as $tmpPop) {
+                $tmpPopsWithGenders[] = [
+                    'ideologyId' => $tmpPop['ideologyId'],
+                    'religionId' => $tmpPop['religionId'],
+                    'gender' => $gender,
+                    'count' => $tmpPop['count']*$percents/100
+                ];
+            }
+        }
+        unset($tmpPopsWithReligions);
+        $tmpPops = [];
+        $ages = json_decode($this->ages, true);
+        foreach ($ages as $age => $percents) {
+            foreach ($tmpPopsWithGenders as $tmpPop) {
+                $tmpPops[] = [
+                    'ideologyId' => $tmpPop['ideologyId'],
+                    'religionId' => $tmpPop['religionId'],
+                    'gender' => $tmpPop['gender'],
+                    'age' => $age,
+                    'nationId' => $this->nationId,
+                    'classId' => $this->classId,
+                    'tileId' => $this->tileId,
+                    'count' => round($tmpPop['count']*$percents/100)
+                ];
+            }
+        }
+        
+        return $tmpPops;
     }
 
 }

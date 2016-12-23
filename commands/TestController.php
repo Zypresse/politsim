@@ -17,7 +17,8 @@ use Yii,
     app\models\politics\elections\ElectionManager,
     app\models\Tile,
     app\models\population\Pop,
-    app\models\population\PopClass;
+    app\models\population\PopClass,
+    app\components\MyMathHelper;
 
 class TestController extends Controller
 {
@@ -34,7 +35,7 @@ class TestController extends Controller
 //        echo models\Region::findByPk(33)->getPolygon(true);
 //        echo models\State::findByPk(5)->getPolygon(true);
 //        echo models\Tile::find()->count('id');
-        $state = State::find()->one();
+//        $state = State::find()->one();
 //        
 //        $state->updateParams(true, false);
 //        $pop = 0;
@@ -44,8 +45,14 @@ class TestController extends Controller
 //            }
 //        }
 //        echo $pop;
-        echo count($state->tiles);
-        echo count($state->pops);
+//        echo count($state->tiles);
+//        echo count($state->pops);
+        $randCounts = [1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0];
+        for ($i = 0; $i < 100; $i++) {
+            $rand = MyMathHelper::randomP([1 => 0.5, 2 => 0.2, 3 => 0.15, 4 => 0.1, 5 => 0.05]);
+            $randCounts[$rand]++;
+        }
+        print_r($randCounts);
     }
     
     public function actionCreateElectionsObject()
@@ -235,6 +242,7 @@ class TestController extends Controller
                 'nameShort' => 'ОИК №'.($i+1)
             ]);
             $electoralDistrict->save();
+            Tile::updateAll(['electoralDistrictId' => $electoralDistrict->id], ['regionId' => $region->id]);
             
             echo "region {$region->name} saved".PHP_EOL;
             

@@ -67,4 +67,22 @@ class MyMathHelper {
         return json_encode($values);
     }
     
+    /**
+     * 
+     * @param array $potentials variant => вероятность его выпадения
+     */
+    public static function randomP($potentials)
+    {
+        $r = mt_rand(0, 100)/100;
+        foreach ($potentials as $i => $value) {
+            if ($r > $value) {
+                $r -= $value;
+            } else {
+                $num = $i;
+                break;
+            }
+        }
+        return $num;
+    }
+    
 }
