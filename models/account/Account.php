@@ -52,9 +52,7 @@ class Account extends MyActiveRecord
      */
     public static function signUp($sourceType, $attributes)
     {
-        $user = new User([
-            'cityId' => 1
-        ]);
+        $user = new User();
         
         $user->updateLastLogin();
         self::updateUserInfo($user, $sourceType, $attributes);
