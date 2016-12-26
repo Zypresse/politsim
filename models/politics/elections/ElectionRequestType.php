@@ -21,6 +21,11 @@ abstract class ElectionRequestType
      */
     const PARTY_LIST = 2;
     
+    /** 
+     * Вариант "против всех"
+     */
+    const NONE_OF_THE_ABOVE = 3;
+    
     /**
      * 
      * @param integer $type
@@ -33,6 +38,8 @@ abstract class ElectionRequestType
                 return User::className();
             case static::PARTY_LIST:
                 return PartyList::className();
+            case static::NONE_OF_THE_ABOVE:
+                return null;
         }
     }
     

@@ -23,6 +23,7 @@ class DestignationType extends DropdownArticle
     const BY_DISTRICT_ELECTION = 5;
     
     const SECOND_TOUR = 1;
+    const NONE_OF_THE_ABOVE = 2;
     
     public static function getList(): array
     {
