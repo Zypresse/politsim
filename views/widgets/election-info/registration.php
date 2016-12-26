@@ -1,6 +1,7 @@
 <?php
 
-use app\components\LinkCreator;
+use app\components\LinkCreator,
+    app\models\politics\elections\ElectionRequestType;
 
 /* @var $election \app\models\politics\elections\Election */
 /* @var $viewer \app\models\User */
@@ -27,7 +28,9 @@ $showRegisterButton = $election->canSendRequest($viewer);
                 <?php if (count($election->requests)): ?>
                 <ul>
                     <?php foreach ($election->requests as $request): ?>
+                    <?php if ($request->type != ElectionRequestType::NONE_OF_THE_ABOVE): ?>
                     <li><?=LinkCreator::link($request->object)?></li>
+                    <?php endif ?>
                     <?php endforeach ?>
                 </ul>
                 <?php else: ?>

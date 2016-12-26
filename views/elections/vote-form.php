@@ -1,6 +1,7 @@
 <?php
 
 use app\components\LinkCreator,
+    app\models\politics\elections\ElectionRequestType,
     yii\helpers\Html;
 
 /* @var $this yii\base\View */
@@ -14,7 +15,11 @@ use app\components\LinkCreator,
             <input value="<?=$request->variant?>" type="radio" name="election-variant" id="election-variant-<?= $request->variant ?>" class="election-variant-radio">
         </td>
         <td>
-            <?= LinkCreator::userLink($request->object) ?>
+            <?php if ($request->type == ElectionRequestType::NONE_OF_THE_ABOVE): ?>
+            <?=Yii::t('app', 'None of the above')?>
+            <?php else: ?>
+            <?= LinkCreator::link($request->object)?>
+            <?php endif ?>
         </td>
     </tr>
 <?php endforeach; ?>

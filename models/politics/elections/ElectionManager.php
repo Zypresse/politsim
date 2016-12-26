@@ -76,6 +76,16 @@ abstract class ElectionManager
         }
         
         $election->save();
+        
+        if ($settings & DestignationType::NONE_OF_THE_ABOVE) {
+            $noneVariant = new ElectionRequest([
+                'electionId' => $election->id,
+                'type' => ElectionRequestType::NONE_OF_THE_ABOVE,
+                'objectId' => 1,
+                'variant' => 1,
+            ]);
+            $noneVariant->save();
+        }
         return $election;
     }
     
@@ -98,7 +108,9 @@ abstract class ElectionManager
                 /* @var $who \app\models\politics\State */
                 $sumRequestsFame = 0;
                 foreach ($requests as $request) {
-                    $sumRequestsFame += $request->object->fame;
+                    if ($request->type == ElectionRequestType::USER_SELF) {
+                        $sumRequestsFame += $request->object->fame;
+                    }
                 }
                 $turnout = $who->usersFame > 0 ? $sumRequestsFame/$who->usersFame : 1;
                 $tiles = $who->tiles;
@@ -167,23 +179,96 @@ abstract class ElectionManager
         ]);
         $election->save();
 
+        $sum = 0;
         $max = 0;
         $winnerVariant = 0;
         foreach ($results as $variant => $count) {
+            $sum += $count;
             if ($count > $max) {
                 $max = $count;
                 $winnerVariant = $variant;
             }
         }
-        $winner = $election->getRequests()->andWhere(['variant' => $winnerVariant])->one();
-        switch ((int) $election->whomType) {
-            case ElectionWhomType::POST:
-                $election->whom->userId = $winner->objectId;
-                $election->whom->save();
-                static::createPostElection($election->whom);
-                break;
-        }
         
+        if ($election->getRequests()->andWhere(['variant' => $winnerVariant])->one()->type == ElectionRequestType::NONE_OF_THE_ABOVE) {
+            // победил вариант против всех
+            $registrationTime = $election->dateRegistrationEnd - $election->dateRegistrationStart;
+            $waitingTime = $election->dateVotingStart - $election->dateRegistrationEnd;
+            $votingTime = $election->dateVotingEnd - $election->dateVotingStart;
+            $secondTour = new Election([
+                'whomType' => $election->whomType,
+                'whomId' => $election->whomId,
+                'whoType' => $election->whoType,
+                'whoId' => $election->whoId,
+                'settings' => $election->settings,
+                'initiatorElectionId' => $election->id,
+                'dateRegistrationStart' => time(),
+                'dateRegistrationEnd' => time()+$registrationTime,
+                'dateVotingStart' => time()+$registrationTime+$waitingTime,
+                'dateVotingEnd' => time()+$registrationTime+$waitingTime+$votingTime
+            ]);
+            $secondTour->save();
+            if ($election->settings & DestignationType::NONE_OF_THE_ABOVE) {
+                $noneVariant = new ElectionRequest([
+                    'electionId' => $secondTour->id,
+                    'type' => ElectionRequestType::NONE_OF_THE_ABOVE,
+                    'objectId' => 1,
+                    'variant' => 1,
+                ]);
+                $noneVariant->save();
+            }
+        } else if ($max/$sum < 0.5 && $election->settings & DestignationType::SECOND_TOUR) {
+            // нужен второй тур
+            $waitingTime = $election->dateVotingStart - $election->dateRegistrationEnd;
+            $votingTime = $election->dateVotingEnd - $election->dateVotingStart;
+            $secondTour = new Election([
+                'whomType' => $election->whomType,
+                'whomId' => $election->whomId,
+                'whoType' => $election->whoType,
+                'whoId' => $election->whoId,
+                'settings' => $election->settings & ~DestignationType::SECOND_TOUR,
+                'initiatorElectionId' => $election->id,
+                'dateRegistrationStart' => time(),
+                'dateRegistrationEnd' => time(),
+                'dateVotingStart' => time()+$waitingTime,
+                'dateVotingEnd' => time()+$waitingTime+$votingTime
+            ]);
+            $secondTour->save();
+            $looser = 0;
+            $looserVotes = 0;
+            foreach ($results as $variant => $count) {
+                if ($variant != $winnerVariant && $count > $looserVotes) {
+                    $looser = $variant;
+                    $looserVotes = $count;
+                }
+            }
+            $winnerRequest = ElectionRequest::find()->where(['electionId' => $election->id, 'variant' => $winnerVariant])->one();
+            $looserRequest = ElectionRequest::find()->where(['electionId' => $election->id, 'variant' => $looser])->one();
+            $winnerRequestNew = new ElectionRequest([
+                'electionId' => $secondTour->id,
+                'type' => $winnerRequest->type,
+                'objectId' => $winnerRequest->objectId,
+                'variant' => 1,
+            ]);
+            $winnerRequestNew->save();
+            $looserRequestNew = new ElectionRequest([
+                'electionId' => $secondTour->id,
+                'type' => $looserRequest->type,
+                'objectId' => $looserRequest->objectId,
+                'variant' => 2,
+            ]);
+            $looserRequestNew->save();
+        } else {
+            /* @var $winner ElectionRequest */
+            $winner = $election->getRequests()->andWhere(['variant' => $winnerVariant])->one();
+            switch ((int) $election->whomType) {
+                case ElectionWhomType::POST:
+                    $election->whom->userId = $winner->objectId;
+                    $election->whom->save();
+                    static::createPostElection($election->whom);
+                    break;
+            }
+        }
     }
     
     /**
@@ -215,10 +300,16 @@ abstract class ElectionManager
      */
     public static function calcRequestRating(ElectionRequest &$request, &$popData)
     {
-        /* @var $object \app\models\User */
-        $object = $request->object;
-        $rating = $object->trust + $object->success / 10 + $object->fame / 20;
-        return $rating;
+        switch ($request->type) {
+            case ElectionRequestType::USER_SELF:
+                /* @var $object \app\models\User */
+                $object = $request->object;
+                $rating = $object->trust + $object->success / 10 + $object->fame / 20;
+                return $rating+1;
+            case ElectionRequestType::NONE_OF_THE_ABOVE:
+                return 0;
+        }
+        return 0;
     }
     
 }
