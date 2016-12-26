@@ -5,6 +5,7 @@ namespace app\models\politics;
 use Yii,
     app\models\economics\UtrType,
     app\models\politics\constitution\Constitution,
+    app\models\politics\constitution\ConstitutionArticleType,
     app\models\politics\constitution\ConstitutionOwnerType,
     app\models\politics\constitution\ConstitutionOwner,
     app\models\population\Pop,
@@ -39,6 +40,7 @@ use Yii,
  * @property Region[] $regions
  * @property Agency[] $agencies
  * @property AgencyPost[] $posts
+ * @property AgencyPost $leaderPost
  * @property Party[] $parties
  * @property Constitution $constitution
  * @property Tile[] $tiles
@@ -182,6 +184,16 @@ class State extends ConstitutionOwner
     {
         return $this->hasMany(Pop::className(), ['tileId' => 'id'])
                 ->via('tiles');
+    }
+    
+    public function getLeaderPost()
+    {
+        $article = $this->constitution->getArticleByType(ConstitutionArticleType::LEADER_POST);
+        if (!is_null($article)) {
+            return AgencyPost::findByPk($article->value);
+        } else {
+            return null;
+        }
     }
 
     private function getPolygonFilePath()

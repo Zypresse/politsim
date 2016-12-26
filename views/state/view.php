@@ -87,6 +87,12 @@ $isHaveCitizenship = $user->isHaveCitizenship($state->id);
                                         <td><strong><i class="fa fa-flag"></i> <?=Yii::t('app', 'Goverment form')?></strong></td>
                                         <td><?=$state->govermentForm->name?></td>
                                     </tr>
+                                    <?php if ($state->leaderPost): ?>
+                                    <tr>
+                                        <td><strong><i class="fa fa-user"></i> <?=Html::encode($state->leaderPost->name)?></strong></td>
+                                        <td><?=$state->leaderPost->user ? LinkCreator::userLink($state->leaderPost->user) : ' — '?></td>
+                                    </tr>
+                                    <?php endif ?>
                                 </tbody>
                             </table>
                         </div>
