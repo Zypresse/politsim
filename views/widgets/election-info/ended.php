@@ -9,6 +9,9 @@ use app\components\widgets\PieChartWidget,
 
 $data = json_decode($election->results);
 $data->results = (array) $data->results;
+uasort($data->results, function($a, $b){
+    return $b <=> $a;
+});
 
 $requests = $election->getRequests()->all();
 
