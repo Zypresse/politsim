@@ -16,13 +16,8 @@ uasort($data->results, function($a, $b){
 $requests = $election->getRequests()->all();
 
 $table = [];
-$maxVotes = 0;
 $sumVotes = 0;
 foreach ($data->results as $variant => $votes) {
-    if ($votes > $maxVotes) {
-        $winner = $variant;
-        $maxVotes = $votes;
-    }
     $sumVotes += $votes;
     
     foreach ($requests as $request) {
@@ -46,7 +41,6 @@ foreach ($table as &$el) {
     $el['percents'] = round($el['percents']/$sumVotes * 100,2);
 }
 
-$winner = app\models\politics\elections\ElectionRequest::find()->where(['electionId' => $election->id, 'variant' => $winner])->one();
 
 ?>
 <div class="row">
