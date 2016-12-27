@@ -14,8 +14,8 @@ class PieChartWidget extends Widget
     public $height = 100;
     public $colors = ["#ff0000", "#ff8000", "#ffff00", "#008000", "#0000ff", "#4b0082", "#9400d3"];
     public $data;
+    public $table;
     protected $numbers;
-    protected $table;
     protected $colName;
 
     public function init()
