@@ -5,6 +5,7 @@ namespace app\models\politics\constitution\articles\postsonly;
 use Yii,
     app\models\politics\Agency,
     app\models\politics\AgencyPost,
+    app\models\politics\Region,
     app\models\politics\elections\ElectoralDistrict,
     app\models\politics\constitution\articles\base\DropdownArticle;
 
@@ -12,6 +13,7 @@ use Yii,
  * 
  * @property ElectoralDistrict $district
  * @property Agency $agency
+ * @property Region $region
  */
 class DestignationType extends DropdownArticle
 {
@@ -21,6 +23,7 @@ class DestignationType extends DropdownArticle
     const BY_AGENCY_ELECTION = 3;
     const BY_STATE_ELECTION = 4;
     const BY_DISTRICT_ELECTION = 5;
+    const BY_REGION_ELECTION = 6;
     
     const SECOND_TOUR = 1;
     const NONE_OF_THE_ABOVE = 2;
@@ -33,6 +36,7 @@ class DestignationType extends DropdownArticle
             static::BY_AGENCY_ELECTION => Yii::t('app', 'By agency election'),
             static::BY_STATE_ELECTION => Yii::t('app', 'By state election'),
             static::BY_DISTRICT_ELECTION => Yii::t('app', 'By electoral district election'),
+            static::BY_REGION_ELECTION => Yii::t('app', 'By region election'),
         ];
     }
     
@@ -55,6 +59,10 @@ class DestignationType extends DropdownArticle
                 $rules[] = [['value2'], 'exist', 'skipOnError' => false, 'targetClass' => ElectoralDistrict::className(), 'targetAttribute' => ['value2' => 'id'], 'message' => 'Value2 must be valid Electoral District ID'];
                 $rules[] = ['value2', 'validateElectoralDistrict'];
                 break;
+            case static::BY_REGION_ELECTION:
+                $rules[] = [['value2'], 'exist', 'skipOnError' => false, 'targetClass' => Region::className(), 'targetAttribute' => ['value2' => 'id'], 'message' => 'Value2 must be valid Region ID'];
+                $rules[] = ['value2', 'validateElectoralDistrict'];
+                break;
         }
         return $rules;
     }
@@ -67,6 +75,11 @@ class DestignationType extends DropdownArticle
     public function getAgency()
     {
         return $this->hasOne(Agency::className(), ['id' => 'value2']);
+    }
+    
+    public function getRegion()
+    {
+        return $this->hasOne(Region::className(), ['id' => 'value2']);
     }
 
 }

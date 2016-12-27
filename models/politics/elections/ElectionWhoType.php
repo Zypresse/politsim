@@ -4,7 +4,8 @@ namespace app\models\politics\elections;
 
 use app\models\User,
     app\models\politics\State,
-    app\models\politics\Agency;
+    app\models\politics\Agency,
+    app\models\politics\Region;
 
 /**
  * Кто выбирает
@@ -27,6 +28,11 @@ abstract class ElectionWhoType
     const AGENCY_MEMBERS = 3;
     
     /**
+     * Население региона
+     */
+    const REGION = 4;
+    
+    /**
      * 
      * @param integer $id
      * @param integer $type
@@ -42,6 +48,8 @@ abstract class ElectionWhoType
                 return $user->tile && $user->tile->electoralDistrictId == $id;
             case static::AGENCY_MEMBERS:
                 return $user->getPosts()->with('agencies')->where(['agencies.id' => $id])->exists();
+            case static::REGION:
+                return $user->tile && $user->tile->regionId == $id;
         }
     }
     
@@ -60,6 +68,8 @@ abstract class ElectionWhoType
                 return ElectoralDistrict::className();
             case static::AGENCY_MEMBERS:
                 return Agency::className();
+            case static::REGION:
+                return Region::className();
         }
     }
     
