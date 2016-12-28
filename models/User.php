@@ -308,6 +308,11 @@ class User extends TaxPayerModel implements IdentityInterface
     
     public function getModifiers()
     {
+        return $this->hasMany(Modifier::className(), ['userId' => 'id'])->where(['<', 'dateExpired', time()]);
+    }
+    
+    public function getModifiersAll()
+    {
         return $this->hasMany(Modifier::className(), ['userId' => 'id']);
     }
     
@@ -329,7 +334,7 @@ class User extends TaxPayerModel implements IdentityInterface
         $modifier = new Modifier([
             'userId' => $this->id,
             'protoId' => $protoId,
-            'dateReceiving' => $dateReceiving,
+            'dateReceiving' => $dateReceiving ?? time(),
             'dateExpired' => $dateExpired
         ]);
         if ($save) {
