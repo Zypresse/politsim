@@ -6,6 +6,7 @@ use Yii,
     app\models\politics\Agency,
     app\models\politics\AgencyPost,
     app\models\politics\Region,
+    app\models\politics\City,
     app\models\politics\elections\ElectoralDistrict,
     app\models\politics\constitution\articles\base\DropdownArticle;
 
@@ -24,6 +25,7 @@ class DestignationType extends DropdownArticle
     const BY_STATE_ELECTION = 4;
     const BY_DISTRICT_ELECTION = 5;
     const BY_REGION_ELECTION = 6;
+    const BY_CITY_ELECTION = 7;
     
     const SECOND_TOUR = 1;
     const NONE_OF_THE_ABOVE = 2;
@@ -37,6 +39,7 @@ class DestignationType extends DropdownArticle
             static::BY_STATE_ELECTION => Yii::t('app', 'By state election'),
             static::BY_DISTRICT_ELECTION => Yii::t('app', 'By electoral district election'),
             static::BY_REGION_ELECTION => Yii::t('app', 'By region election'),
+            static::BY_CITY_ELECTION => Yii::t('app', 'By city election'),
         ];
     }
     
@@ -61,7 +64,11 @@ class DestignationType extends DropdownArticle
                 break;
             case static::BY_REGION_ELECTION:
                 $rules[] = [['value2'], 'exist', 'skipOnError' => false, 'targetClass' => Region::className(), 'targetAttribute' => ['value2' => 'id'], 'message' => 'Value2 must be valid Region ID'];
-                $rules[] = ['value2', 'validateElectoralDistrict'];
+                $rules[] = ['value2', 'validateRegion'];
+                break;
+            case static::BY_CITY_ELECTION:
+                $rules[] = [['value2'], 'exist', 'skipOnError' => false, 'targetClass' => City::className(), 'targetAttribute' => ['value2' => 'id'], 'message' => 'Value2 must be valid City ID'];
+                $rules[] = ['value2', 'validateCity'];
                 break;
         }
         return $rules;
@@ -80,6 +87,11 @@ class DestignationType extends DropdownArticle
     public function getRegion()
     {
         return $this->hasOne(Region::className(), ['id' => 'value2']);
+    }
+    
+    public function getCity()
+    {
+        return $this->hasOne(City::className(), ['id' => 'value2']);
     }
 
 }

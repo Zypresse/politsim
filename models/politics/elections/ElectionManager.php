@@ -75,6 +75,10 @@ abstract class ElectionManager
                 $election->whoType = ElectionWhoType::REGION;
                 $election->whoId = $whoId;
                 break;
+            case DestignationType::BY_CITY_ELECTION:
+                $election->whoType = ElectionWhoType::CITY;
+                $election->whoId = $whoId;
+                break;
             default:
                 return null;
         }
@@ -108,10 +112,12 @@ abstract class ElectionManager
         switch ($election->whoType) {
             case ElectionWhoType::STATE:
             case ElectionWhoType::REGION:
+            case ElectionWhoType::CITY:
             case ElectionWhoType::ELECTORAL_DISTRICT: // TODO: add field ElectoralDistrict::$usersFame
                 /* @var $who ElectoralDistrict */
                 /* @var $who \app\models\politics\State */
                 /* @var $who \app\models\politics\Region */
+                /* @var $who \app\models\politics\City */
                 $sumRequestsFame = 0;
                 foreach ($requests as $request) {
                     if ($request->type == ElectionRequestType::USER_SELF) {

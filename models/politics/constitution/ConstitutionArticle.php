@@ -6,6 +6,8 @@ use Yii,
     app\models\politics\Party,
     app\models\politics\Agency,
     app\models\politics\AgencyPost,
+    app\models\politics\Region,
+    app\models\politics\City,
     app\models\politics\elections\ElectoralDistrict,
     app\models\base\MyActiveRecord;
 
@@ -151,6 +153,41 @@ class ConstitutionArticle extends MyActiveRecord
             return true;
         } else {
             $this->addError($attribute, Yii::t('app', 'Party not found in state'));
+            return false;
+        }
+    }
+    
+    /**
+     * @param string $attribute the attribute currently being validated
+     * @param mixed $params the value of the "params" given in the rule
+     */
+    public function validateRegion($attribute, $params)
+    {
+        $regionInState = Region::find()
+                ->where(['id' => $this->$attribute, 'stateId' => $this->getStateId()])
+                ->exists();
+        if ($regionInState) {
+            return true;
+        } else {
+            $this->addError($attribute, Yii::t('app', 'Region not found in state'));
+            return false;
+        }
+    }
+    
+    /**
+     * @param string $attribute the attribute currently being validated
+     * @param mixed $params the value of the "params" given in the rule
+     */
+    public function validateCity($attribute, $params)
+    {
+        $cityInState = City::find()
+                ->joinWith('region')
+                ->where(['cities.id' => $this->$attribute, 'regions.stateId' => $this->getStateId()])
+                ->exists();
+        if ($cityInState) {
+            return true;
+        } else {
+            $this->addError($attribute, Yii::t('app', 'City not found in state'));
             return false;
         }
     }

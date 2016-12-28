@@ -202,11 +202,6 @@ class TestController extends Controller
         $leaderPost->save();
         $leaderPost->link('agencies', $executive);
         
-        ConstitutionGenerator::generate($state, Bulbostan::className(), [
-            'executive' => &$executive,
-            'leaderPost' => &$leaderPost,
-        ]);
-        
         $city = City::find()->where(['name' => 'Минск'])->one();
         
         $state->cityId = $city->id;
@@ -220,6 +215,8 @@ class TestController extends Controller
                 ->with('cities')
                 ->all();
 
+        $regionData = [];
+        $cityData = [];
         /* @var $region Region */
         foreach ($regions as $i => $region) {
             echo $region->getTiles()->count('id').PHP_EOL;
@@ -234,7 +231,7 @@ class TestController extends Controller
             ]);
             $regionpost->save();
             
-            // todo: конституции региона и его лидера
+            $regionData[] = [$regionpost, $region];
             
             $electoralDistrict = new ElectoralDistrict([
                 'stateId' => $state->id,
@@ -253,6 +250,14 @@ class TestController extends Controller
             echo "{$electoralDistrict->name} polygon saved".PHP_EOL;
             
             foreach ($region->cities as $city) {
+                $citypost = new AgencyPost([
+                    'stateId' => $state->id,
+                    'name' => 'Мэр города «'.$city->name.'»',
+                    'nameShort' => 'М'.$city->nameShort
+                ]);
+                $citypost->save();
+                $cityData[] = [$citypost, $city];
+                
                 $city->getPolygon(true);
                 echo "{$city->name} polygon saved".PHP_EOL;                
             }
@@ -260,6 +265,13 @@ class TestController extends Controller
         $state->refresh();
         $state->getPolygon(true);
         echo "{$state->name} polygon saved".PHP_EOL;
+        
+        ConstitutionGenerator::generate($state, Bulbostan::className(), [
+            'executive' => &$executive,
+            'leaderPost' => &$leaderPost,
+            'gouvernors' => &$regionData,
+            'majors' => &$cityData,
+        ]);
                 
     }
     
