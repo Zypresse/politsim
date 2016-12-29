@@ -1,6 +1,7 @@
 <?php
 
-use app\components\MyHtmlHelper,
+use yii\helpers\Html,
+    app\components\MyHtmlHelper,
     app\components\LinkCreator;
 
 /* @var $this \yii\web\View */
@@ -23,7 +24,7 @@ use app\components\MyHtmlHelper,
             <?php if (count($approved)): ?>
                 <div class="box">
                     <div class="box-header">
-                        <h4><?=Yii::t('app', 'Memberships')?></h4>
+                        <h4 class="box-title"><?=Yii::t('app', 'Memberships')?></h4>
                     </div>
                     <div class="box-body">
                         <table class="table table-condensed">
@@ -51,7 +52,7 @@ use app\components\MyHtmlHelper,
             <?php else: ?>
                 <div class="box">
                     <div class="box-header">
-                        <h4><?=Yii::t('app', 'You have no one membership')?></h4>
+                        <h4 class="box-title"><?=Yii::t('app', 'You have no one membership')?></h4>
                     </div>
                     <div class="box-body">
                         <?=Yii::t('app', 'You can join to existing party or create a new one')?>
@@ -60,13 +61,17 @@ use app\components\MyHtmlHelper,
                 <?php if (count($user->states)): ?>
                     <?php foreach ($user->states as $state): ?>
                     <div class="box">
-                        <div class="box-title">
-                            <h4><?=LinkCreator::stateLink($state)?></h4>
+                        <div class="box-header">
+                            <h4 class="box-title"><?=LinkCreator::stateLink($state)?></h4>
                         </div>
                         <div class="box-body">
+                            <?php if ($state->isPartiesCreatingAllowed): ?>
                             <div class="btn-group">
                                 <button class="create-party-btn btn btn-primary" data-state-id="<?=$state->id?>" ><i class="fa fa-plus"></i> <?=Yii::t('app', 'Create party')?></button>
                             </div>
+                            <?php else: ?>
+                            <p><?=Yii::t('app', 'State «{0}» not allowed parties registration', [Html::encode($state->name)])?></p>
+                            <?php endif ?>
                         </div>
                     </div>
                     <?php endforeach ?>
@@ -82,7 +87,7 @@ use app\components\MyHtmlHelper,
         <div class="col-md-6">
             <div class="box">
                 <div class="box-header">
-                    <h4><?=Yii::t('app', 'Membership requests')?></h4>
+                    <h4 class="box-title"><?=Yii::t('app', 'Membership requests')?></h4>
                 </div>
                 <div class="box-body">
                     <?php if (count($requested)): ?>

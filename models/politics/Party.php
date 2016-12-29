@@ -282,10 +282,12 @@ class Party extends TaxPayerModel
     /**
      * 
      * @param \app\models\User $creator
+     * @param boolean $autoConfirm
      * @return boolean
      */
-    public function createNew(User $creator)
+    public function createNew(User $creator, bool $autoConfirm = true)
     {
+        // TODO: автоподтверждение
         
         if ($this->save()) {
         

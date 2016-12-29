@@ -8,6 +8,8 @@ use Yii,
     app\models\User,
     app\models\politics\PartyPost,
     app\models\politics\State,
+    app\models\politics\constitution\ConstitutionArticleType,
+    app\models\politics\constitution\articles\statesonly\Parties,
     yii\web\Response,
     yii\widgets\ActiveForm;
 
@@ -63,13 +65,32 @@ class PartyController extends MyController
         $model = new Party();
         if ($model->load(Yii::$app->request->post())) {
             
-            $isUserHavePartyAllready = !!$this->user->getParties()->where(['stateId' => $model->stateId])->count();
-            if ($isUserHavePartyAllready) {
+            $state = State::findByPk($model->stateId);
+            
+            if (is_null($state)) {
+                return $this->_r(Yii::t('app', 'State not found'));
+            }
+            
+            if (!$state->isPartiesCreatingAllowed) {
+                return $this->_r(Yii::t('app', 'Not allowed'));
+            }
+            
+            if ($this->user->getParties()->where(['stateId' => $model->stateId])->exists()) {
                 return $this->_r(Yii::t('app', 'You allready have party membership in this state'));
             }
-                    
+            
+            $article = $state->constitution->getArticleByType(ConstitutionArticleType::PARTIES);
+            if ($article->value3) {
+                // TODO: стоимость регистрации партия
+            }
+            
+            $autoConfirm = !($article->value == Parties::NEED_CONFIRM);
+            if (!$autoConfirm) {
+                // TODO: подтверждение регистрации
+            }
+            
             $transaction = Yii::$app->db->beginTransaction();
-            if ($model->createNew($this->user)) {
+            if ($model->createNew($this->user, $autoConfirm)) {
                 $transaction->commit();
                 return $this->_rOk();
             }
@@ -89,9 +110,13 @@ class PartyController extends MyController
             if (is_null($state)) {
                 return $this->_r(Yii::t('app', 'State not found'));
             }
-            $model->stateId = $state->id;
-        }        
+            if (!$state->isPartiesCreatingAllowed) {
+                return $this->_r(Yii::t('app', 'Not allowed'));
+            }
+        }
 
+        $model->stateId = $state->id;
+        
         if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             return ActiveForm::validate($model);
@@ -99,7 +124,8 @@ class PartyController extends MyController
         
         return $this->render('create-form', [
             'model' => $model,
-            'user' => $this->user
+            'user' => $this->user,
+            'article' => $state->constitution->getArticleByType(ConstitutionArticleType::PARTIES),
         ]);
     }
     

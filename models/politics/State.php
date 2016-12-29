@@ -8,6 +8,7 @@ use Yii,
     app\models\politics\constitution\ConstitutionArticleType,
     app\models\politics\constitution\ConstitutionOwnerType,
     app\models\politics\constitution\ConstitutionOwner,
+    app\models\politics\constitution\articles\statesonly\Parties,
     app\models\population\Pop,
     app\models\Tile,
     app\components\RegionCombiner,
@@ -33,6 +34,7 @@ use Yii,
  * @property integer $utr
  * 
  * @property string $polygon
+ * @property boolean $isPartiesCreatingAllowed
  * 
  * @property City $city
  * @property GovermentForm $govermentForm
@@ -259,6 +261,12 @@ class State extends ConstitutionOwner
     public static function getConstitutionOwnerType(): int
     {
         return ConstitutionOwnerType::STATE;
+    }
+    
+    public function getIsPartiesCreatingAllowed()
+    {
+        $article = $this->constitution->getArticleByType(ConstitutionArticleType::PARTIES);
+        return $article && ($article->value == Parties::NEED_CONFIRM || $article->value == Parties::ALLOWED);
     }
 
 }

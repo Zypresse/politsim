@@ -3,12 +3,15 @@
 use yii\helpers\Url,
     yii\helpers\ArrayHelper,
     yii\bootstrap\ActiveForm,
+    app\components\MyHtmlHelper,
     app\models\Ideology,
-    app\models\politics\Party;
+    app\models\politics\Party,
+    app\models\politics\constitution\articles\statesonly\Parties;
 
 /* @var $this \yii\web\View */
 /* @var $model Party */
 /* @var $user \app\models\User */
+/* @var $article Parties */
 
 $form = new ActiveForm();
 
@@ -48,6 +51,15 @@ $form = new ActiveForm();
 <?=$form->field($model, 'flag')->textInput()?>
 
 <?=$form->field($model, 'anthem')->textInput()?>
+
+<div class="help-block">
+    <?php if ($article->value == Parties::NEED_CONFIRM): ?>
+    <p><?=Yii::t('app', 'Registration needs goverment confirmation')?></p>
+    <?php endif ?>
+    <?php if ($article->value3): ?>
+    <p><?=Yii::t('app', 'Registration cost:')?> <?=MyHtmlHelper::moneyFormat($article->value3)?></p>
+    <?php endif ?>
+</div>
 
 <?php $form->end() ?>
 
