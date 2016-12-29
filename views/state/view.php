@@ -48,6 +48,7 @@ $isHaveCitizenship = $user->isHaveCitizenship($state->id);
                     <a href="#!state/constitution&id=<?=$state->id?>" class="btn btn-default btn-block"><i class="fa fa-list-alt"></i> <?=Yii::t('app', 'Look constitution')?></a>
                     <?=Html::a('<i class="fa fa-group"></i> '.Yii::t('app', 'Population info'),'#!population/state&id='.$state->id,['class' => 'btn btn-default btn-block'])?>
                     <a href="#!elections/state&id=<?=$state->id?>" class="btn btn-default btn-block"><i class="fa fa-university"></i> <?=Yii::t('app', 'Elections list')?></a>
+                    <a href="#!map/state&id=<?=$state->id?>" class="btn btn-default btn-block"><i class="fa fa-globe"></i> <?=Yii::t('app', 'Look at map')?></a>
                 </div>
             </div>
             <div class="box box-solid box-primary">
@@ -71,7 +72,7 @@ $isHaveCitizenship = $user->isHaveCitizenship($state->id);
                 <div class="box-header">                    
                     <h1>
                         <?=Html::encode($state->name)?>
-                         <small>(<?=Html::encode($state->nameShort)?>)</small>
+                        <small>(<?=Html::encode($state->nameShort)?>)</small>
                     </h1>
                 </div>
                 <div class="box-body">
