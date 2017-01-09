@@ -256,6 +256,11 @@ class User extends TaxPayerModel implements IdentityInterface
         return $this->hasMany(AgencyPost::className(), ['userId' => 'id']);
     }
     
+    public function getPostsByState($id)
+    {
+        return $this->getPosts()->where(['stateId' => $id]);
+    }
+    
     public function getPartyPosts()
     {
         return $this->hasMany(PartyPost::className(), ['userId' => 'id']);
