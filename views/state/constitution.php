@@ -2,7 +2,8 @@
 
 use yii\helpers\Html,
     app\components\LinkCreator,
-    app\models\politics\constitution\ConstitutionArticleType;
+    app\models\politics\constitution\ConstitutionArticleType,
+    app\models\politics\constitution\articles\postsonly\Powers;
 
 /* @var $this yii\base\View */
 /* @var $state app\models\politics\State */
@@ -80,7 +81,7 @@ use yii\helpers\Html,
                                 </tr>
                                 <tr>
                                     <th><?=Yii::t('app', 'Bills powers')?></th>
-                                    <td><?=$post->constitution->getArticleByType(ConstitutionArticleType::POWERS_BILLS)->name?></td>
+                                    <td><?=$post->constitution->getArticleByType(ConstitutionArticleType::POWERS, Powers::BILLS)->name?></td>
                                 </tr>
                                 <?php endforeach ?>
                             </tbody>

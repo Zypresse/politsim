@@ -1,14 +1,13 @@
 <?php
 
-namespace app\models\politics\constitution\articles\powers;
+namespace app\models\politics\constitution\articles\postsonly;
 
-use Yii,
-    app\models\politics\constitution\articles\base\BitmaskArticle;
+use Yii;
 
 /**
  * 
  */
-final class Bills extends BitmaskArticle
+final class Bills extends Powers
 {
     
     /**

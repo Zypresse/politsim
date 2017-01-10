@@ -39,9 +39,9 @@ abstract class ConstitutionArticleType
     const TERMS_OF_ELECTION = 6;
     
     /**
-     * Права по законопроектам
+     * Права
      */
-    const POWERS_BILLS = 7;
+    const POWERS = 7;
         
     /**
      * 
@@ -57,7 +57,7 @@ abstract class ConstitutionArticleType
             static::TERMS_OF_ELECTION => 'postsonly\\TermsOfElection',
             static::MULTIPOST => 'statesonly\\Multipost',
             static::PARTIES => 'statesonly\\Parties',
-            static::POWERS_BILLS => 'powers\\Bills',
+            static::POWERS => 'postsonly\\Powers',
         ];
         
         return '\\app\\models\\politics\\constitution\\articles\\'.$classes[$type];

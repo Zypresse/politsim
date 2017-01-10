@@ -19,7 +19,8 @@ use Yii,
     app\models\population\Pop,
     app\models\population\PopClass,
     app\models\politics\constitution\ConstitutionArticleType,
-    app\models\politics\constitution\articles\powers\Bills,
+    app\models\politics\constitution\articles\postsonly\Bills,
+    app\models\politics\constitution\articles\postsonly\Powers,
     app\components\MyMathHelper;
 
 class TestController extends Controller
@@ -58,7 +59,9 @@ class TestController extends Controller
 //        print_r($randCounts);
         
         $post = AgencyPost::find()->one();
-        $post->constitution->setArticleByType(ConstitutionArticleType::POWERS_BILLS, null, Bills::VOTE | Bills::CREATE | Bills::ACCEPT | Bills::VETO);
+        if (!$post->constitution->setArticleByType(ConstitutionArticleType::POWERS, Powers::BILLS, Bills::VOTE | Bills::CREATE | Bills::ACCEPT | Bills::VETO)) {
+            print_r($post->constitution->getErrors());
+        }
     }
     
     public function actionCreateElectionsObject()

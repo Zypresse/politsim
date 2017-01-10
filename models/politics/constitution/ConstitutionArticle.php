@@ -36,7 +36,7 @@ class ConstitutionArticle extends MyActiveRecord
     public static function instantiate($row)
     {
         $className = ConstitutionArticleType::getClassNameByType($row['type']);
-        return new $className($row);
+        return $className::instantiate($row);
     }
 
     /**

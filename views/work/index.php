@@ -2,7 +2,8 @@
 
 use yii\helpers\Html,
     app\components\LinkCreator,
-    app\models\politics\constitution\ConstitutionArticleType;
+    app\models\politics\constitution\ConstitutionArticleType,
+    app\models\politics\constitution\articles\postsonly\Powers;
 
 /* @var $this \yii\web\View */
 /* @var $user \app\models\User */
@@ -13,7 +14,7 @@ use yii\helpers\Html,
         <div class="col-md-12">
             <div class="box-group">
             <?php foreach ($user->posts as $post): ?>
-            <?php $powersBills = $post->constitution->getArticleByType(ConstitutionArticleType::POWERS_BILLS)->selected; ?>
+            <?php $powersBills = $post->constitution->getArticleByType(ConstitutionArticleType::POWERS, Powers::BILLS)->selected; ?>
                 <div class="box">
                     <div class="box-header">
                         <h3 class="box-title"><?=Html::encode($post->name)?></h3>
