@@ -18,6 +18,8 @@ use Yii,
     app\models\Tile,
     app\models\population\Pop,
     app\models\population\PopClass,
+    app\models\politics\constitution\ConstitutionArticleType,
+    app\models\politics\constitution\articles\powers\Bills,
     app\components\MyMathHelper;
 
 class TestController extends Controller
@@ -47,12 +49,16 @@ class TestController extends Controller
 //        echo $pop;
 //        echo count($state->tiles);
 //        echo count($state->pops);
-        $randCounts = [1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0];
-        for ($i = 0; $i < 100; $i++) {
-            $rand = MyMathHelper::randomP([1 => 0.5, 2 => 0.2, 3 => 0.15, 4 => 0.1, 5 => 0.05]);
-            $randCounts[$rand]++;
-        }
-        print_r($randCounts);
+//        
+//        $randCounts = [1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0];
+//        for ($i = 0; $i < 100; $i++) {
+//            $rand = MyMathHelper::randomP([1 => 0.5, 2 => 0.2, 3 => 0.15, 4 => 0.1, 5 => 0.05]);
+//            $randCounts[$rand]++;
+//        }
+//        print_r($randCounts);
+        
+        $post = AgencyPost::find()->one();
+        $post->constitution->setArticleByType(ConstitutionArticleType::POWERS_BILLS, null, Bills::VOTE | Bills::CREATE | Bills::ACCEPT | Bills::VETO);
     }
     
     public function actionCreateElectionsObject()

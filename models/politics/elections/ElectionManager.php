@@ -192,7 +192,7 @@ abstract class ElectionManager
         $election->save();
 
         $sum = 0;
-        $max = 0;
+        $max = -1;
         $winnerVariant = 0;
         foreach ($results as $variant => $count) {
             $sum += $count;

@@ -22,6 +22,8 @@ use Yii,
  * @property string $value2 дополнительное значение если понадобится в сложных статьях
  * @property string $value3 дополнительное значение если понадобится в очень сложных статьях
  * 
+ * @property string $name
+ * 
  * @property ConstitutionOwner $owner
  * 
  */
@@ -87,6 +89,11 @@ class ConstitutionArticle extends MyActiveRecord
     public function getStateId()
     {
         return $this->owner->getTaxStateId();
+    }
+    
+    public function getName()
+    {
+        return $this->value;
     }
     
     /**

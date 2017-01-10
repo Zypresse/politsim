@@ -11,6 +11,13 @@ use Yii,
 class WorkController extends MyController
 {
     
+    public function actionIndex()
+    {
+        return $this->render('index', [
+            'user' => $this->user,
+        ]);
+    }
+    
     public function actionList()
     {
         return $this->render('list', [

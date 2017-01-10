@@ -78,6 +78,10 @@ use yii\helpers\Html,
                                     <th><?=Yii::t('app', 'Terms of office')?></th>
                                     <td><?=$post->constitution->getArticleByType(ConstitutionArticleType::TERMS_OF_OFFICE)->value?></td>
                                 </tr>
+                                <tr>
+                                    <th><?=Yii::t('app', 'Bills powers')?></th>
+                                    <td><?=$post->constitution->getArticleByType(ConstitutionArticleType::POWERS_BILLS)->name?></td>
+                                </tr>
                                 <?php endforeach ?>
                             </tbody>
                         </table>

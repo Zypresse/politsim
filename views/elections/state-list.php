@@ -63,3 +63,4 @@ use yii\helpers\Html,
         </div>
     </div>
 </section>
+<?=$this->render('_js')?>

@@ -38,7 +38,7 @@ foreach ($data->results as $variant => $votes) {
     ];
 }
 foreach ($table as &$el) {
-    $el['percents'] = round($el['percents']/$sumVotes * 100,2);
+    $el['percents'] = $sumVotes > 0 ? round($el['percents']/$sumVotes * 100,2) : 0;
 }
 
 

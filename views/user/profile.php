@@ -113,7 +113,7 @@ $viewer = Yii::$app->user->identity;
                             <?php
                                 $postsLinks = [];
                                 foreach ($user->getPosts()->with('state')->all() as $post) {
-                                    $postsLinks[] = Html::encode($post->name).' ('.LinkCreator::stateLink($post->state);
+                                    $postsLinks[] = Html::encode($post->name).' ('.LinkCreator::stateLink($post->state).')';
                                 }
                             ?>
                             Занимает посты в правительстве: <?=implode(',', $postsLinks)?>
