@@ -18,6 +18,7 @@ use Yii,
  */
 class DestignationType extends DropdownArticle
 {
+    use \app\models\politics\constitution\articles\base\NoSubtypesArticle;
     
     const BY_OTHER_POST = 1;
     const BY_PRECURSOR = 2;

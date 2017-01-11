@@ -10,6 +10,7 @@ use app\models\politics\constitution\articles\base\UnsignedIntegerArticle;
 class TermsOfOffice extends UnsignedIntegerArticle
 {
     
+    use \app\models\politics\constitution\articles\base\NoSubtypesArticle;
     
     
 }

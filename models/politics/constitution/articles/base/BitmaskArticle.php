@@ -53,4 +53,13 @@ abstract class BitmaskArticle extends UnsignedIntegerArticle
         return $selected;
     }
     
+    /**
+     * 
+     * @param integer $val
+     */
+    public function isSelected(int $val) : bool
+    {
+        return ((int)$this->value) & $val;
+    }
+    
 }

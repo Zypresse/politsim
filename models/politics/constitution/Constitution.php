@@ -13,19 +13,32 @@ class Constitution extends Model
     public $ownerType;
     public $ownerId;
     
-    public static function create($ownerType, $ownerId)
-    {
-        return new static([
-            'ownerType' => $ownerType, 
-            'ownerId' => $ownerId
-        ]);
-    }
-    
     /**
      *
      * @var ConstitutionArticle[]
      */
     protected $_articles = null;
+    
+    public static function create($ownerType, $ownerId)
+    {
+        $model = new static([
+            'ownerType' => $ownerType, 
+            'ownerId' => $ownerId
+        ]);
+        $model->loadArticles();
+        return $model;
+    }
+
+    public function loadArticles()
+    {
+        $this->_articles = ConstitutionArticle::find()
+                ->where([
+                    'ownerType' => $this->ownerType,
+                    'ownerId' => $this->ownerId,
+                ])
+                ->all();
+    }
+
 
     /**
      * 
@@ -34,12 +47,7 @@ class Constitution extends Model
     public function getArticles()
     {
         if (is_null($this->_articles)) {
-            $this->_articles = ConstitutionArticle::find()
-                    ->where([
-                        'ownerType' => $this->ownerType,
-                        'ownerId' => $this->ownerId,
-                    ])
-                    ->all();
+            $this->loadArticles();
         }
         return $this->_articles;
     }
@@ -52,6 +60,13 @@ class Constitution extends Model
      */
     public function getArticleByType($type, $subType = null)
     {
+        
+        foreach ($this->_articles as $article) {
+            if ($article->type == $type && $article->subType == $subType) {
+                return $article;
+            }
+        }
+        
         return ConstitutionArticle::findOne([
             'type' => $type,
             'subType' => $subType,
@@ -87,4 +102,11 @@ class Constitution extends Model
             return false;
         }
     }
+    
+    public function isCanCreateNewBill() : bool
+    {
+        $article = $this->getArticleByType(ConstitutionArticleType::POWERS, articles\postsonly\Powers::BILLS);
+        return $article->isSelected(articles\postsonly\Bills::CREATE);
+    }
+    
 }

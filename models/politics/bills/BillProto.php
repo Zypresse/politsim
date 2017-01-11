@@ -2,16 +2,25 @@
 
 namespace app\models\politics\bills;
 
+use Yii;
+
 /**
  * Прототип законопроекта
  */
-abstract class BillProto
+class BillProto
 {
     
     /**
      * Переименовать государство
      */
     const RENAME_STATE = 1;
+    
+    public static function findAll()
+    {
+        return [
+            static::RENAME_STATE => Yii::t('app', 'Rename state'),
+        ];
+    }
     
     /**
      * 

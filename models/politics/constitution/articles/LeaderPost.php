@@ -12,6 +12,8 @@ use Yii,
 class LeaderPost extends UnsignedIntegerArticle
 {
     
+    use \app\models\politics\constitution\articles\base\NoSubtypesArticle;
+    
     public function rules()
     {
         $rules = parent::rules();

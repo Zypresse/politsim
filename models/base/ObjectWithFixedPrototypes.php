@@ -11,10 +11,7 @@ use yii\base\Object,
 abstract class ObjectWithFixedPrototypes extends Object
 {
     
-    protected static function getList()
-    {
-        throw new ErrorException("Method ".static::className()."::getList() not overrided in class ".static::className()."!");
-    }
+    abstract protected static function getList();
     
     /**
      * 

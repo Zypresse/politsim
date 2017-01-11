@@ -12,6 +12,8 @@ use Yii,
 class Parties extends DropdownArticle
 {
     
+    use \app\models\politics\constitution\articles\base\NoSubtypesArticle;
+    
     const FORBIDDEN = 1;
     const ONLY_RULING = 2;
     const NEED_CONFIRM = 3;

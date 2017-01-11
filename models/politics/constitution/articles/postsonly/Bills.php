@@ -9,6 +9,7 @@ use Yii;
  */
 final class Bills extends Powers
 {
+    use \app\models\politics\constitution\articles\base\NoSubtypesArticle;
     
     /**
      * Голосовать

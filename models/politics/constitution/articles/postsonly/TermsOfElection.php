@@ -10,6 +10,7 @@ use app\models\politics\constitution\articles\base\TripleUnsignedIntegerArticle;
 class TermsOfElection extends TripleUnsignedIntegerArticle
 {
     
+    use \app\models\politics\constitution\articles\base\NoSubtypesArticle;
     
     
 }
