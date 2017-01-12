@@ -7,6 +7,8 @@ use Yii,
     app\models\politics\AgencyPost,
     app\models\politics\bills\Bill,
     app\models\politics\bills\BillProto,
+    yii\widgets\ActiveForm,
+    yii\web\Response,
     app\components\MyController;
 
 /**
@@ -29,7 +31,7 @@ class WorkController extends MyController
         ]);
     }
     
-    public function actionNewBillForm(int $postId)
+    public function actionNewBillForm(int $postId, int $protoId = null)
     {
         $post = $this->loadPost($postId);
         
@@ -39,9 +41,20 @@ class WorkController extends MyController
         
         $model = new Bill();
         $model->postId = $postId;
+        $model->stateId = $post->stateId;
+        $model->protoId = $protoId;
         $model->userId = $this->user->id;
         
-        return $this->render('new-bill-form', [
+        $views = [
+            BillProto::RENAME_STATE => 'rename-state',
+        ];
+        
+        if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return ActiveForm::validate($model);
+        }
+        
+        return $this->render($protoId ? 'bills/'.$views[$protoId] : 'new-bill-form', [
             'model' => $model,
             'post' => $post,
             'types' => BillProto::findAll()
@@ -50,7 +63,22 @@ class WorkController extends MyController
     
     public function actionNewBill()
     {
-        
+        $model = new Bill();
+        if ($model->load(Yii::$app->request->post())) {
+            
+            $post = $this->loadPost($model->postId);
+
+            if (!$post->constitution->isCanCreateNewBill()) {
+                return $this->_r(Yii::t('app', 'Not allowed'));
+            }
+            
+            if ($model->save()) {
+                return $this->_rOk();
+            } else {
+                return $this->_r($model->getErrors());
+            }
+        }
+        return $this->_r(Yii::t('app', 'Undefined error'));
     }
     
     private function loadPost(int $id)

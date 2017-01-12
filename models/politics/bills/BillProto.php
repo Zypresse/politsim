@@ -7,7 +7,7 @@ use Yii;
 /**
  * Прототип законопроекта
  */
-class BillProto
+abstract class BillProto implements BillProtoInterface
 {
     
     /**

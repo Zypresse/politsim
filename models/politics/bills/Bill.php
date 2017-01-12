@@ -3,6 +3,7 @@
 namespace app\models\politics\bills;
 
 use Yii,
+    yii\behaviors\TimestampBehavior,
     app\models\User,
     app\models\politics\State,
     app\models\politics\AgencyPost,
@@ -35,6 +36,9 @@ use Yii,
  */
 class Bill extends MyActiveRecord
 {
+    
+    public $dataArray = null;
+    
     /**
      * @inheritdoc
      */
@@ -43,13 +47,24 @@ class Bill extends MyActiveRecord
         return 'bills';
     }
 
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::className(),
+                'createdAtAttribute' => 'dateCreated',
+                'updatedAtAttribute' => false,
+            ],
+        ];
+    }
+    
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['protoId', 'stateId', 'dateCreated'], 'required'],
+            [['protoId', 'stateId'], 'required'],
             [['protoId', 'stateId', 'userId', 'postId', 'dateCreated', 'dateApproved', 'vetoPostId', 'votesPlus', 'votesMinus', 'votesAbstain'], 'integer', 'min' => 0],
             [['data'], 'string'],
             [['isDictatorBill'], 'boolean'],
@@ -57,6 +72,7 @@ class Bill extends MyActiveRecord
             [['stateId'], 'exist', 'skipOnError' => true, 'targetClass' => State::className(), 'targetAttribute' => ['stateId' => 'id']],
             [['postId'], 'exist', 'skipOnError' => true, 'targetClass' => AgencyPost::className(), 'targetAttribute' => ['postId' => 'id']],
             [['vetoPostId'], 'exist', 'skipOnError' => true, 'targetClass' => AgencyPost::className(), 'targetAttribute' => ['vetoPostId' => 'id']],
+            [['dataArray'], 'validateData'],
         ];
     }
 
@@ -79,6 +95,7 @@ class Bill extends MyActiveRecord
             'votesMinus' => Yii::t('app', 'Votes Minus'),
             'votesAbstain' => Yii::t('app', 'Votes Abstain'),
             'data' => Yii::t('app', 'Data'),
+            'dataArray' => Yii::t('app', 'State name'),
         ];
     }
     
@@ -115,6 +132,36 @@ class Bill extends MyActiveRecord
             $this->_proto = BillProto::instantiate($this->protoId);
         }
         return $this->_proto;
+    }
+    
+    /**
+     * @param string $attribute the attribute currently being validated
+     * @param mixed $params the value of the "params" given in the rule
+     */
+    public function validateData($attribute, $params)
+    {
+        return $this->proto->validate($this);
+    }
+    
+    public function beforeSave($insert)
+    {
+        $this->data = json_encode($this->dataArray);
+        return parent::beforeSave($insert);
+    }
+            
+    /**
+     * 
+     * @return boolean
+     */
+    public function accept() : bool
+    {
+        return $this->proto->accept($this);
+    }
+    
+    public static function instantiate($row)
+    {
+        $this->dataArray = json_decode($row['data'], true);
+        return parent::instantiate($row);
     }
     
 }

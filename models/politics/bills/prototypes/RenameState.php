@@ -2,7 +2,8 @@
 
 namespace app\models\politics\bills\prototypes;
 
-use app\models\politics\bills\BillProtoInterface,
+use Yii,
+    app\models\politics\bills\BillProtoInterface,
     app\models\politics\bills\Bill,
     app\models\politics\State;
 
@@ -31,8 +32,13 @@ class RenameState implements BillProtoInterface
      */
     public function validate($bill) : bool
     {
-        $data = json_decode($bill->data);
-        return ($data->name && $data->nameShort);
+        if (!$bill->dataArray['name']) {
+            $bill->addError('dataArray[name]', Yii::t('app', 'State name is required field'));
+        }
+        if (!$bill->dataArray['nameShort']) {
+            $bill->addError('dataArray[nameShort]', Yii::t('app', 'State short name is required field'));
+        }
+        return !!count($bill->getErrors());
     }
 
 }
