@@ -31,6 +31,11 @@ final class Bills extends Powers
      */
     const VETO = 8;
     
+    /**
+     * Обсуждать
+     */
+    const DISCUSS = 16;
+    
     public static function getList(): array
     {
         return [
@@ -38,6 +43,7 @@ final class Bills extends Powers
             static::CREATE => Yii::t('app', 'Creating new bills'),
             static::ACCEPT => Yii::t('app', 'Accept bills'),
             static::VETO => Yii::t('app', 'Veto against bills'),
+            static::DISCUSS => Yii::t('app', 'Discuss bills'),
         ];
     }
 

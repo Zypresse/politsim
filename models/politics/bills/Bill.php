@@ -7,7 +7,12 @@ use Yii,
     app\models\User,
     app\models\politics\State,
     app\models\politics\AgencyPost,
-    app\models\base\MyActiveRecord;
+    app\models\base\MyActiveRecord,
+    app\models\politics\constitution\ConstitutionArticleType,
+    app\models\politics\constitution\articles\postsonly\Powers,
+    app\models\politics\constitution\articles\postsonly\Bills,
+    app\models\Message,
+    app\models\MessageType;
 
 /**
  * Законопроект
@@ -34,6 +39,9 @@ use Yii,
  * @property AgencyPost $vetoPost
  * @property BillVote[] $votes
  * @property BillProto $proto
+ * @property User[] $voters
+ * @property AgencyPost[] $votersPosts
+ * @property Message[] $messages
  * 
  */
 class Bill extends MyActiveRecord
@@ -128,6 +136,27 @@ class Bill extends MyActiveRecord
         return $this->hasMany(BillVote::className(), ['billId' => 'id']);
     }
     
+    public function getVoters()
+    {
+        return $this->hasMany(User::className(), ['id' => 'userId'])
+                ->via('votersPosts');
+    }
+    
+    public function getVotersPosts()
+    {
+        return $this->hasMany(AgencyPost::className(), ['stateId' => 'stateId'])
+                ->joinWith('articles')
+                ->where(['constitutionsArticles.type' => ConstitutionArticleType::POWERS, 'constitutionsArticles.subType' => Powers::BILLS])
+                ->andWhere(['>', 'constitutionsArticles.value', 0]);
+    }
+    
+    public function getMessages()
+    {
+        return $this->hasMany(Message::className(), ['recipientId' => 'id'])
+                ->where(['typeId' => MessageType::BILL_DISQUSSION]);
+    }
+
+
     private $_proto = null;
     
     public function getProto()

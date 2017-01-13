@@ -12,7 +12,7 @@ use yii\base\Exception,
     app\models\politics\constitution\articles\postsonly\DestignationType,
     app\models\politics\constitution\articles\statesonly\Parties,
     app\models\politics\constitution\articles\postsonly\Powers,
-    app\models\politics\constitution\articles\powers\Bills;
+    app\models\politics\constitution\articles\postsonly\Bills;
 
 /**
  * Тестовый шаблон для Беларуси
@@ -50,7 +50,7 @@ class Bulbostan extends ConstitutionTemplate
         $leaderPost->constitution->setArticleByType(ConstitutionArticleType::DESTIGNATION_TYPE, null, DestignationType::BY_STATE_ELECTION, null, DestignationType::SECOND_TOUR+DestignationType::NONE_OF_THE_ABOVE);
         $leaderPost->constitution->setArticleByType(ConstitutionArticleType::TERMS_OF_OFFICE, null, 30);
         $leaderPost->constitution->setArticleByType(ConstitutionArticleType::TERMS_OF_ELECTION, null, 5, 1, 1);
-        $leaderPost->constitution->setArticleByType(ConstitutionArticleType::POWERS, Powers::BILLS, Bills::VOTE | Bills::CREATE | Bills::ACCEPT | Bills::VETO);
+        $leaderPost->constitution->setArticleByType(ConstitutionArticleType::POWERS, Powers::BILLS, Bills::VOTE | Bills::CREATE | Bills::ACCEPT | Bills::VETO | Bills::DISCUSS);
         $executive->constitution->setArticleByType(ConstitutionArticleType::LEADER_POST, null, $leaderPost->id);
         
         foreach ($params['gouvernors'] as $g) {

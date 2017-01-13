@@ -778,3 +778,18 @@ ul.twPc-Arrange {
 .content-header > .breadcrumb > li > a.btn-primary {
     color: white;
 }
+
+.direct-chat-contacts.half-width {
+    width: 50%;
+    -webkit-transform: translate(201%, 0);
+    -ms-transform: translate(201%, 0);
+    -o-transform: translate(201%, 0);
+    transform: translate(201%, 0);
+}
+
+.direct-chat-contacts-open .direct-chat-contacts.half-width {
+    -webkit-transform: translate(100%, 0);
+    -ms-transform: translate(100%, 0);
+    -o-transform: translate(100%, 0);
+    transform: translate(100%, 0);
+}
