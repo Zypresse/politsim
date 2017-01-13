@@ -4,6 +4,7 @@ use yii\helpers\Html,
     app\components\MyHtmlHelper,
     app\components\LinkCreator,
     app\components\widgets\BillVotesPieChartWidget,
+    app\models\MessageType,
     app\models\politics\constitution\ConstitutionArticleType,
     app\models\politics\constitution\articles\postsonly\Powers,
     app\models\politics\constitution\articles\postsonly\Bills;
@@ -100,7 +101,7 @@ use yii\helpers\Html,
     </div>
     <div class="row">
         <div class="col-md-12">
-            <div class="box box-solid box-primary direct-chat direct-chat-primary">
+            <div class="box box-solid box-primary direct-chat">
                 <div class="box-header">
                     <h4 class="box-title"><?= Yii::t('app', 'Discussion about this bill') ?></h4>
                     <div class="box-tools pull-right">
@@ -110,7 +111,7 @@ use yii\helpers\Html,
                     </div>
                 </div>
                 <div class="box-body">
-                    <div class="direct-chat-messages" style="height:400px">
+                    <div id="bill-messages-list" class="direct-chat-messages">
                         <?php if (count($bill->messages)): ?>
                             <?php foreach ($bill->messages as $message): ?>
                             <div class="direct-chat-msg <?=$message->senderId == $user->id?'right':''?>">
@@ -128,7 +129,7 @@ use yii\helpers\Html,
                         <p class="help-block text-center" ><?=Yii::t('app', 'Not any messages yet')?></p>
                         <?php endif ?>
                     </div>
-                    <div class="direct-chat-contacts half-width" style="height:400px">
+                    <div class="direct-chat-contacts half-width">
                         <ul class="contacts-list">
                             <?php foreach ($bill->votersPosts as $voter): ?>
                             <li>
@@ -149,9 +150,9 @@ use yii\helpers\Html,
                 </div>
                 <div class="box-footer">
                 <?php if ($canDiscuss): ?>
-                    <form action="#" onsubmit="return false;" method="post">
+                    <form action="#" onsubmit="sendMessage(); return false;" method="post">
                         <div class="input-group">
-                            <input type="text" name="message" placeholder="<?=Yii::t('app', 'Type Message ...')?>" class="form-control">
+                            <input id="bill-discussion-message" type="text" name="message" placeholder="<?=Yii::t('app', 'Type Message ...')?>" class="form-control">
                             <span class="input-group-btn">
                                 <button type="submit" class="btn btn-primary btn-flat"><?=Yii::t('app', 'Send')?></button>
                             </span>
@@ -165,3 +166,39 @@ use yii\helpers\Html,
         </div>
     </div>
 </section>
+<script type="text/javascript">
+    
+    function sendMessage()
+    {
+        var text = $('#bill-discussion-message').val();
+        if (text) {
+            json_request('messages/send', {
+                typeId: <?=MessageType::BILL_DISQUSSION?>,
+                recipientId: <?=$bill->id?>,
+                text: text
+            }, true, false, function(data) {
+                data = data.result;
+                var html = '<div class="direct-chat-msg right">'+
+                                '<div class="direct-chat-info clearfix">'+
+                                    '<span class="direct-chat-name pull-left">'+data.sender.name+'</span>'+
+                                    '<span class="direct-chat-timestamp pull-right formatDate" data-unixtime="'+data.dateCreated+'" >'+(new Date(data.dateCreated)).toISOString()+'</span>'+
+                                '</div>'+
+                                '<img src="'+data.sender.avatar+'" alt="" class="direct-chat-img">'+
+                                '<div class="direct-chat-text">'+
+                                    data.textHtml+
+                                '</div>'+
+                            '</div>';
+                if ($('#bill-messages-list').children('.help-block')) {
+                    $('#bill-messages-list').empty();
+                }
+                $('#bill-messages-list').append(html).scrollTop($('#bill-messages-list').height()+100);
+                prettyDates();
+            }, 'POST');
+        }
+    }
+    
+    $(function(){
+        $('#bill-messages-list').scrollTop($('#bill-messages-list').height()+100);
+    });
+    
+</script>

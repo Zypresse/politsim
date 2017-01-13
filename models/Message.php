@@ -4,7 +4,9 @@ namespace app\models;
 
 use Yii,
     app\models\base\MyActiveRecord,
-    yii\behaviors\TimestampBehavior;
+    yii\behaviors\TimestampBehavior,
+    bupy7\bbcode\BBCodeBehavior,
+    yii\helpers\Html;
 
 /**
  * текстовые сообщения игроков
@@ -42,6 +44,11 @@ class Message extends MyActiveRecord
                 'createdAtAttribute' => 'dateCreated',
                 'updatedAtAttribute' => 'dateUpdated',
             ],
+            [
+                'class' => BBCodeBehavior::className(),
+                'attribute' => 'text',
+                'saveAttribute' => 'textHtml',
+            ],
         ];
     }
     
@@ -51,7 +58,7 @@ class Message extends MyActiveRecord
     public function rules()
     {
         return [
-            [['typeId', 'senderId', 'recipientId', 'text', 'textHtml'], 'required'],
+            [['typeId', 'senderId', 'recipientId', 'text'], 'required'],
             [['typeId', 'senderId', 'recipientId', 'dateCreated', 'dateUpdated', 'dateDeleted'], 'integer', 'min' => 0],
             [['text', 'textHtml'], 'string'],
             [['senderId'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['senderId' => 'id']],
@@ -76,8 +83,14 @@ class Message extends MyActiveRecord
         ];
     }
     
-    public function actionSender()
+    public function getSender()
     {
         return $this->hasOne(User::className(), ['id' => 'senderId']);
+    }
+    
+    public function beforeSave($insert)
+    {
+        $this->text = Html::encode($this->text);
+        return parent::beforeSave($insert);
     }
 }
