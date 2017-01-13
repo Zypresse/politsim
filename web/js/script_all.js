@@ -20,7 +20,7 @@ if (typeof VK !== 'undefined') {
     VK.init({apiId: 4540646});
 }
             
-var current_page, current_page_params;
+var current_page, current_page_params, currentPageInterval;
 
 $(function () {
     $(document).on('click','a',function(){
@@ -292,6 +292,10 @@ function load_page(page, params, time) {
 
         current_page = page;
         current_page_params = params;
+        if (currentPageInterval) {
+            clearInterval(currentPageInterval);
+            currentPageInterval = 0;
+        }
 
         $('#topmenu>li').removeClass('active');
         $('.' + current_page.replace(/\//g,'-') + '_page').addClass('active');

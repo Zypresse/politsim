@@ -111,7 +111,7 @@ use yii\helpers\Html,
                     </div>
                 </div>
                 <div class="box-body">
-                    <div id="bill-messages-list" class="direct-chat-messages">
+                    <div id="bill-messages-list" class="direct-chat-messages" data-last-update-time="<?=time()?>" >
                         <?php if (count($bill->messages)): ?>
                             <?php foreach ($bill->messages as $message): ?>
                             <div class="direct-chat-msg <?=$message->senderId == $user->id?'right':''?>">
@@ -168,17 +168,9 @@ use yii\helpers\Html,
 </section>
 <script type="text/javascript">
     
-    function sendMessage()
+    function generateMessageBlock(data)
     {
-        var text = $('#bill-discussion-message').val();
-        if (text) {
-            json_request('messages/send', {
-                typeId: <?=MessageType::BILL_DISQUSSION?>,
-                recipientId: <?=$bill->id?>,
-                text: text
-            }, true, false, function(data) {
-                data = data.result;
-                var html = '<div class="direct-chat-msg right">'+
+        return '<div class="direct-chat-msg '+(data.senderId == <?=$user->id?>?'right':'')+'">'+
                                 '<div class="direct-chat-info clearfix">'+
                                     '<span class="direct-chat-name pull-left">'+data.sender.name+'</span>'+
                                     '<span class="direct-chat-timestamp pull-right formatDate" data-unixtime="'+data.dateCreated+'" >'+(new Date(data.dateCreated)).toISOString()+'</span>'+
@@ -188,6 +180,18 @@ use yii\helpers\Html,
                                     data.textHtml+
                                 '</div>'+
                             '</div>';
+    }
+    
+    function sendMessage()
+    {
+        var text = $('#bill-discussion-message').val();
+        if (text) {
+            json_request('messages/send', {
+                typeId: <?=MessageType::BILL_DISQUSSION?>,
+                recipientId: <?=$bill->id?>,
+                text: text
+            }, true, false, function(data) {
+                var html = generateMessageBlock(data.result);
                 if ($('#bill-messages-list').children('.help-block')) {
                     $('#bill-messages-list').empty();
                 }
@@ -197,8 +201,32 @@ use yii\helpers\Html,
         }
     }
     
+    function autoUpdate()
+    {
+        var lastUpdateTime = parseInt($('#bill-messages-list').data('lastUpdateTime'));
+        get_json('messages/get', {
+            typeId: <?=MessageType::BILL_DISQUSSION?>,
+            recipientId: <?=$bill->id?>,
+            lastUpdateTime: lastUpdateTime
+        }, function(data) {
+            if (data.result) {
+                var html = '';
+                for (var i = 0; i < data.result.length; i++) {
+                    html += generateMessageBlock(data.result);
+                }
+                if (html && $('#bill-messages-list').children('.help-block')) {
+                    $('#bill-messages-list').empty();
+                }
+                $('#bill-messages-list').append(html);
+                prettyDates();
+            }
+        }, true);
+    }
+    
+    
     $(function(){
         $('#bill-messages-list').scrollTop($('#bill-messages-list').height()+100);
+        currentPageInterval = setInterval(autoUpdate, 5000);
     });
     
 </script>

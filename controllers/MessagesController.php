@@ -55,4 +55,21 @@ class MessagesController extends MyController
         }
     }
     
+    public function actionGet(int $typeId, int $recipientId, int $lastUpdateTime)
+    {
+        if (!$typeId || !$recipientId) {
+            return $this->_r(Yii::t('app', 'Invalid parametres'));
+        }
+        
+        $messages = Message::find()
+                ->where(['typeId' => $typeId, 'recipientId' => $recipientId])
+                ->andWhere(['>', 'dateCreated', $lastUpdateTime])
+                ->orderBy(['dateCreated' => SORT_ASC])
+                ->asArray()
+                ->all();
+        
+        $this->result = $messages;
+        return $this->_r();
+    }
+    
 }
