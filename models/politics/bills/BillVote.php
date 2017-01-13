@@ -12,9 +12,18 @@ use Yii,
  * @property integer $billId
  * @property integer $postId
  * @property integer $variant
+ * 
+ * @property Bill $bill
+ * @property AgencyPost $post
+ * 
  */
 class BillVote extends MyActiveRecord
 {
+    
+    const VARIANT_PLUS = 1;
+    const VARIANT_ABSTAIN = 2;
+    const VARIANT_MINUS = 3;
+    
     /**
      * @inheritdoc
      */
@@ -49,6 +58,11 @@ class BillVote extends MyActiveRecord
         ];
     }
     
+    public static function primaryKey()
+    {
+        return ['billId', 'postId'];
+    }
+    
     public function getBill()
     {
         return $this->hasOne(Bill::className(), ['id' => 'billId']);
@@ -57,6 +71,14 @@ class BillVote extends MyActiveRecord
     public function getPost()
     {
         return $this->hasOne(AgencyPost::className(), ['id' => 'postId']);
+    }
+    
+    public function afterSave($insert, $changedAttributes)
+    {
+        if ($insert) {
+            $this->bill->addVote($this->variant);
+        }
+        return parent::afterSave($insert, $changedAttributes);
     }
     
 }

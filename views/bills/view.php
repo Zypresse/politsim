@@ -5,6 +5,7 @@ use yii\helpers\Html,
     app\components\LinkCreator,
     app\components\widgets\BillVotesPieChartWidget,
     app\models\MessageType,
+    app\models\politics\bills\BillVote,
     app\models\politics\constitution\ConstitutionArticleType,
     app\models\politics\constitution\articles\postsonly\Powers,
     app\models\politics\constitution\articles\postsonly\Bills;
@@ -51,37 +52,44 @@ use yii\helpers\Html,
 
                 </div>
                 <div class="box-footer">
+                <?php
+                    $canVote = false;
+                    $canDiscuss = false;
+                ?>
+                <?php foreach ($user->getPostsByState($bill->stateId)->all() as $post): ?>
                     <?php
-                        $canVote = false;
-                        $canDiscuss = false;
+                    $canVoteCurrent = false;
+                    /* @var $powersBills Bills */
+                    $powersBills = $post->constitution->getArticleByType(ConstitutionArticleType::POWERS, Powers::BILLS);
+                    if ($powersBills->isSelected(Bills::VOTE)) {
+                        $canVote = true;
+                        $canVoteCurrent = true;
+                    }
+                    if ($powersBills->isSelected(Bills::DISCUSS)) {
+                        $canDiscuss = true;
+                    }
+
+                    $allreadyVoted = $bill->isAllreadyVoted($post->id);
+
                     ?>
-                    <?php foreach ($user->getPostsByState($bill->stateId)->all() as $post): ?>
-                        <?php
-                        $canVoteCurrent = false;
-                        /* @var $powersBills Bills */
-                        $powersBills = $post->constitution->getArticleByType(ConstitutionArticleType::POWERS, Powers::BILLS);
-                        if ($powersBills->isSelected(Bills::VOTE)) {
-                            $canVote = true;
-                            $canVoteCurrent = true;
-                        }
-                        if ($powersBills->isSelected(Bills::DISCUSS)) {
-                            $canDiscuss = true;
-                        }
-                        ?>
-                        <?php if ($canVoteCurrent): ?>
-                            <div class="help-block">
-                                <?=Yii::t('app', 'You can vote as {0}', [Html::encode($post->name)])?>
-                                <div class="btn-group">
-                                    <button class="btn btn-success btn-sm"><?=Yii::t('app', 'Vote FOR this bill')?></button>
-                                    <button class="btn btn-default btn-sm"><?=Yii::t('app', 'Vote abstain')?></button>
-                                    <button class="btn btn-danger btn-sm"><?=Yii::t('app', 'Vote AGAINST this bill')?></button>
-                                </div>
+                    <?php if ($allreadyVoted): ?>
+                    <p class="help-block">
+                        <?=Yii::t('app', 'You allready voted for this bill')?>
+                    </p>
+                    <?php elseif ($canVoteCurrent): ?>
+                        <div class="help-block">
+                            <?=Yii::t('app', 'You can vote as {0}', [Html::encode($post->name)])?>
+                            <div class="btn-group">
+                                <button class="btn btn-success btn-sm vote-for-bill-btn" data-variant="<?=BillVote::VARIANT_PLUS?>" data-post-id="<?=$post->id?>" ><?=Yii::t('app', 'Vote FOR this bill')?></button>
+                                <button class="btn btn-default btn-sm vote-for-bill-btn" data-variant="<?=BillVote::VARIANT_ABSTAIN?>" data-post-id="<?=$post->id?>" ><?=Yii::t('app', 'Vote abstain')?></button>
+                                <button class="btn btn-danger btn-sm vote-for-bill-btn" data-variant="<?=BillVote::VARIANT_MINUS?>" data-post-id="<?=$post->id?>" ><?=Yii::t('app', 'Vote AGAINST this bill')?></button>
                             </div>
-                        <?php endif ?>
-                    <?php endforeach ?>
-                    <?php if (!$canVote): ?>
-                        <p class="help-block"><?=Yii::t('app', 'You can`t vote for this bill')?></p>
+                        </div>
                     <?php endif ?>
+                <?php endforeach ?>
+                <?php if (!$canVote): ?>
+                    <p class="help-block"><?=Yii::t('app', 'You can`t vote for this bill')?></p>
+                <?php endif ?>
                 </div>
             </div>
         </div>
@@ -227,6 +235,14 @@ use yii\helpers\Html,
     $(function(){
         $('#bill-messages-list').scrollTop($('#bill-messages-list').height()+100);
         currentPageInterval = setInterval(autoUpdate, 5000);
+        
+        $('.vote-for-bill-btn').click(function() {
+            json_request('bills/vote', {
+                billId: <?=$bill->id?>,
+                postId: $(this).data('postId'),
+                variant: $(this).data('variant')
+            }, false, false, '', 'POST');
+        });
     });
     
 </script>

@@ -136,6 +136,11 @@ class Bill extends MyActiveRecord
         return $this->hasMany(BillVote::className(), ['billId' => 'id']);
     }
     
+    public function isAllreadyVoted(int $postId)
+    {
+        return $this->getVotes()->where(['postId' => $postId])->exists();
+    }
+    
     public function getVoters()
     {
         return $this->hasMany(User::className(), ['id' => 'userId'])
@@ -204,6 +209,29 @@ class Bill extends MyActiveRecord
     public function render() : string
     {
         return $this->proto->render($this);
+    }
+    
+    /**
+     * 
+     * @param integer $variant
+     * @param boolean $save
+     */
+    public function addVote(int $variant, $save = true)
+    {
+        switch ($variant) {
+            case BillVote::VARIANT_PLUS:
+                $this->votesPlus++;
+                break;
+            case BillVote::VARIANT_MINUS:
+                $this->votesMinus++;
+                break;
+            case BillVote::VARIANT_ABSTAIN:
+                $this->votesAbstain++;
+                break;
+        }
+        if ($save) {
+            $this->save();
+        }
     }
     
 }
