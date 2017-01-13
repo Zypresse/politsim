@@ -22,5 +22,11 @@ interface BillProtoInterface
      * @param Bill $bill
      */
     public function accept($bill) : bool;
+    
+    /**
+     * 
+     * @param Bill $bill
+     */
+    public function render($bill) : string;
             
 }

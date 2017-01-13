@@ -41,4 +41,16 @@ class RenameState implements BillProtoInterface
         return !!count($bill->getErrors());
     }
 
+    /**
+     * 
+     * @param Bill $bill
+     */
+    public function render($bill): string
+    {
+        return Yii::t('app/bills', 'Rename our state to «{0}» ({1})', [
+            $bill->dataArray['name'],
+            $bill->dataArray['nameShort'],
+        ]);
+    }
+
 }

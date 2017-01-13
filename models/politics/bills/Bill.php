@@ -18,7 +18,9 @@ use Yii,
  * @property integer $userId
  * @property integer $postId
  * @property integer $dateCreated
- * @property integer $dateApproved
+ * @property integer $dateVotingFinished
+ * @property integer $dateFinished
+ * @property integer $isApproved
  * @property integer $vetoPostId
  * @property boolean $isDictatorBill
  * @property integer $votesPlus
@@ -65,9 +67,9 @@ class Bill extends MyActiveRecord
     {
         return [
             [['protoId', 'stateId'], 'required'],
-            [['protoId', 'stateId', 'userId', 'postId', 'dateCreated', 'dateApproved', 'vetoPostId', 'votesPlus', 'votesMinus', 'votesAbstain'], 'integer', 'min' => 0],
+            [['protoId', 'stateId', 'userId', 'postId', 'dateCreated', 'dateVotingFinished', 'dateFinished', 'vetoPostId', 'votesPlus', 'votesMinus', 'votesAbstain'], 'integer', 'min' => 0],
             [['data'], 'string'],
-            [['isDictatorBill'], 'boolean'],
+            [['isDictatorBill', 'isApproved'], 'boolean'],
             [['userId'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['userId' => 'id']],
             [['stateId'], 'exist', 'skipOnError' => true, 'targetClass' => State::className(), 'targetAttribute' => ['stateId' => 'id']],
             [['postId'], 'exist', 'skipOnError' => true, 'targetClass' => AgencyPost::className(), 'targetAttribute' => ['postId' => 'id']],
@@ -88,7 +90,9 @@ class Bill extends MyActiveRecord
             'userId' => Yii::t('app', 'User ID'),
             'postId' => Yii::t('app', 'Post ID'),
             'dateCreated' => Yii::t('app', 'Date Created'),
-            'dateApproved' => Yii::t('app', 'Date Approved'),
+            'dateVotingFinished' => Yii::t('app', 'Date Voting Finished'),
+            'dateFinished' => Yii::t('app', 'Date Finished'),
+            'isApproved' => Yii::t('app', 'Is Approved'),
             'vetoPostId' => Yii::t('app', 'Veto Post ID'),
             'isDictatorBill' => Yii::t('app', 'Is Dictator Bill'),
             'votesPlus' => Yii::t('app', 'Votes Plus'),
@@ -160,8 +164,17 @@ class Bill extends MyActiveRecord
     
     public static function instantiate($row)
     {
-        $this->dataArray = json_decode($row['data'], true);
-        return parent::instantiate($row);
+        $model = parent::instantiate($row);
+        $model->dataArray = json_decode($row['data'], true);
+        return $model;
+    }
+    
+    /**
+     * Отображает название и суть законопроекта
+     */
+    public function render() : string
+    {
+        return $this->proto->render($this);
     }
     
 }

@@ -60,6 +60,7 @@ $config = [
                     'fileMap' => [
                         'app' => 'app.php',
                         'app/notification' => 'notification.php',
+                        'app/bills' => 'bills.php',
                     ],
                 ],
             ],

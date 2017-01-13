@@ -138,7 +138,7 @@ function prettyDates() {
         $(elem).text($.format.prettyDate(new Date($(elem).data('unixtime') * 1000)));
     });
     $('.formatDate').each(function (idx, elem) {
-        $(elem).text($.format.date(new Date($(elem).data('unixtime') * 1000), 'HH:mm dd-MM-yyyy'));
+        $(elem).text($.format.date(new Date($(elem).data('unixtime') * 1000), 'HH:mm dd.MM.yyyy'));
     });
     $('.formatDateCustom').each(function (idx, elem) {
         $(elem).text($.format.date(new Date($(elem).data('unixtime') * 1000), $(elem).data('timeformat')));
@@ -235,6 +235,22 @@ function request(pageUrl,postParams,requestType,callback,noError,method)
         error: (noError) ? function(e) {console.log(e);/*$("#spinner").fadeOut("fast");*/} : show_error,
         complete: function() { console.log('finished'); $(window).on('hashchange',loadPageFromHash);}
     });
+}
+
+function loadPageFromHash() {
+    
+    var hash = document.location.hash.replace('?', '&');
+    var ar = hash.split('&');
+    var page = ar.shift().substr(2),
+        params = {};
+    for (var i = 0, l = ar.length; i < l; i++) {
+        var ar2 = ar[i].split('=');            
+        params[ar2[0]] = ar2[1];
+    }
+    
+    if (page !== current_page || JSON.stringify(params) !== JSON.stringify(current_page_params)) {
+        load_page(page, params);
+    }
 }
 
 function update_header() {

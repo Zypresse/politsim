@@ -11,6 +11,7 @@ use Yii,
     app\models\politics\constitution\articles\statesonly\Parties,
     app\models\population\Pop,
     app\models\Tile,
+    app\models\politics\bills\Bill,
     app\components\RegionCombiner,
     app\components\MyMathHelper;
 
@@ -47,6 +48,8 @@ use Yii,
  * @property Constitution $constitution
  * @property Tile[] $tiles
  * @property Pop[] $pops
+ * @property Bill[] $bills
+ * @property Bill[] $billsActive
  *
  * @author ilya
  */
@@ -186,6 +189,16 @@ class State extends ConstitutionOwner
     {
         return $this->hasMany(Pop::className(), ['tileId' => 'id'])
                 ->via('tiles');
+    }
+    
+    public function getBills()
+    {
+        return $this->hasMany(Bill::className(), ['stateId' => 'id']);
+    }
+    
+    public function getBillsActive()
+    {
+        return $this->hasMany(Bill::className(), ['stateId' => 'id'])->where(['dateFinished' => null]);
     }
     
     public function getLeaderPost()

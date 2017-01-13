@@ -27,18 +27,73 @@ use yii\helpers\Html,
                         </div>
                     </div>
                     <div class="box-body">
-                        <h4><?=Yii::t('app', 'Bills powers')?>:</h4>
-                        <ul>
-                        <?php foreach ($powersBills->selected as /*$val =>*/ $name): ?>
-                            <li><?=$name?></li>
-                        <?php endforeach ?>
-                        </ul>
-                    </div>
-                    <div class="box-footer">
-                        <div class="btn-group">
-                        <?php if ($powersBills->isSelected(Bills::CREATE)): ?>
-                            <button id="new-bill-btn" class="btn btn-primary"><?=Yii::t('app', 'New bill')?></button>
-                        <?php endif ?>
+                        <div class="box-group">
+                            <div class="box">
+                                <div class="box-header">
+                                    <h4 class="box-title"><?=Yii::t('app', 'Powers')?></h4>
+                                </div>
+                                <div class="box-body">
+                                    <h4><?=Yii::t('app', 'Bills powers')?>:</h4>
+                                    <ul>
+                                    <?php foreach ($powersBills->selected as /*$val =>*/ $name): ?>
+                                        <li><?=$name?></li>
+                                    <?php endforeach ?>
+                                    </ul>
+                                </div>
+                            </div>
+                            <?php if ($powersBills->value > 0): ?>
+                            <div class="box">
+                                <div class="box-header">
+                                    <h4 class="box-title"><?=Yii::t('app', 'Active bills')?></h4>
+                                </div>
+                                <div class="box-body">
+                                    <table class="table table-condensed table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th><?=Yii::t('app', 'Bill creator')?></th>
+                                                <th><?=Yii::t('app', 'Date Created')?></th>
+                                                <th><?=Yii::t('app', 'Bill content')?></th>
+                                                <th><?=Yii::t('app', 'Votes')?></th>
+                                                <th><?=Yii::t('app', 'Action')?></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        <?php foreach ($post->state->billsActive as $bill): ?>
+                                            <tr>
+                                                <td>
+                                                <?php if ($bill->user || $bill->post): ?>
+                                                    <?php if ($bill->user): ?>
+                                                        <?=LinkCreator::userLink($bill->user)?><br>
+                                                    <?php endif ?>
+                                                    <?php if ($bill->post): ?>
+                                                        <?=Html::encode($bill->post->name)?>
+                                                    <?php endif ?>
+                                                <?php endif ?>
+                                                </td>
+                                                <td>
+                                                    <span class="formatDate" data-unixtime="<?=$bill->dateCreated?>" ><?=date('H:M d.m.Y', $bill->dateCreated)?></span>
+                                                </td>
+                                                <td><?=$bill->render()?></td>
+                                                <td class="text-center">
+                                                    <span class="badge bg-green"><?=$bill->votesPlus?></span>&nbsp;/&nbsp;<span class="badge bg-red"><?=$bill->votesMinus?></span>&nbsp;/&nbsp;<span class="badge bg-gray"><?=$bill->votesAbstain?></span>
+                                                </td>
+                                                <td>
+                                                    <?=Html::a(Yii::t('app', 'Open bill info'), ['#!bills/view', 'id' => $bill->id], ['class' => 'btn btn-primary'])?>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="box-footer">
+                                    <div class="btn-group">
+                                    <?php if ($powersBills->isSelected(Bills::CREATE)): ?>
+                                        <button id="new-bill-btn" class="btn btn-primary"><?=Yii::t('app', 'New bill')?></button>
+                                    <?php endif ?>
+                                    </div>
+                                </div>
+                            </div>
+                            <?php endif ?>
                         </div>
                     </div>
                 </div>
