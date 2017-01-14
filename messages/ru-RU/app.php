@@ -129,7 +129,7 @@ return [
     'Delete' => 'Удалить',
     'Destignation type' => 'Способ назначения',
     'Deterioration' => 'Износ',
-    'Developed by' => 'Разработка — ',
+    'Developed by' => 'Разработка',
     'Dictature' => 'Диктатура',
     'Drop' => 'Уволить',
     'Drop self from post' => 'Уволиться',
