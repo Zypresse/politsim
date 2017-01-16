@@ -185,6 +185,8 @@ class TestController extends Controller
         Yii::$app->db->createCommand()->truncateTable('partiesPosts')->execute();
         Yii::$app->db->createCommand()->truncateTable('notifications')->execute();
         Yii::$app->db->createCommand()->truncateTable('pops')->execute();
+        Yii::$app->db->createCommand()->truncateTable('bills')->execute();
+        Yii::$app->db->createCommand()->truncateTable('billsVotes')->execute();
         
         echo "models cleared".PHP_EOL;
         

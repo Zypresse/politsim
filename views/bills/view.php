@@ -49,6 +49,10 @@ use yii\helpers\Html,
                         <strong><?=Yii::t('app', 'Date Created')?>:</strong>
                         <span class="formatDate" data-unixtime="<?=$bill->dateCreated?>" ><?=date('H:M d.m.Y', $bill->dateCreated)?></span>
                     </p>
+                    <p>
+                        <strong><?=Yii::t('app', 'Date Voting Finished')?>:</strong>
+                        <span class="formatDate" data-unixtime="<?=$bill->dateVotingFinished?>" ><?=date('H:M d.m.Y', $bill->dateVotingFinished)?></span>
+                    </p>
 
                 </div>
                 <div class="box-footer">

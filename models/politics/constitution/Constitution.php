@@ -67,7 +67,7 @@ class Constitution extends Model
             }
         }
         
-        return ConstitutionArticle::findOne([
+        return ConstitutionArticle::findOrCreate([
             'type' => $type,
             'subType' => $subType,
             'ownerType' => $this->ownerType,

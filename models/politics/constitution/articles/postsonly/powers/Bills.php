@@ -2,7 +2,8 @@
 
 namespace app\models\politics\constitution\articles\postsonly\powers;
 
-use Yii;
+use Yii,
+    app\models\politics\constitution\articles\postsonly\Powers;
 
 /**
  * 

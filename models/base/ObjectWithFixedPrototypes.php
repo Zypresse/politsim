@@ -41,4 +41,32 @@ abstract class ObjectWithFixedPrototypes extends Object
         }
         return $list;
     }
+    
+    /**
+     * 
+     * @param integer $id
+     * @return boolean
+     */
+    public static function exist(int $id)
+    {
+        foreach (static::getList() as $params) {
+            if ($params['id'] == $id) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * 
+     * @param integer $id
+     * @param string $colName
+     * @return mixed
+     */
+    public static function getCol(int $id, string $colName)
+    {
+        $model = static::findOne($id);
+        return $model->$colName;
+    }
+    
 }

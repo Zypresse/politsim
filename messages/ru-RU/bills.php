@@ -17,5 +17,17 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
+    'Agency template is required field' => 'Необходимо выбрать шаблон организации',
+    'City is required field' => 'Необходимо выборать город',
+    'City name is required field' => 'Необходимо заполнить поле «Название города»',
+    'City short name is required field' => 'Необходимо заполнить поле «Короткое название города»',
+    'Create new agency' => 'Создать новое агенство',
+    'Create new organisation by template «{0}»' => 'Создание агенства по шаблону «{0}»',
+    'Invalid city' => 'Город не существует или принадлежит другому государству',
+    'Rename city' => 'Переименовать город',
+    'Rename city {0} to «{1}» ({2})' => 'Переименовать город {0} в «{1}» ({2})',
     'Rename our state to «{0}» ({1})' => 'Переименовать наше государство в «{0}» ({1})',
+    'Rename region' => 'Переименовать регион',
+    'Rename region {0} to «{1}» ({2})' => 'Переименовать регион {0} в «{1}» ({2})',
+    'Rename state' => 'Переименовать государство',
 ];

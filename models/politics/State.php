@@ -12,6 +12,7 @@ use Yii,
     app\models\population\Pop,
     app\models\Tile,
     app\models\politics\bills\Bill,
+    app\models\politics\elections\ElectoralDistrict,
     app\components\RegionCombiner,
     app\components\MyMathHelper;
 
@@ -36,6 +37,7 @@ use Yii,
  * 
  * @property string $polygon
  * @property boolean $isPartiesCreatingAllowed
+ * @property integer $recommendedParliamentSize
  * 
  * @property City $city
  * @property GovermentForm $govermentForm
@@ -51,6 +53,7 @@ use Yii,
  * @property Pop[] $pops
  * @property Bill[] $bills
  * @property Bill[] $billsActive
+ * @property ElectoralDistrict[] $districts
  *
  * @author ilya
  */
@@ -163,6 +166,11 @@ class State extends ConstitutionOwner
     public function getRegions()
     {
         return $this->hasMany(Region::classname(), ['stateId' => 'id']);
+    }
+        
+    public function getDistricts()
+    {
+        return $this->hasMany(ElectoralDistrict::classname(), ['stateId' => 'id']);
     }
     
     public function getCities()
@@ -287,6 +295,11 @@ class State extends ConstitutionOwner
     {
         $article = $this->constitution->getArticleByType(ConstitutionArticleType::PARTIES);
         return $article && ($article->value == Parties::NEED_CONFIRM || $article->value == Parties::ALLOWED);
+    }
+    
+    public function getRecommendedParliamentSize() : int
+    {
+        return $this->getDistricts()->count();
     }
 
 }

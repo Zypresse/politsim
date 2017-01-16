@@ -61,6 +61,7 @@ $config = [
                         'app' => 'app.php',
                         'app/notification' => 'notification.php',
                         'app/bills' => 'bills.php',
+                        'app/agencies' => 'agencies.php',
                     ],
                 ],
             ],

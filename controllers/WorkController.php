@@ -19,7 +19,7 @@ class WorkController extends MyController
     
     public function actionIndex()
     {
-        return $this->render('index', [
+        return $this->render($this->user->getPosts()->count() ? 'index' : 'have-no-work', [
             'user' => $this->user,
         ]);
     }

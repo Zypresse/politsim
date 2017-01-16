@@ -17,5 +17,9 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
-    'Rename our state to «{0}» ({1})' => '',
+    'PS{0}' => 'СП{0}',
+    'Parliament of «{0}»' => 'Парламент государства «{0}»',
+    'Parliament speaker of «{0}»' => 'Спикер государства «{0}»',
+    'Parliamentarian of «{0}»' => 'Парламентарий государства «{0}»',
+    'P{0}' => 'П{0}',
 ];

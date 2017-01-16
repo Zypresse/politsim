@@ -97,13 +97,13 @@ use yii\helpers\Html,
                                 <div class="box-footer">
                                     <div class="btn-group">
                                     <?php if ($powersBills->isSelected(Bills::CREATE)): ?>
-                                        <button id="new-bill-btn" class="btn btn-primary"><?=Yii::t('app', 'New bill')?></button>
+                                        <button data-post-id="<?=$post->id?>" class="btn btn-primary new-bill-btn"><?=Yii::t('app', 'New bill')?></button>
                                     <?php endif ?>
                                     </div>
                                 </div>
                             </div>
                             <?php endif ?>
-                            <?php if ($powerParties->value > 0): ?>
+                            <?php if ($powersParties->value > 0): ?>
                             <div class="box">
                                 <div class="box-header">
                                     <h4 class="box-title"><?=Yii::t('app', 'Parties')?></h4>
@@ -127,10 +127,10 @@ use yii\helpers\Html,
     </div>
 </section>
 <script type="text/javascript">
-    $('#new-bill-btn').click(function(){
+    $('.new-bill-btn').click(function(){
         createAjaxModal(
             'work/new-bill-form',
-            {postId:<?=$post->id?>},
+            {postId:$(this).data('postId')},
             '<?=Yii::t('app', 'New bill')?>',
             '<button id="new-bill-confirm-btn" onclick="$(\'#new-bill-form\').yiiActiveForm(\'submitForm\')" class="btn btn-primary new-bill-confirm-btn" ><?=Yii::t('app', 'Create new bill')?></button><button class="btn btn-danger" data-dismiss="modal" aria-hidden="true"><?=Yii::t('app', 'Close')?></button>'
         );
