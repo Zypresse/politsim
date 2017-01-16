@@ -46,6 +46,7 @@ final class BasicParliament implements AgencyTemplateInterface
             ]),
         ]);
         $leaderPost->save();
+        $leaderPost->link('agency', $agency);
         
         $agency->constitution->setArticleByType(ConstitutionArticleType::LEADER_POST, null, $leaderPost->id);
         $leaderPost->constitution->setArticleByType(ConstitutionArticleType::DESTIGNATION_TYPE, null, DestignationType::BY_AGENCY_ELECTION, $agency->id);
@@ -65,6 +66,7 @@ final class BasicParliament implements AgencyTemplateInterface
                 ]),
             ]);
             $post->save();
+            $post->link('agency', $agency);
             
             $post->constitution->setArticleByType(ConstitutionArticleType::DESTIGNATION_TYPE, null, DestignationType::BY_DISTRICT_ELECTION, $district->id);
             $post->constitution->setArticleByType(ConstitutionArticleType::TERMS_OF_OFFICE, null, 30);

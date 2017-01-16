@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html,
+    app\components\MyHtmlHelper,
     app\components\LinkCreator,
     app\models\politics\constitution\ConstitutionArticleType,
     app\models\politics\constitution\articles\postsonly\Powers;
@@ -48,6 +49,10 @@ use yii\helpers\Html,
                                 <tr>
                                     <th><?=Yii::t('app', 'Party politics')?></th>
                                     <td><?=$state->constitution->getArticleByType(ConstitutionArticleType::PARTIES)->name?></td>
+                                </tr>
+                                <tr>
+                                    <th><?=Yii::t('app', 'Bills voting terms')?></th>
+                                    <td><?=MyHtmlHelper::formateNumberword($state->constitution->getArticleByType(ConstitutionArticleType::BILLS)->value, 'часов', 'час', 'часа')?></td>
                                 </tr>
                             </tbody>
                         </table>

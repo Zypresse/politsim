@@ -2,6 +2,8 @@
 
 $params = require(__DIR__ . '/params.php');
 $authClients = require(__DIR__ . '/auth-clients.php');
+$db = require(__DIR__ . '/db.php');
+$i18n = require(__DIR__ . '/i18n.php');
 
 $config = [
     'id' => 'politsim',
@@ -39,7 +41,7 @@ $config = [
                 ],
             ],
         ],
-        'db' => require(__DIR__ . '/db.php'),
+        'db' => $db,
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
@@ -51,21 +53,7 @@ $config = [
             'class' => 'yii\authclient\Collection',
             'clients' => $authClients,
         ],
-        'i18n' => [
-            'translations' => [
-                'app*' => [
-                    'class' => 'yii\i18n\PhpMessageSource',
-                    'basePath' => '@app/messages',
-                    'sourceLanguage' => 'en-US',
-                    'fileMap' => [
-                        'app' => 'app.php',
-                        'app/notification' => 'notification.php',
-                        'app/bills' => 'bills.php',
-                        'app/agencies' => 'agencies.php',
-                    ],
-                ],
-            ],
-        ],
+        'i18n' => $i18n,
         'notificator' => [
             'class' => 'app\components\Notificator',
         ]
@@ -81,7 +69,7 @@ if (YII_ENV_DEV) {
     $config['bootstrap'][] = 'gii';
     $config['modules']['gii'] = [
         'class' => 'yii\gii\Module',
-       'allowedIPs' => ['127.0.0.1', '::1', '*'],
+        'allowedIPs' => ['127.0.0.1', '::1'],
     ];
 }
 
