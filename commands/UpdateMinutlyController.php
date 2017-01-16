@@ -3,12 +3,12 @@
 namespace app\commands;
 
 use yii\console\Controller,
-    app\models\bills\Bill,
-    app\models\HoldingDecision,
-    app\models\factories\Factory,
-    app\models\factories\FactoryAuction,
-    app\models\Vacansy,
-    app\models\massmedia\Massmedia;
+    app\models\politics\bills\Bill;
+//    app\models\HoldingDecision,
+//    app\models\factories\Factory,
+//    app\models\factories\FactoryAuction,
+//    app\models\Vacansy,
+//    app\models\massmedia\Massmedia;
 
 /**
  * Update all, crontab minutly
@@ -28,25 +28,25 @@ class UpdateMinutlyController extends Controller {
             $this->updateBills();
             if ($debug) printf("Updated bills: %f s.".PHP_EOL, microtime(true)-$time);
 
-            $time = microtime(true);
-            $this->updateHoldingDecisions();
-            if ($debug) printf("Updated holding decisions: %f s.".PHP_EOL, microtime(true)-$time);
-
-            $time = microtime(true);
-            $this->updateBuildinds();   
-            if ($debug) printf("Updated buildings builded: %f s.".PHP_EOL, microtime(true)-$time);
-
-            $time = microtime(true);
-            $this->updateFactoryVacansies();     
-            if ($debug) printf("Updated factory vacansies: %f s.".PHP_EOL, microtime(true)-$time);
-
-            $time = microtime(true);
-            $this->updateFactoryAuctions();
-            if ($debug) printf("Updated factory auctions: %f s.".PHP_EOL, microtime(true)-$time);
-
-            $time = microtime(true);
-            $this->updateMassmedia();
-            if ($debug) printf("Updated massmedia: %f s.".PHP_EOL, microtime(true)-$time);
+//            $time = microtime(true);
+//            $this->updateHoldingDecisions();
+//            if ($debug) printf("Updated holding decisions: %f s.".PHP_EOL, microtime(true)-$time);
+//
+//            $time = microtime(true);
+//            $this->updateBuildinds();   
+//            if ($debug) printf("Updated buildings builded: %f s.".PHP_EOL, microtime(true)-$time);
+//
+//            $time = microtime(true);
+//            $this->updateFactoryVacansies();     
+//            if ($debug) printf("Updated factory vacansies: %f s.".PHP_EOL, microtime(true)-$time);
+//
+//            $time = microtime(true);
+//            $this->updateFactoryAuctions();
+//            if ($debug) printf("Updated factory auctions: %f s.".PHP_EOL, microtime(true)-$time);
+//
+//            $time = microtime(true);
+//            $this->updateMassmedia();
+//            if ($debug) printf("Updated massmedia: %f s.".PHP_EOL, microtime(true)-$time);
         }                
     }
 
@@ -55,29 +55,22 @@ class UpdateMinutlyController extends Controller {
      */
     private function updateBills()
     {
-        $bills = Bill::find()->where('accepted = 0 AND vote_ended <= '.time())->with('votes')->all();
+        $bills = Bill::find()
+                ->where(['<', 'dateVotingFinished', time()])
+                ->andWhere(['dateFinished' => null])
+                ->all();
         foreach ($bills as $bill) {
             /* @var $bill Bill */
-            if ($bill->dicktator) {
+            if ($bill->isDictatorBill) {
                 $bill->accept();
             } else {
-                $za = 0;
-                $protiv = 0;
-                foreach ($bill->votes as $vote) {
-                    if ($vote->variant === 1) {
-                        $za++;
-                    } elseif ($vote->variant === 2) {
-                        $protiv++;
-                    }
-                }
-                if ($za > $protiv) {
+                if ($bill->votesPlus > $bill->votesMinus) {
                     $bill->accept();
                 } else {
-                    $bill->end();
+                    $bill->decline();
                 }
             }
         }
-        unset($bills);
     }
 
     /**

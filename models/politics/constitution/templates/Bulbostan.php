@@ -47,6 +47,7 @@ class Bulbostan extends ConstitutionTemplate
         $state->constitution->setArticleByType(ConstitutionArticleType::LEADER_POST, null, $leaderPost->id);
         $state->constitution->setArticleByType(ConstitutionArticleType::MULTIPOST, null, false);
         $state->constitution->setArticleByType(ConstitutionArticleType::PARTIES, null, Parties::FORBIDDEN);
+        $state->constitution->setArticleByType(ConstitutionArticleType::BILLS, null, 24);
         $leaderPost->constitution->setArticleByType(ConstitutionArticleType::DESTIGNATION_TYPE, null, DestignationType::BY_STATE_ELECTION, null, DestignationType::SECOND_TOUR+DestignationType::NONE_OF_THE_ABOVE);
         $leaderPost->constitution->setArticleByType(ConstitutionArticleType::TERMS_OF_OFFICE, null, 30);
         $leaderPost->constitution->setArticleByType(ConstitutionArticleType::TERMS_OF_ELECTION, null, 5, 1, 1);

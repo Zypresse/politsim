@@ -44,17 +44,13 @@ class WorkController extends MyController
         $model->stateId = $post->stateId;
         $model->protoId = $protoId;
         $model->userId = $this->user->id;
-        
-        $views = [
-            BillProto::RENAME_STATE => 'rename-state',
-        ];
-        
+                
         if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             return ActiveForm::validate($model);
         }
         
-        return $this->render($protoId ? 'bills/'.$views[$protoId] : 'new-bill-form', [
+        return $this->render($protoId ? BillProto::getViewByType($protoId) : 'new-bill-form', [
             'model' => $model,
             'post' => $post,
             'types' => BillProto::findAll()

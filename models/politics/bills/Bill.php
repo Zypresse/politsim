@@ -10,7 +10,6 @@ use Yii,
     app\models\base\MyActiveRecord,
     app\models\politics\constitution\ConstitutionArticleType,
     app\models\politics\constitution\articles\postsonly\Powers,
-    app\models\politics\constitution\articles\postsonly\Bills,
     app\models\Message,
     app\models\MessageType;
 
@@ -184,6 +183,10 @@ class Bill extends MyActiveRecord
     public function beforeSave($insert)
     {
         $this->data = json_encode($this->dataArray);
+        if ($insert) {
+            $article = $this->state->constitution->getArticleByType(ConstitutionArticleType::BILLS);
+            $this->dateVotingFinished = time() + $article->value * 60 * 60;
+        }
         return parent::beforeSave($insert);
     }
             
@@ -193,7 +196,20 @@ class Bill extends MyActiveRecord
      */
     public function accept() : bool
     {
-        return $this->proto->accept($this);
+        $this->isApproved = true;
+        $this->dateFinished = time();
+        return $this->save() && $this->proto->accept($this);
+    }
+    
+    /**
+     * 
+     * @return boolean
+     */
+    public function decline(): bool
+    {
+        $this->isApproved = false;
+        $this->dateFinished = time();
+        return $this->save();
     }
     
     public static function instantiate($row)

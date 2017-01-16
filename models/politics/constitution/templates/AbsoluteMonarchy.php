@@ -39,6 +39,7 @@ class AbsoluteMonarchy extends ConstitutionTemplate
         $state->constitution->setArticleByType(ConstitutionArticleType::LEADER_POST, null, $leaderPost->id);
         $state->constitution->setArticleByType(ConstitutionArticleType::MULTIPOST, null, false);
         $state->constitution->setArticleByType(ConstitutionArticleType::PARTIES, null, Parties::FORBIDDEN);
+        $state->constitution->setArticleByType(ConstitutionArticleType::BILLS, null, 0);
         $leaderPost->constitution->setArticleByType(ConstitutionArticleType::DESTIGNATION_TYPE, null, DestignationType::BY_PRECURSOR);
         $leaderPost->constitution->setArticleByType(ConstitutionArticleType::TERMS_OF_OFFICE, null, 0);
         $leaderPost->constitution->setArticleByType(ConstitutionArticleType::TERMS_OF_ELECTION, null, 0);

@@ -41,6 +41,7 @@ use Yii,
  * @property GovermentForm $govermentForm
  * @property StateStructure $stateStructure
  * @property Region[] $regions
+ * @property City[] $cities
  * @property Agency[] $agencies
  * @property AgencyPost[] $posts
  * @property AgencyPost $leaderPost
@@ -162,6 +163,12 @@ class State extends ConstitutionOwner
     public function getRegions()
     {
         return $this->hasMany(Region::classname(), ['stateId' => 'id']);
+    }
+    
+    public function getCities()
+    {
+        return $this->hasMany(City::className(), ['regionId' => 'id'])
+                ->via('regions');
     }
     
     public function getAgencies()

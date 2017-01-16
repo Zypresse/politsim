@@ -42,6 +42,11 @@ abstract class ConstitutionArticleType
      * Права
      */
     const POWERS = 7;
+    
+    /**
+     * Настройки законопроектов государства
+     */
+    const BILLS = 8;
         
     /**
      * 
@@ -58,6 +63,7 @@ abstract class ConstitutionArticleType
             static::MULTIPOST => 'statesonly\\Multipost',
             static::PARTIES => 'statesonly\\Parties',
             static::POWERS => 'postsonly\\Powers',
+            static::BILLS => 'statesonly\\Bills',
         ];
         
         return '\\app\\models\\politics\\constitution\\articles\\'.$classes[$type];
