@@ -4,7 +4,8 @@ use yii\helpers\Html,
     app\components\LinkCreator,
     app\models\politics\constitution\ConstitutionArticleType,
     app\models\politics\constitution\articles\postsonly\Powers,
-    app\models\politics\constitution\articles\postsonly\Bills;
+    app\models\politics\constitution\articles\postsonly\powers\Bills,
+    app\models\politics\constitution\articles\postsonly\powers\Parties;
 
 /* @var $this \yii\web\View */
 /* @var $user \app\models\User */
@@ -18,6 +19,8 @@ use yii\helpers\Html,
             <?php 
                 /* @var $powersBills Bills */
                 $powersBills = $post->constitution->getArticleByType(ConstitutionArticleType::POWERS, Powers::BILLS); 
+                /* @var $powerParties Parties */
+                $powersParties = $post->constitution->getArticleByType(ConstitutionArticleType::POWERS, Powers::PARTIES); 
             ?>
                 <div class="box">
                     <div class="box-header">
@@ -36,6 +39,12 @@ use yii\helpers\Html,
                                     <h4><?=Yii::t('app', 'Bills powers')?>:</h4>
                                     <ul>
                                     <?php foreach ($powersBills->selected as /*$val =>*/ $name): ?>
+                                        <li><?=$name?></li>
+                                    <?php endforeach ?>
+                                    </ul>
+                                    <h4><?=Yii::t('app', 'Parties powers')?>:</h4>
+                                    <ul>
+                                    <?php foreach ($powersParties->selected as /*$val =>*/ $name): ?>
                                         <li><?=$name?></li>
                                     <?php endforeach ?>
                                     </ul>
@@ -90,6 +99,21 @@ use yii\helpers\Html,
                                     <?php if ($powersBills->isSelected(Bills::CREATE)): ?>
                                         <button id="new-bill-btn" class="btn btn-primary"><?=Yii::t('app', 'New bill')?></button>
                                     <?php endif ?>
+                                    </div>
+                                </div>
+                            </div>
+                            <?php endif ?>
+                            <?php if ($powerParties->value > 0): ?>
+                            <div class="box">
+                                <div class="box-header">
+                                    <h4 class="box-title"><?=Yii::t('app', 'Parties')?></h4>
+                                </div>
+                                <div class="box-body">
+                                    <p>Тут будут партии для управления ими</p>
+                                </div>
+                                <div class="box-footer">
+                                    <div class="btn-group">
+                                        
                                     </div>
                                 </div>
                             </div>

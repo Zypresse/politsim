@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models\politics\constitution\articles\postsonly;
+namespace app\models\politics\constitution\articles\postsonly\powers;
 
 use Yii;
 

@@ -4,7 +4,7 @@ namespace app\models;
 
 use app\models\politics\constitution\ConstitutionArticleType,
     app\models\politics\constitution\articles\postsonly\Powers,
-    app\models\politics\constitution\articles\postsonly\Bills,
+    app\models\politics\constitution\articles\postsonly\powers\Bills,
     app\models\politics\bills\Bill;
 
 /**

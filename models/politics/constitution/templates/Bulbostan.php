@@ -12,7 +12,8 @@ use yii\base\Exception,
     app\models\politics\constitution\articles\postsonly\DestignationType,
     app\models\politics\constitution\articles\statesonly\Parties,
     app\models\politics\constitution\articles\postsonly\Powers,
-    app\models\politics\constitution\articles\postsonly\Bills;
+    app\models\politics\constitution\articles\postsonly\powers\Bills,
+    app\models\politics\constitution\articles\postsonly\powers\Parties as PowersParties;
 
 /**
  * Тестовый шаблон для Беларуси
@@ -46,12 +47,13 @@ class Bulbostan extends ConstitutionTemplate
         
         $state->constitution->setArticleByType(ConstitutionArticleType::LEADER_POST, null, $leaderPost->id);
         $state->constitution->setArticleByType(ConstitutionArticleType::MULTIPOST, null, false);
-        $state->constitution->setArticleByType(ConstitutionArticleType::PARTIES, null, Parties::FORBIDDEN);
+        $state->constitution->setArticleByType(ConstitutionArticleType::PARTIES, null, Parties::NEED_CONFIRM);
         $state->constitution->setArticleByType(ConstitutionArticleType::BILLS, null, 24);
         $leaderPost->constitution->setArticleByType(ConstitutionArticleType::DESTIGNATION_TYPE, null, DestignationType::BY_STATE_ELECTION, null, DestignationType::SECOND_TOUR+DestignationType::NONE_OF_THE_ABOVE);
         $leaderPost->constitution->setArticleByType(ConstitutionArticleType::TERMS_OF_OFFICE, null, 30);
         $leaderPost->constitution->setArticleByType(ConstitutionArticleType::TERMS_OF_ELECTION, null, 5, 1, 1);
         $leaderPost->constitution->setArticleByType(ConstitutionArticleType::POWERS, Powers::BILLS, Bills::VOTE | Bills::CREATE | Bills::ACCEPT | Bills::VETO | Bills::DISCUSS);
+        $leaderPost->constitution->setArticleByType(ConstitutionArticleType::POWERS, Powers::PARTIES, PowersParties::ACCEPT | PowersParties::REVOKE);
         $executive->constitution->setArticleByType(ConstitutionArticleType::LEADER_POST, null, $leaderPost->id);
         
         foreach ($params['gouvernors'] as $g) {

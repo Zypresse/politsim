@@ -11,7 +11,7 @@ use Yii,
     app\models\politics\AgencyPost,
     app\models\politics\constitution\ConstitutionArticleType,
     app\models\politics\constitution\articles\postsonly\Powers,
-    app\models\politics\constitution\articles\postsonly\Bills;
+    app\models\politics\constitution\articles\postsonly\powers\Bills;
 
 /**
  * 

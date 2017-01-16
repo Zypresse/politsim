@@ -106,7 +106,7 @@ class Constitution extends Model
     public function isCanCreateNewBill() : bool
     {
         $article = $this->getArticleByType(ConstitutionArticleType::POWERS, articles\postsonly\Powers::BILLS);
-        return $article->isSelected(articles\postsonly\Bills::CREATE);
+        return $article->isSelected(articles\postsonly\powers\Bills::CREATE);
     }
     
 }

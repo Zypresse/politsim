@@ -8,7 +8,7 @@ use yii\helpers\Html,
     app\models\politics\bills\BillVote,
     app\models\politics\constitution\ConstitutionArticleType,
     app\models\politics\constitution\articles\postsonly\Powers,
-    app\models\politics\constitution\articles\postsonly\Bills;
+    app\models\politics\constitution\articles\postsonly\powers\Bills;
 
 /* @var $this yii\base\View */
 /* @var $bill app\models\politics\bills\Bill */

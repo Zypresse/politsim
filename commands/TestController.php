@@ -19,7 +19,7 @@ use Yii,
     app\models\population\Pop,
     app\models\population\PopClass,
     app\models\politics\constitution\ConstitutionArticleType,
-    app\models\politics\constitution\articles\postsonly\Bills,
+    app\models\politics\constitution\articles\postsonly\powers\Bills,
     app\models\politics\constitution\articles\postsonly\Powers,
     app\components\MyMathHelper;
 
