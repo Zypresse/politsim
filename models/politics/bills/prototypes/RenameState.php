@@ -3,14 +3,14 @@
 namespace app\models\politics\bills\prototypes;
 
 use Yii,
-    app\models\politics\bills\BillProtoInterface,
+    app\models\politics\bills\BillProto,
     app\models\politics\bills\Bill,
     yii\helpers\Html;
 
 /**
  * Переименование государства
  */
-class RenameState implements BillProtoInterface
+class RenameState extends BillProto
 {
     
     /**

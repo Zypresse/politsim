@@ -3,7 +3,7 @@
 namespace app\models\politics\bills\prototypes;
 
 use Yii,
-    app\models\politics\bills\BillProtoInterface,
+    app\models\politics\bills\BillProto,
     app\models\politics\bills\Bill,
     app\components\LinkCreator,
     app\components\LinkHelper,
@@ -13,7 +13,7 @@ use Yii,
 /**
  * Смена флага города
  */
-class ChangeFlagCity implements BillProtoInterface
+class ChangeFlagCity extends BillProto
 {
 
     /**

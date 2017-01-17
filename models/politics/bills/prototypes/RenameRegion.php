@@ -3,7 +3,7 @@
 namespace app\models\politics\bills\prototypes;
 
 use Yii,
-    app\models\politics\bills\BillProtoInterface,
+    app\models\politics\bills\BillProto,
     app\models\politics\bills\Bill,
     app\components\LinkCreator,
     app\models\politics\Region,
@@ -12,7 +12,7 @@ use Yii,
 /**
  * Переименование региона
  */
-class RenameRegion implements BillProtoInterface
+class RenameRegion extends BillProto
 {
     
     /**

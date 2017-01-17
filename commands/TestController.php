@@ -274,7 +274,7 @@ class TestController extends Controller
             }
         }
         $state->refresh();
-        $state->getPolygon(true);
+        $state->updateParams(true, true);
         echo "{$state->name} polygon saved".PHP_EOL;
         
         ConstitutionGenerator::generate($state, Bulbostan::className(), [

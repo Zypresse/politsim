@@ -40,7 +40,7 @@ class Parties extends DropdownArticle
     {
         return [
             static::FORBIDDEN => Yii::t('app', 'Forbidden'),
-            static::ONLY_RULING => Yii::t('app', 'Only ruling party'),
+//            static::ONLY_RULING => Yii::t('app', 'Only ruling party'),
             static::NEED_CONFIRM => Yii::t('app', 'Registration party needs goverment confirmation'),
             static::ALLOWED => Yii::t('app', 'Allowed'),
         ];

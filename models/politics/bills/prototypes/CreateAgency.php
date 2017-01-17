@@ -3,14 +3,14 @@
 namespace app\models\politics\bills\prototypes;
 
 use Yii,
-    app\models\politics\bills\BillProtoInterface,
+    app\models\politics\bills\BillProto,
     app\models\politics\bills\Bill,
     app\models\politics\AgencyTemplate;
 
 /**
  * Создать агенство по шаблону
  */
-final class CreateAgency implements BillProtoInterface
+final class CreateAgency extends BillProto
 {
     
     /**

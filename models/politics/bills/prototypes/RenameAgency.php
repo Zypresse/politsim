@@ -3,7 +3,7 @@
 namespace app\models\politics\bills\prototypes;
 
 use Yii,
-    app\models\politics\bills\BillProtoInterface,
+    app\models\politics\bills\BillProto,
     app\models\politics\bills\Bill,
     app\components\LinkCreator,
     app\models\politics\Agency,
@@ -12,7 +12,7 @@ use Yii,
 /**
  * Переименование агенства
  */
-class RenameAgency implements BillProtoInterface
+class RenameAgency extends BillProto
 {
     
     /**

@@ -3,7 +3,7 @@
 namespace app\models\politics\bills\prototypes;
 
 use Yii,
-    app\models\politics\bills\BillProtoInterface,
+    app\models\politics\bills\BillProto,
     app\models\politics\bills\Bill,
     app\components\LinkHelper,
     yii\helpers\Html;
@@ -11,7 +11,7 @@ use Yii,
 /**
  * Смена флага государства
  */
-class ChangeAnthemState implements BillProtoInterface
+class ChangeAnthemState extends BillProto
 {
     
     /**

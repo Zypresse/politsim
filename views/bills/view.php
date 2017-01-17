@@ -145,6 +145,7 @@ use yii\helpers\Html,
                         <ul class="contacts-list">
                             <?php foreach ($bill->votersPosts as $voter): ?>
                             <li>
+                                <?php if ($voter->user): ?>
                                 <a href="#!profile&id=<?=$voter->user->id?>">
                                     <?=Html::img($voter->user->avatar, ['class' => 'contacts-list-img'])?>
                                     <div class="contacts-list-info">
@@ -155,6 +156,18 @@ use yii\helpers\Html,
                                         <span class="contacts-list-msg"><?=Html::encode($voter->name)?></span>
                                     </div>
                                 </a>
+                                <?php else: ?>
+                                <a href="javascript:void(0);">
+                                    <?=Html::img("//placehold.it/50x50", ['class' => 'contacts-list-img'])?>
+                                    <div class="contacts-list-info">
+                                        <span class="contacts-list-name">
+                                            <?=Yii::t('yii', '(not set)')?>
+                                            <!--<small class="contacts-list-date pull-right"></small>-->
+                                        </span>
+                                        <span class="contacts-list-msg"><?=Html::encode($voter->name)?></span>
+                                    </div>
+                                </a>
+                                <?php endif ?>
                             </li>
                             <?php endforeach ?>
                         </ul>
@@ -198,16 +211,17 @@ use yii\helpers\Html,
     {
         var text = $('#bill-discussion-message').val();
         if (text) {
+            $('#bill-discussion-message').val('');
             json_request('messages/send', {
                 typeId: <?=MessageType::BILL_DISQUSSION?>,
                 recipientId: <?=$bill->id?>,
                 text: text
             }, true, false, function(data) {
                 var html = generateMessageBlock(data.result);
-                if ($('#bill-messages-list').children('.help-block')) {
+                if ($('#bill-messages-list').children('.help-block').length) {
                     $('#bill-messages-list').empty();
                 }
-                $('#bill-messages-list').append(html).scrollTop($('#bill-messages-list').height()+100);
+                $('#bill-messages-list').append(html).scrollTop(99999999);
                 prettyDates();
             }, 'POST');
         }
@@ -224,12 +238,13 @@ use yii\helpers\Html,
             if (data.result) {
                 var html = '';
                 for (var i = 0; i < data.result.length; i++) {
-                    html += generateMessageBlock(data.result);
+                    html += generateMessageBlock(data.result[i]);
                 }
-                if (html && $('#bill-messages-list').children('.help-block')) {
+                if (html && $('#bill-messages-list').children('.help-block').length) {
                     $('#bill-messages-list').empty();
                 }
                 $('#bill-messages-list').append(html);
+                $('#bill-messages-list').data('lastUpdateTime', Math.round((new Date()).getTime()/1000))
                 prettyDates();
             }
         }, true);
@@ -237,7 +252,7 @@ use yii\helpers\Html,
     
     
     $(function(){
-        $('#bill-messages-list').scrollTop($('#bill-messages-list').height()+100);
+        $('#bill-messages-list').scrollTop(99999999);
         currentPageInterval = setInterval(autoUpdate, 5000);
         
         $('.vote-for-bill-btn').click(function() {

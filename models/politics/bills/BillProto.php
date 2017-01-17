@@ -65,6 +65,11 @@ abstract class BillProto implements BillProtoInterface
      */
     const CHANGE_ANTHEM_CITY = 11;
     
+    /**
+     * Сменить партийную политику
+     */
+    const PARTIES_POLITIC = 12;
+    
     public static function findAll()
     {
         return [
@@ -79,6 +84,7 @@ abstract class BillProto implements BillProtoInterface
             static::CHANGE_ANTHEM_STATE => Yii::t('app/bills', 'Change state anthem'),
             static::CHANGE_ANTHEM_REGION => Yii::t('app/bills', 'Change region anthem'),
             static::CHANGE_ANTHEM_CITY => Yii::t('app/bills', 'Change city anthem'),
+            static::PARTIES_POLITIC => Yii::t('app/bills', 'Change parties politic'),
         ];
     }
     
@@ -101,6 +107,7 @@ abstract class BillProto implements BillProtoInterface
             static::CHANGE_ANTHEM_STATE => 'ChangeAnthemState',
             static::CHANGE_ANTHEM_REGION => 'ChangeAnthemRegion',
             static::CHANGE_ANTHEM_CITY => 'ChangeAnthemCity',
+            static::PARTIES_POLITIC => 'PartiesPolitic',
         ];
         
         return '\\app\\models\\politics\\bills\\prototypes\\'.$classes[$type];
@@ -125,6 +132,7 @@ abstract class BillProto implements BillProtoInterface
             static::CHANGE_ANTHEM_STATE => 'change-anthem-state',
             static::CHANGE_ANTHEM_REGION => 'change-anthem-region',
             static::CHANGE_ANTHEM_CITY => 'change-anthem-city',
+            static::PARTIES_POLITIC => 'parties-politic',
         ];
         
         return '/work/bills/'.$views[$type];
@@ -158,6 +166,11 @@ abstract class BillProto implements BillProtoInterface
     {
         $className = static::getClassNameByType($id);
         return new $className();
+    }
+    
+    public function getDefaultData($bill)
+    {
+        return [];
     }
     
 }

@@ -44,6 +44,11 @@ class WorkController extends MyController
         $model->stateId = $post->stateId;
         $model->protoId = $protoId;
         $model->userId = $this->user->id;
+        
+        if ($protoId) {
+            $proto = BillProto::instantiate($protoId);
+            $model->dataArray = $proto->getDefaultData($model);
+        }
                 
         if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
             Yii::$app->response->format = Response::FORMAT_JSON;
