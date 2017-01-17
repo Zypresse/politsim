@@ -6,13 +6,14 @@ use Yii,
     app\models\politics\bills\BillProtoInterface,
     app\models\politics\bills\Bill,
     app\components\LinkCreator,
+    app\components\LinkHelper,
     app\models\politics\Region,
     yii\helpers\Html;
         
 /**
- * Переименование региона
+ * Смена флага региона
  */
-class RenameRegion implements BillProtoInterface
+class ChangeFlagRegion implements BillProtoInterface
 {
     
     /**
@@ -22,8 +23,7 @@ class RenameRegion implements BillProtoInterface
     public function accept($bill): bool
     {
         $region = Region::findByPk($bill->dataArray['regionId']);
-        $region->name = $bill->dataArray['name'];
-        $region->nameShort = $bill->dataArray['nameShort'];
+        $region->flag = $bill->dataArray['flag'];
         return $region->save();
     }
 
@@ -34,10 +34,9 @@ class RenameRegion implements BillProtoInterface
     public function render($bill): string
     {
         $region = Region::findByPk($bill->dataArray['regionId']);
-        return Yii::t('app/bills', 'Rename region {0} to «{1}» ({2})', [
+        return Yii::t('app/bills', 'Change flag of region {0} to {1}', [
             LinkCreator::regionLink($region),
-            Html::encode($bill->dataArray['name']),
-            Html::encode($bill->dataArray['nameShort']),
+            Html::img($bill->dataArray['flag'], ['style' => 'height: 16px;']),
         ]);
     }
 
@@ -55,11 +54,10 @@ class RenameRegion implements BillProtoInterface
                 $bill->addError('dataArray[regionId]', Yii::t('app/bills', 'Invalid region'));
             }
         }
-        if (!isset($bill->dataArray['name']) || !$bill->dataArray['name']) {
-            $bill->addError('dataArray[name]', Yii::t('app/bills', 'Region name is required field'));
-        }
-        if (!isset($bill->dataArray['nameShort']) || !$bill->dataArray['nameShort']) {
-            $bill->addError('dataArray[nameShort]', Yii::t('app/bills', 'Region short name is required field'));
+        if (!isset($bill->dataArray['flag']) || !$bill->dataArray['flag']) {
+            $bill->addError('dataArray[flag]', Yii::t('app/bills', 'Flag is required field'));
+        } else if (!LinkHelper::isImageLink($bill->dataArray['flag'])) {
+            $bill->addError('dataArray[flag]', Yii::t('app/bills', 'Flag must be valid link to image'));
         }
         return !!count($bill->getErrors());
         

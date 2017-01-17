@@ -31,10 +31,10 @@ class RenameState implements BillProtoInterface
     public function validate($bill) : bool
     {
         if (!isset($bill->dataArray['name']) || !$bill->dataArray['name']) {
-            $bill->addError('dataArray[name]', Yii::t('app', 'State name is required field'));
+            $bill->addError('dataArray[name]', Yii::t('app/bills', 'State name is required field'));
         }
         if (!isset($bill->dataArray['nameShort']) || !$bill->dataArray['nameShort']) {
-            $bill->addError('dataArray[nameShort]', Yii::t('app', 'State short name is required field'));
+            $bill->addError('dataArray[nameShort]', Yii::t('app/bills', 'State short name is required field'));
         }
         return !!count($bill->getErrors());
     }

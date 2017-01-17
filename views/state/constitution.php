@@ -85,8 +85,16 @@ use yii\helpers\Html,
                                     <td><?=$post->constitution->getArticleByType(ConstitutionArticleType::TERMS_OF_OFFICE)->value?></td>
                                 </tr>
                                 <tr>
+                                    <th><?=Yii::t('app', 'Terms of elections')?></th>
+                                    <td><?=$post->constitution->getArticleByType(ConstitutionArticleType::TERMS_OF_ELECTION)->name?></td>
+                                </tr>
+                                <tr>
                                     <th><?=Yii::t('app', 'Bills powers')?></th>
                                     <td><?=$post->constitution->getArticleByType(ConstitutionArticleType::POWERS, Powers::BILLS)->name?></td>
+                                </tr>
+                                <tr>
+                                    <th><?=Yii::t('app', 'Parties powers')?></th>
+                                    <td><?=$post->constitution->getArticleByType(ConstitutionArticleType::POWERS, Powers::PARTIES)->name?></td>
                                 </tr>
                                 <?php endforeach ?>
                             </tbody>
