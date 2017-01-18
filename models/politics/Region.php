@@ -178,9 +178,17 @@ class Region extends ConstitutionOwner
         return $this->hasMany(City::className(), ['regionId' => 'id']);
     }
         
+    private $_pops = null;
     public function getPops()
     {
-        return $this->hasMany(Pop::className(), ['tileId' => 'id'])->via('tiles');
+//        return $this->hasMany(Pop::className(), ['tileId' => 'id'])->via('tiles'); // Так не работает пушо слишком много значений в IN (tileId)
+        if (is_null($this->_pops)) {
+            $this->_pops = [];
+            foreach ($this->tiles as $tile) {
+                $this->_pops = array_merge($this->_pops, $tile->pops);
+            }
+        }
+        return $this->_pops;
     }
     
     private function getPolygonFilePath()
@@ -226,6 +234,9 @@ class Region extends ConstitutionOwner
         
         $nations = [];
         $classes = [];
+        $this->agression = 0;
+        $this->consciousness = 0;
+        $this->contentment = 0;
         foreach ($this->pops as $pop) {
             if (isset($nations[$pop->nationId])) {
                 $nations[$pop->nationId] += $pop->count;
@@ -237,6 +248,15 @@ class Region extends ConstitutionOwner
             } else {
                 $classes[$pop->classId] = $pop->count;
             }
+            $this->agression += $pop->agression;
+            $this->consciousness += $pop->consciousness;
+            $this->contentment += $pop->contentment;
+        }
+        
+        if (count($this->pops)) {
+            $this->agression /= count($this->pops);
+            $this->consciousness /= count($this->pops);
+            $this->contentment /= count($this->pops);
         }
         
         foreach ($nations as $nationId => $count) {

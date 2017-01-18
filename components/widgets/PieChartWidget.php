@@ -20,11 +20,16 @@ class PieChartWidget extends Widget
 
     public function init()
     {
-        if (is_string($this->data)) {
-            $this->data = json_decode($this->data, true);
+        if ($this->data) {
+            if (is_string($this->data)) {
+                $this->data = json_decode($this->data, true);
+            }
+            uasort($this->data, function($a, $b) {return $b <=> $a;});
+            $this->numbers = implode(',', array_values($this->data));
+        } else {
+            $this->data = [];
+            $this->numbers = '';
         }
-        uasort($this->data, function($a, $b) {return $b <=> $a;});
-        $this->numbers = implode(',', array_values($this->data));
     }
     
     public function run()

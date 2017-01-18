@@ -27,6 +27,7 @@ class ImplodeRegions extends BillProto
         
         Tile::updateAll(['regionId' => $region1->id], ['regionId' => $region2->id]);
         City::updateAll(['regionId' => $region1->id], ['regionId' => $region2->id]);
+        $region2->implodedTo = $region1->id;
         $region2->delete();
         $region1->updateParams();
         return true;

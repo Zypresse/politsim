@@ -58,10 +58,9 @@ class TestController extends Controller
 //        }
 //        print_r($randCounts);
         
-        $post = AgencyPost::find()->one();
-        if (!$post->constitution->setArticleByType(ConstitutionArticleType::POWERS, Powers::BILLS, Bills::VOTE | Bills::CREATE | Bills::ACCEPT | Bills::VETO)) {
-            print_r($post->constitution->getErrors());
-        }
+        $region = Region::find()->where(['nameShort' => 'BY-MI'])->one();
+        echo $region->name.PHP_EOL;
+        var_dump($region->updateParams());
     }
     
     public function actionCreateElectionsObject()
