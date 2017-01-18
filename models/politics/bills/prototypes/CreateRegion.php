@@ -76,7 +76,7 @@ class CreateRegion extends BillProto
      */
     public function validate($bill): bool
     {
-        if (is_string($bill->dataArray['tiles'])) {
+        if (isset($bill->dataArray['tiles']) && is_string($bill->dataArray['tiles'])) {
             $bill->dataArray['tiles'] = explode(',', $bill->dataArray['tiles']);
         }
         

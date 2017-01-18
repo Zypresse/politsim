@@ -35,19 +35,37 @@ class RegionController extends MyController {
         ]);
     }
     
-    public function actionTiles(int $id)
+    public function actionTiles(int $id = null, $ids = null)
     {
-        $region = $this->getRegion($id);
+        
+        if (!$id && !$ids) {
+            return $this->_r(Yii::t('app', 'Invalid parametres'));
+        }
+        
+        if ($id) {
+            $ids = [$id];
+        } else {
+            $ids = explode(',', $ids);
+        }
+        
+        $regions = Region::find()->where(['in', 'id', $ids])->all();
+        if (!count($regions)) {
+            throw new NotFoundHttpException(Yii::t('app', 'Region not found'));
+        }
+        
         $this->result = [];
-        foreach ($region->tiles as $tile) {
-            $this->result[] = [
-                'id' => $tile->id,
-                'lat' => $tile->lat,
-                'lon' => $tile->lon,
-                'x' => $tile->x,
-                'y' => $tile->y,
-                'coords' => $tile->coords,
-            ];
+        foreach ($regions as $region) {
+            foreach ($region->tiles as $tile) {
+                $this->result[] = [
+                    'id' => $tile->id,
+                    'lat' => $tile->lat,
+                    'lon' => $tile->lon,
+                    'x' => $tile->x,
+                    'y' => $tile->y,
+                    'regionId' => $tile->regionId,
+                    'coords' => $tile->coords,
+                ];
+            }
         }
         
         return $this->_r();
