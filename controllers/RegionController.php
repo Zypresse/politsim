@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use Yii,
+    yii\web\NotFoundHttpException,
     app\components\MyController,
     app\models\politics\Region;
 
@@ -14,10 +15,7 @@ class RegionController extends MyController {
     public function actionIndex($id)
     {
         
-        $region = Region::findByPk($id);
-        if (is_null($region)) {
-            return $this->_r(Yii::t('app', 'Region not found'));
-        }
+        $region = $this->getRegion($id);
         
         return $this->render('view', [
             'region' => $region,
@@ -28,16 +26,40 @@ class RegionController extends MyController {
     public function actionConstitution($id)
     {
         
-        $region = Region::findByPk($id);
-        if (is_null($region)) {
-            return $this->_r(Yii::t('app', 'Region not found'));
-        }
+        $region = $this->getRegion($id);
         
         return $this->render('constitution', [
             'region' => $region,
             'constitution' => $region->constitution,
             'user' => $this->user
         ]);
+    }
+    
+    public function actionTiles(int $id)
+    {
+        $region = $this->getRegion($id);
+        $this->result = [];
+        foreach ($region->tiles as $tile) {
+            $this->result[] = [
+                'id' => $tile->id,
+                'lat' => $tile->lat,
+                'lon' => $tile->lon,
+                'x' => $tile->x,
+                'y' => $tile->y,
+                'coords' => $tile->coords,
+            ];
+        }
+        
+        return $this->_r();
+    }
+    
+    private function getRegion(int $id)
+    {
+        $region = Region::findByPk($id);
+        if (is_null($region)) {
+            throw new NotFoundHttpException(Yii::t('app', 'Region not found'));
+        }
+        return $region;
     }
     
 }

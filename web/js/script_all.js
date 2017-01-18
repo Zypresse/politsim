@@ -41,12 +41,14 @@ $(function () {
 
             VK.callMethod("resizeWindow", 1000, newheight);
         }, 500);
-    }
-    if (self.parent.frames.length === 0) {
+    } else {
         $('#account_settings_button').show();
     }
 })
 
+function roundd(x, n) {
+    return parseFloat(x.toFixed(n));
+}
 
 function number_format(number, decimals, dec_point, thousands_sep) {  // Format a number with grouped thousands
     // 
