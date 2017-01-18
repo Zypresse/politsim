@@ -84,6 +84,16 @@ abstract class BillProto implements BillProtoInterface
      * Изменить границу регионов
      */
     const CHANGE_REGIONS_BORDER = 15;
+    
+    /**
+     * Изменить столицу государства
+     */
+    const CHANGE_CAPITAL_STATE = 16;
+    
+    /**
+     * Изменить столицу региона
+     */
+    const CHANGE_CAPITAL_REGION = 17;
 
 
     public static function findAll()
@@ -104,6 +114,8 @@ abstract class BillProto implements BillProtoInterface
             static::CREATE_REGION => Yii::t('app/bills', 'Seduce new region'),
             static::IMPLODE_REGIONS => Yii::t('app/bills', 'Implode regions'),
             static::CHANGE_REGIONS_BORDER => Yii::t('app/bills', 'Change regions border'),
+            static::CHANGE_CAPITAL_STATE => Yii::t('app/bills', 'Change state capital'),
+            static::CHANGE_CAPITAL_REGION => Yii::t('app/bills', 'Change region capital'),
         ];
     }
     
@@ -130,6 +142,8 @@ abstract class BillProto implements BillProtoInterface
             static::CREATE_REGION => 'CreateRegion',
             static::IMPLODE_REGIONS => 'ImplodeRegions',
             static::CHANGE_REGIONS_BORDER => 'ChangeRegionsBorder',
+            static::CHANGE_CAPITAL_STATE => 'ChangeCapitalState',
+            static::CHANGE_CAPITAL_REGION => 'ChangeCapitalRegion',
         ];
         
         return '\\app\\models\\politics\\bills\\prototypes\\'.$classes[$type];
@@ -158,6 +172,8 @@ abstract class BillProto implements BillProtoInterface
             static::CREATE_REGION => 'create-region',
             static::IMPLODE_REGIONS => 'implode-regions',
             static::CHANGE_REGIONS_BORDER => 'change-regions-border',
+            static::CHANGE_CAPITAL_STATE => 'change-capital-state',
+            static::CHANGE_CAPITAL_REGION => 'change-capital-region',
         ];
         
         return '/work/bills/'.$views[$type];
@@ -175,6 +191,7 @@ abstract class BillProto implements BillProtoInterface
             case static::CREATE_REGION:
             case static::IMPLODE_REGIONS:
             case static::CHANGE_REGIONS_BORDER:
+            case static::CHANGE_CAPITAL_REGION:
                 return Yii::t('app', 'Regions');
             case static::RENAME_CITY:
             case static::CHANGE_FLAG_CITY:

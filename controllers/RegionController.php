@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use Yii,
     yii\web\NotFoundHttpException,
+    yii\helpers\Html,
     app\components\MyController,
     app\models\politics\Region;
 
@@ -89,6 +90,20 @@ class RegionController extends MyController {
         return $this->_r();
     }
     
+    public function actionCities(int $id)
+    {
+        $region = $this->getRegion($id);
+        $this->result = [];
+        foreach ($region->cities as $city) {
+            $this->result[] = [
+                'id' => $city->id,
+                'name' => Html::encode($city->name),
+            ];
+        };
+        return $this->_r();
+    }
+
+
     private function getRegion(int $id)
     {
         $region = Region::findByPk($id);
