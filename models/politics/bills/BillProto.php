@@ -75,6 +75,11 @@ abstract class BillProto implements BillProtoInterface
      */
     const CREATE_REGION = 13;
     
+    /**
+     * Включить один регион в состав другого
+     */
+    const IMPLODE_REGIONS = 14;
+    
     public static function findAll()
     {
         return [
@@ -91,6 +96,7 @@ abstract class BillProto implements BillProtoInterface
             static::CHANGE_ANTHEM_CITY => Yii::t('app/bills', 'Change city anthem'),
             static::PARTIES_POLITIC => Yii::t('app/bills', 'Change parties politic'),
             static::CREATE_REGION => Yii::t('app/bills', 'Seduce new region'),
+            static::IMPLODE_REGIONS => Yii::t('app/bills', 'Implode regions'),
         ];
     }
     
@@ -115,6 +121,7 @@ abstract class BillProto implements BillProtoInterface
             static::CHANGE_ANTHEM_CITY => 'ChangeAnthemCity',
             static::PARTIES_POLITIC => 'PartiesPolitic',
             static::CREATE_REGION => 'CreateRegion',
+            static::IMPLODE_REGIONS => 'ImplodeRegions',
         ];
         
         return '\\app\\models\\politics\\bills\\prototypes\\'.$classes[$type];
@@ -141,6 +148,7 @@ abstract class BillProto implements BillProtoInterface
             static::CHANGE_ANTHEM_CITY => 'change-anthem-city',
             static::PARTIES_POLITIC => 'parties-politic',
             static::CREATE_REGION => 'create-region',
+            static::IMPLODE_REGIONS => 'implode-regions',
         ];
         
         return '/work/bills/'.$views[$type];
@@ -156,6 +164,7 @@ abstract class BillProto implements BillProtoInterface
             case static::CHANGE_FLAG_REGION:
             case static::CHANGE_ANTHEM_REGION:
             case static::CREATE_REGION:
+            case static::IMPLODE_REGIONS:
                 return Yii::t('app', 'Regions');
             case static::RENAME_CITY:
             case static::CHANGE_FLAG_CITY:

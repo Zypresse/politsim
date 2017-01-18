@@ -165,7 +165,7 @@ class State extends ConstitutionOwner
         
     public function getRegions()
     {
-        return $this->hasMany(Region::classname(), ['stateId' => 'id']);
+        return $this->hasMany(Region::classname(), ['stateId' => 'id'])->where(['dateDeleted' => null]);
     }
         
     public function getDistricts()

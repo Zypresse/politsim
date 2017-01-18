@@ -3,6 +3,7 @@
 namespace app\models\politics;
 
 use Yii,
+    yii\behaviors\TimestampBehavior,
     app\models\economics\UtrType,
     app\models\politics\constitution\Constitution,
     app\models\politics\constitution\ConstitutionOwner,
@@ -23,6 +24,18 @@ use Yii,
  * @property string $flag
  * @property string $anthem
  * @property integer $population
+ * @property string $classes
+ * @property string $nations
+ * @property string $ideologies
+ * @property string $religions
+ * @property string $genders
+ * @property string $ages
+ * @property double $contentment
+ * @property double $agression
+ * @property double $consciousness
+ * @property integer $dateCreated
+ * @property integer $dateDeleted
+ * @property integer $implodedTo
  * @property integer $usersCount
  * @property integer $usersFame
  * @property integer $utr
@@ -36,6 +49,7 @@ use Yii,
  * @property Tile[] $tiles
  * @property Pop[] $pops
  * @property Constitution $constitution
+ * @property Region $implodedToRegion
  * 
  */
 class Region extends ConstitutionOwner
@@ -52,14 +66,32 @@ class Region extends ConstitutionOwner
     /**
      * @inheritdoc
      */
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::className(),
+                'createdAtAttribute' => 'dateCreated',
+                'updatedAtAttribute' => false,
+            ],
+        ];
+    }
+    
+    /**
+     * @inheritdoc
+     */
     public function rules()
     {
         return [
             [['name', 'nameShort'], 'required'],
             [['name'], 'string', 'max' => 255],
             [['nameShort'], 'string', 'max' => 6],
-            [['flag', 'anthem'], 'string'],
-            [['stateId', 'cityId', 'population', 'usersCount', 'usersFame', 'utr'], 'integer', 'min' => 0],
+            [['flag', 'anthem', 'classes', 'nations', 'ideologies', 'religions', 'genders', 'ages'], 'string'],
+            [['stateId', 'cityId', 'population', 'usersCount', 'usersFame', 'dateCreated', 'dateDeleted', 'implodedTo', 'utr'], 'integer', 'min' => 0],
+            [['contentment', 'agression', 'consciousness'], 'number'],
+            [['stateId'], 'exist', 'skipOnError' => true, 'targetClass' => State::className(), 'targetAttribute' => ['stateId' => 'id']],
+            [['cityId'], 'exist', 'skipOnError' => true, 'targetClass' => City::className(), 'targetAttribute' => ['cityId' => 'id']],
+            [['implodedTo'], 'exist', 'skipOnError' => true, 'targetClass' => Region::className(), 'targetAttribute' => ['implodedTo' => 'id']],
             [['anthem'], 'validateAnthem'],
             [['flag'], 'validateFlag'],
         ];
@@ -180,12 +212,7 @@ class Region extends ConstitutionOwner
     public function updateParams($save = true, $polygon = true)
     {
         
-        if (!$this->constitution) {
-            $constitution = RegionConstitution::generate();
-            $constitution->regionId = $this->id;
-            $constitution->save();
-            $this->refresh();
-        }
+        $this->refresh();
                 
         $this->population = 0;
         foreach ($this->tiles as $tile) {
@@ -228,6 +255,12 @@ class Region extends ConstitutionOwner
         if ($save) {
             return $this->save();
         }
+    }
+    
+    public function delete()
+    {
+        $this->dateDeleted = time();
+        return $this->save();
     }
 
     public static function getConstitutionOwnerType(): int

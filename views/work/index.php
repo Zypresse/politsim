@@ -128,6 +128,7 @@ use yii\helpers\Html,
 </section>
 <script type="text/javascript">
     $('.new-bill-btn').click(function(){
+        $('#work-new-bill-form-modal .modal-dialog').removeClass('modal-lg');
         createAjaxModal(
             'work/new-bill-form',
             {postId:$(this).data('postId')},

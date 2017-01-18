@@ -150,9 +150,11 @@ $form = new ActiveForm();
     }
 
     function resetHighlight(e) {
-        e.target.setStyle({
-            fillOpacity: 0.3
-        });
+        if (!e.target.isSelected) {
+            e.target.setStyle({
+                fillOpacity: 0.3
+            });
+        }
     }
     
     function clickFeature(e) {
@@ -258,7 +260,6 @@ $form = new ActiveForm();
                 }
                 tiles.push(renderTile(tile.id, tile.x, tile.y, tile.coords));
             }
-            console.log([[minLat-1, minLon-1], [maxLat+1, maxLon+1]]);
             map.fitBounds([[minLat-1, minLon-1], [maxLat+1, maxLon+1]]);
         });
     }

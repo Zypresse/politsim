@@ -37,6 +37,20 @@ class CreateRegion extends BillProto
         $region->updateParams();
         
         $oldRegion = Region::findByPk($bill->dataArray['regionId']);
+        
+        foreach ($oldRegion->cities as $city) {
+            $allTilesInNew = true;
+            foreach ($city->tiles as $tile) {
+                if ($tile->regionId != $region->id) {
+                    $allTilesInNew = false;
+                    break;
+                }
+            }
+            if ($allTilesInNew) {
+                $city->link('region', $region);
+            }
+        }
+        
         $oldRegion->updateParams();
         
         return true;

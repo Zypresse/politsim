@@ -53,6 +53,24 @@ class RegionController extends MyController {
         return $this->_r();
     }
     
+    public function actionPolygons($ids)
+    {
+        list($id1, $id2) = explode(',', $ids);
+        $region1 = $this->getRegion($id1);
+        $region2 = $this->getRegion($id2);
+        $this->result = [
+            [
+                'id' => $region1->id,
+                'coords' => json_decode($region1->polygon),
+            ],
+            [
+                'id' => $region2->id,
+                'coords' => json_decode($region2->polygon),
+            ],
+        ];
+        return $this->_r();
+    }
+    
     private function getRegion(int $id)
     {
         $region = Region::findByPk($id);
