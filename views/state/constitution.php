@@ -51,6 +51,10 @@ use yii\helpers\Html,
                                     <td><?=$state->constitution->getArticleByType(ConstitutionArticleType::PARTIES)->name?></td>
                                 </tr>
                                 <tr>
+                                    <th><?=Yii::t('app', 'Allow more than one party membership to user')?></th>
+                                    <td><?=$state->constitution->getArticleByType(ConstitutionArticleType::MULTIMEMBERSHIP)->name?></td>
+                                </tr>
+                                <tr>
                                     <th><?=Yii::t('app', 'Bills voting terms')?></th>
                                     <td><?=MyHtmlHelper::formateNumberword($state->constitution->getArticleByType(ConstitutionArticleType::BILLS)->value, 'часов', 'час', 'часа')?></td>
                                 </tr>

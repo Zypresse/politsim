@@ -245,7 +245,7 @@ class User extends TaxPayerModel implements IdentityInterface
             ->via('memberships')
             ->where(['is not', 'dateConfirmed', null]);
     }
-    
+        
     public function getStates()
     {
         return $this->hasMany(State::className(), ['id' => 'stateId'])

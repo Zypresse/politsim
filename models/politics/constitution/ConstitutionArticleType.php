@@ -47,6 +47,11 @@ abstract class ConstitutionArticleType
      * Настройки законопроектов государства
      */
     const BILLS = 8;
+    
+    /**
+     * Можно ли одному юзеру состоять в нескольких партиях
+     */
+    const MULTIMEMBERSHIP = 9;
         
     /**
      * 
@@ -64,6 +69,7 @@ abstract class ConstitutionArticleType
             static::PARTIES => 'statesonly\\Parties',
             static::POWERS => 'postsonly\\Powers',
             static::BILLS => 'statesonly\\Bills',
+            static::MULTIMEMBERSHIP => 'statesonly\\Multimembership',
         ];
         
         return '\\app\\models\\politics\\constitution\\articles\\'.$classes[$type];

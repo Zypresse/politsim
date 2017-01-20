@@ -6,7 +6,10 @@ use Yii,
     app\components\MyController,
     app\models\politics\Party,
     app\models\politics\PartyPost,
-    app\models\politics\Membership;
+    app\models\politics\Membership,
+    app\models\politics\constitution\ConstitutionArticleType,
+    app\models\politics\constitution\articles\statesonly\Multimembership,
+    app\components\LinkCreator;
 
 /**
  * 
@@ -32,6 +35,20 @@ class MembershipController extends MyController
         
         if ($party->joiningRules == Party::JOINING_RULES_PRIVATE) {
             return $this->_r(Yii::t('app', 'Access denied'));
+        }
+        
+        /* @var $article Multimembership */
+        $article = $party->state->constitution->getArticleByType(ConstitutionArticleType::MULTIMEMBERSHIP);
+        if (!$article->value) {
+            $memberships = $this->user->getApprovedMemberships()->with('party')->all();
+            foreach ($memberships as $membership) {
+                if ($membership->party->stateId != $party->stateId) {
+                    continue;
+                }
+                if ($membership->party->isConfirmed && !$membership->party->isDeleted) {
+                    return $this->_r(Yii::t('app', 'You allready have membership of party {0}', [LinkCreator::partyLink($membership->party)]));
+                }
+            }
         }
         
         $membership = new Membership([
@@ -85,6 +102,20 @@ class MembershipController extends MyController
         
         if (!$userPost || !($userPost->powers & PartyPost::POWER_APPROVE_REQUESTS)) {
             return $this->_r(Yii::t('app', 'Access denied'));            
+        }
+        
+        /* @var $article Multimembership */
+        $article = $party->state->constitution->getArticleByType(ConstitutionArticleType::MULTIMEMBERSHIP);
+        if (!$article->value) {
+            $memberships = $this->user->getApprovedMemberships()->with('party')->all();
+            foreach ($memberships as $membership) {
+                if ($membership->party->stateId != $party->stateId) {
+                    continue;
+                }
+                if ($membership->party->isConfirmed && !$membership->party->isDeleted) {
+                    return $this->_r(Yii::t('app', 'You allready have membership of party {0}', [LinkCreator::partyLink($membership->party)]));
+                }
+            }
         }
         
         /* @var $membership Membership */
