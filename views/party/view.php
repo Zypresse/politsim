@@ -65,11 +65,16 @@ if ($isHaveMembership) {
                     </h1>
                 </div>
                 <div class="box-body">
-                    <?php if ($party->dateDeleted): ?>
+                    <?php if ($party->isDeleted): ?>
                     <div class="callout callout-danger">
                         <h4><i class="icon fa fa-ban"></i> <?=Yii::t('app', 'Party deleted!')?></h4>
 
                         <p><?=Yii::t('app', 'This party has been deleted')?> <?=MyHtmlHelper::timeAutoFormat($party->dateDeleted)?></p>
+                    </div>
+                    <?php elseif (!$party->isConfirmed): ?>
+                    <div class="callout callout-warning">
+                        <h4><i class="icon fa fa-warning"></i> <?=Yii::t('app', 'Party registration not confirmed!')?></h4>
+                        <p><?=Yii::t('app', 'This party has not approved by goverment')?></p>
                     </div>
                     <?php endif ?>
                     <div class="row">

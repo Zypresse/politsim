@@ -39,7 +39,7 @@ $form = new ActiveForm();
 <div class="form-group">
     <label><?=Yii::t('app', 'Select instrument:')?></label>
     <div class="btn-group">
-        <?=Html::button(Yii::t('app', 'Paint first region by click'), ['class' => 'btn btn-default btn-xs instrument btn-danger', 'data-instrument' => 'paint-click'])?>
+        <?=Html::button(Yii::t('app', 'Paint first region by click'), ['class' => 'btn btn-default btn-xs instrument btn-danger active', 'data-instrument' => 'paint-click'])?>
         <?=Html::button(Yii::t('app', 'Paint first region by mouseover'), ['class' => 'btn btn-default btn-xs instrument btn-danger', 'data-instrument' => 'paint-over'])?>
         <?=Html::button(Yii::t('app', 'Paint second region by click'), ['class' => 'btn btn-default btn-xs instrument btn-primary', 'data-instrument' => 'clear-click'])?>
         <?=Html::button(Yii::t('app', 'Paint second region by mouseover'), ['class' => 'btn btn-default btn-xs instrument btn-primary', 'data-instrument' => 'clear-over'])?>

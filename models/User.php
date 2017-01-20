@@ -242,7 +242,8 @@ class User extends TaxPayerModel implements IdentityInterface
     public function getParties()
     {
         return $this->hasMany(Party::className(), ['id' => 'partyId'])
-            ->via('memberships');
+            ->via('memberships')
+            ->where(['is not', 'dateConfirmed', null]);
     }
     
     public function getStates()

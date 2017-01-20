@@ -48,6 +48,7 @@ use Yii,
  * @property AgencyPost[] $posts
  * @property AgencyPost $leaderPost
  * @property Party[] $parties
+ * @property Party[] $partiesUnconfirmed
  * @property Constitution $constitution
  * @property Tile[] $tiles
  * @property Pop[] $pops
@@ -191,7 +192,15 @@ class State extends ConstitutionOwner
     
     public function getParties()
     {
-        return $this->hasMany(Party::className(), ['stateId' => 'id'])->where(['dateDeleted' => null]);
+        return $this->hasMany(Party::className(), ['stateId' => 'id'])
+                ->where(['dateDeleted' => null])
+                ->andWhere(['is not', 'dateConfirmed', null]);
+    }
+    
+    public function getPartiesUnconfirmed()
+    {
+        return $this->hasMany(Party::className(), ['stateId' => 'id'])
+                ->where(['dateDeleted' => null, 'dateConfirmed' => null]);
     }
     
     public function getTiles()

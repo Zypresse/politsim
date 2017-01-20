@@ -6,7 +6,8 @@ use yii\helpers\Html,
 
 /* @var $this \yii\web\View */
 /* @var $user \app\models\User */
-/* @var $parties \app\models\politics\Party[] */
+/* @var $approved \app\models\politics\Membership[] */
+/* @var $requested \app\models\politics\Membership[] */
 
 ?>
 <section class="content-header">
@@ -31,7 +32,8 @@ use yii\helpers\Html,
                             <thead>
                                 <tr>
                                     <th><?=Yii::t('app', 'Party')?></th>
-                                    <th><?=Yii::t('app', 'Date approved')?></th>
+                                    <th><?=Yii::t('app', 'Status')?></th>
+                                    <th><?=Yii::t('app', 'Date joining')?></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -39,6 +41,15 @@ use yii\helpers\Html,
                                 <tr>
                                     <td>
                                         <?=LinkCreator::partyLink($membership->party)?>
+                                    </td>
+                                    <td>
+                                    <?php if ($membership->party->isDeleted): ?>
+                                        <span title="<?=Yii::t('app', 'Party deleted')?>" class="badge bg-red"><i class="fa fa-ban"></i></span>
+                                    <?php elseif (!$membership->party->isConfirmed): ?>
+                                        <span title="<?=Yii::t('app', 'Party not confirmed')?>" class="badge bg-orange"><i class="fa fa-warning"></i></span>
+                                    <?php else: ?>
+                                        <span title="<?=Yii::t('app', 'Party active')?>" class="badge bg-green"><i class="fa fa-check"></i></span>
+                                    <?php endif ?>
                                     </td>
                                     <td>
                                         <?=MyHtmlHelper::timeAutoFormat($membership->dateApproved)?>

@@ -10,14 +10,31 @@ use Yii,
     app\models\politics\State,
     app\models\politics\constitution\ConstitutionArticleType,
     app\models\politics\constitution\articles\statesonly\Parties,
+    app\models\politics\constitution\articles\postsonly\Powers,
+    app\models\politics\constitution\articles\postsonly\powers\Parties as PowersParties,
+    app\models\politics\AgencyPost,
     yii\web\Response,
-    yii\widgets\ActiveForm;
+    yii\widgets\ActiveForm,
+    yii\filters\VerbFilter;
 
 /**
  * 
  */
 class PartyController extends MyController
 {
+    
+    public function behaviors()
+    {
+        return [
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'confirm'  => ['post'],
+                    'revoke'  => ['post'],
+                ],
+            ],
+        ];
+    }
     
     public function actionIndex($id)
     {
@@ -85,9 +102,6 @@ class PartyController extends MyController
             }
             
             $autoConfirm = !($article->value == Parties::NEED_CONFIRM);
-            if (!$autoConfirm) {
-                // TODO: подтверждение регистрации
-            }
             
             $transaction = Yii::$app->db->beginTransaction();
             if ($model->createNew($this->user, $autoConfirm)) {
@@ -113,9 +127,9 @@ class PartyController extends MyController
             if (!$state->isPartiesCreatingAllowed) {
                 return $this->_r(Yii::t('app', 'Not allowed'));
             }
+            
+            $model->stateId = $state->id;
         }
-
-        $model->stateId = $state->id;
         
         if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
             Yii::$app->response->format = Response::FORMAT_JSON;
@@ -471,6 +485,82 @@ class PartyController extends MyController
             'model' => $model,
             'user' => $this->user
         ]);
+    }
+    
+    public function actionConfirm()
+    {
+        $postId = (int) Yii::$app->request->post('postId');
+        $partyId = (int) Yii::$app->request->post('partyId');
+        
+        if (!$postId || !$partyId) {
+            return $this->_r(Yii::t('app', 'Invalid params'));
+        }
+        
+        $party = Party::findByPk($partyId);
+        if (is_null($party)) {
+            return $this->_r(Yii::t('app', "Party not found"));
+        }
+        
+        $post = AgencyPost::findByPk($postId);
+        if (is_null($post)) {
+            return $this->_r(Yii::t('app', "Agency post not found"));
+        }
+        
+        if ($party->stateId != $post->stateId) {
+            return $this->_r(Yii::t('app', "Not allowed"));
+        }
+        
+        /* @var $article PowersParties */
+        $article = $post->constitution->getArticleByType(ConstitutionArticleType::POWERS, Powers::PARTIES);
+        if (!$article->isSelected(PowersParties::ACCEPT)) {
+            return $this->_r(Yii::t('app', "Not allowed"));
+        }
+        
+        if ($party->isConfirmed) {
+            return $this->_r(Yii::t('app', "Party already registered"));
+        }
+        
+        $party->confirm();
+        return $this->_rOk();
+        
+    }
+    
+    public function actionRevoke()
+    {
+        $postId = (int) Yii::$app->request->post('postId');
+        $partyId = (int) Yii::$app->request->post('partyId');
+        
+        if (!$postId || !$partyId) {
+            return $this->_r(Yii::t('app', 'Invalid params'));
+        }
+        
+        $party = Party::findByPk($partyId);
+        if (is_null($party)) {
+            return $this->_r(Yii::t('app', "Party not found"));
+        }
+        
+        $post = AgencyPost::findByPk($postId);
+        if (is_null($post)) {
+            return $this->_r(Yii::t('app', "Agency post not found"));
+        }
+        
+        if ($party->stateId != $post->stateId) {
+            return $this->_r(Yii::t('app', "Not allowed"));
+        }
+        
+        /* @var $article PowersParties */
+        $article = $post->constitution->getArticleByType(ConstitutionArticleType::POWERS, Powers::PARTIES);
+        if (!$article->isSelected(PowersParties::REVOKE)) {
+            return $this->_r(Yii::t('app', "Not allowed"));
+        }
+        
+        if ($party->isDeleted) {
+            return $this->_r(Yii::t('app', "Party already deleted"));
+        }
+        
+        $party->delete();
+        return $this->_rOk();
+        
     }
     
 }

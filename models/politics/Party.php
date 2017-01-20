@@ -30,6 +30,7 @@ use Yii,
  * @property integer $joiningRules
  * @property integer $listCreationRules
  * @property integer $dateCreated
+ * @property integer $dateConfirmed
  * @property integer $dateDeleted
  * @property integer $utr
  * 
@@ -39,6 +40,9 @@ use Yii,
  * @property PartyList[] $lists
  * @property Ideology $ideology
  * @property User[] $members
+ * 
+ * @property boolean $isConfirmed
+ * @property boolean $isDeleted
  * 
  */
 class Party extends TaxPayerModel
@@ -90,7 +94,7 @@ class Party extends TaxPayerModel
             [['name'], 'string', 'max' => 255],
             [['nameShort'], 'string', 'max' => 6],
             [['flag', 'anthem', 'text', 'textHTML'], 'string'],
-            [['stateId', 'ideologyId', 'leaderPostId', 'joiningRules', 'listCreationRules', 'membersCount', 'dateCreated', 'dateDeleted', 'utr'], 'integer', 'min' => 0],
+            [['stateId', 'ideologyId', 'leaderPostId', 'joiningRules', 'listCreationRules', 'membersCount', 'dateCreated', 'dateConfirmed', 'dateDeleted', 'utr'], 'integer', 'min' => 0],
             [['fame', 'trust', 'success'], 'integer'],
             [['anthem'], 'validateAnthem'],
             [['flag'], 'validateFlag'],
@@ -287,7 +291,9 @@ class Party extends TaxPayerModel
      */
     public function createNew(User $creator, bool $autoConfirm = true)
     {
-        // TODO: автоподтверждение
+        if ($autoConfirm) {
+            $this->confirm(false);
+        }
         
         if ($this->save()) {
         
@@ -325,6 +331,36 @@ class Party extends TaxPayerModel
         }
         
         return false;
+    }
+    
+    public function getIsConfirmed() : bool
+    {
+        return !is_null($this->dateConfirmed);
+    }
+    
+    public function getIsDeleted() : bool
+    {
+        return !is_null($this->dateDeleted);
+    }
+    
+    /**
+     * 
+     * @param boolean $save
+     * @return boolean
+     */
+    public function confirm($save = true) : bool
+    {
+        $this->dateConfirmed = time();
+        if ($save) {
+            return $this->save();
+        }
+        return false;
+    }
+    
+    public function delete() : bool
+    {
+        $this->dateDeleted = time();
+        return $this->save();
     }
     
 }
