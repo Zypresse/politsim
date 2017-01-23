@@ -277,6 +277,7 @@ abstract class ElectionManager
                 case ElectionWhomType::POST:
                     $election->whom->userId = $winner->objectId;
                     $election->whom->save();
+                    Yii::$app->notificator->winnedPostElections($winner->objectId, $election->whom);
                     static::createPostElection($election->whom);
                     break;
             }

@@ -21,4 +21,6 @@ return [
     'Your party post deleted' => 'Партийный пост удалён',
     'You are registered for elections to post {0} in state {1}' => 'Вы были успешно зарегистрированы на выборы на должность «{0}» в стране {1}',
     'You are registered for elections' => 'Регистрация на выборах',
+    'You win elections to post {0} in state {1}' => 'Вы выиграли выборы и заняли должность «{0}» в государстве {1}',
+    'You win elections' => 'Вы выиграли выборы',
 ];

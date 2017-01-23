@@ -214,4 +214,18 @@ class Notificator extends Component
         ], $readed);
     }
     
+    /**
+     * Вы выиграли выборы на пост
+     * @param integer $userId
+     * @param AgencyPost $post
+     * @param boolean $readed
+     * @return boolean
+     */
+    public function winnedPostElections(int $userId, AgencyPost $post, $readed = false)
+    {
+        return $this->notify($userId, NotificationProto::WINNED_POST_ELECTION, [
+            Html::encode($post->name),
+            LinkCreator::stateLink($post->state),
+        ], $readed);
+    }
 }

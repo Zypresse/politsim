@@ -19,6 +19,7 @@ class NotificationProto extends ObjectWithFixedPrototypes
     const SETTED_AS_SUCCESSOR_TO_PARTY_POST = 8;
     const DELETED_PARTY_POST = 9;
     const REGISTERED_FOR_POST_ELECTIONS = 10;
+    const WINNED_POST_ELECTION = 11;
     
     public $id;
     public $text;
@@ -103,6 +104,13 @@ class NotificationProto extends ObjectWithFixedPrototypes
                 'id' => static::REGISTERED_FOR_POST_ELECTIONS,
                 'text' => 'You are registered for elections to post {0} in state {1}',
                 'textShort' => 'You are registered for elections',
+                'icon' => '<i class="fa fa-university text-green"></i>',
+                'iconBg' => '<i class="fa fa-university bg-green"></i>',
+            ],
+            [
+                'id' => static::WINNED_POST_ELECTION,
+                'text' => 'You win elections to post {0} in state {1}',
+                'textShort' => 'You win elections',
                 'icon' => '<i class="fa fa-university text-green"></i>',
                 'iconBg' => '<i class="fa fa-university bg-green"></i>',
             ],
