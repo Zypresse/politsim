@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models\politics\bills\prototypes;
+namespace app\models\politics\bills\prototypes\constitution;
 
 use Yii,
     app\models\politics\bills\BillProto,

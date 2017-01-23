@@ -15,6 +15,8 @@ use Yii,
 class Currency extends DropdownArticle
 {
     
+    use \app\models\politics\constitution\articles\base\NoSubtypesArticle;
+    
     public function rules()
     {
         $rules = parent::rules();

@@ -34,13 +34,6 @@ use yii\helpers\Html,
                                 <td><strong><i class="fa fa-flag"></i> <?=Yii::t('app', 'State')?></strong></td>
                                 <td><?=LinkCreator::stateLink($agency->state)?></td>
                             </tr>
-                            <tr>
-                                <td colspan="2">
-                                    <div class="btn-group text-center">
-                                        <a href="#!state/constitution&agencyId=<?=$agency->id?>" class="btn btn-info"><i class="fa fa-list-alt"></i> <?=Yii::t('app', 'Look constitution')?></a>
-                                    </div>
-                                </td>
-                            </tr>
                         </tbody>
                     </table>
                 </div>

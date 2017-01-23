@@ -94,6 +94,11 @@ abstract class BillProto implements BillProtoInterface
      * Изменить столицу региона
      */
     const CHANGE_CAPITAL_REGION = 17;
+    
+    /**
+     * Изменить разрешение юзерам занимать несколько должностей
+     */
+    const MULTIPOST_POLITIC = 18;
 
 
     public static function findAll()
@@ -116,6 +121,7 @@ abstract class BillProto implements BillProtoInterface
             static::CHANGE_REGIONS_BORDER => Yii::t('app/bills', 'Change regions border'),
             static::CHANGE_CAPITAL_STATE => Yii::t('app/bills', 'Change state capital'),
             static::CHANGE_CAPITAL_REGION => Yii::t('app/bills', 'Change region capital'),
+            static::MULTIPOST_POLITIC => Yii::t('app/bliis', 'Allow/disallow more than one agency post to user'),
         ];
     }
     
@@ -138,12 +144,13 @@ abstract class BillProto implements BillProtoInterface
             static::CHANGE_ANTHEM_STATE => 'ChangeAnthemState',
             static::CHANGE_ANTHEM_REGION => 'ChangeAnthemRegion',
             static::CHANGE_ANTHEM_CITY => 'ChangeAnthemCity',
-            static::PARTIES_POLITIC => 'PartiesPolitic',
+            static::PARTIES_POLITIC => 'constitution\\PartiesPolitic',
             static::CREATE_REGION => 'CreateRegion',
             static::IMPLODE_REGIONS => 'ImplodeRegions',
             static::CHANGE_REGIONS_BORDER => 'ChangeRegionsBorder',
             static::CHANGE_CAPITAL_STATE => 'ChangeCapitalState',
             static::CHANGE_CAPITAL_REGION => 'ChangeCapitalRegion',
+            static::MULTIPOST_POLITIC => 'constitution\\MultipostPolitic',
         ];
         
         return '\\app\\models\\politics\\bills\\prototypes\\'.$classes[$type];
@@ -174,6 +181,7 @@ abstract class BillProto implements BillProtoInterface
             static::CHANGE_REGIONS_BORDER => 'change-regions-border',
             static::CHANGE_CAPITAL_STATE => 'change-capital-state',
             static::CHANGE_CAPITAL_REGION => 'change-capital-region',
+            static::MULTIPOST_POLITIC => 'multipost-politic',
         ];
         
         return '/work/bills/'.$views[$type];
@@ -197,6 +205,9 @@ abstract class BillProto implements BillProtoInterface
             case static::CHANGE_FLAG_CITY:
             case static::CHANGE_ANTHEM_CITY:
                 return Yii::t('app', 'Cities');
+            case static::PARTIES_POLITIC:
+            case static::MULTIPOST_POLITIC:
+                return Yii::t('app', 'Constitution');
             default:
                 return Yii::t('app', 'Basic bill types');
         }
