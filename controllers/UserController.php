@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use Yii,
     app\components\MyController,
+    app\components\LinkCreator,
     app\models\User,
     app\models\Ideology,
     app\models\Religion;
@@ -75,5 +76,43 @@ class UserController extends MyController
         $this->user->save();
         
         return $this->_rOk();
+    }
+    
+    public function actionFind($name, $stateId = null)
+    {
+        $query = User::find()
+                ->filterWhere(['like', 'name', $name]);
+        
+        if ($stateId) {
+            $query = $query->joinWith('citizenships')
+                    ->andWhere(['citizenships.stateId' => $stateId])
+                    ->andWhere(['IS NOT', 'citizenships.stateId', NULL]);
+        }
+        
+        $models = $query->all();
+        $this->result = [];
+        /* @var User $model */
+        foreach ($models as $model) {
+            $this->result[] = [
+                'id' => $model->id,
+                'name' => LinkCreator::userLink($model),
+                'fame' => $model->fame,
+                'trust' => $model->trust,
+                'success' => $model->success,
+            ];
+        }
+        
+        return $this->_r();
+    }
+    
+    public function actionInfo(int $id)
+    {
+        $user = User::findByPk($id);
+        if (is_null($user)) {
+            return $this->_r(Yii::t('app', "User not found"));
+        }
+        
+        $this->result = $user->getPublicAttributes();
+        return $this->_r();
     }
 }

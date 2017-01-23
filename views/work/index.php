@@ -62,6 +62,12 @@ use yii\helpers\Html,
                                     'powersParties' => $powersParties,
                                 ])?>
                             <?php endif ?>
+                            <?php if (count($post->postsDestignated)): ?>
+                                <?=$this->render('boxes/destignate', [
+                                    'post' => $post,
+                                    'postsDestignated' => $post->postsDestignated,
+                                ])?>
+                            <?php endif ?>
                         </div>
                     </div>
                 </div>

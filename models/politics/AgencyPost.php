@@ -33,6 +33,8 @@ use Yii,
  * @property Constitution $constitution
  * @property ConstitutionArticle[] $articles
  * 
+ * @property AgencyPost[] $postsDestignated
+ * 
  */
 class AgencyPost extends ElectionOwner
 {
@@ -97,6 +99,24 @@ class AgencyPost extends ElectionOwner
         return $this->hasMany(Election::className(), ['whomId' => 'id'])->where(['whomType' => elections\ElectionWhomType::POST]);
     }
     
+    private $_postsDestignated = null;
+    public function getPostsDestignated()
+    {
+        if (is_null($this->_postsDestignated)) {
+            $articles = ConstitutionArticle::find()
+                    ->where(['ownerType' => ConstitutionOwnerType::POST])
+                    ->andWhere(['value' => DestignationType::BY_OTHER_POST, 'value2' => $this->id])
+                    ->with('owner')
+                    ->with('owner.user')
+                    ->all();
+            $this->_postsDestignated = [];
+            foreach ($articles as $article) {
+                $this->_postsDestignated[] = $article->owner;
+            }
+        }
+        return $this->_postsDestignated;
+    }
+    
     /**
      * 
      * @return Election
@@ -158,6 +178,23 @@ class AgencyPost extends ElectionOwner
     public static function getConstitutionOwnerType(): int
     {
         return ConstitutionOwnerType::POST;
+    }
+    
+    public function removeUser()
+    {
+        // TODO: notification
+        $this->userId = null;
+        return $this->save();
+    }
+    
+    public function destignate(User $user)
+    {
+        if ($this->user) {
+            $this->removeUser();
+        }
+        // TODO: notification
+        $this->userId = $user->id;
+        return $this->save();
     }
 
 }

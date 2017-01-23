@@ -4,11 +4,15 @@ namespace app\controllers;
 
 use Yii,
     yii\web\NotFoundHttpException,
+    app\models\User,
     app\models\politics\AgencyPost,
     app\models\politics\bills\Bill,
     app\models\politics\bills\BillProto,
+    app\models\politics\constitution\ConstitutionArticleType,
+    app\models\politics\constitution\articles\postsonly\DestignationType,
     yii\widgets\ActiveForm,
     yii\web\Response,
+    yii\filters\VerbFilter,
     app\components\MyController;
 
 /**
@@ -16,6 +20,18 @@ use Yii,
  */
 class WorkController extends MyController
 {
+    
+    public function behaviors()
+    {
+        return [
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'destignate-to-post'  => ['post'],
+                ],
+            ],
+        ];
+    }
     
     public function actionIndex()
     {
@@ -82,13 +98,102 @@ class WorkController extends MyController
         return $this->_r(Yii::t('app', 'Undefined error'));
     }
     
+    public function actionDestignateToPostForm(int $postId, int $targetPostId)
+    {
+        $post = $this->loadPost($postId);
+        $targetPost = $this->loadPost($targetPostId);
+        
+        $article = $targetPost->constitution->getArticleByType(ConstitutionArticleType::DESTIGNATION_TYPE);
+        if ((int)$article->value != DestignationType::BY_OTHER_POST || (int)$article->value2 != (int)$post->id) {
+            return $this->_r(Yii::t('app', 'Not allowed'));
+        }
+        
+        return $this->render('destignate-to-post-form', [
+            'post' => $post,
+            'targetPost' => $targetPost,
+        ]);
+    }
+    
+    public function actionDestignateToPost()
+    {
+        $postId = (int) Yii::$app->request->post('postId');
+        $targetPostId = (int) Yii::$app->request->post('targetPostId');
+        $userId = (int) Yii::$app->request->post('userId');
+        
+        $post = $this->loadPost($postId);
+        $targetPost = $this->loadPost($targetPostId);
+        $user = $this->loadUser($userId);
+        
+        $article = $targetPost->constitution->getArticleByType(ConstitutionArticleType::DESTIGNATION_TYPE);
+        if ((int)$article->value != DestignationType::BY_OTHER_POST || (int)$article->value2 != (int)$post->id) {
+            return $this->_r(Yii::t('app', 'Not allowed'));
+        }
+        
+        if (!$user->isHaveCitizenship($targetPost->stateId)) {
+            return $this->_r(Yii::t('app', 'User have not citizenship of this state'));
+        }
+        
+        if ($targetPost->destignate($user)) {
+            return $this->_rOk();
+        } else {
+            return $this->_r($targetPost->getErrors());
+        }
+        
+    }
+    
+    public function actionRemoveFromPostForm(int $postId, int $targetPostId)
+    {
+        $post = $this->loadPost($postId);
+        $targetPost = $this->loadPost($targetPostId);
+        
+        $article = $targetPost->constitution->getArticleByType(ConstitutionArticleType::DESTIGNATION_TYPE);
+        if ((int)$article->value != DestignationType::BY_OTHER_POST || (int)$article->value2 != (int)$post->id) {
+            return $this->_r(Yii::t('app', 'Not allowed'));
+        }
+        
+        return $this->render('remove-from-post-form', [
+            'post' => $post,
+            'targetPost' => $targetPost,
+        ]);
+    }
+    
+    public function actionRemoveFromPost()
+    {
+        $postId = (int) Yii::$app->request->post('postId');
+        $targetPostId = (int) Yii::$app->request->post('targetPostId');
+        
+        $post = $this->loadPost($postId);
+        $targetPost = $this->loadPost($targetPostId);
+        
+        $article = $targetPost->constitution->getArticleByType(ConstitutionArticleType::DESTIGNATION_TYPE);
+        if ((int)$article->value != DestignationType::BY_OTHER_POST || (int)$article->value2 != (int)$post->id) {
+            return $this->_r(Yii::t('app', 'Not allowed'));
+        }
+        
+        if ($targetPost->removeUser()) {
+            return $this->_rOk();
+        } else {
+            return $this->_r($targetPost->getErrors());
+        }
+        
+    }
+    
     private function loadPost(int $id)
     {
         $post = AgencyPost::findByPk($id);
         if (is_null($post)) {
-            throw new NotFoundHttpException('Goverment post not found');
+            throw new NotFoundHttpException(Yii::t('app','Goverment post not found'));
         }
         return $post;
+    }
+    
+    private function loadUser(int $id)
+    {
+        $user = User::findByPk($id);
+        if (is_null($user)) {
+            throw new NotFoundHttpException(Yii::t('app','User not found'));
+        }
+        return $user;
     }
     
 }
