@@ -121,7 +121,7 @@ abstract class BillProto implements BillProtoInterface
             static::CHANGE_REGIONS_BORDER => Yii::t('app/bills', 'Change regions border'),
             static::CHANGE_CAPITAL_STATE => Yii::t('app/bills', 'Change state capital'),
             static::CHANGE_CAPITAL_REGION => Yii::t('app/bills', 'Change region capital'),
-            static::MULTIPOST_POLITIC => Yii::t('app/bliis', 'Allow/disallow more than one agency post to user'),
+            static::MULTIPOST_POLITIC => Yii::t('app/bills', 'Allow/disallow more than one agency post to user'),
         ];
     }
     

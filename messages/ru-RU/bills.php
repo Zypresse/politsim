@@ -17,6 +17,8 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
+    'Allow/disallow more than one agency post to user' => 'Разрешение одному человеку занимать более одного государственного поста',
+    'Multipost politic is required field' => 'Необходимо выбрать разрешать одному человеку занимать более одного государственного поста или нет',
     'Agency is required field' => 'Необходимо выбрать агенство',
     'Agency name is required field' => 'Необходимо заполнить поле «Название агенства»',
     'Agency short name is required field' => 'Необходимо заполнить поле «Краткое название агенства»',
