@@ -18,4 +18,20 @@ class ResourceProto
      */
     const WORK = 2;
     
+    public static function getClassNameByType(int $id)
+    {
+        $classes = [
+            static::MONEY => 'Currency',
+            static::WORK => 'Work',
+        ];
+        
+        return 'app\\models\\economics\\resources\\'.$classes[$id];
+    }
+    
+    public static function getPrototype(int $id, int $subId)
+    {
+        $className = static::getClassNameByType($id);
+        return $className::loadSubtype($subId);
+    }
+    
 }

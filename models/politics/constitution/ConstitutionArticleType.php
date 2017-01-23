@@ -52,6 +52,11 @@ abstract class ConstitutionArticleType
      * Можно ли одному юзеру состоять в нескольких партиях
      */
     const MULTIMEMBERSHIP = 9;
+    
+    /**
+     * Официальная валюта
+     */
+    const CURRENCY = 10;
         
     /**
      * 
@@ -70,6 +75,7 @@ abstract class ConstitutionArticleType
             static::POWERS => 'postsonly\\Powers',
             static::BILLS => 'statesonly\\Bills',
             static::MULTIMEMBERSHIP => 'statesonly\\Multimembership',
+            static::CURRENCY => 'statesonly\\Currency',
         ];
         
         return '\\app\\models\\politics\\constitution\\articles\\'.$classes[$type];

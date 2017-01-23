@@ -59,4 +59,15 @@ class Resource extends MyActiveRecord
             'count' => Yii::t('app', 'Count'),
         ];
     }
+    
+    private $_proto = null;
+    
+    public function getProto()
+    {
+        if (is_null($this->_proto)) {
+            $this->_proto = ResourceProto::getPrototype($this->protoId, $this->subProtoId);
+        }
+        return $this->_proto;
+    }
+    
 }
