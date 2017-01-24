@@ -22,8 +22,13 @@ abstract class DropdownArticle extends UnsignedIntegerArticle
     
     public function getName()
     {
+        return static::getNameStatic($this->value);
+    }
+    
+    public static function getNameStatic(int $type)
+    {
         foreach (static::getList() as $id => $name) {
-            if ($id == (int) $this->value) {
+            if ($id == $type) {
                 return $name;
             }
         }

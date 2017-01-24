@@ -85,4 +85,22 @@ class MyMathHelper {
         return $num;
     }
     
+    /**
+     * 
+     * @param array $ar
+     * @return integer
+     */
+    public static function implodeArrayToBitmask($ar)
+    {
+        if (!is_array($ar)) {
+            return (int)$ar;
+        }
+        
+        $sum = 0;
+        foreach ($ar as $val) {
+            $sum |= (int)$val;
+        }
+        return $sum;
+    }
+    
 }

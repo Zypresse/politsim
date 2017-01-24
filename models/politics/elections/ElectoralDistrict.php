@@ -87,4 +87,20 @@ class ElectoralDistrict extends MyActiveRecord
         }
         return $this->_polygon;
     }
+    
+    
+    public function updateParams($save = true, $polygon = true)
+    {
+        
+        $this->refresh();
+                
+        if ($polygon) {
+            $this->getPolygon(true);
+        }
+        
+        if ($save) {
+            return $this->save();
+        }
+        
+    }
 }

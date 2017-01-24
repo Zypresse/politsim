@@ -114,6 +114,11 @@ abstract class BillProto implements BillProtoInterface
      * Изменить границы округов
      */
     const CHANGE_DISTRICTS_BORDER = 21;
+    
+    /**
+     * Изменить способ назначения поста
+     */
+    const POST_DESTIGNATION = 22;
 
 
     public static function findAll()
@@ -126,6 +131,8 @@ abstract class BillProto implements BillProtoInterface
             
             static::CREATE_AGENCY => Yii::t('app/bills', 'Create new agency'),
             static::RENAME_AGENCY => Yii::t('app/bills', 'Rename agency'),
+            
+            static::POST_DESTIGNATION => Yii::t('app/bills', 'Change agency post destignation type'),
             
             static::RENAME_REGION => Yii::t('app/bills', 'Rename region'),
             static::CHANGE_FLAG_REGION => Yii::t('app/bills', 'Change region flag'),
@@ -177,6 +184,7 @@ abstract class BillProto implements BillProtoInterface
             static::CREATE_DISTRICT => 'district\\Create',
             static::IMPLODE_DISTRICTS => 'district\\Implode',
             static::CHANGE_DISTRICTS_BORDER => 'district\\ChangeBorders',
+            static::POST_DESTIGNATION => 'post\\Destignation',
         ];
         
         return '\\app\\models\\politics\\bills\\prototypes\\'.$classes[$type];
@@ -211,6 +219,7 @@ abstract class BillProto implements BillProtoInterface
             static::CREATE_DISTRICT => 'district/create',
             static::IMPLODE_DISTRICTS => 'district/implode',
             static::CHANGE_DISTRICTS_BORDER => 'district/change-borders',
+            static::POST_DESTIGNATION => 'post/destignation',
         ];
         
         return '/work/bills/'.$views[$type];
@@ -222,6 +231,8 @@ abstract class BillProto implements BillProtoInterface
             case static::CREATE_AGENCY:
             case static::RENAME_AGENCY:
                 return Yii::t('app', 'Agencies');
+            case static::POST_DESTIGNATION:
+                return Yii::t('app', 'Agency posts');
             case static::RENAME_REGION:
             case static::CHANGE_FLAG_REGION:
             case static::CHANGE_ANTHEM_REGION:
