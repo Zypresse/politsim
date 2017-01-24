@@ -6,10 +6,19 @@ use app\components\LinkCreator,
 
 /* @var $this yii\base\View */
 /* @var $election app\models\politics\elections\Election */
+
+$requests = $election->requests;
+uasort($requests, function($a, $b) {
+    if ($a->type == ElectionRequestType::NONE_OF_THE_ABOVE) {
+        return 1;
+    }
+    return $a->variant ?? $b->variant;
+});
+
 ?>
 <h5><?= Yii::t('app', 'Elections of agency post {0}', [Html::encode($election->whom->name)]) ?></h5>
 <table class="table table-bordered table-striped">
-<?php foreach ($election->requests as $request): ?>
+<?php foreach ($requests as $request): ?>
     <tr>
         <td class="text-center" style="width:50px;">
             <input value="<?=$request->variant?>" type="radio" name="election-variant" id="election-variant-<?= $request->variant ?>" class="election-variant-radio">

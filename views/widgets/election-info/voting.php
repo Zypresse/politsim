@@ -21,10 +21,20 @@ $canVote = $election->canVote($viewer);
     <div class="col-md-6 col-sm-12">
         <div class="box box-solid box-info">
             <div class="box-header">
-                <h4 class="box-title"><?=Yii::t('app', 'Exitpolls')?></h4>
+                <h4 class="box-title"><?=Yii::t('app', 'Candidats')?></h4>
             </div>
             <div class="box-body">
-                <p>Тут будут экситполлы</p>
+                <?php if (count($election->requests)): ?>
+                <ul>
+                    <?php foreach ($election->requests as $request): ?>
+                    <?php if ($request->type != ElectionRequestType::NONE_OF_THE_ABOVE): ?>
+                    <li><?=LinkCreator::link($request->object)?></li>
+                    <?php endif ?>
+                    <?php endforeach ?>
+                </ul>
+                <?php else: ?>
+                <p><?=Yii::t('app', 'No one candidat registered')?></p>
+                <?php endif ?>
             </div>
         </div>
     </div>

@@ -9,6 +9,8 @@ $i18n = require(__DIR__ . '/i18n.php');
 return [
     'id' => 'basic-console',
     'basePath' => dirname(__DIR__),
+    'language' => 'ru-RU',
+    'sourceLanguage' => 'en-US',
     'bootstrap' => ['log', 'gii', 'debug'],
     'controllerNamespace' => 'app\commands',
     'modules' => [
@@ -29,6 +31,9 @@ return [
         ],
         'i18n' => $i18n,
         'db' => $db,
+        'notificator' => [
+            'class' => 'app\components\Notificator',
+        ]
     ],
     'params' => $params,
 ];

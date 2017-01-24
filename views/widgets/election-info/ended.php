@@ -17,6 +17,7 @@ $requests = $election->getRequests()->all();
 
 $table = [];
 $sumVotes = 0;
+$i = 0;
 foreach ($data->results as $variant => $votes) {
     $sumVotes += $votes;
     
@@ -33,7 +34,7 @@ foreach ($data->results as $variant => $votes) {
     
     $table[] = [
         'name' => $name,
-        'color' => [null, "red", "blue"][$variant],
+        'color' => ["#ff0000", "#ffff00", "#008000", "#ff8000", "#0000ff", "#4b0082", "#9400d3"][$i++],
         'percents' => $votes
     ];
 }
@@ -49,6 +50,6 @@ foreach ($table as &$el) {
         <p><strong><?=Yii::t('app', 'Voting finish:')?></strong> <span class="formatDate" data-unixtime="<?=$election->dateVotingEnd?>"><?=date('d-m-y', $election->dateVotingEnd)?></span></p>
     </div>
     <div class="col-md-6 col-sm-12">
-        <?=PieChartWidget::widget(['data' => $data->results, 'colors' => ["red", "blue"], 'table' => $table])?>
+        <?=PieChartWidget::widget(['data' => $data->results, 'colors' => ["#ff0000", "#ffff00", "#008000", "#ff8000", "#0000ff", "#4b0082", "#9400d3"], 'table' => $table])?>
     </div>
 </div>
