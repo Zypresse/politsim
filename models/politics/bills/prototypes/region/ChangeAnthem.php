@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models\politics\bills\prototypes;
+namespace app\models\politics\bills\prototypes\region;
 
 use Yii,
     app\models\politics\bills\BillProto,
@@ -13,7 +13,7 @@ use Yii,
 /**
  * Смена флага региона
  */
-class ChangeFlagRegion extends BillProto
+class ChangeAnthem extends BillProto
 {
     
     /**
@@ -23,7 +23,7 @@ class ChangeFlagRegion extends BillProto
     public function accept($bill): bool
     {
         $region = Region::findByPk($bill->dataArray['regionId']);
-        $region->flag = $bill->dataArray['flag'];
+        $region->anthem = $bill->dataArray['anthem'];
         return $region->save();
     }
 
@@ -34,9 +34,9 @@ class ChangeFlagRegion extends BillProto
     public function render($bill): string
     {
         $region = Region::findByPk($bill->dataArray['regionId']);
-        return Yii::t('app/bills', 'Change flag of region {0} to {1}', [
+        return Yii::t('app/bills', 'Change anthem of region {0} to {1}', [
             LinkCreator::regionLink($region),
-            Html::img($bill->dataArray['flag'], ['style' => 'height: 16px;']),
+            Html::a($bill->dataArray['anthem'], $bill->dataArray['anthem']),
         ]);
     }
 
@@ -54,10 +54,10 @@ class ChangeFlagRegion extends BillProto
                 $bill->addError('dataArray[regionId]', Yii::t('app/bills', 'Invalid region'));
             }
         }
-        if (!isset($bill->dataArray['flag']) || !$bill->dataArray['flag']) {
-            $bill->addError('dataArray[flag]', Yii::t('app/bills', 'Flag is required field'));
-        } else if (!LinkHelper::isImageLink($bill->dataArray['flag'])) {
-            $bill->addError('dataArray[flag]', Yii::t('app/bills', 'Flag must be valid link to image'));
+        if (!isset($bill->dataArray['anthem']) || !$bill->dataArray['anthem']) {
+            $bill->addError('dataArray[anthem]', Yii::t('app/bills', 'Anthem is required field'));
+        } else if (!LinkHelper::isSoundCloudLink($bill->dataArray['anthem'])) {
+            $bill->addError('dataArray[anthem]', Yii::t('app/bills', 'Anthem must be valid SoundCloud link'));
         }
         return !!count($bill->getErrors());
         

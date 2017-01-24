@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models\politics\bills\prototypes;
+namespace app\models\politics\bills\prototypes\city;
 
 use Yii,
     app\models\politics\bills\BillProto,
@@ -12,7 +12,7 @@ use Yii,
 /**
  * Переименование города
  */
-class RenameCity extends BillProto
+class Rename extends BillProto
 {
 
     /**

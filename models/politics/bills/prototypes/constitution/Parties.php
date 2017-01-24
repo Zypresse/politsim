@@ -5,13 +5,12 @@ namespace app\models\politics\bills\prototypes\constitution;
 use Yii,
     app\models\politics\bills\BillProto,
     app\models\politics\bills\Bill,
-    app\models\politics\constitution\ConstitutionArticleType,
-    app\models\politics\constitution\articles\statesonly\Parties;
+    app\models\politics\constitution\ConstitutionArticleType;
 
 /**
  * Смена партийной политики государства
  */
-class PartiesPolitic extends BillProto
+class Parties extends BillProto
 {
     
     /**
@@ -29,7 +28,7 @@ class PartiesPolitic extends BillProto
      */
     public function render($bill): string
     {
-        /* @var $article Parties */
+        /* @var $article \app\models\politics\constitution\articles\statesonly\Parties */
         $article = $bill->state->constitution->getArticleByType(ConstitutionArticleType::PARTIES);
         $article->value = $bill->dataArray['value'];
         $article->value2 = $bill->dataArray['value2'];
@@ -50,7 +49,7 @@ class PartiesPolitic extends BillProto
         } elseif (!isset($bill->dataArray['value3'])) {
             $bill->addError('dataArray[value3]', Yii::t('app/bills', 'Parties registration cost is required field'));
         } else {
-            /* @var $article Parties */
+            /* @var $article \app\models\politics\constitution\articles\statesonly\Parties */
             $article = $bill->state->constitution->getArticleByType(ConstitutionArticleType::PARTIES);
             $article->value = $bill->dataArray['value'];
             $article->value2 = $bill->dataArray['value2'];
@@ -72,7 +71,7 @@ class PartiesPolitic extends BillProto
     
     public function getDefaultData($bill)
     {
-        /* @var $article Parties */
+        /* @var $article \app\models\politics\constitution\articles\statesonly\Parties */
         $article = $bill->state->constitution->getArticleByType(ConstitutionArticleType::PARTIES);
         return ['value' => $article->value, 'value2' => $article->value2, 'value3' => $article->value3];
     }

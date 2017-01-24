@@ -1,19 +1,18 @@
 <?php
 
-namespace app\models\politics\bills\prototypes;
+namespace app\models\politics\bills\prototypes\district;
 
 use Yii,
     app\models\politics\bills\BillProto,
     app\models\politics\bills\Bill,
     app\models\Tile,
-    app\components\LinkCreator,
-    app\models\politics\Region,
+    app\models\politics\elections\ElectoralDistrict,
     yii\helpers\Html;
         
 /**
- * Создание нового региона
+ * Создание нового избирательного округа
  */
-class CreateRegion extends BillProto
+class Create extends BillProto
 {
     
     /**
@@ -22,36 +21,19 @@ class CreateRegion extends BillProto
      */
     public function accept($bill): bool
     {
-        $region = new Region([
+        $district = new ElectoralDistrict([
             'name' => $bill->dataArray['name'],
             'nameShort' => $bill->dataArray['nameShort'],
             'stateId' => $bill->stateId,
         ]);
-        $region->save();
-        if ($region->biggestCity) {
-            $region->link('city', $region->biggestCity);
-        }
+        $district->save();
         Tile::updateAll([
-            'regionId' => $region->id,
+            'electoralDistrictId' => $district->id,
         ], ['in', 'id', $bill->dataArray['tiles']]);
-        $region->updateParams();
+        $district->updateParams();
         
-        $oldRegion = Region::findByPk($bill->dataArray['regionId']);
-        
-        foreach ($oldRegion->cities as $city) {
-            $allTilesInNew = true;
-            foreach ($city->tiles as $tile) {
-                if ($tile->regionId != $region->id) {
-                    $allTilesInNew = false;
-                    break;
-                }
-            }
-            if ($allTilesInNew) {
-                $city->link('region', $region);
-            }
-        }
-        
-        $oldRegion->updateParams();
+        $oldDistrict = ElectoralDistrict::findByPk($bill->dataArray['districtId']);
+        $oldDistrict->updateParams();
         
         return true;
     }
@@ -62,11 +44,11 @@ class CreateRegion extends BillProto
      */
     public function render($bill): string
     {
-        $region = Region::findByPk($bill->dataArray['regionId']);
-        return Yii::t('app/bills', 'Seduce new region «{0}» ({1}) from region {2}', [
+        $district = ElectoralDistrict::findByPk($bill->dataArray['districtId']);
+        return Yii::t('app/bills', 'Seduce new electoral district «{0}» ({1}) from electoral district «{2}»', [
             Html::encode($bill->dataArray['name']),
             Html::encode($bill->dataArray['nameShort']),
-            LinkCreator::regionLink($region),
+            Html::encode($district->name),
         ]);
     }
 
@@ -80,12 +62,12 @@ class CreateRegion extends BillProto
             $bill->dataArray['tiles'] = explode(',', $bill->dataArray['tiles']);
         }
         
-        if (!isset($bill->dataArray['regionId']) || !$bill->dataArray['regionId']) {
-            $bill->addError('dataArray[regionId]', Yii::t('app/bills', 'Region is required field'));
+        if (!isset($bill->dataArray['districtId']) || !$bill->dataArray['districtId']) {
+            $bill->addError('dataArray[districtId]', Yii::t('app/bills', 'Electoral district is required field'));
         } else {
-            $region = Region::findByPk($bill->dataArray['regionId']);
-            if (is_null($region) || $region->stateId != $bill->stateId) {
-                $bill->addError('dataArray[regionId]', Yii::t('app/bills', 'Invalid region'));
+            $district = ElectoralDistrict::findByPk($bill->dataArray['districtId']);
+            if (is_null($district) || $district->stateId != $bill->stateId) {
+                $bill->addError('dataArray[districtId]', Yii::t('app/bills', 'Invalid electoral district'));
             } else {
                 if (!isset($bill->dataArray['tiles']) || !count($bill->dataArray['tiles'])) {
                     $bill->addError('dataArray[tiles]', Yii::t('app/bills', 'Need select tiles'));
@@ -96,7 +78,7 @@ class CreateRegion extends BillProto
                     } else {
                         /* @var $tile Tile */
                         foreach ($tiles as $tile) {
-                            if ($tile->regionId != $region->id) {
+                            if ($tile->electoralDistrictId != $district->id) {
                                 $bill->addError('dataArray[tiles]', Yii::t('app/bills', 'Invalid tiles'));
                                 break;
                             }
@@ -106,10 +88,10 @@ class CreateRegion extends BillProto
             }
         }
         if (!isset($bill->dataArray['name']) || !$bill->dataArray['name']) {
-            $bill->addError('dataArray[name]', Yii::t('app/bills', 'Region name is required field'));
+            $bill->addError('dataArray[name]', Yii::t('app/bills', 'Electoral district name is required field'));
         }
         if (!isset($bill->dataArray['nameShort']) || !$bill->dataArray['nameShort']) {
-            $bill->addError('dataArray[nameShort]', Yii::t('app/bills', 'Region short name is required field'));
+            $bill->addError('dataArray[nameShort]', Yii::t('app/bills', 'Electoral district short name is required field'));
         }
         
         return !!count($bill->getErrors());

@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models\politics\bills\prototypes;
+namespace app\models\politics\bills\prototypes\region;
 
 use Yii,
     app\models\politics\bills\BillProto,
@@ -13,7 +13,7 @@ use Yii,
 /**
  * Изменение границы регионов
  */
-class ChangeRegionsBorder extends BillProto
+class ChangeBorders extends BillProto
 {
     
     /**

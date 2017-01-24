@@ -1,18 +1,17 @@
 <?php
 
-namespace app\models\politics\bills\prototypes;
+namespace app\models\politics\bills\prototypes\state;
 
 use Yii,
     app\models\politics\bills\BillProto,
     app\models\politics\bills\Bill,
     app\components\LinkCreator,
-    app\models\politics\City,
-    yii\helpers\Html;
+    app\models\politics\City;
 
 /**
  * Перенести столицу государства
  */
-class ChangeCapitalState extends BillProto
+class ChangeCapital extends BillProto
 {
 
     /**

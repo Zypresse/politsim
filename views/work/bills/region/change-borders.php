@@ -76,6 +76,24 @@ $form = new ActiveForm();
         'enableAjaxValidation': true
     });
     
+    $form.yiiActiveForm('add', {
+        'id': 'bill-dataarray-tiles1',
+        'name': 'Bill[dataArray][tiles1]',
+        'container': '.field-bill-dataarray-tiles1',
+        'input': '#bill-dataarray-tiles1',
+        'error': '.help-block',
+        'enableAjaxValidation': true
+    });
+    
+    $form.yiiActiveForm('add', {
+        'id': 'bill-dataarray-tiles2',
+        'name': 'Bill[dataArray][tiles2]',
+        'container': '.field-bill-dataarray-tiles2',
+        'input': '#bill-dataarray-tiles2',
+        'error': '.help-block',
+        'enableAjaxValidation': true
+    });
+    
     $form.on('submit', function() {
         if ($form.yiiActiveForm('data').validated) {
             json_request('work/new-bill', $form.serializeObject(), false, false, false, 'POST');
@@ -156,7 +174,7 @@ $form = new ActiveForm();
     function resetHighlight(e) {
         e.target.setStyle({
             fillColor: e.target.isSelected ? 'red' : 'blue',
-            fillOpacity: e.target.isSelected === e.target.isSelectedDefault ? 0.3 : 0.7
+            fillOpacity: e.target.isSelected && e.target.isSelected !== e.target.isSelectedDefault ? 0.7 : 0.3
         });
     }
     

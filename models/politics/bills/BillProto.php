@@ -99,28 +99,51 @@ abstract class BillProto implements BillProtoInterface
      * Изменить разрешение юзерам занимать несколько должностей
      */
     const MULTIPOST_POLITIC = 18;
+    
+    /**
+     * Выделить новый избирательный округ
+     */
+    const CREATE_DISTRICT = 19;
+    
+    /**
+     * Объединить округа
+     */
+    const IMPLODE_DISTRICTS = 20;
+    
+    /**
+     * Изменить границы округов
+     */
+    const CHANGE_DISTRICTS_BORDER = 21;
 
 
     public static function findAll()
     {
         return [
             static::RENAME_STATE => Yii::t('app/bills', 'Rename state'),
-            static::RENAME_REGION => Yii::t('app/bills', 'Rename region'),
-            static::RENAME_CITY => Yii::t('app/bills', 'Rename city'),
+            static::CHANGE_FLAG_STATE => Yii::t('app/bills', 'Change state flag'),
+            static::CHANGE_ANTHEM_STATE => Yii::t('app/bills', 'Change state anthem'),
+            static::CHANGE_CAPITAL_STATE => Yii::t('app/bills', 'Change state capital'),
+            
             static::CREATE_AGENCY => Yii::t('app/bills', 'Create new agency'),
             static::RENAME_AGENCY => Yii::t('app/bills', 'Rename agency'),
-            static::CHANGE_FLAG_STATE => Yii::t('app/bills', 'Change state flag'),
+            
+            static::RENAME_REGION => Yii::t('app/bills', 'Rename region'),
             static::CHANGE_FLAG_REGION => Yii::t('app/bills', 'Change region flag'),
-            static::CHANGE_FLAG_CITY => Yii::t('app/bills', 'Change city flag'),
-            static::CHANGE_ANTHEM_STATE => Yii::t('app/bills', 'Change state anthem'),
             static::CHANGE_ANTHEM_REGION => Yii::t('app/bills', 'Change region anthem'),
-            static::CHANGE_ANTHEM_CITY => Yii::t('app/bills', 'Change city anthem'),
-            static::PARTIES_POLITIC => Yii::t('app/bills', 'Change parties politic'),
+            static::CHANGE_CAPITAL_REGION => Yii::t('app/bills', 'Change region capital'),
             static::CREATE_REGION => Yii::t('app/bills', 'Seduce new region'),
             static::IMPLODE_REGIONS => Yii::t('app/bills', 'Implode regions'),
             static::CHANGE_REGIONS_BORDER => Yii::t('app/bills', 'Change regions border'),
-            static::CHANGE_CAPITAL_STATE => Yii::t('app/bills', 'Change state capital'),
-            static::CHANGE_CAPITAL_REGION => Yii::t('app/bills', 'Change region capital'),
+            
+            static::RENAME_CITY => Yii::t('app/bills', 'Rename city'),
+            static::CHANGE_FLAG_CITY => Yii::t('app/bills', 'Change city flag'),
+            static::CHANGE_ANTHEM_CITY => Yii::t('app/bills', 'Change city anthem'),
+            
+            static::CREATE_DISTRICT => Yii::t('app/bills', 'Seduce new electoral district'),
+            static::IMPLODE_DISTRICTS => Yii::t('app/bills', 'Implode electoral districts'),
+            static::CHANGE_DISTRICTS_BORDER => Yii::t('app/bills', 'Change electoral districts border'),
+            
+            static::PARTIES_POLITIC => Yii::t('app/bills', 'Change parties politic'),
             static::MULTIPOST_POLITIC => Yii::t('app/bills', 'Allow/disallow more than one agency post to user'),
         ];
     }
@@ -133,24 +156,27 @@ abstract class BillProto implements BillProtoInterface
     public static function getClassNameByType(int $type) : string
     {
         $classes = [
-            static::RENAME_STATE => 'RenameState',
-            static::RENAME_REGION => 'RenameRegion',
-            static::RENAME_CITY => 'RenameCity',
-            static::CREATE_AGENCY => 'CreateAgency',
-            static::RENAME_AGENCY => 'RenameAgency',
-            static::CHANGE_FLAG_STATE => 'ChangeFlagState',
-            static::CHANGE_FLAG_REGION => 'ChangeFlagRegion',
-            static::CHANGE_FLAG_CITY => 'ChangeFlagCity',
-            static::CHANGE_ANTHEM_STATE => 'ChangeAnthemState',
-            static::CHANGE_ANTHEM_REGION => 'ChangeAnthemRegion',
-            static::CHANGE_ANTHEM_CITY => 'ChangeAnthemCity',
-            static::PARTIES_POLITIC => 'constitution\\PartiesPolitic',
-            static::CREATE_REGION => 'CreateRegion',
-            static::IMPLODE_REGIONS => 'ImplodeRegions',
-            static::CHANGE_REGIONS_BORDER => 'ChangeRegionsBorder',
-            static::CHANGE_CAPITAL_STATE => 'ChangeCapitalState',
-            static::CHANGE_CAPITAL_REGION => 'ChangeCapitalRegion',
-            static::MULTIPOST_POLITIC => 'constitution\\MultipostPolitic',
+            static::RENAME_STATE => 'state\\Rename',
+            static::RENAME_REGION => 'region\\Rename',
+            static::RENAME_CITY => 'city\\Rename',
+            static::CREATE_AGENCY => 'agency\\Create',
+            static::RENAME_AGENCY => 'agency\\Rename',
+            static::CHANGE_FLAG_STATE => 'state\\ChangeFlag',
+            static::CHANGE_FLAG_REGION => 'region\\ChangeFlag',
+            static::CHANGE_FLAG_CITY => 'city\\ChangeFlag',
+            static::CHANGE_ANTHEM_STATE => 'state\\ChangeAnthem',
+            static::CHANGE_ANTHEM_REGION => 'region\\ChangeAnthem',
+            static::CHANGE_ANTHEM_CITY => 'city\\ChangeAnthem',
+            static::PARTIES_POLITIC => 'constitution\\Parties',
+            static::CREATE_REGION => 'region\\Create',
+            static::IMPLODE_REGIONS => 'region\\Implode',
+            static::CHANGE_REGIONS_BORDER => 'region\\ChangeBorders',
+            static::CHANGE_CAPITAL_STATE => 'state\\ChangeCapital',
+            static::CHANGE_CAPITAL_REGION => 'region\\ChangeCapital',
+            static::MULTIPOST_POLITIC => 'constitution\\Multipost',
+            static::CREATE_DISTRICT => 'district\\Create',
+            static::IMPLODE_DISTRICTS => 'district\\Implode',
+            static::CHANGE_DISTRICTS_BORDER => 'district\\ChangeBorders',
         ];
         
         return '\\app\\models\\politics\\bills\\prototypes\\'.$classes[$type];
@@ -164,24 +190,27 @@ abstract class BillProto implements BillProtoInterface
     public static function getViewByType(int $type) : string
     {
         $views = [
-            static::RENAME_STATE => 'rename-state',
-            static::RENAME_REGION => 'rename-region',
-            static::RENAME_CITY => 'rename-city',
-            static::CREATE_AGENCY => 'create-agency',
-            static::RENAME_AGENCY => 'rename-agency',
-            static::CHANGE_FLAG_STATE => 'change-flag-state',
-            static::CHANGE_FLAG_REGION => 'change-flag-region',
-            static::CHANGE_FLAG_CITY => 'change-flag-city',
-            static::CHANGE_ANTHEM_STATE => 'change-anthem-state',
-            static::CHANGE_ANTHEM_REGION => 'change-anthem-region',
-            static::CHANGE_ANTHEM_CITY => 'change-anthem-city',
-            static::PARTIES_POLITIC => 'parties-politic',
-            static::CREATE_REGION => 'create-region',
-            static::IMPLODE_REGIONS => 'implode-regions',
-            static::CHANGE_REGIONS_BORDER => 'change-regions-border',
-            static::CHANGE_CAPITAL_STATE => 'change-capital-state',
-            static::CHANGE_CAPITAL_REGION => 'change-capital-region',
-            static::MULTIPOST_POLITIC => 'multipost-politic',
+            static::RENAME_STATE => 'state/rename',
+            static::RENAME_REGION => 'region/rename',
+            static::RENAME_CITY => 'city/rename',
+            static::CREATE_AGENCY => 'agency/create',
+            static::RENAME_AGENCY => 'agency/rename',
+            static::CHANGE_FLAG_STATE => 'state/change-flag',
+            static::CHANGE_FLAG_REGION => 'region/change-flag',
+            static::CHANGE_FLAG_CITY => 'city/change-flag',
+            static::CHANGE_ANTHEM_STATE => 'state/change-anthem',
+            static::CHANGE_ANTHEM_REGION => 'region/change-anthem',
+            static::CHANGE_ANTHEM_CITY => 'city/change-anthem',
+            static::PARTIES_POLITIC => 'constitution/parties',
+            static::CREATE_REGION => 'region/create',
+            static::IMPLODE_REGIONS => 'region/implode',
+            static::CHANGE_REGIONS_BORDER => 'region/change-borders',
+            static::CHANGE_CAPITAL_STATE => 'state/change-capital',
+            static::CHANGE_CAPITAL_REGION => 'region/change-capital',
+            static::MULTIPOST_POLITIC => 'constitution/multipost',
+            static::CREATE_DISTRICT => 'district/create',
+            static::IMPLODE_DISTRICTS => 'district/implode',
+            static::CHANGE_DISTRICTS_BORDER => 'district/change-borders',
         ];
         
         return '/work/bills/'.$views[$type];
@@ -208,6 +237,10 @@ abstract class BillProto implements BillProtoInterface
             case static::PARTIES_POLITIC:
             case static::MULTIPOST_POLITIC:
                 return Yii::t('app', 'Constitution');
+            case static::CREATE_DISTRICT:
+            case static::IMPLODE_DISTRICTS:
+            case static::CHANGE_DISTRICTS_BORDER:
+                return Yii::t('app', 'Electoral districts');
             default:
                 return Yii::t('app', 'Basic bill types');
         }

@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models\politics\bills\prototypes;
+namespace app\models\politics\bills\prototypes\city;
 
 use Yii,
     app\models\politics\bills\BillProto,
@@ -13,7 +13,7 @@ use Yii,
 /**
  * Смена флага города
  */
-class ChangeFlagCity extends BillProto
+class ChangeFlag extends BillProto
 {
 
     /**

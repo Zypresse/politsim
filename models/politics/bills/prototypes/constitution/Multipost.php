@@ -5,13 +5,12 @@ namespace app\models\politics\bills\prototypes\constitution;
 use Yii,
     app\models\politics\bills\BillProto,
     app\models\politics\bills\Bill,
-    app\models\politics\constitution\ConstitutionArticleType,
-    app\models\politics\constitution\articles\statesonly\Multipost;
+    app\models\politics\constitution\ConstitutionArticleType;
 
 /**
  * 
  */
-class MultipostPolitic extends BillProto
+class Multipost extends BillProto
 {
     
     /**
@@ -51,7 +50,7 @@ class MultipostPolitic extends BillProto
      */
     public function getDefaultData($bill)
     {
-        /* @var $article Multipost */
+        /* @var $article \app\models\politics\constitution\articles\statesonly\Multipost */
         $article = $bill->state->constitution->getArticleByType(ConstitutionArticleType::MULTIPOST);
         return ['value' => $article->value];
     }

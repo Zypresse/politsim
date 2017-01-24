@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models\politics\bills\prototypes;
+namespace app\models\politics\bills\prototypes\agency;
 
 use Yii,
     app\models\politics\bills\BillProto,
@@ -10,7 +10,7 @@ use Yii,
 /**
  * Создать агенство по шаблону
  */
-final class CreateAgency extends BillProto
+final class Create extends BillProto
 {
     
     /**

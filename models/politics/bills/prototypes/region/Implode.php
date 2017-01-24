@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models\politics\bills\prototypes;
+namespace app\models\politics\bills\prototypes\region;
 
 use Yii,
     app\models\politics\bills\BillProto,
@@ -8,12 +8,15 @@ use Yii,
     app\components\LinkCreator,
     app\models\politics\Region,
     app\models\politics\City,
+    app\models\politics\constitution\ConstitutionArticle,
+    app\models\politics\constitution\ConstitutionArticleType,
+    app\models\politics\constitution\articles\postsonly\DestignationType,
     app\models\Tile;
         
 /**
  * Включить второй рег в состав первого
  */
-class ImplodeRegions extends BillProto
+class Implode extends BillProto
 {
     
     /**
@@ -67,6 +70,16 @@ class ImplodeRegions extends BillProto
             $region2 = Region::findByPk($bill->dataArray['region2Id']);
             if (is_null($region2) || $region2->stateId != $bill->stateId) {
                 $bill->addError('dataArray[region2Id]', Yii::t('app/bills', 'Invalid region'));
+            } else {
+                if ( ConstitutionArticle::find()
+                        ->where([
+                            'type' => ConstitutionArticleType::DESTIGNATION_TYPE,
+                            'value' => DestignationType::BY_REGION_ELECTION,
+                            'value2' => $region2->id
+                        ])
+                        ->exists()) {
+                    $bill->addError('dataArray[region2Id]', Yii::t('app/bills', 'This region used by elections to posts'));
+                }
             }
         }
         

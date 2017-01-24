@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models\politics\bills\prototypes;
+namespace app\models\politics\bills\prototypes\state;
 
 use Yii,
     app\models\politics\bills\BillProto,
@@ -11,7 +11,7 @@ use Yii,
 /**
  * Смена флага государства
  */
-class ChangeAnthemState extends BillProto
+class ChangeAnthem extends BillProto
 {
     
     /**
