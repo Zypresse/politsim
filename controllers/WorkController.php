@@ -133,6 +133,13 @@ class WorkController extends MyController
             return $this->_r(Yii::t('app', 'User have not citizenship of this state'));
         }
         
+        if ($user->getPostsByState($targetPost->stateId)->exists()) {
+            $article2 = $targetPost->state->constitution->getArticleByType(ConstitutionArticleType::MULTIPOST, null);
+            if (!$article2->value) {
+                return $this->_r(Yii::t('app', 'User allready have agency post'));
+            }
+        }
+        
         if ($targetPost->destignate($user)) {
             return $this->_rOk();
         } else {

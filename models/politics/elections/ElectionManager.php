@@ -3,8 +3,8 @@
 namespace app\models\politics\elections;
 
 use Yii,
+    app\models\User,
     app\models\politics\AgencyPost,
-    app\models\population\Pop,
     app\models\politics\constitution\articles\postsonly\DestignationType,
     app\models\politics\constitution\ConstitutionArticleType,
     app\components\MyMathHelper;
@@ -275,6 +275,19 @@ abstract class ElectionManager
             $winner = $election->getRequests()->andWhere(['variant' => $winnerVariant])->one();
             switch ((int) $election->whomType) {
                 case ElectionWhomType::POST:
+                    switch ($winner->type) {
+                        case ElectionRequestType::USER_SELF:
+                            /* @var $user User */
+                            $user = $winner->object;
+                            $userPosts = $user->getPostsByState($election->whom->getTaxStateId())
+                                    ->where(['<>', 'id', $election->whom->id])
+                                    ->all();
+                            foreach ($userPosts as $post) {
+                                $post->userId = null;
+                                $post->save();
+                            }
+                            break;
+                    }
                     $election->whom->userId = $winner->objectId;
                     $election->whom->save();
                     Yii::$app->notificator->winnedPostElections($winner->objectId, $election->whom);
