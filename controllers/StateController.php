@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use Yii,
+    yii\web\NotFoundHttpException,
     app\components\MyController,
     app\models\politics\State,
     app\models\politics\Agency;
@@ -10,16 +11,13 @@ use Yii,
 /**
  * 
  */
-class StateController extends MyController
+final class StateController extends MyController
 {
     
-    public function actionIndex($id)
+    public function actionIndex(int $id)
     {
         
-        $state = State::findByPk($id);
-        if (is_null($state)) {
-            return $this->_r(Yii::t('app', 'State not found'));
-        }
+        $state = $this->getState($id);
                 
         return $this->render('view', [
             'state' => $state,
@@ -27,13 +25,23 @@ class StateController extends MyController
         ]);
     }
     
-    public function actionConstitution($id)
+    public function actionBills(int $id)
     {
         
-        $state = State::findByPk($id);
-        if (is_null($state)) {
-            return $this->_r(Yii::t('app', 'State not found'));
-        }
+        $state = $this->getState($id);
+                
+        return $this->render('bills', [
+            'state' => $state,
+            'billsActive' => $state->getBillsActive()->with('post')->with('user')->orderBy(['dateCreated' => SORT_DESC])->all(),
+            'billsFinished' => $state->getBillsFinished()->with('post')->with('user')->orderBy(['dateFinished' => SORT_DESC])->all(),
+            'user' => $this->user
+        ]);
+    }
+    
+    public function actionConstitution(int $id)
+    {
+        
+        $state = $this->getState($id);
                         
         return $this->render('constitution', [
             'state' => $state,
@@ -53,6 +61,15 @@ class StateController extends MyController
             'agency' => $agency,
             'user' => $this->user
         ]);
+    }
+    
+    private function getState(int $id)
+    {
+        $state = State::findByPk($id);
+        if (is_null($state)) {
+            throw new NotFoundHttpException(Yii::t('app', 'State not found'));
+        }
+        return $state;
     }
     
 }

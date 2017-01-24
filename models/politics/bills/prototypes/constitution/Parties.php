@@ -31,9 +31,24 @@ class Parties extends BillProto
         /* @var $article \app\models\politics\constitution\articles\statesonly\Parties */
         $article = $bill->state->constitution->getArticleByType(ConstitutionArticleType::PARTIES);
         $article->value = $bill->dataArray['value'];
-        $article->value2 = $bill->dataArray['value2'];
-        $article->value3 = $bill->dataArray['value3'];
-        return Yii::t('app/bills', 'Change parties politic to {0}', [$article->name]); // TODO: вывод value2 и 3
+        $article->value2 = isset($bill->dataArray['value2']) ? $bill->dataArray['value2'] : null;
+        $article->value3 = isset($bill->dataArray['value3']) ? $bill->dataArray['value3'] : null;
+        return Yii::t('app/bills', 'Change parties politic to {0}', [$article->name]);
+    }
+
+    /**
+     * 
+     * @param Bill $bill
+     */
+    public function renderFull($bill): string
+    {
+        /* @var $article \app\models\politics\constitution\articles\statesonly\Parties */
+        $article = $bill->state->constitution->getArticleByType(ConstitutionArticleType::PARTIES);
+        $article->value = $bill->dataArray['value'];
+        $article->value2 = isset($bill->dataArray['value2']) ? $bill->dataArray['value2'] : null;
+        $article->value3 = isset($bill->dataArray['value3']) ? $bill->dataArray['value3'] : null;
+        
+        return $article->getFullName();
     }
 
     /**

@@ -30,6 +30,12 @@ interface BillProtoInterface
     public function render($bill) : string;
     
     /**
+     * 
+     * @param Bill $bill
+     */
+    public function renderFull($bill) : string;
+    
+    /**
      * данные по умолчанию для заполнения dataArray
      * @param Bill $bill
      */

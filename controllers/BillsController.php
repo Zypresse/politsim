@@ -27,6 +27,8 @@ final class BillsController extends MyController
                 'actions' => [
                     'view'  => ['get'],
                     'vote'  => ['post'],
+                    'veto'  => ['post'],
+                    'accept'  => ['post'],
                 ],
             ],
         ];
@@ -79,6 +81,68 @@ final class BillsController extends MyController
             return $this->_rOk();
         } else {
             return $this->_r($vote->getErrors());
+        }
+        
+    }
+    
+    public function actionAccept()
+    {
+        
+        $billId = (int) Yii::$app->request->post('billId');
+        $postId = (int) Yii::$app->request->post('postId');
+        
+        $bill = $this->getBill($billId);
+        $post = $this->getPost($postId);
+        
+        if ($bill->stateId != $post->stateId) {
+            return $this->_r(Yii::t('app', 'Not allowed'));
+        }
+        
+        /* @var $article Bills */
+        $article = $post->constitution->getArticleByType(ConstitutionArticleType::POWERS, Powers::BILLS);
+        if (!$article->isSelected(Bills::ACCEPT)) {
+            return $this->_r(Yii::t('app', 'Not allowed'));
+        }
+        
+        if ($bill->isFinished) {
+            return $this->_r(Yii::t('app', 'Voting for this bill allready finished'));
+        }
+        
+        if ($bill->accept()) {
+            return $this->_rOk();
+        } else {
+            return $this->_r($bill->getErrors());
+        }
+        
+    }
+    
+    public function actionVeto()
+    {
+        
+        $billId = (int) Yii::$app->request->post('billId');
+        $postId = (int) Yii::$app->request->post('postId');
+        
+        $bill = $this->getBill($billId);
+        $post = $this->getPost($postId);
+        
+        if ($bill->stateId != $post->stateId) {
+            return $this->_r(Yii::t('app', 'Not allowed'));
+        }
+        
+        /* @var $article Bills */
+        $article = $post->constitution->getArticleByType(ConstitutionArticleType::POWERS, Powers::BILLS);
+        if (!$article->isSelected(Bills::VETO)) {
+            return $this->_r(Yii::t('app', 'Not allowed'));
+        }
+        
+        if ($bill->isFinished) {
+            return $this->_r(Yii::t('app', 'Voting for this bill allready finished'));
+        }
+        
+        if ($bill->veto($postId)) {
+            return $this->_rOk();
+        } else {
+            return $this->_r($bill->getErrors());
         }
         
     }

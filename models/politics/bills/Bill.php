@@ -42,6 +42,8 @@ use Yii,
  * @property AgencyPost[] $votersPosts
  * @property Message[] $messages
  * 
+ * @property boolean $isFinished
+ * 
  */
 class Bill extends MyActiveRecord
 {
@@ -212,6 +214,16 @@ class Bill extends MyActiveRecord
         return $this->save();
     }
     
+    /**
+     * 
+     * @return boolean
+     */
+    public function veto(int $postId): bool
+    {
+        $this->vetoPostId = $postId;
+        return $this->decline();
+    }
+    
     public static function instantiate($row)
     {
         $model = parent::instantiate($row);
@@ -225,6 +237,14 @@ class Bill extends MyActiveRecord
     public function render() : string
     {
         return $this->proto->render($this);
+    }
+    
+    /**
+     * Отображает суть законопроекта
+     */
+    public function renderFull() : string
+    {
+        return $this->proto->renderFull($this);
     }
     
     /**
@@ -248,6 +268,11 @@ class Bill extends MyActiveRecord
         if ($save) {
             $this->save();
         }
+    }
+    
+    public function getIsFinished()
+    {
+        return !!$this->dateFinished;
     }
     
 }

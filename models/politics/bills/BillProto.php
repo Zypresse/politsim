@@ -268,9 +268,24 @@ abstract class BillProto implements BillProtoInterface
         return new $className();
     }
     
+    /**
+     * 
+     * @param Bill $bill
+     * @return array
+     */
     public function getDefaultData($bill)
     {
         return [];
+    }
+    
+    /**
+     * 
+     * @param Bill $bill
+     * @return string
+     */
+    public function renderFull($bill) : string
+    {
+        return $this->render($bill);
     }
     
 }

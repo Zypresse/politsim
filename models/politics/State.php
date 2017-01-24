@@ -54,6 +54,7 @@ use Yii,
  * @property Pop[] $pops
  * @property Bill[] $bills
  * @property Bill[] $billsActive
+ * @property Bill[] $billsFinished
  * @property ElectoralDistrict[] $districts
  *
  * @author ilya
@@ -223,6 +224,12 @@ class State extends ConstitutionOwner
     public function getBillsActive()
     {
         return $this->hasMany(Bill::className(), ['stateId' => 'id'])->where(['dateFinished' => null]);
+    }
+    
+    
+    public function getBillsFinished()
+    {
+        return $this->hasMany(Bill::className(), ['stateId' => 'id'])->where(['is not', 'dateFinished', null]);
     }
     
     public function getLeaderPost()

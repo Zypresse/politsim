@@ -3,6 +3,8 @@
 namespace app\models\politics\constitution\articles\statesonly;
 
 use Yii,
+    app\components\LinkCreator,
+    app\components\MyHtmlHelper,
     app\models\politics\Party,
     app\models\politics\constitution\articles\base\DropdownArticle;
 
@@ -44,6 +46,24 @@ class Parties extends DropdownArticle
             static::NEED_CONFIRM => Yii::t('app', 'Registration party needs goverment confirmation'),
             static::ALLOWED => Yii::t('app', 'Allowed'),
         ];
+    }
+    
+    public function getRulingParty()
+    {
+        return $this->hasOne(Party::className(), ['id' => 'value2']);
+    }
+    
+    public function getFullName():string
+    {
+        $text = $this->name.'<br>';
+        
+        $type = (int) $this->value;
+        if ($type == static::ALLOWED || $type == static::NEED_CONFIRM) {
+            $text .= Yii::t('app', 'Party registration cost: {0}', [MyHtmlHelper::moneyFormat($this->value3)]);
+        } else if ($type == static::ONLY_RULING) {
+            $text .= Yii::t('app', 'Ruling party: {0}', [LinkCreator::partyLink($this->rulingParty)]);
+        }
+        return $text;
     }
     
 }
