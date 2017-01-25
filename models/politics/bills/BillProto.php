@@ -119,6 +119,11 @@ abstract class BillProto implements BillProtoInterface
      * Изменить способ назначения поста
      */
     const POST_DESTIGNATION = 22;
+    
+    /**
+     * Создать новый пост
+     */
+    const CREATE_POST = 23;
 
 
     public static function findAll()
@@ -133,6 +138,7 @@ abstract class BillProto implements BillProtoInterface
             static::RENAME_AGENCY => Yii::t('app/bills', 'Rename agency'),
             
             static::POST_DESTIGNATION => Yii::t('app/bills', 'Change agency post destignation type'),
+            static::CREATE_POST => Yii::t('app/bills', 'Create new agency post'),
             
             static::RENAME_REGION => Yii::t('app/bills', 'Rename region'),
             static::CHANGE_FLAG_REGION => Yii::t('app/bills', 'Change region flag'),
@@ -185,6 +191,7 @@ abstract class BillProto implements BillProtoInterface
             static::IMPLODE_DISTRICTS => 'district\\Implode',
             static::CHANGE_DISTRICTS_BORDER => 'district\\ChangeBorders',
             static::POST_DESTIGNATION => 'post\\Destignation',
+            static::CREATE_POST => 'post\\Create',
         ];
         
         return '\\app\\models\\politics\\bills\\prototypes\\'.$classes[$type];
@@ -220,6 +227,7 @@ abstract class BillProto implements BillProtoInterface
             static::IMPLODE_DISTRICTS => 'district/implode',
             static::CHANGE_DISTRICTS_BORDER => 'district/change-borders',
             static::POST_DESTIGNATION => 'post/destignation',
+            static::CREATE_POST => 'post/create',
         ];
         
         return '/work/bills/'.$views[$type];
@@ -232,6 +240,7 @@ abstract class BillProto implements BillProtoInterface
             case static::RENAME_AGENCY:
                 return Yii::t('app', 'Agencies');
             case static::POST_DESTIGNATION:
+            case static::CREATE_POST:
                 return Yii::t('app', 'Agency posts');
             case static::RENAME_REGION:
             case static::CHANGE_FLAG_REGION:

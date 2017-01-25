@@ -23,7 +23,7 @@ $form = new ActiveForm();
     'action' => Url::to(['work/new-bill']),
     'enableClientValidation' => true,
     'enableAjaxValidation' => true,
-    'validationUrl' => Url::to(['work/new-bill-form', 'postId' => $post->id, 'protoId' => BillProto::POST_DESTIGNATION])
+    'validationUrl' => Url::to(['work/new-bill-form', 'postId' => $post->id, 'protoId' => BillProto::CREATE_POST])
 ]) ?>
 
 <?=$form->field($model, 'protoId', ['labelOptions' => ['class' => 'hide']])->hiddenInput()?>
@@ -31,11 +31,13 @@ $form = new ActiveForm();
 <?=$form->field($model, 'userId', ['labelOptions' => ['class' => 'hide']])->hiddenInput()?>
 <?=$form->field($model, 'postId', ['labelOptions' => ['class' => 'hide']])->hiddenInput()?>
 
-<?=$form->field($model, 'dataArray[postId]')->dropDownList(ArrayHelper::map($post->state->posts, 'id', 'name'))->label(Yii::t('app', 'Agency post'))?>
+<?=$form->field($model, 'dataArray[agencyId]')->dropDownList(ArrayHelper::map($post->state->agencies, 'id', 'name'))->label(Yii::t('app', 'Agency'))?>
+<?=$form->field($model, 'dataArray[name]')->textInput()->label(Yii::t('app', 'Agency post name'))?>
+<?=$form->field($model, 'dataArray[nameShort]')->textInput()->label(Yii::t('app', 'Agency post short name'))?>
 
-<?=$form->field($model, 'dataArray[value]')->dropDownList(DestignationType::getList())->label(Yii::t('app', 'Destignation type'))?>
-<?=$form->field($model, 'dataArray[value2]')->dropDownList([])->label(Yii::t('app', 'Destignator'))?>
-<?=$form->field($model, 'dataArray[value3]')->checkboxList([
+<?=$form->field($model, 'dataArray[destignationValue]')->dropDownList(DestignationType::getList())->label(Yii::t('app', 'Destignation type'))?>
+<?=$form->field($model, 'dataArray[destignationValue2]')->dropDownList([])->label(Yii::t('app', 'Destignator'))?>
+<?=$form->field($model, 'dataArray[destignationValue3]')->checkboxList([
     DestignationType::SECOND_TOUR => Yii::t('app', 'Allows second tour'),
     DestignationType::NONE_OF_THE_ABOVE => Yii::t('app', 'Add variant «None of the above»'),
 ])->label(Yii::t('app', 'Elections rules'))?>
@@ -56,37 +58,55 @@ $form = new ActiveForm();
     $form = $('#new-bill-form');
     
     $form.yiiActiveForm('add', {
-        'id': 'bill-dataarray-postid',
-        'name': 'Bill[dataArray][postId]',
-        'container': '.field-bill-dataarray-postid',
-        'input': '#bill-dataarray-postid',
+        'id': 'bill-dataarray-agencyid',
+        'name': 'Bill[dataArray][agencyId]',
+        'container': '.field-bill-dataarray-agencyid',
+        'input': '#bill-dataarray-agencyid',
         'error': '.help-block',
         'enableAjaxValidation': true
     });
     
     $form.yiiActiveForm('add', {
-        'id': 'bill-dataarray-value',
-        'name': 'Bill[dataArray][value]',
-        'container': '.field-bill-dataarray-value',
-        'input': '#bill-dataarray-value',
+        'id': 'bill-dataarray-name',
+        'name': 'Bill[dataArray][name]',
+        'container': '.field-bill-dataarray-name',
+        'input': '#bill-dataarray-name',
         'error': '.help-block',
         'enableAjaxValidation': true
     });
     
     $form.yiiActiveForm('add', {
-        'id': 'bill-dataarray-value2',
-        'name': 'Bill[dataArray][value2]',
-        'container': '.field-bill-dataarray-value2',
-        'input': '#bill-dataarray-value2',
+        'id': 'bill-dataarray-nameshort',
+        'name': 'Bill[dataArray][nameShort]',
+        'container': '.field-bill-dataarray-nameshort',
+        'input': '#bill-dataarray-nameshort',
         'error': '.help-block',
         'enableAjaxValidation': true
     });
     
     $form.yiiActiveForm('add', {
-        'id': 'bill-dataarray-value3',
-        'name': 'Bill[dataArray][value3]',
-        'container': '.field-bill-dataarray-value3',
-        'input': '#bill-dataarray-value3',
+        'id': 'bill-dataarray-destignationvalue',
+        'name': 'Bill[dataArray][destignationValue]',
+        'container': '.field-bill-dataarray-destignationvalue',
+        'input': '#bill-dataarray-destignationvalue',
+        'error': '.help-block',
+        'enableAjaxValidation': true
+    });
+    
+    $form.yiiActiveForm('add', {
+        'id': 'bill-dataarray-destignationvalue2',
+        'name': 'Bill[dataArray][destignationValue2]',
+        'container': '.field-bill-dataarray-destignationvalue2',
+        'input': '#bill-dataarray-destignationvalue2',
+        'error': '.help-block',
+        'enableAjaxValidation': true
+    });
+    
+    $form.yiiActiveForm('add', {
+        'id': 'bill-dataarray-destignationvalue3',
+        'name': 'Bill[dataArray][destignationValue3]',
+        'container': '.field-bill-dataarray-destignationvalue3',
+        'input': '#bill-dataarray-destignationvalue3',
         'error': '.help-block',
         'enableAjaxValidation': true
     });
@@ -101,88 +121,55 @@ $form = new ActiveForm();
     function loadDestignatorList(value) {
         switch (value) {
             case <?= DestignationType::BY_OTHER_POST ?>:
-                $('#bill-dataarray-value2').html($('#destignator-posts').html());
+                $('#bill-dataarray-destignationvalue2').html($('#destignator-posts').html());
                 break;
             case <?= DestignationType::BY_AGENCY_ELECTION ?>:
-                $('#bill-dataarray-value2').html($('#destignator-agencies').html());
+                $('#bill-dataarray-destignationvalue2').html($('#destignator-agencies').html());
                 break;
             case <?= DestignationType::BY_DISTRICT_ELECTION ?>:
-                $('#bill-dataarray-value2').html($('#destignator-districts').html());
+                $('#bill-dataarray-destignationvalue2').html($('#destignator-districts').html());
                 break;
             case <?= DestignationType::BY_REGION_ELECTION ?>:
-                $('#bill-dataarray-value2').html($('#destignator-regions').html());
+                $('#bill-dataarray-destignationvalue2').html($('#destignator-regions').html());
                 break;
             case <?= DestignationType::BY_CITY_ELECTION ?>:
-                $('#bill-dataarray-value2').html($('#destignator-cities').html());
+                $('#bill-dataarray-destignationvalue2').html($('#destignator-cities').html());
                 break;
             default:
-                $('#bill-dataarray-value2').empty();
+                $('#bill-dataarray-destignationvalue2').empty();
                 break;
         }
-    }
-    
-    function onPostChange() {
-        
-        var postId = parseInt($('#bill-dataarray-postid').val());
-        get_json('post/constitution', {
-            postId: postId,
-            type: <?= ConstitutionArticleType::DESTIGNATION_TYPE ?>
-        }, function(data) {
-            
-            var value = data.result.value ? parseInt(data.result.value) : 0,
-                value2 = data.result.value2 ? parseInt(data.result.value2) : 0,
-                value3 = data.result.value3 ? parseInt(data.result.value3) : 0;
-            
-            loadDestignatorList(value);
-            
-            $('#bill-dataarray-value').val(value).attr("selected", "selected");
-            $('#bill-dataarray-value2').val(value2).attr("selected", "selected");
-            
-            $('#bill-dataarray-value3 input').prop('checked', false);
-            if (value3 & <?= DestignationType::SECOND_TOUR ?>) {
-                $('#bill-dataarray-value3 input[value=<?= DestignationType::SECOND_TOUR ?>]').prop('checked', true);;
-            }
-            if (value3 & <?= DestignationType::NONE_OF_THE_ABOVE ?>) {
-                $('#bill-dataarray-value3 input[value=<?= DestignationType::NONE_OF_THE_ABOVE ?>]').prop('checked', true);;
-            }
-            
-            onFormChange();
-        });
     }
     
     function onFormChange() {
     
-        var value = parseInt($('#bill-dataarray-value').val()),
-            value2 = parseInt($('#bill-dataarray-value2').val());
+        var value = parseInt($('#bill-dataarray-destignationvalue').val());
     
         loadDestignatorList(value);
-        $('#bill-dataarray-value').val(value).attr("selected", "selected");
-        $('#bill-dataarray-value2').val(value2).attr("selected", "selected");
-        
+                
         switch (value) {
             case <?= DestignationType::BY_PRECURSOR ?>:
-                $('.field-bill-dataarray-value2').hide();
-                $('.field-bill-dataarray-value3').hide();
+                $('.field-bill-dataarray-destignationvalue2').hide();
+                $('.field-bill-dataarray-destignationvalue3').hide();
                 break;  
             case <?= DestignationType::BY_OTHER_POST ?>:
-                $('.field-bill-dataarray-value2').show();
-                $('.field-bill-dataarray-value3').hide();
+                $('.field-bill-dataarray-destignationvalue2').show();
+                $('.field-bill-dataarray-destignationvalue3').hide();
                 break;
             case <?= DestignationType::BY_STATE_ELECTION ?>:
-                $('.field-bill-dataarray-value2').hide();
-                $('.field-bill-dataarray-value3').show();
+                $('.field-bill-dataarray-destignationvalue2').hide();
+                $('.field-bill-dataarray-destignationvalue3').show();
                 break;
             default:
-                $('.field-bill-dataarray-value2').show();
-                $('.field-bill-dataarray-value3').show();
+                $('.field-bill-dataarray-destignationvalue2').show();
+                $('.field-bill-dataarray-destignationvalue3').show();
                 break;
         }
     }
     
-    $('#bill-dataarray-value').change(onFormChange);
-    $('#bill-dataarray-postid').change(onPostChange);
+    $('#bill-dataarray-destignationvalue').change(onFormChange);
     $(function(){
-        onPostChange();
+        onFormChange();
     });
     
 </script>
