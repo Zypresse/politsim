@@ -13,11 +13,14 @@ use Yii,
 final class PostController extends MyController
 {
     
-    public function actionConstitution(int $postId, int $type, int $subType = null)
+    public function actionConstitution(int $postId, $types)
     {
         $post = $this->getPost($postId);
-        $article = $post->constitution->getArticleByType($type, $subType);
-        $this->result = $article->getPublicAttributes();
+        $this->result = [];
+        foreach (explode(',', $types) as $type) {
+            $article = $post->constitution->getArticleByType($type);
+            $this->result[] = $article->getPublicAttributes();
+        }
         return $this->_r();
     }
     

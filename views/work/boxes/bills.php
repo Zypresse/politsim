@@ -26,7 +26,7 @@ use yii\helpers\Html,
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($post->state->billsActive as $bill): ?>
+                <?php foreach ($post->state->getBillsActive()->orderBy(['dateCreated' => SORT_DESC])->all() as $bill): ?>
                     <tr>
                         <td>
                             <?php if ($bill->user || $bill->post): ?>

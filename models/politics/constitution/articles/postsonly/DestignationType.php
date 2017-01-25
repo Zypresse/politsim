@@ -44,6 +44,14 @@ class DestignationType extends DropdownArticle
         ];
     }
     
+    public static function getSettingsList(): array
+    {
+        return [
+            static::SECOND_TOUR => Yii::t('app', 'Allows second tour'),
+            static::NONE_OF_THE_ABOVE => Yii::t('app', 'Add variant «None of the above»'),
+        ];
+    }
+    
     public function rules()
     {
         $type = (int)$this->value;
