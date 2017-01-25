@@ -52,6 +52,24 @@ class DestignationType extends DropdownArticle
         ];
     }
     
+    public static function getSelectedSettings($value)
+    {
+        if (is_array($value)) {
+            $sum = 0;
+            foreach ($value as $val) {
+                $sum |= (int)$val;
+            }
+            $value = $sum;
+        }
+        $selected = [];
+        foreach (static::getSettingsList() as $val => $name) {
+            if ($value & $val) {
+                $selected[$val] = $name;
+            }
+        }
+        return $selected;
+    }
+    
     public function rules()
     {
         $type = (int)$this->value;

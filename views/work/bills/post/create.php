@@ -42,6 +42,12 @@ $form = new ActiveForm();
     DestignationType::NONE_OF_THE_ABOVE => Yii::t('app', 'Add variant «None of the above»'),
 ])->label(Yii::t('app', 'Elections rules'))?>
 
+<?=$form->field($model, 'dataArray[toValue]')->textInput()->label(Yii::t('app', 'Terms of office (days)'))?>
+
+<?=$form->field($model, 'dataArray[teValue]')->textInput()->label(Yii::t('app', 'Registration for elections (days)'))?>
+<?=$form->field($model, 'dataArray[teValue2]')->textInput()->label(Yii::t('app', 'Pause between registration and voting (days)'))?>
+<?=$form->field($model, 'dataArray[teValue3]')->textInput()->label(Yii::t('app', 'Voting (days)'))?>
+
 <?php $form->end() ?>
 
 <?=Html::dropDownList('destignator-posts', null, ArrayHelper::map($post->state->posts, 'id', 'name'), ['id' => 'destignator-posts', 'class' => 'hide'])?>
@@ -110,6 +116,42 @@ $form = new ActiveForm();
         'error': '.help-block',
         'enableAjaxValidation': true
     });
+    
+    $form.yiiActiveForm('add', {
+        'id': 'bill-dataarray-tovalue',
+        'name': 'Bill[dataArray][toValue]',
+        'container': '.field-bill-dataarray-tovalue',
+        'input': '#bill-dataarray-tovalue',
+        'error': '.help-block',
+        'enableAjaxValidation': true
+    });
+    
+    $form.yiiActiveForm('add', {
+        'id': 'bill-dataarray-tevalue',
+        'name': 'Bill[dataArray][teValue]',
+        'container': '.field-bill-dataarray-tevalue',
+        'input': '#bill-dataarray-tevalue',
+        'error': '.help-block',
+        'enableAjaxValidation': true
+    });
+    
+    $form.yiiActiveForm('add', {
+        'id': 'bill-dataarray-tevalue2',
+        'name': 'Bill[dataArray][teValue2]',
+        'container': '.field-bill-dataarray-tevalue2',
+        'input': '#bill-dataarray-tevalue2',
+        'error': '.help-block',
+        'enableAjaxValidation': true
+    });
+    
+    $form.yiiActiveForm('add', {
+        'id': 'bill-dataarray-tevalue3',
+        'name': 'Bill[dataArray][teValue3]',
+        'container': '.field-bill-dataarray-tevalue3',
+        'input': '#bill-dataarray-tevalue3',
+        'error': '.help-block',
+        'enableAjaxValidation': true
+    });
         
     $form.on('submit', function() {
         if ($form.yiiActiveForm('data').validated) {
@@ -151,18 +193,38 @@ $form = new ActiveForm();
             case <?= DestignationType::BY_PRECURSOR ?>:
                 $('.field-bill-dataarray-destignationvalue2').hide();
                 $('.field-bill-dataarray-destignationvalue3').hide();
+                
+                $('.field-bill-dataarray-tovalue').hide();
+                $('.field-bill-dataarray-tevalue').hide();
+                $('.field-bill-dataarray-tevalue2').hide();
+                $('.field-bill-dataarray-tevalue3').hide();
                 break;  
             case <?= DestignationType::BY_OTHER_POST ?>:
                 $('.field-bill-dataarray-destignationvalue2').show();
                 $('.field-bill-dataarray-destignationvalue3').hide();
+                
+                $('.field-bill-dataarray-tovalue').hide();
+                $('.field-bill-dataarray-tevalue').hide();
+                $('.field-bill-dataarray-tevalue2').hide();
+                $('.field-bill-dataarray-tevalue3').hide();
                 break;
             case <?= DestignationType::BY_STATE_ELECTION ?>:
                 $('.field-bill-dataarray-destignationvalue2').hide();
                 $('.field-bill-dataarray-destignationvalue3').show();
+                
+                $('.field-bill-dataarray-tovalue').show();
+                $('.field-bill-dataarray-tevalue').show();
+                $('.field-bill-dataarray-tevalue2').show();
+                $('.field-bill-dataarray-tevalue3').show();
                 break;
             default:
                 $('.field-bill-dataarray-destignationvalue2').show();
                 $('.field-bill-dataarray-destignationvalue3').show();
+                
+                $('.field-bill-dataarray-tovalue').show();
+                $('.field-bill-dataarray-tevalue').show();
+                $('.field-bill-dataarray-tevalue2').show();
+                $('.field-bill-dataarray-tevalue3').show();
                 break;
         }
     }

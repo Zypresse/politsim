@@ -64,24 +64,6 @@ final class Destignation extends BillProto
             DestignationType::getNameStatic($bill->dataArray['value']),
         ]);
     }
-
-    private function getSelected($value)
-    {
-        if (is_array($value)) {
-            $sum = 0;
-            foreach ($value as $val) {
-                $sum |= (int)$val;
-            }
-            $value = $sum;
-        }
-        $selected = [];
-        foreach (DestignationType::getSettingsList() as $val => $name) {
-            if ($value & $val) {
-                $selected[$val] = $name;
-            }
-        }
-        return $selected;
-    }
     
     /**
      * 
@@ -111,7 +93,7 @@ final class Destignation extends BillProto
                     'bill' => $bill,
                     'post' => $post,
                     'agency' => $agency,
-                    'settings' => $this->getSelected($bill->dataArray['value3']),
+                    'settings' => DestignationType::getSelectedSettings($bill->dataArray['value3']),
                 ]);
             case DestignationType::BY_REGION_ELECTION:
                 $region = Region::findByPk($bill->dataArray['value2']);
@@ -119,7 +101,7 @@ final class Destignation extends BillProto
                     'bill' => $bill,
                     'post' => $post,
                     'region' => $region,
-                    'settings' => $this->getSelected($bill->dataArray['value3']),
+                    'settings' => DestignationType::getSelectedSettings($bill->dataArray['value3']),
                 ]);
             case DestignationType::BY_DISTRICT_ELECTION:
                 $district = ElectoralDistrict::findByPk($bill->dataArray['value2']);
@@ -127,7 +109,7 @@ final class Destignation extends BillProto
                     'bill' => $bill,
                     'post' => $post,
                     'district' => $district,
-                    'settings' => $this->getSelected($bill->dataArray['value3']),
+                    'settings' => DestignationType::getSelectedSettings($bill->dataArray['value3']),
                 ]);
             case DestignationType::BY_CITY_ELECTION:
                 $city = City::findByPk($bill->dataArray['value2']);
@@ -135,13 +117,13 @@ final class Destignation extends BillProto
                     'bill' => $bill,
                     'post' => $post,
                     'city' => $city,
-                    'settings' => $this->getSelected($bill->dataArray['value3']),
+                    'settings' => DestignationType::getSelectedSettings($bill->dataArray['value3']),
                 ]);
             case DestignationType::BY_STATE_ELECTION:
                 return Yii::$app->controller->render('/bills/renderfull/post/destignation/by-state-election', [
                     'bill' => $bill,
                     'post' => $post,
-                    'settings' => $this->getSelected($bill->dataArray['value3']),
+                    'settings' => DestignationType::getSelectedSettings($bill->dataArray['value3']),
                 ]);
         }
     }
@@ -198,15 +180,15 @@ final class Destignation extends BillProto
                             }
                             
                             $teInputed = true;
-                            if (!isset($bill->dataArray['teValue']) || !$bill->dataArray['teValue']) {
+                            if (!isset($bill->dataArray['teValue'])) {
                                 $bill->addError('dataArray[teValue]', Yii::t('app/bills', 'Registration time is required field'));
                                 $teInputed = false;
                             }
-                            if (!isset($bill->dataArray['teValue2']) || !$bill->dataArray['teValue2']) {
+                            if (!isset($bill->dataArray['teValue2'])) {
                                 $bill->addError('dataArray[teValue2]', Yii::t('app/bills', 'Election pause is required field'));
                                 $teInputed = false;
                             }
-                            if (!isset($bill->dataArray['teValue3']) || !$bill->dataArray['teValue3']) {
+                            if (!isset($bill->dataArray['teValue3'])) {
                                 $bill->addError('dataArray[teValue3]', Yii::t('app/bills', 'Voting time is required field'));
                                 $teInputed = false;
                             }

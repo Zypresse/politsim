@@ -27,7 +27,7 @@ use yii\helpers\Html,
 <section class="content">
     <div class="row">
         <div class="col-md-12">
-            <div class="box">
+            <div class="box <?=$bill->isFinished ? ($bill->isApproved ? 'box-success' : 'box-danger') : ''?>">
                 <div class="box-header">
                     <h2 class="box-title">
                         <?=$bill->render()?>
