@@ -163,30 +163,32 @@ $form = new ActiveForm();
         $('#same-regions-alert').slideUp();
     
         get_json('district/polygons', {ids: district1Id+','+district2Id}, function(data){
-//            var minLat = 180,
-//                minLon = 180,
-//                maxLat = -180,
-//                maxLon = -180;
+            
             for (var i = 0, l = data.result.length; i < l; i++) {
                 var region = data.result[i];
-//                tile.lat = parseFloat(tile.lat);
-//                tile.lon = parseFloat(tile.lon);
-//                
-//                if (tile.lat < minLat) {
-//                    minLat = tile.lat;
-//                }
-//                if (tile.lon < minLon) {
-//                    minLon = tile.lon;
-//                }
-//                if (tile.lat > maxLat) {
-//                    maxLat = tile.lat;
-//                }
-//                if (tile.lon > maxLon) {
-//                    maxLon = tile.lon;
-//                }
                 regions.push(renderRegion(region.coords));
             }
-//            map.fitBounds([[minLat-1, minLon-1], [maxLat+1, maxLon+1]]);
+            
+            var minLat = 180,
+                minLon = 180,
+                maxLat = -180,
+                maxLon = -180;
+            for (var i = 0; i < regions.length; i++) {
+                var bounds = regions[i].getBounds();
+                if (bounds._northEast.lat > maxLat) {
+                    maxLat = bounds._northEast.lat;
+                }
+                if (bounds._southWest.lat < minLat) {
+                    minLat = bounds._southWest.lat;
+                }
+                if (bounds._northEast.lng < minLon) {
+                    minLon = bounds._northEast.lng;
+                }
+                if (bounds._southWest.lng > maxLon) {
+                    maxLon = bounds._southWest.lng;
+                }
+            }
+            map.fitBounds([[minLat, minLon], [maxLat, maxLon]]);
         });
     }
     

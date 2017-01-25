@@ -3,9 +3,10 @@
 namespace app\models\politics\bills\prototypes\region;
 
 use Yii,
+    app\components\LinkCreator,
+    app\components\TileCombiner,
     app\models\politics\bills\BillProto,
     app\models\politics\bills\Bill,
-    app\components\LinkCreator,
     app\models\politics\Region,
     app\models\politics\City,
     app\models\politics\constitution\ConstitutionArticle,
@@ -50,6 +51,21 @@ class Implode extends BillProto
         ]);
     }
 
+    /**
+     * 
+     * @param Bill $bill
+     */
+    public function renderFull($bill) : string
+    {
+        $region1 = Region::findByPk($bill->dataArray['region1Id']);
+        $region2 = Region::findByPk($bill->dataArray['region2Id']);
+        
+        return Yii::$app->controller->render('/bills/renderfull/region/implode', [
+            'region1' => $region1,
+            'region2' => $region2,
+        ]);
+    }
+    
     /**
      * 
      * @param Bill $bill

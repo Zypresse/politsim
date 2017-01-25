@@ -3,9 +3,10 @@
 namespace app\models\politics\bills\prototypes\district;
 
 use Yii,
+    yii\helpers\Html,
+    app\components\TileCombiner,
     app\models\politics\bills\BillProto,
     app\models\politics\bills\Bill,
-    yii\helpers\Html,
     app\models\politics\elections\ElectoralDistrict,
     app\models\politics\constitution\ConstitutionArticle,
     app\models\politics\constitution\ConstitutionArticleType,
@@ -42,8 +43,23 @@ class Implode extends BillProto
         $district1 = ElectoralDistrict::findByPk($bill->dataArray['district1Id']);
         $district2 = ElectoralDistrict::findByPk($bill->dataArray['district2Id']);
         return Yii::t('app/bills', 'Include electoral district «{0}» to electoral district «{1}»', [
-            Html::encode($district1->name),
             Html::encode($district2->name),
+            Html::encode($district1->name),
+        ]);
+    }
+    
+    /**
+     * 
+     * @param Bill $bill
+     */
+    public function renderFull($bill) : string
+    {
+        $district1 = ElectoralDistrict::findByPk($bill->dataArray['district1Id']);
+        $district2 = ElectoralDistrict::findByPk($bill->dataArray['district2Id']);
+                
+        return Yii::$app->controller->render('/bills/renderfull/district/implode', [
+            'district1' => $district1,
+            'district2' => $district2,
         ]);
     }
 

@@ -7,6 +7,7 @@ use Yii,
     app\models\politics\bills\Bill,
     app\models\Tile,
     app\models\politics\elections\ElectoralDistrict,
+    app\components\TileCombiner,
     yii\helpers\Html;
         
 /**
@@ -43,6 +44,41 @@ class ChangeBorders extends BillProto
         return Yii::t('app/bills', 'Change border between electoral districts «{0}» and «{1}»', [
             Html::encode($district1->name),
             Html::encode($district2->name),
+        ]);
+    }
+    
+    /**
+     * 
+     * @param Bill $bill
+     */
+    public function renderFull($bill) : string
+    {
+        $district1 = ElectoralDistrict::findByPk($bill->dataArray['district1Id']);
+        $district2 = ElectoralDistrict::findByPk($bill->dataArray['district2Id']);
+        $tiles1query = Tile::find()->where(['in', 'id', $bill->dataArray['tiles1']]);
+        $tiles2query = Tile::find()->where(['in', 'id', $bill->dataArray['tiles2']]);
+        
+        $polygon1path = Yii::$app->basePath.'/data/polygons/bills/'.$bill->id.'-1.json';
+        $polygon2path = Yii::$app->basePath.'/data/polygons/bills/'.$bill->id.'-2.json';
+        
+        if (file_exists($polygon1path)) {
+            $polygon1 = file_get_contents($polygon1path);
+        } else {
+            $polygon1 = json_encode(TileCombiner::combine($tiles1query));
+            file_put_contents($polygon1path, $polygon1);
+        }
+        if (file_exists($polygon2path)) {
+            $polygon2 = file_get_contents($polygon2path);
+        } else {
+            $polygon2 = json_encode(TileCombiner::combine($tiles2query));
+            file_put_contents($polygon2path, $polygon2);
+        }
+        
+        return Yii::$app->controller->render('/bills/renderfull/district/change-borders', [
+            'district1' => $district1,
+            'district2' => $district2,
+            'polygon1' => $polygon1,
+            'polygon2' => $polygon2,
         ]);
     }
 

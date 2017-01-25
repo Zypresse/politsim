@@ -174,7 +174,7 @@ $form = new ActiveForm();
     function resetHighlight(e) {
         e.target.setStyle({
             fillColor: e.target.isSelected ? 'red' : 'blue',
-            fillOpacity: e.target.isSelected && e.target.isSelected !== e.target.isSelectedDefault ? 0.7 : 0.3
+            fillOpacity: e.target.isSelected !== e.target.isSelectedDefault ? 0.7 : 0.3
         });
     }
     

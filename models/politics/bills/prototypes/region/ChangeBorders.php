@@ -5,10 +5,10 @@ namespace app\models\politics\bills\prototypes\region;
 use Yii,
     app\models\politics\bills\BillProto,
     app\models\politics\bills\Bill,
+    app\models\politics\Region,
     app\models\Tile,
     app\components\LinkCreator,
-    app\models\politics\Region,
-    yii\helpers\Html;
+    app\components\TileCombiner;
         
 /**
  * Изменение границы регионов
@@ -70,6 +70,41 @@ class ChangeBorders extends BillProto
         ]);
     }
 
+    /**
+     * 
+     * @param Bill $bill
+     */
+    public function renderFull($bill) : string
+    {
+        $region1 = Region::findByPk($bill->dataArray['region1Id']);
+        $region2 = Region::findByPk($bill->dataArray['region2Id']);
+        $tiles1query = Tile::find()->where(['in', 'id', $bill->dataArray['tiles1']]);
+        $tiles2query = Tile::find()->where(['in', 'id', $bill->dataArray['tiles2']]);
+        
+        $polygon1path = Yii::$app->basePath.'/data/polygons/bills/'.$bill->id.'-1.json';
+        $polygon2path = Yii::$app->basePath.'/data/polygons/bills/'.$bill->id.'-2.json';
+        
+        if (file_exists($polygon1path)) {
+            $polygon1 = file_get_contents($polygon1path);
+        } else {
+            $polygon1 = json_encode(TileCombiner::combine($tiles1query));
+            file_put_contents($polygon1path, $polygon1);
+        }
+        if (file_exists($polygon2path)) {
+            $polygon2 = file_get_contents($polygon2path);
+        } else {
+            $polygon2 = json_encode(TileCombiner::combine($tiles2query));
+            file_put_contents($polygon2path, $polygon2);
+        }
+        
+        return Yii::$app->controller->render('/bills/renderfull/region/change-borders', [
+            'region1' => $region1,
+            'region2' => $region2,
+            'polygon1' => $polygon1,
+            'polygon2' => $polygon2,
+        ]);
+    }
+    
     /**
      * 
      * @param Bill $bill

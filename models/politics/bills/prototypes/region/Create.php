@@ -5,9 +5,10 @@ namespace app\models\politics\bills\prototypes\region;
 use Yii,
     app\models\politics\bills\BillProto,
     app\models\politics\bills\Bill,
+    app\models\politics\Region,
     app\models\Tile,
     app\components\LinkCreator,
-    app\models\politics\Region,
+    app\components\TileCombiner,
     yii\helpers\Html;
         
 /**
@@ -70,6 +71,31 @@ class Create extends BillProto
         ]);
     }
 
+    /**
+     * 
+     * @param Bill $bill
+     */
+    public function renderFull($bill) : string
+    {
+        $region = Region::findByPk($bill->dataArray['regionId']);
+        $tilesQuery = Tile::find()->where(['in', 'id', $bill->dataArray['tiles']]);
+        
+        $polygonPath = Yii::$app->basePath.'/data/polygons/bills/'.$bill->id.'.json';
+        
+        if (file_exists($polygonPath)) {
+            $polygon = file_get_contents($polygonPath);
+        } else {
+            $polygon = json_encode(TileCombiner::combine($tilesQuery));
+            file_put_contents($polygonPath, $polygon);
+        }
+        
+        return Yii::$app->controller->render('/bills/renderfull/region/create', [
+            'bill' => $bill,
+            'region' => $region,
+            'polygon' => $polygon,
+        ]);
+    }
+    
     /**
      * 
      * @param Bill $bill
