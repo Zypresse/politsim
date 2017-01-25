@@ -57,6 +57,11 @@ abstract class ConstitutionArticleType
      * Официальная валюта
      */
     const CURRENCY = 10;
+    
+    /**
+     * Разрешения деятельности частных компаний
+     */
+    const BUISNESS = 11;
         
     /**
      * 
@@ -76,6 +81,7 @@ abstract class ConstitutionArticleType
             static::BILLS => 'statesonly\\Bills',
             static::MULTIMEMBERSHIP => 'statesonly\\Multimembership',
             static::CURRENCY => 'statesonly\\Currency',
+            static::BUISNESS => 'statesonly\\Buisness',
         ];
         
         return '\\app\\models\\politics\\constitution\\articles\\'.$classes[$type];

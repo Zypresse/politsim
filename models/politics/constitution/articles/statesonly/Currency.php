@@ -5,7 +5,7 @@ namespace app\models\politics\constitution\articles\statesonly;
 use Yii,
     yii\helpers\ArrayHelper,
     app\models\politics\constitution\articles\base\DropdownArticle,
-    app\models\politics\constitution\articles\statesonly\Currency as CurrencyModel;
+    app\models\economics\resources\Currency as CurrencyModel;
 
 /**
  * Официальная валюта государства

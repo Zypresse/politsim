@@ -2,8 +2,7 @@
 
 namespace app\models\economics\resources;
 
-use Yii,
-    app\models\economics\resources\base\NoSubtypesResourceProto;
+use app\models\economics\resources\base\NoSubtypesResourceProto;
 
 /**
  * 

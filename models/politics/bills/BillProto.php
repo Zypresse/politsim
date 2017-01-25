@@ -134,6 +134,11 @@ abstract class BillProto implements BillProtoInterface
      * Переименовать пост
      */
     const RENAME_POST = 25;
+    
+    /**
+     * Разрешить/запретить частный бизнес
+     */
+    const BUISNESS = 26;
 
 
     public static function findAll()
@@ -170,6 +175,7 @@ abstract class BillProto implements BillProtoInterface
             
             static::PARTIES_POLITIC => Yii::t('app/bills', 'Change parties politic'),
             static::MULTIPOST_POLITIC => Yii::t('app/bills', 'Allow/disallow more than one agency post to user'),
+            static::BUISNESS => Yii::t('app/bills', 'Allow/disallow buisness'),
         ];
     }
     
@@ -206,6 +212,7 @@ abstract class BillProto implements BillProtoInterface
             static::CREATE_POST => 'post\\Create',
             static::POST_POWERS => 'post\\Powers',
             static::RENAME_POST => 'post\\Rename',
+            static::BUISNESS => 'constitution\\Buisness',
         ];
         
         return '\\app\\models\\politics\\bills\\prototypes\\'.$classes[$type];
@@ -244,6 +251,7 @@ abstract class BillProto implements BillProtoInterface
             static::CREATE_POST => 'post/create',
             static::POST_POWERS => 'post/powers',
             static::RENAME_POST => 'post/rename',
+            static::BUISNESS => 'constitution/buisness',
         ];
         
         return '/work/bills/'.$views[$type];
@@ -274,6 +282,7 @@ abstract class BillProto implements BillProtoInterface
                 return Yii::t('app', 'Cities');
             case static::PARTIES_POLITIC:
             case static::MULTIPOST_POLITIC:
+            case static::BUISNESS:
                 return Yii::t('app', 'Constitution');
             case static::CREATE_DISTRICT:
             case static::IMPLODE_DISTRICTS:

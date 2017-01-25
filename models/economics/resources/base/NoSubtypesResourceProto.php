@@ -11,9 +11,17 @@ use yii\base\Model,
 abstract class NoSubtypesResourceProto extends Model implements ResourceProtoInterface
 {
     
+    /**
+     * ID субпрототипа
+     * @var integer
+     */
+    public $id;
+    
     public static function loadSubtype($subId = null)
     {
-        return new static();
+        return new static([
+            'id' => $subId,
+        ]);
     }
     
 }

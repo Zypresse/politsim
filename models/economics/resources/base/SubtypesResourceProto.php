@@ -16,6 +16,4 @@ abstract class SubtypesResourceProto extends MyActiveRecord implements ResourceP
         return static::findByPk($subId);
     }
     
-    abstract public static function tableName();
-    
 }

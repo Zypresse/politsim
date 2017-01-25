@@ -59,6 +59,10 @@ use yii\helpers\Html,
                                     <td><?=MyHtmlHelper::formateNumberword($state->constitution->getArticleByType(ConstitutionArticleType::BILLS)->value, 'часов', 'час', 'часа')?></td>
                                 </tr>
                                 <tr>
+                                    <th><?=Yii::t('app', 'Buisness allowed')?></th>
+                                    <td><?=$state->constitution->getArticleByType(ConstitutionArticleType::BUISNESS)->name?></td>
+                                </tr>
+                                <tr>
                                     <th><?=Yii::t('app', 'Official currency')?></th>
                                     <td><?=$state->constitution->getArticleByType(ConstitutionArticleType::CURRENCY)->name?></td>
                                 </tr>

@@ -19,7 +19,7 @@ $form = new ActiveForm();
     'action' => Url::to(['work/new-bill']),
     'enableClientValidation' => true,
     'enableAjaxValidation' => true,
-    'validationUrl' => Url::to(['work/new-bill-form', 'postId' => $post->id, 'protoId' => BillProto::MULTIPOST_POLITIC])
+    'validationUrl' => Url::to(['work/new-bill-form', 'postId' => $post->id, 'protoId' => BillProto::BUISNESS])
 ]) ?>
 
 <?=$form->field($model, 'protoId', ['labelOptions' => ['class' => 'hide']])->hiddenInput()?>
@@ -30,7 +30,7 @@ $form = new ActiveForm();
 <?=$form->field($model, 'dataArray[value]')->dropDownList([
     0 => Yii::t('yii', 'No'),
     1 => Yii::t('yii', 'Yes'),
-])->label(Yii::t('app', 'Allow more than one agency post to user'))?>
+])->label(Yii::t('app', 'Allow buisness'))?>
 
 <?php $form->end() ?>
 

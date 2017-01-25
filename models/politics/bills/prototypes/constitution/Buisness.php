@@ -5,12 +5,13 @@ namespace app\models\politics\bills\prototypes\constitution;
 use Yii,
     app\models\politics\bills\BillProto,
     app\models\politics\bills\Bill,
-    app\models\politics\constitution\ConstitutionArticleType;
+    app\models\politics\constitution\ConstitutionArticleType,
+    app\models\politics\constitution\articles\statesonly\Buisness as BuisnessArticle;
 
 /**
  * 
  */
-class Multipost extends BillProto
+final class Buisness extends BillProto
 {
     
     /**
@@ -19,7 +20,7 @@ class Multipost extends BillProto
      */
     public function accept($bill): bool
     {
-        return $bill->state->constitution->setArticleByType(ConstitutionArticleType::MULTIPOST, null, !!$bill->dataArray['value']);
+        return $bill->state->constitution->setArticleByType(ConstitutionArticleType::BUISNESS, null, !!$bill->dataArray['value']);
     }
 
     /**
@@ -28,7 +29,7 @@ class Multipost extends BillProto
      */
     public function render($bill): string
     {
-        return Yii::t('app/bills', $bill->dataArray['value'] ? 'Allow more than one agency post to user' : 'Disallow more than one agency post to user');
+        return $bill->dataArray['value'] ? Yii::t('app', 'Allow buisness') : Yii::t('app', 'Disallow buisness');
     }
 
     /**
@@ -38,7 +39,7 @@ class Multipost extends BillProto
     public function validate($bill): bool
     {
         if (!isset($bill->dataArray['value'])) {
-            $bill->addError('dataArray[value]', Yii::t('app/bills', 'Multipost politic is required field'));
+            $bill->addError('dataArray[value]', Yii::t('app/bills', 'Allow buisness is required field'));
         }
         
         return !!count($bill->getErrors());
@@ -50,8 +51,8 @@ class Multipost extends BillProto
      */
     public function getDefaultData($bill)
     {
-        /* @var $article \app\models\politics\constitution\articles\statesonly\Multipost */
-        $article = $bill->state->constitution->getArticleByType(ConstitutionArticleType::MULTIPOST);
+        /* @var $article BuisnessArticle */
+        $article = $bill->state->constitution->getArticleByType(ConstitutionArticleType::BUISNESS);
         return ['value' => !!$article->value];
     }
 
