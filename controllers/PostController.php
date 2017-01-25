@@ -18,7 +18,12 @@ final class PostController extends MyController
         $post = $this->getPost($postId);
         $this->result = [];
         foreach (explode(',', $types) as $type) {
-            $article = $post->constitution->getArticleByType($type);
+            if (strpos($type,':') > -1) {
+                list($type, $subType) = explode(':', $type);
+            } else {
+                $subType = null;
+            }
+            $article = $post->constitution->getArticleByType($type, $subType);
             $this->result[] = $article->getPublicAttributes();
         }
         return $this->_r();
