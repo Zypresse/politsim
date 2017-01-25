@@ -3,8 +3,7 @@
 namespace app\models\economics\resources;
 
 use Yii,
-    app\models\base\MyActiveRecord,
-    app\models\economics\ResourceProtoInterface;
+    app\models\economics\resources\base\SubtypesResourceProto;
 
 /**
  * Валюта
@@ -17,10 +16,8 @@ use Yii,
  * @property double $exchangeRate
  * @property double $exchangeRateReal
  */
-class Currency extends MyActiveRecord implements ResourceProtoInterface
+final class Currency extends SubtypesResourceProto
 {
-    
-    use \app\models\economics\BaseSubtypesResource;
     
     /**
      * @inheritdoc

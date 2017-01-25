@@ -28,7 +28,7 @@ class ResourceProto
         return 'app\\models\\economics\\resources\\'.$classes[$id];
     }
     
-    public static function getPrototype(int $id, int $subId)
+    public static function getPrototype(int $id, $subId = null)
     {
         $className = static::getClassNameByType($id);
         return $className::loadSubtype($subId);
