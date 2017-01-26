@@ -22,17 +22,13 @@ final class BasicParliament implements AgencyTemplateInterface
      * @param integer $stateId
      * @return Agency
      */
-    public static function create(int $stateId)
+    public static function create(int $stateId, $params = [])
     {
         $state = State::findByPk($stateId);
         $agency = new Agency([
             'stateId' => $stateId,
-            'name' => Yii::t('app/agencies', 'Parliament of «{0}»', [
-                $state->name,
-            ]),
-            'nameShort' => Yii::t('app/agencies', 'P{0}', [
-                $state->nameShort,
-            ]),
+            'name' => $params['name'],
+            'nameShort' => $params['nameShort'],
         ]);
         $agency->save();
         
