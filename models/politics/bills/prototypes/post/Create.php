@@ -233,7 +233,7 @@ final class Create extends BillProto
             }
         }
         
-        return !!count($bill->getErrors());
+        return !count($bill->getErrors());
     }
 
 }

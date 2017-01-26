@@ -81,7 +81,7 @@ final class Powers extends BillProto
             }
         }
         
-        return !!count($bill->getErrors());
+        return !count($bill->getErrors());
     }
     
     /**

@@ -16,6 +16,11 @@ use Yii,
  * @property integer $quality качество ресурса
  * @property integer $deterioration износ ресурса
  * @property double $count количество единиц ресурса
+ * 
+ * @property ResourceProtoInterface $proto
+ * @property TaxPayer $master
+ * @property TaxPayer $location
+ * 
  */
 class Resource extends MyActiveRecord
 {
@@ -68,6 +73,26 @@ class Resource extends MyActiveRecord
             $this->_proto = ResourceProto::getPrototype($this->protoId, $this->subProtoId);
         }
         return $this->_proto;
+    }
+    
+    public function getMasterUtr()
+    {
+        return $this->hasOne(Utr::className(), ['id' => 'masterId']);
+    }
+    
+    public function getMaster()
+    {
+        return $this->masterUtr->object;
+    }
+
+    public function getLocationUtr()
+    {
+        return $this->hasOne(Utr::className(), ['id' => 'locationId']);
+    }
+    
+    public function getLocation()
+    {
+        return $this->locationUtr->object;
     }
     
 }

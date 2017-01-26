@@ -105,9 +105,9 @@ class State extends ConstitutionOwner
      * @param integer $stateId
      * @return boolean
      */
-    public function isGoverment($stateId)
+    public function isGoverment(int $stateId)
     {
-        return $this->id === $stateId;
+        return (int)$this->id === $stateId;
     }
             
     /**
@@ -124,9 +124,9 @@ class State extends ConstitutionOwner
      * @param integer $stateId
      * @return boolean
      */
-    public function isTaxedInState($stateId)
+    public function isTaxedInState(int $stateId)
     {
-        return $this->id === $stateId;
+        return (int)$this->id === $stateId;
     }
     
     /**
@@ -142,7 +142,7 @@ class State extends ConstitutionOwner
      * @param integer $userId
      * @return boolean
      */
-    public function isUserController($userId)
+    public function isUserController(int $userId)
     {
         return false;
     }    

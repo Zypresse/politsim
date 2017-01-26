@@ -3,13 +3,14 @@
 namespace app\models\economics;
 
 use app\models\User,
-    app\models\Pop,
+    app\models\population\Pop,
     app\models\politics\State,
     app\models\politics\Region,
     app\models\politics\City,
     app\models\politics\Agency,
     app\models\politics\AgencyPost,
-    app\models\politics\Party;
+    app\models\politics\Party,
+    app\models\economics\Company;
 
 /**
  * 
@@ -46,6 +47,7 @@ abstract class UtrType
             static::POST => AgencyPost::className(),
             static::PARTY => Party::className(),
             static::POP => Pop::className(),
+            static::COMPANY => Company::className(),
         ][$type];
     }
     

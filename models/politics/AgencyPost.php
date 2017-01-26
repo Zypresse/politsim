@@ -148,12 +148,12 @@ class AgencyPost extends ElectionOwner
 
     public function getTaxStateId(): int
     {
-        return $this->stateId;
+        return (int)$this->stateId;
     }
 
     public function getUserControllerId()
     {
-        return $this->userId;
+        return (int)$this->userId;
     }
 
     public function getUtrType(): int
@@ -161,19 +161,19 @@ class AgencyPost extends ElectionOwner
         return UtrType::POST;
     }
 
-    public function isGoverment($stateId): bool
+    public function isGoverment(int $stateId): bool
     {
-        return $this->stateId == $stateId;
+        return (int)$this->stateId == $stateId;
     }
 
-    public function isTaxedInState($stateId): bool
+    public function isTaxedInState(int $stateId): bool
     {
-        return $this->stateId == $stateId;
+        return (int)$this->stateId == $stateId;
     }
 
-    public function isUserController($userId): bool
+    public function isUserController(int $userId): bool
     {
-        return $this->userId == $userId;
+        return (int)$this->userId == $userId;
     }
 
     public static function getConstitutionOwnerType(): int

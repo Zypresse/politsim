@@ -59,7 +59,7 @@ class ChangeAnthem extends BillProto
         } else if (!LinkHelper::isSoundCloudLink($bill->dataArray['anthem'])) {
             $bill->addError('dataArray[anthem]', Yii::t('app/bills', 'Anthem must be valid SoundCloud link'));
         }
-        return !!count($bill->getErrors());
+        return !count($bill->getErrors());
     }
 
 }

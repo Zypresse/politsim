@@ -72,10 +72,10 @@ class WorkController extends MyController
         }
         
         $types = BillProto::findAll();
-        /* @var $type BillProto */
-        foreach ($types as $i => $type) {
-            if (!$type->isAvailable($post->state)) {
-                unset($types[$i]);
+        foreach ($types as $id => $name) {
+            $className = BillProto::getClassNameByType($id);
+            if (!$className::isAvailable($post->state)) {
+                unset($types[$id]);
             }
         }
         

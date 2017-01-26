@@ -59,7 +59,7 @@ class ChangeFlag extends BillProto
         } else if (!LinkHelper::isImageLink($bill->dataArray['flag'])) {
             $bill->addError('dataArray[flag]', Yii::t('app/bills', 'Flag must be valid link to image'));
         }
-        return !!count($bill->getErrors());
+        return !count($bill->getErrors());
         
     }
 

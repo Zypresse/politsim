@@ -147,7 +147,7 @@ class ChangeBorders extends BillProto
             }
         }
         
-        return !!count($bill->getErrors());
+        return !count($bill->getErrors());
         
     }
 

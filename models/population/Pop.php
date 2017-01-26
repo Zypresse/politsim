@@ -88,12 +88,12 @@ class Pop extends TaxPayerModel
     
     public function getTaxStateId()
     {
-        return $this->tile->region ? $this->tile->region->stateId : null;
+        return $this->tile->region ? (int)$this->tile->region->stateId : null;
     }
 
-    public function isTaxedInState($stateId)
+    public function isTaxedInState(int $stateId)
     {
-        return $this->tile->region ? $this->tile->region->stateId == $stateId : false;
+        return $this->tile->region ? (int)$this->tile->region->stateId == $stateId : false;
     }
 
     public function getUserControllerId()
@@ -101,7 +101,7 @@ class Pop extends TaxPayerModel
         return null;
     }
 
-    public function isUserController($userId)
+    public function isUserController(int $userId)
     {
         return false;
     }
@@ -111,7 +111,7 @@ class Pop extends TaxPayerModel
         return UtrType::POP;
     }
 
-    public function isGoverment($stateId)
+    public function isGoverment(int $stateId)
     {
         return false;
     }

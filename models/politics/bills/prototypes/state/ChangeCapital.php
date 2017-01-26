@@ -52,7 +52,7 @@ class ChangeCapital extends BillProto
                 $bill->addError('dataArray[cityId]', Yii::t('app/bills', 'City allready is capital'));
             }
         }
-        return !!count($bill->getErrors());
+        return !count($bill->getErrors());
     }
     
     /**

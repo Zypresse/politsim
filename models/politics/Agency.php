@@ -75,17 +75,17 @@ class Agency extends ConstitutionOwner
 
     public function getTaxStateId()
     {
-        return $this->stateId;
+        return (int)$this->stateId;
     }
 
-    public function isTaxedInState($stateId)
+    public function isTaxedInState(int $stateId)
     {
-        return $this->stateId == $stateId;
+        return (int)$this->stateId == $stateId;
     }
 
-    public function isGoverment($stateId)
+    public function isGoverment(int $stateId)
     {
-        return $this->stateId == $stateId;
+        return (int)$this->stateId == $stateId;
     }
     
     public function getUserControllerId()
@@ -93,7 +93,7 @@ class Agency extends ConstitutionOwner
         return false;
     }
 
-    public function isUserController($userId)
+    public function isUserController(int $userId)
     {
         return false;
     }

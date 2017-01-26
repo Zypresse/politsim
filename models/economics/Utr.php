@@ -40,7 +40,7 @@ class Utr extends MyActiveRecord
      */
     public function getObject()
     {
-        $this->hasOne(UtrType::typeToClass($this->objectType), ['id' => 'objectId']);
+        return $this->hasOne(UtrType::typeToClass($this->objectType), ['id' => 'objectId']);
     }
 
 }

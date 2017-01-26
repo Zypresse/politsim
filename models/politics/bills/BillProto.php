@@ -157,10 +157,6 @@ abstract class BillProto implements BillProtoInterface
      */
     const COMPANY_CREATE = 29;
 
-    /**
-     * 
-     * @return \static[]
-     */
     public static function findAll()
     {
         return [
@@ -358,7 +354,7 @@ abstract class BillProto implements BillProtoInterface
         return $this->render($bill);
     }
     
-    public function isAvailable(State $state) : bool
+    public static function isAvailable(State $state) : bool
     {
         return true;
     }

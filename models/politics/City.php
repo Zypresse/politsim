@@ -72,9 +72,9 @@ class City extends ConstitutionOwner
      * @param integer $stateId
      * @return boolean
      */
-    public function isGoverment($stateId)
+    public function isGoverment(int $stateId)
     {
-        return $this->region && $this->region->stateId === $stateId;
+        return $this->region && (int)$this->region->stateId === $stateId;
     }
             
     /**
@@ -83,7 +83,7 @@ class City extends ConstitutionOwner
      */
     public function getTaxStateId()
     {
-        return $this->region ? $this->region->stateId : 0;
+        return $this->region ? (int)$this->region->stateId : 0;
     }
     
     /**
@@ -91,9 +91,9 @@ class City extends ConstitutionOwner
      * @param integer $stateId
      * @return boolean
      */
-    public function isTaxedInState($stateId)
+    public function isTaxedInState(int $stateId)
     {
-        return $this->region && $this->region->stateId === $stateId;
+        return $this->region && (int)$this->region->stateId === $stateId;
     }
     
     /**
@@ -109,7 +109,7 @@ class City extends ConstitutionOwner
      * @param integer $userId
      * @return boolean
      */
-    public function isUserController($userId)
+    public function isUserController(int $userId)
     {
         return false;
     }    

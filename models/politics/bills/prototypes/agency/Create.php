@@ -54,6 +54,6 @@ final class Create extends BillProto
         if (!isset($bill->dataArray['nameShort']) || !$bill->dataArray['nameShort']) {
             $bill->addError('dataArray[nameShort]', Yii::t('app/bills', 'Agency short name is required field'));
         }
-        return !!count($bill->getErrors());
+        return !count($bill->getErrors());
     }
 }

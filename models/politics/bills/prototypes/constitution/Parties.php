@@ -81,7 +81,7 @@ class Parties extends BillProto
                 }
             }
         }
-        return !!count($bill->getErrors());
+        return !count($bill->getErrors());
     }
     
     public function getDefaultData($bill)

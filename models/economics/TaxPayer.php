@@ -19,21 +19,21 @@ interface TaxPayer {
      * @param integer $stateId
      * @return boolean
      */
-    public function isGoverment($stateId);
+    public function isGoverment(int $stateId);
     
     /**
      * Возвращает баланс плательщика в у.е.
      * @param integer $currencyId
      * @return double
      */
-    public function getBalance($currencyId);
+    public function getBalance(int $currencyId);
     
     /**
      * Меняет баланс плательщика
      * @param integer $currencyId
      * @param double $delta
      */
-    public function changeBalance($currencyId, $delta);
+    public function changeBalance(int $currencyId, $delta);
     
     /**
      * Возвращает константное значение типа налогоплательщика
@@ -52,7 +52,7 @@ interface TaxPayer {
      * @param integer $stateId
      * @return boolean
      */
-    public function isTaxedInState($stateId);
+    public function isTaxedInState(int $stateId);
     
     /**
      * ID юзера, который управляет этим налогоплательщиком
@@ -64,6 +64,6 @@ interface TaxPayer {
      * @param integer $userId
      * @return boolean
      */
-    public function isUserController($userId);
+    public function isUserController(int $userId);
     
 }

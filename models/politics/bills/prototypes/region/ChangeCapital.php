@@ -68,7 +68,7 @@ class ChangeCapital extends BillProto
             }
         }
         
-        return !!count($bill->getErrors());
+        return !count($bill->getErrors());
     }
     
 }

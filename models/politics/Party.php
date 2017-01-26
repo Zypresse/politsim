@@ -148,7 +148,7 @@ class Party extends TaxPayerModel
      * @param integer $stateId
      * @return boolean
      */
-    public function isGoverment($stateId)
+    public function isGoverment(int $stateId)
     {
         return false;
     }
@@ -159,7 +159,7 @@ class Party extends TaxPayerModel
      */
     public function getTaxStateId()
     {
-        return $this->stateId;
+        return (int)$this->stateId;
     }
     
     /**
@@ -167,9 +167,9 @@ class Party extends TaxPayerModel
      * @param integer $stateId
      * @return boolean
      */
-    public function isTaxedInState($stateId)
+    public function isTaxedInState(int $stateId)
     {
-        return $this->stateId === $stateId;
+        return (int)$this->stateId === $stateId;
     }
     
     /**
@@ -177,7 +177,7 @@ class Party extends TaxPayerModel
      */
     public function getUserControllerId()
     {
-        return $this->leaderPost->userId;
+        return (int)$this->leaderPost->userId;
     }
     
     /**
@@ -185,9 +185,9 @@ class Party extends TaxPayerModel
      * @param integer $userId
      * @return boolean
      */
-    public function isUserController($userId)
+    public function isUserController(int $userId)
     {
-        return $this->leaderPost->userId == $userId;
+        return (int)$this->leaderPost->userId == $userId;
     }    
     
     public function beforeSave($insert)

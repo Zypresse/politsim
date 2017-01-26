@@ -16,6 +16,7 @@ use Yii,
     app\models\politics\constitution\templates\Bulbostan,
     app\models\politics\elections\ElectionManager,
     app\models\Tile,
+    app\models\economics\Company,
     app\models\population\Pop,
     app\models\population\PopClass,
     app\models\politics\constitution\ConstitutionArticleType,
@@ -38,7 +39,8 @@ class TestController extends Controller
 //        echo models\Region::findByPk(33)->getPolygon(true);
 //        echo models\State::findByPk(5)->getPolygon(true);
 //        echo models\Tile::find()->count('id');
-//        $state = State::find()->one();
+        $state = State::find()->one();
+        var_dump($state->getUtr());
 //        
 //        $state->updateParams(true, false);
 //        $pop = 0;
@@ -58,9 +60,14 @@ class TestController extends Controller
 //        }
 //        print_r($randCounts);
         
-        $region = Region::find()->where(['nameShort' => 'BY-MI'])->one();
-        echo $region->name.PHP_EOL;
-        var_dump($region->updateParams());
+//        $region = Region::find()->where(['nameShort' => 'BY-MI'])->one();
+//        echo $region->name.PHP_EOL;
+//        var_dump($region->updateParams());
+        
+        
+        $company = Company::find()->one();
+        echo $company->name.PHP_EOL;
+        var_dump($company->updateParams());
     }
     
     public function actionCreateElectionsObject()

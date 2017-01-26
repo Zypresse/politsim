@@ -3,6 +3,7 @@
 namespace app\models\economics;
 
 use Yii,
+    yii\behaviors\TimestampBehavior,
     app\models\economics\TaxPayerModel,
     app\models\User,
     app\models\politics\State;
@@ -64,7 +65,7 @@ class Company extends TaxPayerModel
     public function rules()
     {
         return [
-            [['name', 'nameShort', 'flag', 'sharesIssued'], 'required'],
+            [['name', 'nameShort', 'sharesIssued', 'sharesPrice'], 'required'],
             [['stateId', 'mainOfficeId', 'directorId', 'sharesIssued', 'dateCreated', 'dateDeleted', 'utr'], 'integer', 'min' => 0],
             [['efficiencyManagement', 'capitalization', 'sharesPrice'], 'number', 'min' => 0],
             [['name', 'flag'], 'string', 'max' => 255],
@@ -123,7 +124,7 @@ class Company extends TaxPayerModel
 
     public function getUserControllerId(): int
     {
-        return $this->directorId;
+        return (int)$this->directorId;
     }
 
     public function getUtrType(): int
@@ -131,19 +132,19 @@ class Company extends TaxPayerModel
         return UtrType::COMPANY;
     }
 
-    public function isGoverment($stateId): bool
+    public function isGoverment(int $stateId): bool
     {
-        return $this->isGoverment && $this->stateId == $stateId;
+        return $this->isGoverment && (int)$this->stateId === $stateId;
     }
 
-    public function isTaxedInState($stateId): bool
+    public function isTaxedInState(int $stateId): bool
     {
-        return $this->stateId == $stateId;
+        return (int)$this->stateId === $stateId;
     }
 
-    public function isUserController($userId): bool
+    public function isUserController(int $userId): bool
     {
-        return $this->directorId == $userId;
+        return (int)$this->directorId === $userId;
     }
     
     public function delete()
@@ -164,8 +165,6 @@ class Company extends TaxPayerModel
     
     public function updateParams($save = true)
     {
-        // Подсчёт капитализации, пока только формальная стоимость акций
-        $this->capitalization = $this->sharesIssued*$this->sharesPrice;
         
         // подсчёт эффективности управления
         // TODO
@@ -174,6 +173,31 @@ class Company extends TaxPayerModel
         // TODO проходить по владельцам акций и спрашивать каждого. 
         // если наберется больше 50% в сумме то гос.предприятие. 
         // если больше нуля то с участием
+        
+        $this->sharesIssued = 0;
+        $countGoverment = 0;
+        foreach ($this->shares as $share) {
+            $this->sharesIssued += $share->count;
+            if ($share->master->isGoverment($this->stateId)) {
+                $countGoverment += $share->count;
+            }
+        }
+        $this->isGoverment = false;
+        $this->isHalfGoverment = false;
+        if ($this->sharesIssued > 0) {
+            if ($countGoverment/$this->sharesIssued > 0.5) {
+                $this->isGoverment = true;
+            } elseif ($countGoverment/$this->sharesIssued > 0) {
+                $this->isHalfGoverment = true;
+            }
+        }
+        
+        // Подсчёт капитализации, пока только формальная стоимость акций
+        $this->capitalization = $this->sharesIssued*$this->sharesPrice;
+        
+        if ($save) {
+            $this->save();
+        }
     }
 
 }

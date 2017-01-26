@@ -42,7 +42,7 @@ final class Buisness extends BillProto
             $bill->addError('dataArray[value]', Yii::t('app/bills', 'Allow buisness is required field'));
         }
         
-        return !!count($bill->getErrors());
+        return !count($bill->getErrors());
     }
     
     /**

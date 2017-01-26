@@ -65,7 +65,7 @@ final class Fire extends BillProto
             }
         }
         
-        return !!count($bill->getErrors());
+        return !count($bill->getErrors());
     }
 
 }

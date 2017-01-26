@@ -37,6 +37,7 @@ final class Create extends BillProto
         $shares->save();
         
         $company->updateParams();
+        return true;
     }
 
     /**
@@ -45,7 +46,7 @@ final class Create extends BillProto
      */
     public function render($bill): string
     {
-        return Yii::t('app/bills', 'Create new company {3} «{0}» ({1})', [
+        return Yii::t('app/bills', 'Create new goverment company {2} «{0}» ({1})', [
             Html::encode($bill->dataArray['name']),
             Html::encode($bill->dataArray['nameShort']),
             isset($bill->dataArray['flag']) && $bill->dataArray['flag'] ? Html::img($bill->dataArray['flag'], ['style' => 'height:1em;']) : '',
@@ -62,18 +63,13 @@ final class Create extends BillProto
         if (!$company->validate()) {
             foreach ($company->getErrors() as $attr => $errors) {
                 foreach ($errors as $error) {
-                    $bill->addError('dataArray['+$attr+']', $error);
+                    $bill->addError('dataArray['.$attr.']', $error);
                 }
             }
         }
-        return !!count($bill->getErrors());
+        return !count($bill->getErrors());
     }
-    
-    public function isAvailable(State $state) : bool
-    {
-        return false;
-    }
-    
+        
     /**
      * 
      * @param Bill $bill

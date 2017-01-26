@@ -101,7 +101,7 @@ class Implode extends BillProto
                 $bill->addError('dataArray[district2Id]', Yii::t('app/bills', 'Select some other electoral district'));
             }
         }
-        return !!count($bill->getErrors());
+        return !count($bill->getErrors());
         
     }
 

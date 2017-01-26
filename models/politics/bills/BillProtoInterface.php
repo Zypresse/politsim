@@ -42,6 +42,6 @@ interface BillProtoInterface
      */
     public function getDefaultData($bill);
     
-    public function isAvailable(State $state) : bool;
+    public static function isAvailable(State $state) : bool;
             
 }

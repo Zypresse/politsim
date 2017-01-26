@@ -2,8 +2,7 @@
 
 use yii\widgets\ActiveForm,
     yii\helpers\Url,
-    yii\helpers\ArrayHelper,
-    app\models\politics\AgencyTemplate,
+    app\components\MyHtmlHelper,
     app\models\politics\bills\BillProto;
 
 /* @var $this yii\base\View */
@@ -32,6 +31,14 @@ $form = new ActiveForm();
 <?=$form->field($model, 'dataArray[name]')->textInput()->label(Yii::t('app', 'Company name'))?>
 <?=$form->field($model, 'dataArray[nameShort]')->textInput()->label(Yii::t('app', 'Company short name'))?>
 <?=$form->field($model, 'dataArray[flag]')->textInput()->label(Yii::t('app', 'Company flag'))?>
+<?=$form->field($model, 'dataArray[sharesPrice]')->textInput(['type' => 'number'])->label(Yii::t('app', 'Shares Price').' '.MyHtmlHelper::icon('money', 'vertical-align: bottom;'))?>
+<?=$form->field($model, 'dataArray[sharesIssued]')->textInput(['type' => 'number'])->label(Yii::t('app', 'Shares Issued'))?>
+
+<div class="help-block">
+    <?=Yii::t('app', 'This company gets <span id="company-registration-cost">0</span> {0} from budget', [
+        MyHtmlHelper::icon('money', 'vertical-align: bottom;'),
+    ])?>
+</div>
 
 <?php $form->end() ?>
 
@@ -68,6 +75,24 @@ $form = new ActiveForm();
         'error': '.help-block',
         'enableAjaxValidation': true
     });
+    
+    $form.yiiActiveForm('add', {
+        'id': 'bill-dataarray-sharesissued',
+        'name': 'Bill[dataArray][sharesIssued]',
+        'container': '.field-bill-dataarray-sharesissued',
+        'input': '#bill-dataarray-sharesissued',
+        'error': '.help-block',
+        'enableAjaxValidation': true
+    });
+    
+    $form.yiiActiveForm('add', {
+        'id': 'bill-dataarray-sharesprice',
+        'name': 'Bill[dataArray][sharesPrice]',
+        'container': '.field-bill-dataarray-sharesprice',
+        'input': '#bill-dataarray-sharesprice',
+        'error': '.help-block',
+        'enableAjaxValidation': true
+    });
         
     $form.on('submit', function() {
         if ($form.yiiActiveForm('data').validated) {
@@ -75,5 +100,14 @@ $form = new ActiveForm();
         }
         return false;
     });
+    
+    function recalcSumPrice(){
+        var count = parseInt($('#bill-dataarray-sharesissued').val()),
+            price = parseFloat($('#bill-dataarray-sharesprice').val());
+            
+        $('#company-registration-cost').text(number_format(count*price, 2, '.', ' '));
+    }
+    $('#bill-dataarray-sharesissued').change(recalcSumPrice);
+    $('#bill-dataarray-sharesprice').change(recalcSumPrice);
     
 </script>

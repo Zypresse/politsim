@@ -53,7 +53,7 @@ final class Delete extends BillProto
             }
         }
         
-        return !!count($bill->getErrors());
+        return !count($bill->getErrors());
     }
 
 }

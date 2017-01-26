@@ -15,7 +15,7 @@ abstract class TaxPayerModel extends MyActiveRecord implements TaxPayer
      * @param integer $currencyId
      * @param double $delta
      */
-    public function changeBalance($currencyId, $delta)
+    public function changeBalance(int $currencyId, $delta)
     {
         $money = Resource::findOrCreate([
             'protoId' => ResourceProto::MONEY,
@@ -34,7 +34,7 @@ abstract class TaxPayerModel extends MyActiveRecord implements TaxPayer
      * @param integer $currencyId
      * @return double
      */
-    public function getBalance($currencyId)
+    public function getBalance(int $currencyId)
     {
         $money = Resource::findOrCreate([
             'protoId' => ResourceProto::MONEY,
@@ -54,7 +54,10 @@ abstract class TaxPayerModel extends MyActiveRecord implements TaxPayer
     public function getUtr()
     {
         if (is_null($this->utr)) {
-            $u = Utr::findOrCreate(['objectId' => $this->id, 'objectType' => $this->getUtrType()]);
+            $u = Utr::findOrCreate([
+                'objectId' => $this->id,
+                'objectType' => $this->getUtrType()
+            ], true);
             if ($u) {
                 $this->utr = $u->id;
                 $this->save();

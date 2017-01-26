@@ -76,7 +76,7 @@ class User extends TaxPayerModel implements IdentityInterface
      * @param integer $stateId
      * @return boolean
      */
-    public function isGoverment($stateId)
+    public function isGoverment(int $stateId)
     {
         return false;
     }
@@ -87,7 +87,7 @@ class User extends TaxPayerModel implements IdentityInterface
      */
     public function getTaxStateId()
     {
-        return $this->location->getTaxStateId();
+        return (int)$this->location->getTaxStateId();
     }
     
     /**
@@ -95,9 +95,9 @@ class User extends TaxPayerModel implements IdentityInterface
      * @param integer $stateId
      * @return boolean
      */
-    public function isTaxedInState($stateId)
+    public function isTaxedInState(int $stateId)
     {
-        return $this->location->isTaxedInState($stateId);
+        return (int)$this->location->isTaxedInState($stateId);
     }
     
     /**
@@ -105,7 +105,7 @@ class User extends TaxPayerModel implements IdentityInterface
      */
     public function getUserControllerId()
     {
-        return $this->id;
+        return (int)$this->id;
     }
     
     /**
@@ -113,9 +113,9 @@ class User extends TaxPayerModel implements IdentityInterface
      * @param integer $userId
      * @return boolean
      */
-    public function isUserController($userId)
+    public function isUserController(int $userId)
     {
-        return $this->id === $userId;
+        return (int)$this->id === $userId;
     }    
 
     public static function findIdentity($id)

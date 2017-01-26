@@ -104,7 +104,7 @@ class Implode extends BillProto
                 $bill->addError('dataArray[region2Id]', Yii::t('app/bills', 'Select some other region'));
             }
         }
-        return !!count($bill->getErrors());
+        return !count($bill->getErrors());
         
     }
 

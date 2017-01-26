@@ -111,9 +111,9 @@ class Region extends ConstitutionOwner
      * @param integer $stateId
      * @return boolean
      */
-    public function isGoverment($stateId)
+    public function isGoverment(int $stateId)
     {
-        return $this->stateId === $stateId;
+        return (int)$this->stateId === $stateId;
     }
             
     /**
@@ -122,7 +122,7 @@ class Region extends ConstitutionOwner
      */
     public function getTaxStateId()
     {
-        return $this->stateId;
+        return (int)$this->stateId;
     }
     
     /**
@@ -130,9 +130,9 @@ class Region extends ConstitutionOwner
      * @param integer $stateId
      * @return boolean
      */
-    public function isTaxedInState($stateId)
+    public function isTaxedInState(int $stateId)
     {
-        return $this->stateId === $stateId;
+        return (int)$this->stateId === $stateId;
     }
     
     /**
@@ -148,7 +148,7 @@ class Region extends ConstitutionOwner
      * @param integer $userId
      * @return boolean
      */
-    public function isUserController($userId)
+    public function isUserController(int $userId)
     {
         return false;
     }    
