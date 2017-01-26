@@ -8,7 +8,8 @@ use yii\helpers\Html,
     app\models\politics\City,
     app\models\User,
     app\models\politics\Party,
-    app\models\politics\Agency;
+    app\models\politics\Agency,
+    app\models\economics\Company;
 
 /**
  * 
@@ -36,6 +37,8 @@ abstract class LinkCreator
                 return static::partyLink($object);
             case Agency::className():
                 return static::agencyLink($object);
+            case Company::className():
+                return static::companyLink($object);
         }
     }
     
@@ -139,6 +142,17 @@ abstract class LinkCreator
     public static function agencyLink(Agency $agency)
     {
         return static::render(null, $agency->name, '#!state/agency&id='.$agency->id);
+    }
+    
+    
+    /**
+     * 
+     * @param Company $company
+     * @return string
+     */
+    public static function companyLink(Company $company)
+    {
+        return static::render($company->flag, $company->name, '#!company/view&id='.$company->id);
     }
     
 }

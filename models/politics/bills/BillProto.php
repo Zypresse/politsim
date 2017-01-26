@@ -2,7 +2,9 @@
 
 namespace app\models\politics\bills;
 
-use Yii;
+use Yii,
+    app\models\politics\bills\Bill,
+    app\models\politics\State;
 
 /**
  * Прототип законопроекта
@@ -149,8 +151,16 @@ abstract class BillProto implements BillProtoInterface
      * Уволить с поста
      */
     const FIRE_FROM_POST = 28;
+    
+    /**
+     * Создать компанию
+     */
+    const COMPANY_CREATE = 29;
 
-
+    /**
+     * 
+     * @return \static[]
+     */
     public static function findAll()
     {
         return [
@@ -188,6 +198,8 @@ abstract class BillProto implements BillProtoInterface
             static::PARTIES_POLITIC => Yii::t('app/bills', 'Change parties politic'),
             static::MULTIPOST_POLITIC => Yii::t('app/bills', 'Allow/disallow more than one agency post to user'),
             static::BUISNESS => Yii::t('app/bills', 'Allow/disallow buisness'),
+            
+            static::COMPANY_CREATE => Yii::t('app/bills', 'Create goverment company'),
         ];
     }
     
@@ -227,6 +239,7 @@ abstract class BillProto implements BillProtoInterface
             static::BUISNESS => 'constitution\\Buisness',
             static::DELETE_POST => 'post\\Delete',
             static::FIRE_FROM_POST => 'post\\Fire',
+            static::COMPANY_CREATE => 'company\\Create',
         ];
         
         return '\\app\\models\\politics\\bills\\prototypes\\'.$classes[$type];
@@ -268,6 +281,7 @@ abstract class BillProto implements BillProtoInterface
             static::BUISNESS => 'constitution/buisness',
             static::DELETE_POST => 'post/delete',
             static::FIRE_FROM_POST => 'post/fire',
+            static::COMPANY_CREATE => 'company/create',
         ];
         
         return '/work/bills/'.$views[$type];
@@ -306,6 +320,8 @@ abstract class BillProto implements BillProtoInterface
             case static::IMPLODE_DISTRICTS:
             case static::CHANGE_DISTRICTS_BORDER:
                 return Yii::t('app', 'Electoral districts');
+            case static::COMPANY_CREATE:
+                return Yii::t('app', 'Economics');
             default:
                 return Yii::t('app', 'Basic bill types');
         }
@@ -340,6 +356,11 @@ abstract class BillProto implements BillProtoInterface
     public function renderFull($bill) : string
     {
         return $this->render($bill);
+    }
+    
+    public function isAvailable(State $state) : bool
+    {
+        return true;
     }
     
 }

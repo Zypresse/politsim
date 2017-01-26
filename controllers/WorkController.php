@@ -71,10 +71,18 @@ class WorkController extends MyController
             return ActiveForm::validate($model);
         }
         
+        $types = BillProto::findAll();
+        /* @var $type BillProto */
+        foreach ($types as $i => $type) {
+            if (!$type->isAvailable($post->state)) {
+                unset($types[$i]);
+            }
+        }
+        
         return $this->render($protoId ? BillProto::getViewByType($protoId) : 'new-bill-form', [
             'model' => $model,
             'post' => $post,
-            'types' => BillProto::findAll()
+            'types' => $types,
         ]);
     }
     

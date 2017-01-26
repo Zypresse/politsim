@@ -21,7 +21,7 @@ $form = new ActiveForm();
     'action' => Url::to(['work/new-bill']),
     'enableClientValidation' => true,
     'enableAjaxValidation' => true,
-    'validationUrl' => Url::to(['work/new-bill-form', 'postId' => $post->id, 'protoId' => BillProto::CREATE_AGENCY])
+    'validationUrl' => Url::to(['work/new-bill-form', 'postId' => $post->id, 'protoId' => BillProto::COMPANY_CREATE])
 ]) ?>
 
 <?=$form->field($model, 'protoId', ['labelOptions' => ['class' => 'hide']])->hiddenInput()?>
@@ -29,9 +29,9 @@ $form = new ActiveForm();
 <?=$form->field($model, 'userId', ['labelOptions' => ['class' => 'hide']])->hiddenInput()?>
 <?=$form->field($model, 'postId', ['labelOptions' => ['class' => 'hide']])->hiddenInput()?>
 
-<?=$form->field($model, 'dataArray[agencyTemplateId]')->dropDownList(ArrayHelper::map(AgencyTemplate::findAll(), 'id', 'name'))->label(Yii::t('app', 'Agency template'))?>
-<?=$form->field($model, 'dataArray[name]')->textInput()->label(Yii::t('app', 'Agency name'))?>
-<?=$form->field($model, 'dataArray[nameShort]')->textInput()->label(Yii::t('app', 'Agency short name'))?>
+<?=$form->field($model, 'dataArray[name]')->textInput()->label(Yii::t('app', 'Company name'))?>
+<?=$form->field($model, 'dataArray[nameShort]')->textInput()->label(Yii::t('app', 'Company short name'))?>
+<?=$form->field($model, 'dataArray[flag]')->textInput()->label(Yii::t('app', 'Company flag'))?>
 
 <?php $form->end() ?>
 
@@ -41,15 +41,6 @@ $form = new ActiveForm();
     <?php endforeach ?>    
         
     $form = $('#new-bill-form');
-    
-    $form.yiiActiveForm('add', {
-        'id': 'bill-dataarray-agencytemplateid',
-        'name': 'Bill[dataArray][agencyTemplateId]',
-        'container': '.field-bill-dataarray-agencytemplateid',
-        'input': '#bill-dataarray-agencytemplateid',
-        'error': '.help-block',
-        'enableAjaxValidation': true
-    });
     
     $form.yiiActiveForm('add', {
         'id': 'bill-dataarray-name',
@@ -65,6 +56,15 @@ $form = new ActiveForm();
         'name': 'Bill[dataArray][nameShort]',
         'container': '.field-bill-dataarray-nameshort',
         'input': '#bill-dataarray-nameshort',
+        'error': '.help-block',
+        'enableAjaxValidation': true
+    });
+    
+    $form.yiiActiveForm('add', {
+        'id': 'bill-dataarray-flag',
+        'name': 'Bill[dataArray][flag]',
+        'container': '.field-bill-dataarray-flag',
+        'input': '#bill-dataarray-flag',
         'error': '.help-block',
         'enableAjaxValidation': true
     });

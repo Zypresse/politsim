@@ -64,7 +64,7 @@ class Company extends TaxPayerModel
     public function rules()
     {
         return [
-            [['name', 'nameShort', 'flag', 'sharesIssued', 'dateCreated'], 'required'],
+            [['name', 'nameShort', 'flag', 'sharesIssued'], 'required'],
             [['stateId', 'mainOfficeId', 'directorId', 'sharesIssued', 'dateCreated', 'dateDeleted', 'utr'], 'integer', 'min' => 0],
             [['efficiencyManagement', 'capitalization', 'sharesPrice'], 'number', 'min' => 0],
             [['name', 'flag'], 'string', 'max' => 255],
@@ -74,6 +74,7 @@ class Company extends TaxPayerModel
             [['directorId'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['directorId' => 'id']],
 //            [['mainOfficeId'], 'exist', 'skipOnError' => true, 'targetClass' => Building::className(), 'targetAttribute' => ['mainOfficeId' => 'id']],
             [['stateId'], 'exist', 'skipOnError' => true, 'targetClass' => State::className(), 'targetAttribute' => ['stateId' => 'id']],
+            [['flag'], 'validateFlag'],
         ];
     }
 

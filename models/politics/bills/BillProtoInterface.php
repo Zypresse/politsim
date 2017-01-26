@@ -2,7 +2,8 @@
 
 namespace app\models\politics\bills;
 
-use app\models\politics\bills\Bill;
+use app\models\politics\bills\Bill,
+    app\models\politics\State;
 
 /**
  *
@@ -40,5 +41,7 @@ interface BillProtoInterface
      * @param Bill $bill
      */
     public function getDefaultData($bill);
+    
+    public function isAvailable(State $state) : bool;
             
 }
