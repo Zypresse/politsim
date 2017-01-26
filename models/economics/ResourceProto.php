@@ -18,11 +18,17 @@ class ResourceProto
      */
     const WORK = 2;
     
+    /**
+     * Акция
+     */
+    const SHARE = 3;
+    
     public static function getClassNameByType(int $id)
     {
         $classes = [
             static::MONEY => 'Currency',
             static::WORK => 'Work',
+            static::SHARE => 'Share',
         ];
         
         return 'app\\models\\economics\\resources\\'.$classes[$id];

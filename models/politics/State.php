@@ -13,6 +13,8 @@ use Yii,
     app\models\Tile,
     app\models\politics\bills\Bill,
     app\models\politics\elections\ElectoralDistrict,
+    app\models\economics\License,
+    app\models\economics\Company,
     app\components\RegionCombiner,
     app\components\MyMathHelper;
 
@@ -56,6 +58,9 @@ use Yii,
  * @property Bill[] $billsActive
  * @property Bill[] $billsFinished
  * @property ElectoralDistrict[] $districts
+ * @property Company[] $companies
+ * @property License[] $licenses
+ * @property LicenseRule[] $licenseRules
  *
  * @author ilya
  */
@@ -230,6 +235,21 @@ class State extends ConstitutionOwner
     public function getBillsFinished()
     {
         return $this->hasMany(Bill::className(), ['stateId' => 'id'])->where(['is not', 'dateFinished', null]);
+    }
+    
+    public function getLicenses()
+    {
+        return $this->hasMany(License::className(), ['stateId' => 'id']);
+    }
+    
+    public function getLicenseRules()
+    {
+        return $this->hasMany(LicenseRule::className(), ['stateId' => 'id']);
+    }
+    
+    public function getCompanies()
+    {
+        return $this->hasMany(Company::className(), ['stateId' => 'id']);
     }
     
     public function getLeaderPost()

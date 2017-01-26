@@ -22,6 +22,7 @@ use Yii,
  * @property double $sharesPrice
  * @property integer $sharesIssued
  * @property boolean $isGoverment
+ * @property boolean $isHalfGoverment
  * @property integer $dateCreated
  * @property integer $dateDeleted
  * @property integer $utr
@@ -29,6 +30,8 @@ use Yii,
  * @property State $state
  * @property Building $mainOffice
  * @property User $director
+ * @property Resource[] $shares
+ * @property License[] $licenses
  * 
  */
 class Company extends TaxPayerModel
@@ -66,7 +69,7 @@ class Company extends TaxPayerModel
             [['efficiencyManagement', 'capitalization', 'sharesPrice'], 'number', 'min' => 0],
             [['name', 'flag'], 'string', 'max' => 255],
             [['nameShort'], 'string', 'max' => 6],
-            [['isGoverment'], 'boolean'],
+            [['isGoverment', 'isHalfGoverment'], 'boolean'],
             [['utr'], 'exist', 'skipOnError' => true, 'targetClass' => Utr::className(), 'targetAttribute' => ['utr' => 'id']],
             [['directorId'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['directorId' => 'id']],
 //            [['mainOfficeId'], 'exist', 'skipOnError' => true, 'targetClass' => Building::className(), 'targetAttribute' => ['mainOfficeId' => 'id']],
@@ -146,6 +149,30 @@ class Company extends TaxPayerModel
     {
         $this->dateDeleted = time();
         return $this->save();
+    }
+    
+    public function getShares()
+    {
+        return $this->hasMany(Resource::className(), ['subProtoId' => 'id'])->where(['protoId' => ResourceProto::SHARE]);
+    }
+    
+    public function getLicenses()
+    {
+        return $this->hasMany(License::className(), ['companyId' => 'id']);
+    }
+    
+    public function updateParams($save = true)
+    {
+        // Подсчёт капитализации, пока только формальная стоимость акций
+        $this->capitalization = $this->sharesIssued*$this->sharesPrice;
+        
+        // подсчёт эффективности управления
+        // TODO
+        
+        // Проверка, является ли оно гос. предприятием или предприятием с госучастием
+        // TODO проходить по владельцам акций и спрашивать каждого. 
+        // если наберется больше 50% в сумме то гос.предприятие. 
+        // если больше нуля то с участием
     }
 
 }

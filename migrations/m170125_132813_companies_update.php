@@ -20,7 +20,8 @@ class m170125_132813_companies_update extends Migration
             'capitalization' => 'UNSIGNED REAL NOT NULL DEFAULT 0',
             'sharesPrice' => 'UNSIGNED REAL NOT NULL DEFAULT 0',
             'sharesIssued' => 'UNSIGNED INTEGER NOT NULL',
-            'isGoverment' => 'BOOLEAN DEFAULT NULL',
+            'isGoverment' => 'BOOLEAN DEFAULT 0',
+            'isHalfGoverment' => 'BOOLEAN DEFAULT 0',
             'dateCreated' => 'UNSIGNED INTEGER NOT NULL',
             'dateDeleted' => 'UNSIGNED INTEGER DEFAULT NULL',
             'utr' => 'UNSIGNED INTEGER REFERENCES utr(id) DEFAULT NULL'
