@@ -139,6 +139,11 @@ abstract class BillProto implements BillProtoInterface
      * Разрешить/запретить частный бизнес
      */
     const BUISNESS = 26;
+    
+    /**
+     * Удалить пост
+     */
+    const DELETE_POST = 27;
 
 
     public static function findAll()
@@ -156,6 +161,7 @@ abstract class BillProto implements BillProtoInterface
             static::CREATE_POST => Yii::t('app/bills', 'Create new agency post'),
             static::POST_POWERS => Yii::t('app/bills', 'Create agency post powers'),
             static::RENAME_POST => Yii::t('app/bills', 'Rename agency post'),
+            static::DELETE_POST => Yii::t('app/bills', 'Delete agency post'),
             
             static::RENAME_REGION => Yii::t('app/bills', 'Rename region'),
             static::CHANGE_FLAG_REGION => Yii::t('app/bills', 'Change region flag'),
@@ -213,6 +219,7 @@ abstract class BillProto implements BillProtoInterface
             static::POST_POWERS => 'post\\Powers',
             static::RENAME_POST => 'post\\Rename',
             static::BUISNESS => 'constitution\\Buisness',
+            static::DELETE_POST => 'post\\Delete',
         ];
         
         return '\\app\\models\\politics\\bills\\prototypes\\'.$classes[$type];
@@ -252,6 +259,7 @@ abstract class BillProto implements BillProtoInterface
             static::POST_POWERS => 'post/powers',
             static::RENAME_POST => 'post/rename',
             static::BUISNESS => 'constitution/buisness',
+            static::DELETE_POST => 'post/delete',
         ];
         
         return '/work/bills/'.$views[$type];
@@ -267,6 +275,7 @@ abstract class BillProto implements BillProtoInterface
             case static::CREATE_POST:
             case static::POST_POWERS:
             case static::RENAME_POST:
+            case static::DELETE_POST:
                 return Yii::t('app', 'Agency posts');
             case static::RENAME_REGION:
             case static::CHANGE_FLAG_REGION:

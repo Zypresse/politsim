@@ -60,7 +60,7 @@ final class Destignation extends BillProto
     {
         $post = AgencyPost::findByPk($bill->dataArray['postId']); 
         return Yii::t('app/bills', 'Change agency post «{0}» destignation type to {1}', [
-            Html::encode($post->name),
+            $post ? Html::encode($post->name) : Yii::t('app', 'Deleted agency post'),
             DestignationType::getNameStatic($bill->dataArray['value']),
         ]);
     }

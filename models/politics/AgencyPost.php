@@ -12,6 +12,7 @@ use Yii,
     app\models\politics\elections\Election,
     app\models\politics\elections\ElectionManager,
     app\models\politics\elections\ElectionOwner,
+    app\models\politics\elections\ElectionWhomType,
     app\models\User;
 
 /**
@@ -96,7 +97,7 @@ class AgencyPost extends ElectionOwner
             
     public function getElections()
     {
-        return $this->hasMany(Election::className(), ['whomId' => 'id'])->where(['whomType' => elections\ElectionWhomType::POST]);
+        return $this->hasMany(Election::className(), ['whomId' => 'id'])->where(['whomType' => ElectionWhomType::POST]);
     }
     
     private $_postsDestignated = null;
@@ -195,6 +196,24 @@ class AgencyPost extends ElectionOwner
         // TODO: notification
         $this->userId = $user->id;
         return $this->save();
+    }
+    
+    public function canBeDeleted()
+    {
+        return !ConstitutionArticle::find()
+                ->where(['type' => ConstitutionArticleType::LEADER_POST, 'value' => $this->id])
+                ->exists() &&
+                !ConstitutionArticle::find()
+                ->where(['type' => ConstitutionArticleType::DESTIGNATION_TYPE, 'value' => DestignationType::BY_OTHER_POST, 'value2' => $this->id])
+                ->exists();
+    }
+    
+    public function afterDelete()
+    {
+        Yii::$app->db->createCommand()->delete('agenciesToPosts', ['postId' => $this->id])->execute();
+        ConstitutionArticle::deleteAll(['ownerType' => $this->getConstitutionOwnerType(), 'ownerId' => $this->id]);
+        Election::deleteAll(['whomType' => ElectionWhomType::POST, 'whomId' => $this->id]);
+        return parent::afterDelete();
     }
 
 }

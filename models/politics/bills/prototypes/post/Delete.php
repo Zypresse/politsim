@@ -3,15 +3,15 @@
 namespace app\models\politics\bills\prototypes\post;
 
 use Yii,
+    yii\helpers\Html,
     app\models\politics\bills\BillProto,
     app\models\politics\bills\Bill,
-    app\models\politics\AgencyPost,
-    yii\helpers\Html;
-        
+    app\models\politics\AgencyPost;
+
 /**
- * Переименование поста
+ * 
  */
-class Rename extends BillProto
+final class Delete extends BillProto
 {
     
     /**
@@ -21,9 +21,7 @@ class Rename extends BillProto
     public function accept($bill): bool
     {
         $post = AgencyPost::findByPk($bill->dataArray['postId']);
-        $post->name = $bill->dataArray['name'];
-        $post->nameShort = $bill->dataArray['nameShort'];
-        return $post->save();
+        return $post->delete();
     }
 
     /**
@@ -33,10 +31,8 @@ class Rename extends BillProto
     public function render($bill): string
     {
         $post = AgencyPost::findByPk($bill->dataArray['postId']);
-        return Yii::t('app/bills', 'Rename agency post {0} to «{1}» ({2})', [
+        return Yii::t('app/bills', 'Delete agency post «{0}»', [
             $post ? Html::encode($post->name) : Yii::t('app', 'Deleted agency post'),
-            Html::encode($bill->dataArray['name']),
-            Html::encode($bill->dataArray['nameShort']),
         ]);
     }
 
@@ -52,16 +48,12 @@ class Rename extends BillProto
             $post = AgencyPost::findByPk($bill->dataArray['postId']);
             if (is_null($post) || $post->stateId != $bill->stateId) {
                 $bill->addError('dataArray[postId]', Yii::t('app/bills', 'Invalid agency post'));
+            } elseif (!$post->canBeDeleted()) {
+                $bill->addError('dataArray[postId]', Yii::t('app/bills', 'This agency post can not be deleted'));
             }
         }
-        if (!isset($bill->dataArray['name']) || !$bill->dataArray['name']) {
-            $bill->addError('dataArray[name]', Yii::t('app/bills', 'Agency post name is required field'));
-        }
-        if (!isset($bill->dataArray['nameShort']) || !$bill->dataArray['nameShort']) {
-            $bill->addError('dataArray[nameShort]', Yii::t('app/bills', 'Agency post short name is required field'));
-        }
-        return !!count($bill->getErrors());
         
+        return !!count($bill->getErrors());
     }
 
 }

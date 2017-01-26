@@ -12,7 +12,7 @@ use yii\helpers\Html,
 ?>
 <p>
     <?=Yii::t('app/bills', 'Change agency post «{0}» destignation type to destignation by elections in electoral district «{1}» with next settings: {2}', [
-        Html::encode($post->name),
+        $post ? Html::encode($post->name) : Yii::t('app', 'Deleted agency post'),
         Html::encode($district->name),
         implode(', ', $settings),
     ])?>

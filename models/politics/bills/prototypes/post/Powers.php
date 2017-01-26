@@ -38,7 +38,9 @@ final class Powers extends BillProto
     public function render($bill): string
     {
         $post = AgencyPost::findByPk($bill->dataArray['postId']);
-        return Yii::t('app/bills', 'Change powers of post {0}', [Html::encode($post->name)]);
+        return Yii::t('app/bills', 'Change powers of post {0}', [
+            $post ? Html::encode($post->name) : Yii::t('app', 'Deleted agency post'),
+        ]);
     }
 
     /**
@@ -55,7 +57,7 @@ final class Powers extends BillProto
         $articleParties = $post->constitution->getArticleByType(ConstitutionArticleType::POWERS, PowersArticle::PARTIES);
         $articleParties->value = MyMathHelper::implodeArrayToBitmask($bill->dataArray['parties']);
         return Yii::t('app/bills', 'Change powers of post {0}<br><strong>Bills powers:</strong> {1}<br><strong>Parties powers:</strong> {2}', [
-            Html::encode($post->name),
+            $post ? Html::encode($post->name) : Yii::t('app', 'Deleted agency post'),
             count($articleBills->getSelected()) ? implode(', ',$articleBills->getSelected()) : Yii::t('yii', '(not set)'),
             count($articleParties->getSelected()) ? implode(', ',$articleParties->getSelected()) : Yii::t('yii', '(not set)'),
         ]);

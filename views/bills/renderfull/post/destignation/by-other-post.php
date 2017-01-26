@@ -11,7 +11,7 @@ use yii\helpers\Html,
 ?>
 <p>
     <?=Yii::t('app/bills', 'Change agency post «{0}» destignation type to destignation by agency post «{1}»', [
-        Html::encode($post->name),
-        Html::encode($otherPost->name),
+        $post ? Html::encode($post->name) : Yii::t('app', 'Deleted agency post'),
+        $otherPost ? Html::encode($otherPost->name) : Yii::t('app', 'Deleted agency post'),
     ])?>
 </p>
