@@ -16,7 +16,7 @@ abstract class DropdownArticle extends UnsignedIntegerArticle
     public function rules()
     {
         $rules = parent::rules();
-        $rules[4] = [['value'], 'integer', 'min' => 1, 'max' => count(static::getList())];
+        $rules[4] = [['value'], 'integer', 'min' => 1, 'max' => max(array_keys(static::getList()))];
         return $rules;
     }
     

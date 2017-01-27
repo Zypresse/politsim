@@ -24,7 +24,7 @@ class LicenseProto extends ObjectWithFixedPrototypes
     public $name;
 
 
-    protected static function getList()
+    public static function getList()
     {
         return [
             [

@@ -46,6 +46,10 @@ foreach ($types as $id => $name) {
             {postId:<?=$post->id?>, protoId:$(this).data('id')},
             'work-new-bill-form-modal'
         );
+        $('#work-new-bill-form-modal .modal-dialog').removeClass('modal-lg');
+        $('#new-bill-confirm-btn').removeClass('hide');
     });
+    
+    $('#work-new-bill-form-modal .modal-dialog').addClass('modal-lg');
 
 </script>

@@ -283,7 +283,7 @@ class MyHtmlHelper {
 
     public static function moneyFormat($money, $decimals = 0)
     {
-        return '<span class="status-'.($money>0?'success':'error').'">'.number_format($money, $decimals, '.', '&nbsp;') . ' ' . static::icon('money').'</span>';
+        return '<span class="status-'.($money>0?'success':'error').'">'.number_format($money, $decimals, '.', '&nbsp;') . ' ' . static::icon('money', '').'</span>';
     }
 
     public static function timeFormatFuture($time)

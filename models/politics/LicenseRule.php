@@ -40,6 +40,21 @@ class LicenseRule extends MyActiveRecord
      */
     const ALLOWED_ALL = 4;
     
+    public static function getWhichAllowedNamesList()
+    {
+        return [
+            LicenseRule::ALLOWED_GOVERMENT => Yii::t('app', 'Only goverment companies'),
+            LicenseRule::ALLOWED_HALF_GOVERMENT => Yii::t('app', 'Only goverment and half-goverment companies'),
+            LicenseRule::ALLOWED_LOCAL => Yii::t('app', 'Only residents'),
+            LicenseRule::ALLOWED_ALL => Yii::t('app', 'Allowed for all'),
+        ];
+    }
+    
+    public static function getWhichAllowedName(int $id)
+    {
+        return static::getWhichAllowedNamesList()[$id];
+    }
+
     /**
      * @inheritdoc
      */
@@ -87,6 +102,11 @@ class LicenseRule extends MyActiveRecord
     public function getState()
     {
         return $this->hasOne(State::className(), ['id' => 'stateId']);
+    }
+    
+    public static function primaryKey()
+    {
+        return ['protoId', 'stateId'];
     }
     
     

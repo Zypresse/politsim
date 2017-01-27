@@ -156,6 +156,11 @@ abstract class BillProto implements BillProtoInterface
      * Создать компанию
      */
     const COMPANY_CREATE = 29;
+    
+    /**
+     * Управление правилами выдачи лицензий
+     */
+    const LICENSE_RULE = 30;
 
     public static function findAll()
     {
@@ -195,7 +200,8 @@ abstract class BillProto implements BillProtoInterface
             static::MULTIPOST_POLITIC => Yii::t('app/bills', 'Allow/disallow more than one agency post to user'),
             static::BUISNESS => Yii::t('app/bills', 'Allow/disallow buisness'),
             
-            static::COMPANY_CREATE => Yii::t('app/bills', 'Create goverment company'),
+            static::COMPANY_CREATE => Yii::t('app/bills', 'Create goverment company'),            
+            static::LICENSE_RULE => Yii::t('app/bills', 'Licenses rules management'),
         ];
     }
     
@@ -236,6 +242,7 @@ abstract class BillProto implements BillProtoInterface
             static::DELETE_POST => 'post\\Delete',
             static::FIRE_FROM_POST => 'post\\Fire',
             static::COMPANY_CREATE => 'company\\Create',
+            static::LICENSE_RULE => 'company\\LicenseRule',
         ];
         
         return '\\app\\models\\politics\\bills\\prototypes\\'.$classes[$type];
@@ -278,6 +285,7 @@ abstract class BillProto implements BillProtoInterface
             static::DELETE_POST => 'post/delete',
             static::FIRE_FROM_POST => 'post/fire',
             static::COMPANY_CREATE => 'company/create',
+            static::LICENSE_RULE => 'company/license-rule',
         ];
         
         return '/work/bills/'.$views[$type];
@@ -317,6 +325,7 @@ abstract class BillProto implements BillProtoInterface
             case static::CHANGE_DISTRICTS_BORDER:
                 return Yii::t('app', 'Electoral districts');
             case static::COMPANY_CREATE:
+            case static::LICENSE_RULE:
                 return Yii::t('app', 'Economics');
             default:
                 return Yii::t('app', 'Basic bill types');
