@@ -67,12 +67,12 @@ class Constitution extends Model
             }
         }
         
-        return ConstitutionArticle::findOrCreate([
+        return ConstitutionArticle::find()->where([
             'type' => $type,
             'subType' => $subType,
             'ownerType' => $this->ownerType,
             'ownerId' => $this->ownerId,
-        ]);
+        ])->one();
     }
     
     /**
@@ -86,12 +86,21 @@ class Constitution extends Model
      */
     public function setArticleByType($type, $subType, $value, $value2 = null,  $value3 = null)
     {
-        $article = ConstitutionArticle::findOrCreate([
+        $className = ConstitutionArticleType::getClassNameByType($type);
+        $article = $className::find()->where([
             'type' => $type,
             'subType' => $subType,
             'ownerType' => $this->ownerType,
             'ownerId' => $this->ownerId,
-        ], false);
+        ])->one();
+        if (is_null($article)) {
+            $article = ConstitutionArticle::instantiate([
+                'type' => $type,
+                'subType' => $subType,
+                'ownerType' => $this->ownerType,
+                'ownerId' => $this->ownerId
+            ]);
+        }
         $article->value = $value;
         $article->value2 = $value2;
         $article->value3 = $value3;

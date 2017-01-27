@@ -40,31 +40,66 @@ use yii\helpers\Html,
                                 </tr>
                                 <tr>
                                     <th><?=Yii::t('app', 'State leader')?></th>
-                                    <td><?=$state->constitution->getArticleByType(ConstitutionArticleType::LEADER_POST)->post->name?></td>
+                                    <td>
+                                        <?php
+                                            $article = $state->constitution->getArticleByType(ConstitutionArticleType::LEADER_POST);
+                                        ?>
+                                        <?=$article ? Html::encode($article->post->name) : Yii::t('yii', '(not set)')?>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th><?=Yii::t('app', 'Allow more than one agency post to user')?></th>
-                                    <td><?=$state->constitution->getArticleByType(ConstitutionArticleType::MULTIPOST)->name?></td>
+                                    <td>
+                                        <?php
+                                            $article = $state->constitution->getArticleByType(ConstitutionArticleType::MULTIPOST);
+                                        ?>
+                                        <?=$article ? $article->name : Yii::t('yii', '(not set)')?>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th><?=Yii::t('app', 'Party politics')?></th>
-                                    <td><?=$state->constitution->getArticleByType(ConstitutionArticleType::PARTIES)->name?></td>
+                                    <td>
+                                        <?php
+                                            $article = $state->constitution->getArticleByType(ConstitutionArticleType::PARTIES)
+                                        ?>
+                                        <?=$article ? $article->name : Yii::t('yii', '(not set)')?>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th><?=Yii::t('app', 'Allow more than one party membership to user')?></th>
-                                    <td><?=$state->constitution->getArticleByType(ConstitutionArticleType::MULTIMEMBERSHIP)->name?></td>
+                                    <td>
+                                        <?php
+                                            $article = $state->constitution->getArticleByType(ConstitutionArticleType::MULTIMEMBERSHIP)
+                                        ?>
+                                        <?=$article ? $article->name : Yii::t('yii', '(not set)')?>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th><?=Yii::t('app', 'Bills voting terms')?></th>
-                                    <td><?=MyHtmlHelper::formateNumberword($state->constitution->getArticleByType(ConstitutionArticleType::BILLS)->value, 'часов', 'час', 'часа')?></td>
+                                    <td>
+                                        <?php
+                                            $article = $state->constitution->getArticleByType(ConstitutionArticleType::BILLS);
+                                        ?>
+                                        <?=$article ? MyHtmlHelper::formateNumberword($article->value, 'часов', 'час', 'часа') : Yii::t('yii', '(not set)')?>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th><?=Yii::t('app', 'Buisness allowed')?></th>
-                                    <td><?=$state->constitution->getArticleByType(ConstitutionArticleType::BUISNESS)->name?></td>
+                                    <td>
+                                        <?php
+                                            $article = $state->constitution->getArticleByType(ConstitutionArticleType::BUISNESS);
+                                        ?>
+                                        <?=$article ? $article->name : Yii::t('yii', '(not set)')?>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th><?=Yii::t('app', 'Official currency')?></th>
-                                    <td><?=$state->constitution->getArticleByType(ConstitutionArticleType::CURRENCY)->name?></td>
+                                    <td>
+                                        <?php
+                                            $article = $state->constitution->getArticleByType(ConstitutionArticleType::CURRENCY);
+                                        ?>
+                                        <?=$article ? $article->name : Yii::t('yii', '(not set)')?>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -79,7 +114,12 @@ use yii\helpers\Html,
                                 </tr>
                                 <tr>
                                     <th><?=Yii::t('app', 'Agency leader')?></th>
-                                    <td><?=$agency->constitution->getArticleByType(ConstitutionArticleType::LEADER_POST)->post->name?></td>
+                                    <td>
+                                        <?php
+                                            $article = $agency->constitution->getArticleByType(ConstitutionArticleType::LEADER_POST);
+                                        ?>
+                                        <?=$article ? Html::encode($article->post->name) : Yii::t('yii', '(not set)')?>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th colspan="2" class="text-center"><h4><?=Yii::t('app', 'Agency posts')?></h4></th>
@@ -90,23 +130,48 @@ use yii\helpers\Html,
                                 </tr>
                                 <tr>
                                     <th><?=Yii::t('app', 'Destignation type')?></th>
-                                    <td><?=$post->constitution->getArticleByType(ConstitutionArticleType::DESTIGNATION_TYPE)->name?></td>
+                                    <td>
+                                        <?php
+                                            $article = $post->constitution->getArticleByType(ConstitutionArticleType::DESTIGNATION_TYPE);
+                                        ?>
+                                        <?=$article ? $article->name : Yii::t('yii', '(not set)')?>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th><?=Yii::t('app', 'Terms of office')?></th>
-                                    <td><?=$post->constitution->getArticleByType(ConstitutionArticleType::TERMS_OF_OFFICE)->value?></td>
+                                    <td>
+                                        <?php
+                                            $article = $post->constitution->getArticleByType(ConstitutionArticleType::TERMS_OF_OFFICE);
+                                        ?>
+                                        <?=$article ? MyHtmlHelper::formateNumberword($article->value, 'дней', 'день', 'дня') : Yii::t('yii', '(not set)')?>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th><?=Yii::t('app', 'Terms of elections')?></th>
-                                    <td><?=$post->constitution->getArticleByType(ConstitutionArticleType::TERMS_OF_ELECTION)->name?></td>
+                                    <td>
+                                        <?php
+                                            $article = $post->constitution->getArticleByType(ConstitutionArticleType::TERMS_OF_ELECTION);
+                                        ?>
+                                        <?=$article ? $article->name : Yii::t('yii', '(not set)')?>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th><?=Yii::t('app', 'Bills powers')?></th>
-                                    <td><?=$post->constitution->getArticleByType(ConstitutionArticleType::POWERS, Powers::BILLS)->name?></td>
+                                    <td>
+                                        <?php
+                                            $article = $post->constitution->getArticleByType(ConstitutionArticleType::POWERS, Powers::BILLS);
+                                        ?>
+                                        <?=$article ? $article->name : Yii::t('yii', '(not set)')?>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th><?=Yii::t('app', 'Parties powers')?></th>
-                                    <td><?=$post->constitution->getArticleByType(ConstitutionArticleType::POWERS, Powers::PARTIES)->name?></td>
+                                    <td>
+                                        <?php
+                                            $article = $post->constitution->getArticleByType(ConstitutionArticleType::POWERS, Powers::PARTIES);
+                                        ?>
+                                        <?=$article ? $article->name : Yii::t('yii', '(not set)')?>
+                                    </td>
                                 </tr>
                                 <?php endforeach ?>
                             </tbody>
