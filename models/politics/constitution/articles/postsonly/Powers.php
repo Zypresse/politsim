@@ -15,6 +15,8 @@ class Powers extends BitmaskArticle
     
     const PARTIES = 2;
     
+    const LICENSES = 3;
+    
     public static function getList(): array
     {
         throw new Exception('Method '.static::className().'::getList() not overrided!');
@@ -25,6 +27,7 @@ class Powers extends BitmaskArticle
         $className = '\\app\\models\\politics\\constitution\\articles\\postsonly\\powers\\'.([
             static::BILLS => 'Bills',
             static::PARTIES => 'Parties',
+            static::LICENSES => 'Licenses',
         ][(int) $row['subType']]);
         return $className::instantiate($row);
     }

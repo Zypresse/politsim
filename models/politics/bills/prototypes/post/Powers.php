@@ -11,7 +11,8 @@ use Yii,
     app\models\politics\constitution\ConstitutionArticleType,
     app\models\politics\constitution\articles\postsonly\Powers as PowersArticle,
     app\models\politics\constitution\articles\postsonly\powers\Bills,
-    app\models\politics\constitution\articles\postsonly\powers\Parties;
+    app\models\politics\constitution\articles\postsonly\powers\Parties,
+    app\models\politics\constitution\articles\postsonly\powers\Licenses;
 
 /**
  * 
@@ -28,6 +29,7 @@ final class Powers extends BillProto
         $post = AgencyPost::findByPk($bill->dataArray['postId']);
         $post->constitution->setArticleByType(ConstitutionArticleType::POWERS, PowersArticle::BILLS, MyMathHelper::implodeArrayToBitmask($bill->dataArray['bills']));
         $post->constitution->setArticleByType(ConstitutionArticleType::POWERS, PowersArticle::PARTIES, MyMathHelper::implodeArrayToBitmask($bill->dataArray['parties']));
+        $post->constitution->setArticleByType(ConstitutionArticleType::POWERS, PowersArticle::LICENSES, $bill->dataArray['licenses']['value'], MyMathHelper::implodeArrayToBitmask($bill->dataArray['licenses']['value2']));
         return true;
     }
 
@@ -56,10 +58,16 @@ final class Powers extends BillProto
         /* @var $article Parties */
         $articleParties = $post->constitution->getArticleByType(ConstitutionArticleType::POWERS, PowersArticle::PARTIES);
         $articleParties->value = MyMathHelper::implodeArrayToBitmask($bill->dataArray['parties']);
-        return Yii::t('app/bills', 'Change powers of post {0}<br><strong>Bills powers:</strong> {1}<br><strong>Parties powers:</strong> {2}', [
+        /* @var $article Licenses */
+        $articleLicenses = $post->constitution->getArticleByType(ConstitutionArticleType::POWERS, PowersArticle::LICENSES);
+        $articleLicenses->value = $bill->dataArray['licenses']['value'];
+        $articleLicenses->value2 = MyMathHelper::implodeArrayToBitmask($bill->dataArray['licenses']['value2']);
+        
+        return Yii::t('app/bills', 'Change powers of post {0}<br><strong>Bills powers:</strong> {1}<br><strong>Parties powers:</strong> {2}<br><strong>Licenses powers:</strong> {3}', [
             $post ? Html::encode($post->name) : Yii::t('app', 'Deleted agency post'),
             count($articleBills->getSelected()) ? implode(', ',$articleBills->getSelected()) : Yii::t('yii', '(not set)'),
             count($articleParties->getSelected()) ? implode(', ',$articleParties->getSelected()) : Yii::t('yii', '(not set)'),
+            $articleLicenses->name,
         ]);
     }
     
@@ -95,7 +103,7 @@ final class Powers extends BillProto
             $bill->addError('dataArray[bills]', Yii::t('app/bills', 'Bills powers is required field'));
         } else {
             /* @var $article Bills */
-            $article = $post->constitution->getArticleByType(ConstitutionArticleType::POWERS, PowersArticle::BILLS);
+            $article = $post->constitution->getArticleByTypeOrEmptyModel(ConstitutionArticleType::POWERS, PowersArticle::BILLS);
             $article->value = MyMathHelper::implodeArrayToBitmask($bill->dataArray['bills']);
             if (!$article->validate(['value'])) {
                 foreach ($article->getErrors() as $attr => $errors) {
@@ -109,12 +117,29 @@ final class Powers extends BillProto
             $bill->addError('dataArray[parties]', Yii::t('app/bills', 'Bills powers is required field'));
         } else {
             /* @var $article Parties */
-            $article = $post->constitution->getArticleByType(ConstitutionArticleType::POWERS, PowersArticle::PARTIES);
+            $article = $post->constitution->getArticleByTypeOrEmptyModel(ConstitutionArticleType::POWERS, PowersArticle::PARTIES);
             $article->value = MyMathHelper::implodeArrayToBitmask($bill->dataArray['parties']);
             if (!$article->validate(['value'])) {
                 foreach ($article->getErrors() as $attr => $errors) {
                     foreach ($errors as $error) {
                         $bill->addError('dataArray[parties]', $error);
+                    }
+                }
+            }
+        }
+        if (!isset($bill->dataArray['licenses']['value2'])) {
+            $bill->addError('dataArray[licenses][value2]', Yii::t('app/bills', 'Licenses management is required field'));
+        } elseif (!isset($bill->dataArray['licenses']['value'])) {
+            $bill->addError('dataArray[licenses][value]', Yii::t('app/bills', 'Licenses powers is required field'));
+        } else {
+            /* @var $article Licenses */
+            $article = $post->constitution->getArticleByTypeOrEmptyModel(ConstitutionArticleType::POWERS, PowersArticle::LICENSES);
+            $article->value = MyMathHelper::implodeArrayToBitmask($bill->dataArray['licenses']['value']);
+            $article->value2 = $bill->dataArray['licenses']['value2'];
+            if (!$article->validate(['value', 'value2'])) {
+                foreach ($article->getErrors() as $attr => $errors) {
+                    foreach ($errors as $error) {
+                        $bill->addError('dataArray[licenses]['.$attr.']', $error);
                     }
                 }
             }

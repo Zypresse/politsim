@@ -8,7 +8,9 @@ use yii\widgets\ActiveForm,
     app\models\politics\constitution\ConstitutionArticleType,
     app\models\politics\constitution\articles\postsonly\Powers,
     app\models\politics\constitution\articles\postsonly\powers\Parties,
-    app\models\politics\constitution\articles\postsonly\powers\Bills;
+    app\models\politics\constitution\articles\postsonly\powers\Bills,
+    app\models\economics\LicenseProto,
+    app\models\politics\constitution\articles\postsonly\powers\Licenses;
 
 /* @var $this yii\base\View */
 /* @var $model app\models\politics\bills\Bill */
@@ -37,6 +39,8 @@ $form = new ActiveForm();
 
 <?=$form->field($model, 'dataArray[bills]')->checkboxList(Bills::getList())->label(Yii::t('app', 'Bills powers'))?>
 <?=$form->field($model, 'dataArray[parties]')->checkboxList(Parties::getList())->label(Yii::t('app', 'Parties powers'))?>
+<?=$form->field($model, 'dataArray[licenses][value]')->checkboxList(Licenses::getList())->label(Yii::t('app', 'Licenses powers'))?>
+<?=$form->field($model, 'dataArray[licenses][value2]')->checkboxList(ArrayHelper::map(LicenseProto::getList(), 'id', 'name'))->label(Yii::t('app', 'Licenses management'))?>
 
 <?php $form->end() ?>
 
@@ -73,6 +77,24 @@ $form = new ActiveForm();
         'error': '.help-block',
         'enableAjaxValidation': true
     });
+    
+    $form.yiiActiveForm('add', {
+        'id': 'bill-dataarray-licenses-value',
+        'name': 'Bill[dataArray][licenses][value]',
+        'container': '.field-bill-dataarray-licenses-value',
+        'input': '#bill-dataarray-licenses-value',
+        'error': '.help-block',
+        'enableAjaxValidation': true
+    });
+    
+    $form.yiiActiveForm('add', {
+        'id': 'bill-dataarray-licenses-value2',
+        'name': 'Bill[dataArray][licenses][value2]',
+        'container': '.field-bill-dataarray-licenses-value2',
+        'input': '#bill-dataarray-licenses-value2',
+        'error': '.help-block',
+        'enableAjaxValidation': true
+    });
             
     $form.on('submit', function() {
         if ($form.yiiActiveForm('data').validated) {
@@ -86,10 +108,10 @@ $form = new ActiveForm();
         var postId = parseInt($('#bill-dataarray-postid').val());
         get_json('post/constitution', {
             postId: postId,
-            types: '<?= ConstitutionArticleType::POWERS ?>:<?=Powers::BILLS?>,<?= ConstitutionArticleType::POWERS ?>:<?=Powers::PARTIES?>'
+            types: '<?= ConstitutionArticleType::POWERS ?>:<?=Powers::BILLS?>,<?= ConstitutionArticleType::POWERS ?>:<?=Powers::PARTIES?>,<?= ConstitutionArticleType::POWERS ?>:<?=Powers::LICENSES?>'
         }, function(data) {
             
-            var bills, parties;
+            var bills, parties, licensesValue, licensesValue2;
             for (var i = 0; i < data.result.length; i++) {
                 var subType = parseInt(data.result[i].subType);
                 switch (subType) {
@@ -99,8 +121,13 @@ $form = new ActiveForm();
                     case <?= Powers::PARTIES ?>:
                         parties = data.result[i].value ? parseInt(data.result[i].value) : 0;
                         break;
+                    case <?= Powers::LICENSES ?>:
+                        licensesValue = data.result[i].value ? parseInt(data.result[i].value) : 0;
+                        licensesValue2 = data.result[i].value2 ? data.result[i].value2 : [];
+                        break;
                 }
             }
+            console.log(licensesValue2);
             
             $('#bill-dataarray-bills input').prop('checked', false);
             if (bills & <?= Bills::VOTE ?>) {
@@ -125,6 +152,19 @@ $form = new ActiveForm();
             }
             if (parties & <?= Parties::REVOKE ?>) {
                 $('#bill-dataarray-parties input[value=<?= Parties::REVOKE ?>]').prop('checked', true);;
+            }
+            
+            $('#bill-dataarray-licenses-value input').prop('checked', false);
+            if (licensesValue & <?= Licenses::ACCEPT ?>) {
+                $('#bill-dataarray-licenses-value input[value=<?= Licenses::ACCEPT ?>]').prop('checked', true);;
+            }
+            if (licensesValue & <?= Licenses::REVOKE ?>) {
+                $('#bill-dataarray-licenses-value input[value=<?= Licenses::REVOKE ?>]').prop('checked', true);;
+            }
+            
+            $('#bill-dataarray-licenses-value2 input').prop('checked', false);
+            for (var i = 0, l = licensesValue2.length; i < l, i++) {
+                $('#bill-dataarray-licenses-value input[value='+licensesValue2[i]+']').prop('checked', true);;
             }
             
         });

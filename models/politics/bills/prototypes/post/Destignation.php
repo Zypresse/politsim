@@ -146,7 +146,7 @@ final class Destignation extends BillProto
                     $bill->addError('dataArray[value]', Yii::t('app/bills', 'Destignation type is required field'));
                 } else {
                     /* @var $article DestignationType */
-                    $article = $post->constitution->getArticleByType(ConstitutionArticleType::DESTIGNATION_TYPE);
+                    $article = $post->constitution->getArticleByTypeOrEmptyModel(ConstitutionArticleType::DESTIGNATION_TYPE);
                     $article->value = $bill->dataArray['value'];
                     $article->value2 = isset($bill->dataArray['value2']) ? $bill->dataArray['value2'] : null;
                     $article->value3 = isset($bill->dataArray['value2']) ? MyMathHelper::implodeArrayToBitmask($bill->dataArray['value3']) : null;
@@ -168,7 +168,7 @@ final class Destignation extends BillProto
                                 $bill->addError('dataArray[toValue]', Yii::t('app/bills', 'Terms of office is required field'));
                             } else {
                                 /* @var $article TermsOfOffice */
-                                $article = $post->constitution->getArticleByType(ConstitutionArticleType::TERMS_OF_OFFICE);
+                                $article = $post->constitution->getArticleByTypeOrEmptyModel(ConstitutionArticleType::TERMS_OF_OFFICE);
                                 $article->value = $bill->dataArray['toValue'];
                                 if (!$article->validate(['value'])) {
                                     foreach ($article->getErrors() as $attr => $errors) {
@@ -195,7 +195,7 @@ final class Destignation extends BillProto
                             
                             if ($teInputed) {
                                 /* @var $article TermsOfElection */
-                                $article = $post->constitution->getArticleByType(ConstitutionArticleType::TERMS_OF_ELECTION);
+                                $article = $post->constitution->getArticleByTypeOrEmptyModel(ConstitutionArticleType::TERMS_OF_ELECTION);
                                 $article->value = $bill->dataArray['teValue'];
                                 $article->value2 = $bill->dataArray['teValue2'];
                                 $article->value3 = $bill->dataArray['teValue3'];

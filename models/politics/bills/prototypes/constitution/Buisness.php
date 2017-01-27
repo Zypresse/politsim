@@ -52,7 +52,7 @@ final class Buisness extends BillProto
     public function getDefaultData($bill)
     {
         /* @var $article BuisnessArticle */
-        $article = $bill->state->constitution->getArticleByType(ConstitutionArticleType::BUISNESS);
+        $article = $bill->state->constitution->getArticleByTypeOrEmptyModel(ConstitutionArticleType::BUISNESS);
         return ['value' => !!$article->value];
     }
 

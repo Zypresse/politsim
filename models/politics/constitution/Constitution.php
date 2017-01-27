@@ -78,6 +78,27 @@ class Constitution extends Model
     /**
      * 
      * @param integer $type
+     * @param integer $subType
+     * @return ConstitutionArticle
+     */
+    public function getArticleByTypeOrEmptyModel($type, $subType = null)
+    {
+        $article = $this->getArticleByType($type, $subType);
+        if (is_null($article)) {
+            $article = ConstitutionArticle::instantiate([
+                'type' => $type,
+                'subType' => $subType,
+                'ownerType' => $this->ownerType,
+                'ownerId' => $this->ownerId
+            ]);
+        }
+        
+        return $article;
+    }
+    
+    /**
+     * 
+     * @param integer $type
      * @param integer $subType set to NULL
      * @param string $value
      * @param string $value2

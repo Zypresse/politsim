@@ -23,7 +23,7 @@ final class PostController extends MyController
             } else {
                 $subType = null;
             }
-            $article = $post->constitution->getArticleByType($type, $subType);
+            $article = $post->constitution->getArticleByTypeOrEmptyModel($type, $subType);
             $this->result[] = $article->getPublicAttributes();
         }
         return $this->_r();
