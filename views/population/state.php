@@ -5,7 +5,9 @@ use yii\helpers\Html,
     app\components\LinkCreator,
     app\components\widgets\PopInfoMenuWidget,
     app\components\widgets\NationsPieChartWidget,
-    app\components\widgets\GendersPieChartWidget;
+    app\components\widgets\GendersPieChartWidget,
+    app\components\widgets\ClassesPieChartWidget,
+    app\components\widgets\ReligionsPieChartWidget;
 
 /* @var $this \yii\web\View */
 /* @var $state \app\models\politics\State */
@@ -40,6 +42,28 @@ use yii\helpers\Html,
                         <div class="col-md-6">
                             <div class="box box-info">
                                 <div class="box-header">
+                                    <h3 class="box-title"><?=Yii::t('app', 'Genders structure')?></h3>
+                                </div>
+                                <div class="box-body text-center">
+                                    <?= GendersPieChartWidget::widget(['data' => $state->genders]) ?>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="box box-info">
+                                <div class="box-header">
+                                    <h3 class="box-title"><?=Yii::t('app', 'Classes')?></h3>
+                                </div>
+                                <div class="box-body text-center">
+                                    <?= ClassesPieChartWidget::widget(['data' => $state->classes]) ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="box box-info">
+                                <div class="box-header">
                                     <h3 class="box-title"><?=Yii::t('app', 'Nations')?></h3>
                                 </div>
                                 <div class="box-body text-center">
@@ -50,10 +74,10 @@ use yii\helpers\Html,
                         <div class="col-md-6">
                             <div class="box box-info">
                                 <div class="box-header">
-                                    <h3 class="box-title"><?=Yii::t('app', 'Genders structure')?></h3>
+                                    <h3 class="box-title"><?=Yii::t('app', 'Religions')?></h3>
                                 </div>
                                 <div class="box-body text-center">
-                                    <?= GendersPieChartWidget::widget(['data' => $state->genders]) ?>
+                                    <?= ReligionsPieChartWidget::widget(['data' => $state->religions]) ?>
                                 </div>
                             </div>
                         </div>

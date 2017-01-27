@@ -169,7 +169,16 @@ class City extends ConstitutionOwner
         
         $nations = [];
         $classes = [];
+        
+        $regions = [];
         foreach ($this->tiles as $tile) {
+            
+            if (isset($regions[$tile->regionId])) {
+                $regions[$tile->regionId]++;
+            } else {
+                $regions[$tile->regionId] = 1;
+            }
+            
             foreach ($tile->pops as $pop) {
                 if (isset($nations[$pop->nationId])) {
                     $nations[$pop->nationId] += $pop->count;
@@ -183,6 +192,15 @@ class City extends ConstitutionOwner
                 }
             }
         }
+        
+        $maxId = $maxCount = 0;
+        foreach ($regions as $id => $count) {
+            if ($count > $maxCount) {
+                $maxCount = $count;
+                $maxId = $id;
+            }
+        }
+        $this->regionId = $maxId;
         
         foreach ($nations as $nationId => $count) {
             $nations[$nationId] = round($count / $this->population * 100,2);

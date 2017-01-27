@@ -27,28 +27,10 @@ class ChangeBorders extends BillProto
         Tile::updateAll(['regionId' => $region1->id], ['in', 'id', $bill->dataArray['tiles1']]);
         Tile::updateAll(['regionId' => $region2->id], ['in', 'id', $bill->dataArray['tiles2']]);
         foreach ($region1->cities as $city) {
-            $allTilesIn2 = true;
-            foreach ($city->tiles as $tile) {
-                if ($tile->regionId != $region1->id) {
-                    $allTilesIn2 = false;
-                    break;
-                }
-            }
-            if ($allTilesIn2) {
-                $city->link('region', $region2);
-            }
+            $city->updateParams();
         }
         foreach ($region2->cities as $city) {
-            $allTilesIn1 = true;
-            foreach ($city->tiles as $tile) {
-                if ($tile->regionId != $region2->id) {
-                    $allTilesIn1 = false;
-                    break;
-                }
-            }
-            if ($allTilesIn1) {
-                $city->link('region', $region1);
-            }
+            $city->updateParams();
         }
         
         $region1->updateParams();

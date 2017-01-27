@@ -39,8 +39,8 @@ class TestController extends Controller
 //        echo models\Region::findByPk(33)->getPolygon(true);
 //        echo models\State::findByPk(5)->getPolygon(true);
 //        echo models\Tile::find()->count('id');
-        $state = State::find()->one();
-        var_dump($state->getUtr());
+//        $state = State::find()->one();
+//        var_dump($state->getUtr());
 //        
 //        $state->updateParams(true, false);
 //        $pop = 0;
@@ -65,9 +65,13 @@ class TestController extends Controller
 //        var_dump($region->updateParams());
         
         
-        $company = Company::find()->one();
-        echo $company->name.PHP_EOL;
-        var_dump($company->updateParams());
+//        $company = Company::find()->one();
+//        echo $company->name.PHP_EOL;
+//        var_dump($company->updateParams());
+        $region = Region::find()->where(['name' => 'Минская область'])->one();
+        echo count($region->pops).PHP_EOL;
+        var_dump($region->updateParams());
+        
     }
     
     public function actionCreateElectionsObject()
@@ -365,13 +369,15 @@ class TestController extends Controller
                 
                 $pops = [];
                 foreach ($city->tiles as $tile) {
+                    $sumPercents = 0;
                     foreach ($nations as $nationId => $percents) {
+                        $sumPercents += $percents;
                         $ideologies = '{"0":100}';
                         $religions = $city->religions ? $city->religions : '{"0":100}';
-                        $genders = $city->genders ? $city->genders : '{"2":55,"1":45}';
+                        $genders = $city->genders ? $city->genders : '{"1":55,"2":45}';
                         $ages = $city->ages ? $city->ages : '{"18":100}';
                         $pops[] = [
-                            'count' => round($tile->population * $percents / 100),
+                            'count' => round($tile->population * $percents / 100, 2),
                             'classId' => PopClass::LUMPEN,
                             'nationId' => $nationId,
                             'tileId' => $tile->id,
@@ -384,6 +390,7 @@ class TestController extends Controller
                             'consciousness' => 0,
                         ];
                     }
+                    var_dump($sumPercents);
                 }
                 echo Yii::$app->db->createCommand()->batchInsert('pops', ['count', 'classId', 'nationId', 'tileId', 'ideologies', 'religions', 'genders', 'ages', 'contentment', 'agression', 'consciousness'], $pops)->execute();
                 
@@ -398,7 +405,7 @@ class TestController extends Controller
                 foreach ($nations as $nationId => $percents) {
                     $ideologies = '{"0":100}';
                     $religions = $region->religions ? $region->religions : '{"0":100}';
-                    $genders = $region->genders ? $region->genders : '{"2":55,"1":45}';
+                    $genders = $region->genders ? $region->genders : '{"1":55,"2":45}';
                     $ages = $region->ages ? $region->ages : '{"18":100}';
                     $pops[] = [
                         'count' => round($tile->population * $percents / 100),

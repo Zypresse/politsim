@@ -224,6 +224,11 @@ class Region extends ConstitutionOwner
                 
         $this->population = 0;
         foreach ($this->tiles as $tile) {
+            $tile->population = 0;
+            foreach ($tile->pops as $pop) {
+                $tile->population += $pop->count;
+            }
+            $tile->save();
             $this->population += $tile->population;
         }
         
