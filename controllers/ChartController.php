@@ -4,7 +4,9 @@ namespace app\controllers;
 
 use app\components\MyController,
     app\models\politics\Party,
-    app\models\politics\State;
+    app\models\politics\State,
+    app\models\User,
+    app\models\economics\Company;
 
 /**
  * Рейтинги
@@ -26,6 +28,22 @@ class ChartController extends MyController
     {
         $list = Party::find()->orderBy(['fame' => SORT_DESC])->with('state')->all();
         return $this->render('parties', [
+            'list' => $list
+        ]);
+    }
+    
+    public function actionUsers()
+    {
+        $list = User::find()->orderBy(['fame' => SORT_DESC])->all();
+        return $this->render('users', [
+            'list' => $list
+        ]);
+    }
+    
+    public function actionCompanies()
+    {
+        $list = Company::find()->orderBy(['capitalization' => SORT_DESC])->all();
+        return $this->render('companies', [
             'list' => $list
         ]);
     }
