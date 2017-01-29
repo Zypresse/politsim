@@ -14,7 +14,10 @@ use Yii,
     app\models\politics\constitution\articles\postsonly\TermsOfElection,
     app\models\politics\constitution\articles\postsonly\TermsOfOffice,
     app\models\politics\Agency,
-    app\models\politics\AgencyPost;
+    app\models\politics\AgencyPost,
+    app\models\politics\City,
+    app\models\politics\Region,
+    app\models\politics\elections\ElectoralDistrict;
 
 /**
  * 
