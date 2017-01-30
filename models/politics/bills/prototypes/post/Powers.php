@@ -29,7 +29,7 @@ final class Powers extends BillProto
         $post = AgencyPost::findByPk($bill->dataArray['postId']);
         $post->constitution->setArticleByType(ConstitutionArticleType::POWERS, PowersArticle::BILLS, MyMathHelper::implodeArrayToBitmask($bill->dataArray['bills']));
         $post->constitution->setArticleByType(ConstitutionArticleType::POWERS, PowersArticle::PARTIES, MyMathHelper::implodeArrayToBitmask($bill->dataArray['parties']));
-        $post->constitution->setArticleByType(ConstitutionArticleType::POWERS, PowersArticle::LICENSES, $bill->dataArray['licenses']['value'], MyMathHelper::implodeArrayToBitmask($bill->dataArray['licenses']['value2']));
+        $post->constitution->setArticleByType(ConstitutionArticleType::POWERS, PowersArticle::LICENSES, MyMathHelper::implodeArrayToBitmask($bill->dataArray['licenses']['value']), implode(',',$bill->dataArray['licenses']['value2']));
         return true;
     }
 
@@ -53,15 +53,15 @@ final class Powers extends BillProto
     {
         $post = AgencyPost::findByPk($bill->dataArray['postId']);
         /* @var $article Bills */
-        $articleBills = $post->constitution->getArticleByType(ConstitutionArticleType::POWERS, PowersArticle::BILLS);
+        $articleBills = $post->constitution->getArticleByTypeOrEmptyModel(ConstitutionArticleType::POWERS, PowersArticle::BILLS);
         $articleBills->value = MyMathHelper::implodeArrayToBitmask($bill->dataArray['bills']);
         /* @var $article Parties */
-        $articleParties = $post->constitution->getArticleByType(ConstitutionArticleType::POWERS, PowersArticle::PARTIES);
+        $articleParties = $post->constitution->getArticleByTypeOrEmptyModel(ConstitutionArticleType::POWERS, PowersArticle::PARTIES);
         $articleParties->value = MyMathHelper::implodeArrayToBitmask($bill->dataArray['parties']);
         /* @var $article Licenses */
-        $articleLicenses = $post->constitution->getArticleByType(ConstitutionArticleType::POWERS, PowersArticle::LICENSES);
-        $articleLicenses->value = $bill->dataArray['licenses']['value'];
-        $articleLicenses->value2 = MyMathHelper::implodeArrayToBitmask($bill->dataArray['licenses']['value2']);
+        $articleLicenses = $post->constitution->getArticleByTypeOrEmptyModel(ConstitutionArticleType::POWERS, PowersArticle::LICENSES);
+        $articleLicenses->value = MyMathHelper::implodeArrayToBitmask($bill->dataArray['licenses']['value']);
+        $articleLicenses->value2 = $bill->dataArray['licenses']['value2'];
         
         return Yii::t('app/bills', 'Change powers of post {0}<br><strong>Bills powers:</strong> {1}<br><strong>Parties powers:</strong> {2}<br><strong>Licenses powers:</strong> {3}', [
             $post ? Html::encode($post->name) : Yii::t('app', 'Deleted agency post'),

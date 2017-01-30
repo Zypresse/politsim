@@ -163,8 +163,8 @@ $form = new ActiveForm();
             }
             
             $('#bill-dataarray-licenses-value2 input').prop('checked', false);
-            for (var i = 0, l = licensesValue2.length; i < l, i++) {
-                $('#bill-dataarray-licenses-value input[value='+licensesValue2[i]+']').prop('checked', true);;
+            for (var i = 0, l = licensesValue2.length; i < l; i++) {
+                $('#bill-dataarray-licenses-value2 input[value='+licensesValue2[i]+']').prop('checked', true);;
             }
             
         });

@@ -60,6 +60,7 @@ use Yii,
  * @property ElectoralDistrict[] $districts
  * @property Company[] $companies
  * @property License[] $licenses
+ * @property License[] $licensesUnconfirmed
  * @property LicenseRule[] $licenseRules
  *
  * @author ilya
@@ -208,7 +209,7 @@ class State extends ConstitutionOwner
         return $this->hasMany(Party::className(), ['stateId' => 'id'])
                 ->where(['dateDeleted' => null, 'dateConfirmed' => null]);
     }
-    
+        
     public function getTiles()
     {
         return $this->hasMany(Tile::className(), ['regionId' => 'id'])
@@ -239,7 +240,15 @@ class State extends ConstitutionOwner
     
     public function getLicenses()
     {
-        return $this->hasMany(License::className(), ['stateId' => 'id']);
+        return $this->hasMany(License::className(), ['stateId' => 'id'])
+                ->where(['is not', 'dateGranted', null])
+                ->andWhere('dateGranted < dateExpired');
+    }
+    
+    public function getLicensesUnconfirmed()
+    {
+        return $this->hasMany(License::className(), ['stateId' => 'id'])
+                ->where(['dateGranted' => null]);
     }
     
     public function getLicenseRules()

@@ -5,7 +5,9 @@ use yii\helpers\Html,
     app\models\politics\constitution\ConstitutionArticleType,
     app\models\politics\constitution\articles\postsonly\Powers,
     app\models\politics\constitution\articles\postsonly\powers\Bills,
-    app\models\politics\constitution\articles\postsonly\powers\Parties;
+    app\models\politics\constitution\articles\postsonly\powers\Parties,
+    app\models\economics\LicenseProto,
+    app\models\politics\constitution\articles\postsonly\powers\Licenses;
 
 /* @var $this \yii\web\View */
 /* @var $user \app\models\User */
@@ -18,9 +20,11 @@ use yii\helpers\Html,
             <?php foreach ($user->posts as $post): ?>
             <?php 
                 /* @var $powersBills Bills */
-                $powersBills = $post->constitution->getArticleByType(ConstitutionArticleType::POWERS, Powers::BILLS); 
-                /* @var $powerParties Parties */
-                $powersParties = $post->constitution->getArticleByType(ConstitutionArticleType::POWERS, Powers::PARTIES); 
+                $powersBills = $post->constitution->getArticleByTypeOrEmptyModel(ConstitutionArticleType::POWERS, Powers::BILLS); 
+                /* @var $powersParties Parties */
+                $powersParties = $post->constitution->getArticleByTypeOrEmptyModel(ConstitutionArticleType::POWERS, Powers::PARTIES); 
+                /* @var $powersLicenses Licenses */
+                $powersLicenses = $post->constitution->getArticleByTypeOrEmptyModel(ConstitutionArticleType::POWERS, Powers::LICENSES); 
             ?>
                 <div class="box">
                     <div class="box-header">
@@ -48,6 +52,20 @@ use yii\helpers\Html,
                                         <li><?=$name?></li>
                                     <?php endforeach ?>
                                     </ul>
+                                    <h4><?=Yii::t('app', 'Licenses powers')?>:</h4>
+                                    <ul>
+                                    <?php foreach ($powersLicenses->selected as /*$val =>*/ $name): ?>
+                                        <li><?=$name?></li>
+                                    <?php endforeach ?>
+                                    </ul>
+                                <?php if ($powersLicenses->value2): ?>
+                                    <h4><?=Yii::t('app', 'Licenses management')?>:</h4>
+                                    <ul>
+                                    <?php foreach ($powersLicenses->value2 as $id): ?>
+                                        <li><?= LicenseProto::findOne($id)->name ?></li>
+                                    <?php endforeach ?>
+                                    </ul>
+                                <?php endif ?>
                                 </div>
                             </div>
                             <?php if ($powersBills->value > 0): ?>
@@ -60,6 +78,12 @@ use yii\helpers\Html,
                                 <?=$this->render('boxes/parties', [
                                     'post' => $post,
                                     'powersParties' => $powersParties,
+                                ])?>
+                            <?php endif ?>
+                            <?php if ($powersLicenses->value > 0 && count($powersLicenses->value2)): ?>
+                                <?=$this->render('boxes/licenses', [
+                                    'post' => $post,
+                                    'powersLicenses' => $powersLicenses,
                                 ])?>
                             <?php endif ?>
                             <?php if (count($post->postsDestignated)): ?>

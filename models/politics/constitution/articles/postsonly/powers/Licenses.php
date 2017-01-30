@@ -57,27 +57,29 @@ final class Licenses extends Powers
         return parent::afterFind();
     }
 
-
-    public function beforeSave($insert)
-    {
-        if (is_array($this->value2)) {
-            $this->value2 = implode(',', $this->value2);
-        }
-        return parent::beforeSave($insert);
-    }
-
     public function validateLicenseIds($attribute, $params)
     {
-        if (is_string($this->$attribute)) {
-            $this->$attribute = explode(',', $this->$attribute);
+        if (is_array($this->$attribute)) {
+            $val = $this->$attribute;
+        } else {
+            $val = explode(',', $this->$attribute);
         }
         
-        foreach ($this->$attribute as $id) {
+        foreach ($val as $id) {
             if (!LicenseProto::exist($id)) {
                 $this->addError($attribute, Yii::t('app', "License proto #{$id} not exist!"));
             }
         }
         return !count($this->getErrors($attribute));
+    }
+    
+    public function getName()
+    {
+        $names = [];
+        foreach ($this->value2 as $id) {
+            $names[] = LicenseProto::findOne($id)->name;
+        }
+        return parent::getName().' '.Yii::t('app', 'for licenses types:').' '.implode(',', $names);
     }
     
 }
