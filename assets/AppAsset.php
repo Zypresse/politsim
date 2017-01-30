@@ -52,7 +52,7 @@ class AppAsset extends AssetBundle
 //        'js/leaflet.geometryutil.js',
         'js/leaflet-geodesy.js',
         'js/leaflet3d.js',
-        'js/script_all.js?v2',
+        'js/script_all.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',
@@ -65,7 +65,7 @@ class AppAsset extends AssetBundle
     public function __construct($config = array()) {
         
         if (!Yii::$app->user->isGuest && Yii::$app->user->identity->isInvited) {
-            $this->js[] = 'js/script_authorized.js?v2';
+            $this->js[] = 'js/script_authorized.js';
         }
         
         if (Yii::$app->user->id > 3) {
