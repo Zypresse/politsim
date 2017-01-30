@@ -22,11 +22,12 @@ use app\components\widgets\BusinessViewAsWidget,
         <div class="box box-info">
             <div class="box-header with-border">
                 <h3 class="box-title"><?=Yii::t('app', 'Shares')?></h3>
-                <hr>
-                <?=BusinessViewAsWidget::widget()?>
             </div>
-            <div id="shares-list" class="box-body">
-                <p><?=Yii::t('app', 'Loading...')?></p>
+            <div class="box-body">
+                <?=BusinessViewAsWidget::widget()?>
+                <div id="shares-list">
+                    <p><?=Yii::t('app', 'Loading...')?></p>
+                </div>
             </div>
         </div>
     </div>
@@ -39,7 +40,7 @@ use app\components\widgets\BusinessViewAsWidget,
                 <?php if ($viewer->tile): ?>
                     <?php if ($viewer->tile->region && $viewer->tile->region->state): ?>
                         <?php if ($viewer->tile->region->state->isCompaniesCreatingAllowedFor($viewer)): ?>
-                            <button class="btn btn-block btn-primary"><i class="fa fa-briefcase"></i> <?=Yii::t('app', 'Create new company in state {0}', [Html::encode($viewer->tile->region->state->name)])?></button>
+                            <button class="btn btn-block btn-primary" id="btn-create-company" ><i class="fa fa-briefcase"></i> <?=Yii::t('app', 'Create new company in state {0}', [Html::encode($viewer->tile->region->state->name)])?></button>
                         <?php else: ?>
                             <p><?=Yii::t('app', 'Creating company in state {0} is not allowed', [Html::encode($viewer->tile->region->state->name)])?></p>
                         <?php endif ?>
@@ -61,5 +62,14 @@ use app\components\widgets\BusinessViewAsWidget,
             $('#shares-list').html(data);
         });
     }
+    
+    $('#btn-create-company').click(function(){
+        var buttons = '<button class="btn btn-primary" onclick="$(\'#create-company-form\').yiiActiveForm(\'submitForm\')" ><?=Yii::t('app', 'Create')?></button><button class="btn btn-danger" data-dismiss="modal" aria-hidden="true"><?=Yii::t('app', 'Cancel')?></button>';
+        createAjaxModal(
+            'business/create-company-form', {}, 
+            '<?=Yii::t('app', 'Create private company')?>',
+            buttons
+        );
+    });
     
 </script>

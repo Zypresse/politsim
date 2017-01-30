@@ -199,5 +199,36 @@ class Company extends TaxPayerModel
             $this->save();
         }
     }
+    
+    
+    /**
+     * 
+     * @param \app\models\User $creator
+     * @return boolean
+     */
+    public function createNew(User $creator)
+    {
+        $this->directorId = $creator->id;
+        
+        if ($this->save()) {
+        
+            $share = new Resource([
+                'protoId' => ResourceProto::SHARE,
+                'subProtoId' => $this->id,
+                'masterId' => $creator->getUtr(),
+                'locationId' => $creator->getUtr(),
+                'count' => $this->sharesIssued,
+            ]);
+
+            if ($share->save()) {
+                // TODO деньги на счёт компании
+                return true;
+            }
+
+            $this->addErrors($share->getErrors());
+        }
+        
+        return false;
+    }
 
 }
