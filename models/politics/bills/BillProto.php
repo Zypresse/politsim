@@ -140,7 +140,7 @@ abstract class BillProto implements BillProtoInterface
     /**
      * Разрешить/запретить частный бизнес
      */
-    const BUISNESS = 26;
+    const BUSINESS = 26;
     
     /**
      * Удалить пост
@@ -198,7 +198,7 @@ abstract class BillProto implements BillProtoInterface
             
             static::PARTIES_POLITIC => Yii::t('app/bills', 'Change parties politic'),
             static::MULTIPOST_POLITIC => Yii::t('app/bills', 'Allow/disallow more than one agency post to user'),
-            static::BUISNESS => Yii::t('app/bills', 'Allow/disallow buisness'),
+            static::BUSINESS => Yii::t('app/bills', 'Allow/disallow buisness'),
             
             static::COMPANY_CREATE => Yii::t('app/bills', 'Create goverment company'),            
             static::LICENSE_RULE => Yii::t('app/bills', 'Licenses rules management'),
@@ -238,7 +238,7 @@ abstract class BillProto implements BillProtoInterface
             static::CREATE_POST => 'post\\Create',
             static::POST_POWERS => 'post\\Powers',
             static::RENAME_POST => 'post\\Rename',
-            static::BUISNESS => 'constitution\\Buisness',
+            static::BUSINESS => 'constitution\\Business',
             static::DELETE_POST => 'post\\Delete',
             static::FIRE_FROM_POST => 'post\\Fire',
             static::COMPANY_CREATE => 'company\\Create',
@@ -281,7 +281,7 @@ abstract class BillProto implements BillProtoInterface
             static::CREATE_POST => 'post/create',
             static::POST_POWERS => 'post/powers',
             static::RENAME_POST => 'post/rename',
-            static::BUISNESS => 'constitution/buisness',
+            static::BUSINESS => 'constitution/business',
             static::DELETE_POST => 'post/delete',
             static::FIRE_FROM_POST => 'post/fire',
             static::COMPANY_CREATE => 'company/create',
@@ -318,7 +318,7 @@ abstract class BillProto implements BillProtoInterface
                 return Yii::t('app', 'Cities');
             case static::PARTIES_POLITIC:
             case static::MULTIPOST_POLITIC:
-            case static::BUISNESS:
+            case static::BUSINESS:
                 return Yii::t('app', 'Constitution');
             case static::CREATE_DISTRICT:
             case static::IMPLODE_DISTRICTS:

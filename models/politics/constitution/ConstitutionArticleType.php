@@ -61,7 +61,7 @@ abstract class ConstitutionArticleType
     /**
      * Разрешения деятельности частных компаний
      */
-    const BUISNESS = 11;
+    const BUSINESS = 11;
         
     /**
      * 
@@ -81,7 +81,7 @@ abstract class ConstitutionArticleType
             static::BILLS => 'statesonly\\Bills',
             static::MULTIMEMBERSHIP => 'statesonly\\Multimembership',
             static::CURRENCY => 'statesonly\\Currency',
-            static::BUISNESS => 'statesonly\\Buisness',
+            static::BUSINESS => 'statesonly\\Business',
         ];
         
         return '\\app\\models\\politics\\constitution\\articles\\'.$classes[$type];

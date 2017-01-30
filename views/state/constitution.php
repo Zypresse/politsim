@@ -84,10 +84,10 @@ use yii\helpers\Html,
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th><?=Yii::t('app', 'Buisness allowed')?></th>
+                                    <th><?=Yii::t('app', 'Business allowed')?></th>
                                     <td>
                                         <?php
-                                            $article = $state->constitution->getArticleByType(ConstitutionArticleType::BUISNESS);
+                                            $article = $state->constitution->getArticleByType(ConstitutionArticleType::BUSINESS);
                                         ?>
                                         <?=$article ? $article->name : Yii::t('yii', '(not set)')?>
                                     </td>

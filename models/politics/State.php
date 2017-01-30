@@ -9,12 +9,14 @@ use Yii,
     app\models\politics\constitution\ConstitutionOwnerType,
     app\models\politics\constitution\ConstitutionOwner,
     app\models\politics\constitution\articles\statesonly\Parties,
+    app\models\politics\constitution\articles\statesonly\Business,
     app\models\population\Pop,
     app\models\Tile,
     app\models\politics\bills\Bill,
     app\models\politics\elections\ElectoralDistrict,
     app\models\economics\License,
     app\models\economics\Company,
+    app\models\economics\TaxPayer,
     app\components\RegionCombiner,
     app\components\MyMathHelper;
 
@@ -340,6 +342,24 @@ class State extends ConstitutionOwner
     {
         $article = $this->constitution->getArticleByType(ConstitutionArticleType::PARTIES);
         return $article && ($article->value == Parties::NEED_CONFIRM || $article->value == Parties::ALLOWED);
+    }
+    
+    /**
+     * 
+     * @param TaxPayer $taxPayer
+     * @return boolean
+     */
+    public function isCompaniesCreatingAllowedFor($taxPayer)
+    {
+        $article = $this->constitution->getArticleByType(ConstitutionArticleType::BUSINESS);
+        if (is_null($article)) {
+            return false;
+        }
+        if ($taxPayer->isTaxedInState($this->id)) {
+            return !!$article->value;
+        } else {
+            return !!$article->value2;
+        }
     }
     
     public function getRecommendedParliamentSize() : int

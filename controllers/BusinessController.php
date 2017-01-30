@@ -5,6 +5,7 @@ namespace app\controllers;
 use Yii,
     yii\web\NotFoundHttpException,
     app\components\MyController,
+    app\models\economics\Utr,
     app\models\User,
     app\models\economics\Company,
     app\models\economics\Resource,
@@ -16,21 +17,27 @@ use Yii,
 final class BusinessController extends MyController
 {
     
-    public function actionIndex($userId = false)
+    public function actionIndex()
     {
-        
-        if (!$userId) {
-            $userId = Yii::$app->user->id;
+        return $this->render('index', [
+            'viewer' => $this->user,
+        ]);
+    }
+    
+    public function actionShares(int $utr)
+    {
+        $utrModel = Utr::findByPk($utr);
+        if (is_null($utrModel)) {
+            throw new NotFoundHttpException(Yii::t('app', 'UTR not found'));
         }
-        $user = $this->loadUser($userId);
         
         $shares = Resource::find()->where([
-            'masterId' => $user->getUtr(),
+            'masterId' => $utr,
             'protoId' => ResourceProto::SHARE,
-        ])->all();
+        ])->with('company')->all();
         
-        return $this->render('index', [
-            'user' => $user,
+        return $this->render('shares', [
+            'shareholder' => $utrModel->object,
             'shares' => $shares,
             'viewer' => $this->user,
         ]);

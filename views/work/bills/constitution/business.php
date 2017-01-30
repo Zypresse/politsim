@@ -19,7 +19,7 @@ $form = new ActiveForm();
     'action' => Url::to(['work/new-bill']),
     'enableClientValidation' => true,
     'enableAjaxValidation' => true,
-    'validationUrl' => Url::to(['work/new-bill-form', 'postId' => $post->id, 'protoId' => BillProto::BUISNESS])
+    'validationUrl' => Url::to(['work/new-bill-form', 'postId' => $post->id, 'protoId' => BillProto::BUSINESS])
 ]) ?>
 
 <?=$form->field($model, 'protoId', ['labelOptions' => ['class' => 'hide']])->hiddenInput()?>
@@ -30,7 +30,11 @@ $form = new ActiveForm();
 <?=$form->field($model, 'dataArray[value]')->dropDownList([
     0 => Yii::t('yii', 'No'),
     1 => Yii::t('yii', 'Yes'),
-])->label(Yii::t('app', 'Allow buisness'))?>
+])->label(Yii::t('app', 'Allow local buisness'))?>
+<?=$form->field($model, 'dataArray[value2]')->dropDownList([
+    0 => Yii::t('yii', 'No'),
+    1 => Yii::t('yii', 'Yes'),
+])->label(Yii::t('app', 'Allow foreign buisness'))?>
 
 <?php $form->end() ?>
 
@@ -46,6 +50,15 @@ $form = new ActiveForm();
         'name': 'Bill[dataArray][value]',
         'container': '.field-bill-dataarray-value',
         'input': '#bill-dataarray-value',
+        'error': '.help-block',
+        'enableAjaxValidation': true
+    });
+    
+    $form.yiiActiveForm('add', {
+        'id': 'bill-dataarray-value2',
+        'name': 'Bill[dataArray][value2]',
+        'container': '.field-bill-dataarray-value2',
+        'input': '#bill-dataarray-value2',
         'error': '.help-block',
         'enableAjaxValidation': true
     });

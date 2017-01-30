@@ -3,6 +3,7 @@
 namespace app\models\economics;
 
 use Yii,
+    yii\base\Exception,
     app\models\base\MyActiveRecord;
 
 /**
@@ -20,6 +21,8 @@ use Yii,
  * @property ResourceProtoInterface $proto
  * @property TaxPayer $master
  * @property TaxPayer $location
+ * 
+ * @property Company $company Компания (только для акций)
  * 
  */
 class Resource extends MyActiveRecord
@@ -93,6 +96,19 @@ class Resource extends MyActiveRecord
     public function getLocation()
     {
         return $this->locationUtr->object;
+    }
+    
+    /**
+     * 
+     * @return type
+     */
+    public function getCompany()
+    {
+        if ($this->protoId == ResourceProto::SHARE) {
+            return $this->hasOne(Company::className(), ['id' => 'subProtoId']);
+        } else {
+            throw new Exception(Yii::t('app', 'Unsupported method {0}', [static::className().'::getCompany()']));
+        }
     }
     
 }

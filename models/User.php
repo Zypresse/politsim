@@ -87,7 +87,7 @@ class User extends TaxPayerModel implements IdentityInterface
      */
     public function getTaxStateId()
     {
-        return (int)$this->location->getTaxStateId();
+        return $this->tile && $this->tile->region ? (int)$this->tile->region->stateId : 0;
     }
     
     /**
@@ -97,7 +97,12 @@ class User extends TaxPayerModel implements IdentityInterface
      */
     public function isTaxedInState(int $stateId)
     {
-        return (int)$this->location->isTaxedInState($stateId);
+        foreach ($this->states as $state) {
+            if ((int) $state->id === $stateId) {
+                return true;
+            }
+        }
+        return false;
     }
     
     /**
@@ -115,7 +120,7 @@ class User extends TaxPayerModel implements IdentityInterface
      */
     public function isUserController(int $userId)
     {
-        return (int)$this->id === $userId;
+        return ((int)$this->id) === $userId;
     }    
 
     public static function findIdentity($id)
