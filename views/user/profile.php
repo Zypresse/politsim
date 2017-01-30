@@ -67,7 +67,7 @@ $viewer = Yii::$app->user->identity;
                     <p>
                         <i class="fa fa-flag"></i>
                         <?php if ($user->ideology) : ?>
-                            Придерживается идеологии «<?= $user->ideology->name ?>»
+                            <?=Yii::t('app', 'Have ideology «{0}»', [$user->ideology->name])?>
                         <?php endif ?>
                     </p>
                     <?php endif ?>
@@ -75,50 +75,76 @@ $viewer = Yii::$app->user->identity;
                     <p>
                         <i class="fa">☪</i>
                         <?php if ($user->religion) : ?>
-                            Придерживается религии «<?= $user->religion->name ?>»
+                            <?=Yii::t('app', 'Have religion «{0}»', [$user->religion->name])?>
                         <?php endif ?>
                     </p>
                     <?php endif ?>
                     <p>
                         <i class="fa fa-group"></i>
                         <?php if (count($user->parties)): ?>
-                        <?php
-                            $partyLinks = [];
-                            foreach ($user->parties as $party) {
-                                $partyLinks[] = LinkCreator::partyLink($party);
-                            }
-                        ?>
-                        Состоит в партиях: <?=implode(', ', $partyLinks)?>
+                            <?php
+                                $partyLinks = [];
+                                foreach ($user->parties as $party) {
+                                    $partyLinks[] = LinkCreator::partyLink($party);
+                                }
+                            ?>
+                            <?=Yii::t('app', 'Have parties membership: {0}', [implode(', ', $partyLinks)])?>
                         <?php else: ?>
-                            <?=$user->genderId === 1 ? 'Беспартийная' : 'Беспартийный' ?>
+                            <?=Yii::t('app', 'Have not party membership')?>
                         <?php endif ?>
                     </p>
                     <p>
                         <i class="fa fa-globe"></i>
                         <?php if (count($user->states)): ?>
-                        <?php
-                            $stateLinks = [];
-                            foreach ($user->states as $state) {
-                                $stateLinks[] = LinkCreator::stateLink($state);
-                            }
-                        ?>
-                            Имеет гражданства: <?=implode(', ', $stateLinks)?>
+                            <?php
+                                $stateLinks = [];
+                                foreach ($user->states as $state) {
+                                    $stateLinks[] = LinkCreator::stateLink($state);
+                                }
+                            ?>
+                            <?=Yii::t('app', 'Have citizenships: {0}', [implode(', ', $stateLinks)])?>
                         <?php else: ?>
-                            Не имеет гражданства
+                            <?=Yii::t('app', 'Have not citizenship')?>
                         <?php endif ?>
                     </p>            
                     <p>                
                         <i class="fa fa-briefcase"></i>
                         <?php if ($user->getPosts()->count()): ?>
                             <?php
-                                $postsLinks = [];
+                                $postsLinksByState = [];
                                 foreach ($user->getPosts()->with('state')->all() as $post) {
-                                    $postsLinks[] = Html::encode($post->name).' ('.LinkCreator::stateLink($post->state).')';
+                                    $postLink = Html::encode($post->name);
+                                    if (isset($postsLinksByState[$post->stateId])) {
+                                        $postsLinksByState[$post->stateId]['posts'][] = $postLink;
+                                    } else {
+                                        $postsLinksByState[$post->stateId] = [
+                                            'link' => LinkCreator::stateLink($post->state),
+                                            'posts' => [$postLink],
+                                        ];
+                                    }
                                 }
                             ?>
-                            Занимает посты в правительстве: <?=implode(',', $postsLinks)?>
+                            
+                            <?=Yii::t('app', 'Have agency posts: ')?><br>
+                            <?php foreach ($postsLinksByState as $obj): ?>
+                                <?=$obj['link']?>: <?=implode(',',$obj['posts'])?><br>
+                            <?php endforeach ?>
                         <?php else: ?>
-                            Не занимает постов в правительстве
+                            <?=Yii::t('app', 'Have not agency posts')?>
+                        <?php endif ?>
+                    </p>
+                    <p>
+                        <i class="fa fa-globe"></i>
+                        <?php if ($user->tile): ?>
+                            <?php if ($user->tile->city): ?>
+                            <?= Yii::t('app', 'Have residence in city {0}', [LinkCreator::cityLink($user->tile->city)]) ?>
+                            <?php elseif ($user->tile->region): ?>
+                            <?= Yii::t('app', 'Have residence in region {0}', [LinkCreator::regionLink($user->tile->region)]) ?>
+                            <?php else: ?>
+                            <?= Yii::t('app', 'Have residence in tile [{0},{1}]', [$user->tile->x, $user->tile->y]) ?>
+                            <?php endif ?>
+                        <?php else: ?>
+                            <?= Yii::t('app', 'Have not residence') ?>
                         <?php endif ?>
                     </p>
                 </div>

@@ -3,11 +3,14 @@
 namespace app\controllers;
 
 use Yii,
+    yii\web\NotFoundHttpException,
     app\components\MyController,
     app\components\LinkCreator,
     app\models\User,
     app\models\Ideology,
-    app\models\Religion;
+    app\models\Religion,
+    app\models\politics\Region,
+    app\models\politics\City;
 
 /**
  * Description of UserController
@@ -114,5 +117,39 @@ class UserController extends MyController
         
         $this->result = $user->getPublicAttributes();
         return $this->_r();
+    }
+    
+    public function actionRelocateForm($type, $id)
+    {
+        switch ($type) {
+            case 'region':
+                $object = Region::findByPk($id);
+                break;
+            case 'city':
+                $object = City::findByPk($id);
+                break;
+            default:
+                return $this->_r(Yii::t('app', 'Invalid params'));
+        }
+        
+        if (is_null($object)) {
+            throw new NotFoundHttpException(Yii::t('app', '{0} not found', [$type]));
+        }
+        
+        return $this->render('relocate',[
+            'user' => $this->user,
+            'object' => $object,
+        ]);
+    }
+    
+    public function actionRelocate()
+    {
+        $tileId = (int) Yii::$app->request->post('tileId');
+        $this->user->tileId = $tileId;
+        if ($this->user->save()) {
+            return $this->_rOk();
+        } else {
+            return $this->_r($this->user->getErrors());
+        }
     }
 }
