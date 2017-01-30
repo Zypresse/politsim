@@ -5,18 +5,8 @@ namespace app\commands;
 use Yii,
     yii\db\Query,
     yii\console\Controller,
-    app\models\Region,
-    app\models\State,
-    app\models\Party,        
-    app\models\Holding,
-    app\models\factories\Factory,
-    app\models\Population,
-    app\models\Dealing,
-    app\models\resources\Resource,
-    app\models\resources\ResourceCost,
-    app\models\resources\proto\ResourceProto,
-    app\models\statistics\StatisticsMining,
-    app\models\statistics\StatisticsCosts;
+    app\components\TileCombiner,
+    app\models\Tile;
 
 /**
  * Update hourly
@@ -33,80 +23,132 @@ class UpdateHourlyController extends Controller
             $this->$method();
             if ($debug) printf("{$method}: %f s.".PHP_EOL, microtime(true)-$time);
         } else {
-
-            $time = microtime(true);
-            $this->updateRegions();
-            if ($debug) printf("Updated regions: %f s.".PHP_EOL, microtime(true)-$time);
-
-            $time = microtime(true);
-            $this->updateStates();
-            if ($debug) printf("Updated states: %f s.".PHP_EOL, microtime(true)-$time);
-
-            $time = microtime(true);
-            $this->updateParties();
-            if ($debug) printf("Updated parties: %f s.".PHP_EOL, microtime(true)-$time);
-
-            $time = microtime(true);
-            $this->updateHoldings();
-            if ($debug) printf("Updated holdings: %f s.".PHP_EOL, microtime(true)-$time);
-
-            $time = microtime(true);
-            $this->updatePopStudy();
-            if ($debug) printf("Updated populations study: %f s.".PHP_EOL, microtime(true)-$time);
-
-            $time = microtime(true);
-            $this->updatePopWorkers();
-            if ($debug) printf("Updated populations works: %f s.".PHP_EOL, microtime(true)-$time);
             
             $time = microtime(true);
-            $this->updatePopAnalogies();
-            if ($debug) printf("Updated populations analogies: %f s.".PHP_EOL, microtime(true)-$time);
+            $this->calcPopDestinyPolygons();
+            if ($debug) printf("Updated map of population destiny: %f s.".PHP_EOL, microtime(true)-$time);
             
-            $time = microtime(true);
-            $this->updateFactories();
-            if ($debug) printf("Updated factories: %f s.".PHP_EOL, microtime(true)-$time);
-
-            $time = microtime(true);
-            $this->updatePowerplantAutobuy();
-            if ($debug) printf("Updated powerplants autobuy: %f s.".PHP_EOL, microtime(true)-$time);
-
-            $time = microtime(true);
-            $this->updatePowerplantProduction();
-            if ($debug) printf("Updated powerplants production: %f s.".PHP_EOL, microtime(true)-$time);
-
-            $time = microtime(true);
-            $this->updateFactoryAutobuy();
-            if ($debug) printf("Updated factories autobuy: %f s.".PHP_EOL, microtime(true)-$time);
-
-            $time = microtime(true);
-            $this->updateFactoryProduction();
-            if ($debug) printf("Updated factories production: %f s.".PHP_EOL, microtime(true)-$time);
-            
-            $time = microtime(true);
-            $this->updateResourcesCostsStatistics();
-            if ($debug) printf("Updated resources costs statistics: %f s.".PHP_EOL, microtime(true)-$time);
-                        
-            $time = microtime(true);
-            $this->updatePopPaySalaries();
-            if ($debug) printf("Updated population payed salaries: %f s.".PHP_EOL, microtime(true)-$time);
-                        
-            $time = microtime(true);
-            $this->updatePopFireJob();
-            if ($debug) printf("Updated population fire job: %f s.".PHP_EOL, microtime(true)-$time);
-            
-            $time = microtime(true);
-            $this->updatePopPurchaseResources();
-            if ($debug) printf("Updated population purchase resources: %f s.".PHP_EOL, microtime(true)-$time);
-            
-            $time = microtime(true);
-            $this->updateNonstorableResources();
-            if ($debug) printf("Updated nonstorable resources: %f s.".PHP_EOL, microtime(true)-$time);
-
-            $time = microtime(true);
-            $this->updatePopAnalogies();
-            if ($debug) printf("Updated populations analogies: %f s.".PHP_EOL, microtime(true)-$time);
+//            $time = microtime(true);
+//            $this->updateRegions();
+//            if ($debug) printf("Updated regions: %f s.".PHP_EOL, microtime(true)-$time);
+//
+//            $time = microtime(true);
+//            $this->updateStates();
+//            if ($debug) printf("Updated states: %f s.".PHP_EOL, microtime(true)-$time);
+//
+//            $time = microtime(true);
+//            $this->updateParties();
+//            if ($debug) printf("Updated parties: %f s.".PHP_EOL, microtime(true)-$time);
+//
+//            $time = microtime(true);
+//            $this->updateHoldings();
+//            if ($debug) printf("Updated holdings: %f s.".PHP_EOL, microtime(true)-$time);
+//
+//            $time = microtime(true);
+//            $this->updatePopStudy();
+//            if ($debug) printf("Updated populations study: %f s.".PHP_EOL, microtime(true)-$time);
+//
+//            $time = microtime(true);
+//            $this->updatePopWorkers();
+//            if ($debug) printf("Updated populations works: %f s.".PHP_EOL, microtime(true)-$time);
+//            
+//            $time = microtime(true);
+//            $this->updatePopAnalogies();
+//            if ($debug) printf("Updated populations analogies: %f s.".PHP_EOL, microtime(true)-$time);
+//            
+//            $time = microtime(true);
+//            $this->updateFactories();
+//            if ($debug) printf("Updated factories: %f s.".PHP_EOL, microtime(true)-$time);
+//
+//            $time = microtime(true);
+//            $this->updatePowerplantAutobuy();
+//            if ($debug) printf("Updated powerplants autobuy: %f s.".PHP_EOL, microtime(true)-$time);
+//
+//            $time = microtime(true);
+//            $this->updatePowerplantProduction();
+//            if ($debug) printf("Updated powerplants production: %f s.".PHP_EOL, microtime(true)-$time);
+//
+//            $time = microtime(true);
+//            $this->updateFactoryAutobuy();
+//            if ($debug) printf("Updated factories autobuy: %f s.".PHP_EOL, microtime(true)-$time);
+//
+//            $time = microtime(true);
+//            $this->updateFactoryProduction();
+//            if ($debug) printf("Updated factories production: %f s.".PHP_EOL, microtime(true)-$time);
+//            
+//            $time = microtime(true);
+//            $this->updateResourcesCostsStatistics();
+//            if ($debug) printf("Updated resources costs statistics: %f s.".PHP_EOL, microtime(true)-$time);
+//                        
+//            $time = microtime(true);
+//            $this->updatePopPaySalaries();
+//            if ($debug) printf("Updated population payed salaries: %f s.".PHP_EOL, microtime(true)-$time);
+//                        
+//            $time = microtime(true);
+//            $this->updatePopFireJob();
+//            if ($debug) printf("Updated population fire job: %f s.".PHP_EOL, microtime(true)-$time);
+//            
+//            $time = microtime(true);
+//            $this->updatePopPurchaseResources();
+//            if ($debug) printf("Updated population purchase resources: %f s.".PHP_EOL, microtime(true)-$time);
+//            
+//            $time = microtime(true);
+//            $this->updateNonstorableResources();
+//            if ($debug) printf("Updated nonstorable resources: %f s.".PHP_EOL, microtime(true)-$time);
+//
+//            $time = microtime(true);
+//            $this->updatePopAnalogies();
+//            if ($debug) printf("Updated populations analogies: %f s.".PHP_EOL, microtime(true)-$time);
                         
         }
+    }
+    
+    private function calcPopDestinyPolygons()
+    {
+        
+        /* @var $tiles Tile[] */
+        $tiles = Tile::find()->where(['>', 'population', 0])->all();
+        
+        $uniques = [];
+        foreach ($tiles as $tile) {
+            $pop = (int)round( intval($tile->population) / $tile->area );
+            if ($pop < 10) {
+                $i = 0;
+            } elseif ($pop < 30) {
+                $i = 1;
+            } elseif ($pop < 50) {
+                $i = 2;
+            } elseif ($pop < 100) {
+                $i = 3;
+            } elseif ($pop < 300) {
+                $i = 4;
+            } elseif ($pop < 500) {
+                $i = 5;
+            } elseif ($pop < 1000) {
+                $i = 6;
+            } elseif ($pop < 2000) {
+                $i = 7;
+            } else {
+                $i = 8;
+            }
+            if (isset($uniques[$i])) {
+                $uniques[$i][] = $tile;
+            } else {
+                $uniques[$i] = [$tile];
+            }
+        }
+        
+        $popdestiny = [];
+        foreach ($uniques as $i => $tiles) {
+            $path = TileCombiner::combineList($tiles);
+            $popdestiny[] = [
+                'i' => $i,
+                'path' => $path
+            ];
+            echo "path for $i saved".PHP_EOL;
+        }
+        
+        file_put_contents(Yii::$app->basePath.'/data/polygons/popdestiny.json', json_encode($popdestiny));
     }
 
     /**
