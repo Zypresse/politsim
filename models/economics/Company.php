@@ -33,6 +33,9 @@ use Yii,
  * @property User $director
  * @property Resource[] $shares
  * @property License[] $licenses
+ * @property CompanyDecision[] $decisions
+ * @property CompanyDecision[] $decisionsActive
+ * @property CompanyDecision[] $decisionsArсhived
  * 
  */
 class Company extends TaxPayerModel
@@ -166,6 +169,25 @@ class Company extends TaxPayerModel
                 ->with('state');
     }
     
+    public function getDecisions()
+    {
+        return $this->hasMany(CompanyDecision::className(), ['companyId' => 'id']);
+    }
+    
+    public function getDecisionsActive()
+    {
+        return $this->getDecisions()
+                ->where(['dateFinished' => null])
+                ->orderBy(['dateCreated' => SORT_DESC]);
+    }
+    
+    public function getDecisionsArсhived()
+    {
+        return $this->getDecisions()
+                ->where(['is not', 'dateFinished', null])
+                ->orderBy(['dateCreated' => SORT_DESC]);
+    }
+    
     public function updateParams($save = true)
     {
         
@@ -231,6 +253,16 @@ class Company extends TaxPayerModel
             $this->addErrors($share->getErrors());
         }
         
+        return false;
+    }
+    
+    public function isShareholder(int $utr)
+    {
+        foreach ($this->shares as $share) {
+            if ((int)$share->masterId === $utr) {
+                return true;
+            }
+        }
         return false;
     }
 

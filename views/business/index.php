@@ -56,12 +56,21 @@ use app\components\widgets\BusinessViewAsWidget,
 </section>
 <script type="text/javascript">
 
-    function viewAsUtrChanged(val) {
+    function loadShares(utr) {
         $('#shares-list').html('<p><?=Yii::t('app', 'Loading...')?></p>');
-        get_html('business/shares', {utr: val}, function(data) {
+        get_html('business/shares', {utr: utr}, function(data) {
             $('#shares-list').html(data);
         });
     }
+    
+    $('#select-using-utr').change(function(){
+        loadShares($('#select-using-utr').val());
+    });
+    
+    $(function(){
+        loadShares(viewAsUtr);
+    });
+    
     
     $('#btn-create-company').click(function(){
         var buttons = '<button class="btn btn-primary" onclick="$(\'#create-company-form\').yiiActiveForm(\'submitForm\')" ><?=Yii::t('app', 'Create')?></button><button class="btn btn-danger" data-dismiss="modal" aria-hidden="true"><?=Yii::t('app', 'Cancel')?></button>';

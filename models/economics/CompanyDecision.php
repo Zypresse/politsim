@@ -60,7 +60,7 @@ class CompanyDecision extends MyActiveRecord
     public function rules()
     {
         return [
-            [['companyId', 'protoId', 'dateCreated', 'dateVotingFinished'], 'required'],
+            [['companyId', 'protoId'], 'required'],
             [['companyId', 'protoId', 'initiatorId', 'dateCreated', 'dateVotingFinished', 'dateFinished', 'votesPlus', 'votesAbstain', 'votesMinus'], 'integer', 'min' => 0],
             [['isApproved'], 'boolean'],
             [['initiatorId'], 'exist', 'skipOnError' => true, 'targetClass' => Utr::className(), 'targetAttribute' => ['initiatorId' => 'id']],

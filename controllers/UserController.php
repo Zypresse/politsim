@@ -4,6 +4,9 @@ namespace app\controllers;
 
 use Yii,
     yii\web\NotFoundHttpException,
+    yii\web\Response,
+    yii\helpers\Html,
+    app\components\MyHtmlHelper,
     app\components\MyController,
     app\components\LinkCreator,
     app\models\User,
@@ -106,6 +109,35 @@ class UserController extends MyController
         }
         
         return $this->_r();
+    }
+    
+    public function actionGlobalFind($term, $stateId = null)
+    {
+        $query = User::find()
+                ->filterWhere(['like', 'name', $term]);
+        
+        if ($stateId) {
+            $query = $query->joinWith('citizenships')
+                    ->andWhere(['citizenships.stateId' => $stateId])
+                    ->andWhere(['IS NOT', 'citizenships.stateId', NULL]);
+        }
+        
+        $models = $query->all();
+        $this->result = [];
+        /* @var $model User */
+        foreach ($models as $model) {
+            $this->result[] = [
+                'id' => $model->id,
+                'value' => Html::encode($model->name),
+                'label' => Html::img($model->avatar, ['style' => 'width:32px']).' '.Html::encode($model->name)
+                        .' <span class="star">'.$model->fame.MyHtmlHelper::icon('star').'</span>'
+                        .' <span class="heart">'.$model->trust.MyHtmlHelper::icon('heart').'</span>'
+                        .' <span class="chart_pie">'.$model->success.MyHtmlHelper::icon('chart_pie').'</span>',
+            ];
+        }
+        
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return $this->result;
     }
     
     public function actionInfo(int $id)

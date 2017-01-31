@@ -33,7 +33,7 @@ abstract class CompanyDecisionProto
             static::SET_DIRECTOR => 'SetDirector',
         ];
         
-        return '\\app\\models\\politics\\economics\\decisions\\'.$classes[$type];
+        return '\\app\\models\\economics\\decisions\\'.$classes[$type];
     }
     
     /**
@@ -84,6 +84,11 @@ abstract class CompanyDecisionProto
     public static function isAvailable(Company $company) : bool
     {
         return true;
+    }
+    
+    public static function exist(int $protoId) : bool
+    {
+        return isset(static::findAll()[$protoId]);
     }
         
     abstract public function render(CompanyDecision $decision) : string;

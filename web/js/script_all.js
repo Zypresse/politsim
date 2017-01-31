@@ -63,11 +63,6 @@ var viewAsUtr = docCookies.getItem('viewAsUtr');
 function setViewAsUtr(val) {
     viewAsUtr = val;
     docCookies.setItem('viewAsUtr', val, 24*60*60);
-    viewAsUtrChanged(val);
-}
-
-function viewAsUtrChanged(val) {
-    console.log(val);
 }
             
 var current_page, current_page_params, currentPageInterval;
@@ -94,7 +89,16 @@ $(function () {
     } else {
         $('#account_settings_button').show();
     }
-})
+    
+    $.widget( "custom.autocompleteUsersSearch", $.ui.autocomplete, {
+        _renderItem: function( ul, item ) {
+            return $( "<li>" )
+                .attr( "data-value", item.value )
+                .append( item.label )
+                .appendTo( ul );
+        }
+    });
+});
 
 function roundd(x, n) {
     return parseFloat(x.toFixed(n));

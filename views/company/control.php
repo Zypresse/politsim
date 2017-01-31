@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html,
+    app\components\widgets\BusinessViewAsWidget,
     app\components\LinkCreator,
     app\components\MyHtmlHelper;
 
@@ -11,6 +12,9 @@ use yii\helpers\Html,
 
 ?>
 <section class="content-header">
+    <div class="pull-right">
+        <?=BusinessViewAsWidget::widget()?>
+    </div>
     <h1>
         <?=Html::encode($company->name)?>
     </h1>
@@ -153,4 +157,87 @@ use yii\helpers\Html,
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-info">
+                <div class="box-header">
+                    <h4 class="box-title"><?=Yii::t('app', 'Active decisions')?></h4>
+                </div>
+                <div class="box-body">
+                <?php if (count($company->decisionsActive)): ?>
+                    <table class="table table-condensed table-bordered">
+                        <thead>
+                            <tr>
+                                <th><?= Yii::t('app', 'Initiator') ?></th>
+                                <th><?= Yii::t('app', 'Date Created') ?></th>
+                                <th><?= Yii::t('app', 'Decision content') ?></th>
+                                <th><?= Yii::t('app', 'Votes') ?></th>
+                                <th><?= Yii::t('app', 'Action') ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <?php foreach ($company->decisionsActive as $decision): ?>
+                            <tr>
+                                <td><?=$decision->initiator ? LinkCreator::link($decision->initiator) : Yii::t('app', 'Automatic decision')?></td>
+                                <td>
+                                    <span class="formatDate" data-unixtime="<?= $decision->dateCreated ?>" ><?= date('H:M d.m.Y', $decision->dateCreated) ?></span>
+                                </td>
+                                <td><?= $decision->render() ?></td>
+                                <td class="text-center">
+                                    <span class="badge bg-green">
+                                        <?= round($decision->votesPlus/$company->sharesIssued,2) ?>%
+                                    </span>
+                                    &nbsp;/&nbsp;
+                                    <span class="badge bg-red">
+                                        <?= round($decision->votesMinus/$company->sharesIssued,2) ?>%
+                                    </span>
+                                    &nbsp;/&nbsp;
+                                    <span class="badge bg-gray">
+                                        <?= round($decision->votesAbstain/$company->sharesIssued,2) ?>%
+                                    </span>
+                                </td>
+                                <td>
+                                    <?= Html::a(Yii::t('app', 'Open decision info'), ['#!company/decision', 'id' => $decision->id], ['class' => 'btn btn-primary']) ?>
+                                </td>
+                            </tr>
+                        <?php endforeach ?>
+                        </tbody>
+                    </table>
+                <?php else: ?>
+                    <?=Yii::t('app', 'No one active decisions')?>
+                <?php endif ?>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-solid box-primary">
+                <div class="box-header">
+                    <h4 class="box-title"><?=Yii::t('app', 'Actions')?></h4>
+                </div>
+                <div class="box-body">
+                    <button class="btn btn-lg btn-primary new-decision-btn"><?=Yii::t('app', 'New decision')?></button>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
+<script type="text/javascript">
+    
+    $('#select-using-utr').change(function(){
+        current_page_params.utr = $('#select-using-utr').val();
+        reload_page();
+    });
+    
+    $('.new-decision-btn').click(function(){
+        $('#company-new-decision-list-form-modal .modal-dialog').removeClass('modal-lg');
+        createAjaxModal(
+            'company/new-decision-list-form',
+            {id:<?=$company->id?>, utr:$('#select-using-utr').val()},
+            '<?=Yii::t('app', 'New decision')?>',
+            '<button id="new-decision-confirm-btn" onclick="$(\'#new-decision-form\').yiiActiveForm(\'submitForm\')" class="btn btn-primary new-decision-confirm-btn hide" ><?=Yii::t('app', 'Suggest new decision')?></button><button class="btn btn-danger" data-dismiss="modal" aria-hidden="true"><?=Yii::t('app', 'Close')?></button>'
+        );
+    });
+
+</script>

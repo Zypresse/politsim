@@ -21,7 +21,7 @@ class AppAsset extends AssetBundle
     public $css = [
         'https://fonts.googleapis.com/css?family=Open+Sans:400,600,800&subset=latin,cyrillic',
         'https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css',
-//        'https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css',
+        'css/jquery-ui-theme.css',
         'css/square.css',
 //        'css/snackbar.min.css',
 //        'css/spectrum.css',
