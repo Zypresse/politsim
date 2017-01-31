@@ -11,6 +11,7 @@ use Yii,
     app\models\economics\Utr,
     app\models\economics\Company,
     app\models\economics\CompanyDecision,
+    app\models\economics\CompanyDecisionVote,
     app\models\economics\CompanyDecisionProto;
 
 /**
@@ -26,6 +27,7 @@ final class CompanyController extends MyController
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'new-decision'  => ['post'],
+                    'decision-vote'  => ['post'],
                 ],
             ],
         ];
@@ -210,6 +212,43 @@ final class CompanyController extends MyController
             'user' => $this->user,
             'shareholder' => $utrModel->object,
         ]);
+    }
+    
+    public function actionDecisionVote()
+    {
+        $id = (int) Yii::$app->request->post('id');
+        $utr = (int) Yii::$app->request->post('utr');
+        $variant = (int) Yii::$app->request->post('variant');
+        
+        $utrModel = Utr::findByPk($utr);
+        if (is_null($utrModel)) {
+            throw new NotFoundHttpException(Yii::t('app', 'UTR not found'));
+        }
+        if (!$utrModel->object->isUserController($this->user->id)) {
+            return $this->_r(Yii::t('app', 'Not allowed'));
+        }
+        
+        $decision = $this->getCompanyDecision($id);
+        
+        if (!$decision->company->isShareholder($utr)) {
+            return $this->_r(Yii::t('app', 'Not allowed'));
+        }
+        
+        if ($decision->isAllreadyVoted($utr)) {
+            return $this->_r(Yii::t('app', 'You allready voted for this decision'));
+        }
+        
+        $vote = new CompanyDecisionVote([
+            'decisionId' => $id,
+            'shareholderId' => $utr,
+            'variant' => $variant,
+        ]);
+        
+        if ($vote->save()) {
+            return $this->_rOk();
+        } else {
+            return $this->_r($vote->getErrors());
+        }
     }
     
     private function getCompany(int $id)

@@ -30,6 +30,7 @@ use Yii,
  * @property CompanyDecisionVote[] $votes
  * 
  * @property boolean $isFinished
+ * @property integer $votesSum
  * 
  */
 class CompanyDecision extends MyActiveRecord
@@ -189,25 +190,63 @@ class CompanyDecision extends MyActiveRecord
     
     /**
      * 
-     * @param integer $variant
-     * @param boolean $save
      */
-    public function addVote(int $variant, $save = true)
+    public function calcVotes()
     {
-        switch ($variant) {
-            case CompanyDecisionVote::VARIANT_PLUS:
-                $this->votesPlus++;
-                break;
-            case CompanyDecisionVote::VARIANT_MINUS:
-                $this->votesMinus++;
-                break;
-            case CompanyDecisionVote::VARIANT_ABSTAIN:
-                $this->votesAbstain++;
-                break;
+        $this->votesPlus = 0;
+        $this->votesAbstain = 0;
+        $this->votesMinus = 0;
+        $utrs = [];
+        foreach ($this->votes as $vote) {
+            $utrs[] = $vote->shareholderId;
         }
-        if ($save) {
-            $this->save();
+        $shares = $this->company->getShares()
+                ->andWhere(['in', 'masterId', $utrs])
+                ->all();
+        $counts = [];
+        foreach ($shares as $share) {
+            $utr = (int) $share->masterId;
+            if (isset($counts[$utr])) {
+                $counts[$utr] += $share->count;
+            } else {
+                $counts[$utr] = $share->count;
+            }
         }
+        foreach ($this->votes as $vote) {
+            $count = $counts[(int)$vote->shareholderId];
+            switch ((int)$vote->variant) {
+                case CompanyDecisionVote::VARIANT_PLUS:
+                    $this->votesPlus += $count;
+                    break;
+                case CompanyDecisionVote::VARIANT_ABSTAIN:
+                    $this->votesAbstain += $count;
+                    break;
+                case CompanyDecisionVote::VARIANT_MINUS:
+                    $this->votesMinus += $count;
+                    break;
+            }
+        }
+        
+        if ($this->votesSum == $this->company->sharesIssued) {
+            if ($this->votesPlus > $this->votesMinus) {
+                return $this->accept();
+            } else {
+                return $this->decline();
+            }
+        } else {
+            if ($this->votesPlus > 0.5*$this->company->sharesIssued) {
+                return $this->accept();
+            }
+            if ($this->votesMinus > 0.5*$this->company->sharesIssued) {
+                return $this->decline();
+            }
+        }
+        return $this->save();
+    }
+    
+    public function getVotesSum()
+    {
+        return $this->votesPlus + $this->votesAbstain + $this->votesMinus;
     }
     
     public function getIsFinished()

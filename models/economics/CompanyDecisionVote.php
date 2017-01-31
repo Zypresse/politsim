@@ -75,7 +75,7 @@ class CompanyDecisionVote extends MyActiveRecord
     public function afterSave($insert, $changedAttributes)
     {
         if ($insert) {
-            $this->decision->addVote($this->variant);
+            $this->decision->calcVotes();
         }
         return parent::afterSave($insert, $changedAttributes);
     }
