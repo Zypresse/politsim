@@ -8,9 +8,12 @@ use yii\helpers\Html;
 
 ?>
 <div class="form-group">
-    <label for="#select-using-utr" ><?=Yii::t('app', 'View as:')?></label>
+    <label class="inline" for="#select-using-utr" ><?=Yii::t('app', 'View as:')?></label>
+    &nbsp;
     <?=Html::dropDownList('select-using-utr', $selectedUtr, $utrs, [
-        'id' => 'select-using-utr', 'class' => 'form-control',
+        'id' => 'select-using-utr',
+        'class' => 'form-control inline',
+        'style' => 'width: auto;',
     ])?>
 </div>
 

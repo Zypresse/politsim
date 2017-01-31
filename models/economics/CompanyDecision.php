@@ -3,8 +3,10 @@
 namespace app\models\economics;
 
 use Yii,
+    yii\behaviors\TimestampBehavior,
     app\models\base\MyActiveRecord,
-    yii\behaviors\TimestampBehavior;
+    app\models\Message,
+    app\models\MessageType;
 
 /**
  * Решение компании
@@ -109,6 +111,17 @@ class CompanyDecision extends MyActiveRecord
     public function getVotes()
     {
         return $this->hasMany(CompanyDecisionVote::className(), ['decisionId' => 'id']);
+    }
+    
+    public function isAllreadyVoted(int $utr)
+    {
+        return $this->getVotes()->where(['shareholderId' => $utr])->exists();
+    }
+    
+    public function getMessages()
+    {
+        return $this->hasMany(Message::className(), ['recipientId' => 'id'])
+                ->where(['typeId' => MessageType::DECISION_DISQUSSION]);
     }
     
     /**

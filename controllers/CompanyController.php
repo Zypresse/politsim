@@ -184,6 +184,34 @@ final class CompanyController extends MyController
         return $this->_r(Yii::t('app', 'Undefined error'));
     }
     
+    public function actionDecision(int $id, int $utr)
+    {
+        
+        $utrModel = Utr::findByPk($utr);
+        if (is_null($utrModel)) {
+            throw new NotFoundHttpException(Yii::t('app', 'UTR not found'));
+        }
+        if (!$utrModel->object->isUserController($this->user->id)) {
+            return $this->_r(Yii::t('app', 'Not allowed'));
+        }
+        
+        $decision = $this->getCompanyDecision($id);
+        
+        if (!$decision->company->isShareholder($utr)) {
+            return $this->render('control-disallowed', [
+                'company' => $decision->company,
+                'shareholder' => $utrModel->object,
+                'user' => $this->user,
+            ]);
+        }
+        
+        return $this->render('decision', [
+            'decision' => $decision,
+            'user' => $this->user,
+            'shareholder' => $utrModel->object,
+        ]);
+    }
+    
     private function getCompany(int $id)
     {
         $company = Company::findByPk($id);
@@ -191,6 +219,15 @@ final class CompanyController extends MyController
             throw new NotFoundHttpException(Yii::t('app', 'Company not found'));
         }
         return $company;
+    }
+    
+    private function getCompanyDecision(int $id)
+    {
+        $decision = CompanyDecision::findByPk($id);
+        if (is_null($decision)) {
+            throw new NotFoundHttpException(Yii::t('app', 'Company decision not found'));
+        }
+        return $decision;
     }
     
 }

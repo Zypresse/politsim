@@ -197,7 +197,7 @@ use yii\helpers\Html,
                                     </span>
                                 </td>
                                 <td>
-                                    <?= Html::a(Yii::t('app', 'Open decision info'), ['#!company/decision', 'id' => $decision->id], ['class' => 'btn btn-primary']) ?>
+                                    <?= Html::a(Yii::t('app', 'Open decision info'), ['#!company/decision', 'id' => $decision->id, 'utr' => $shareholder->getUtr()], ['class' => 'btn btn-primary']) ?>
                                 </td>
                             </tr>
                         <?php endforeach ?>
