@@ -13,4 +13,9 @@ abstract class LicenseProtoType
      */
     const BANK = 1;
     
+    /**
+     * Эмиссия собственной валюты
+     */
+    const CURRENCY_EMISSION = 2;
+    
 }

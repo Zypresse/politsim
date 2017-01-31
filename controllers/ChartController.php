@@ -18,7 +18,10 @@ class ChartController extends MyController
     
     public function actionStates()
     {
-        $list = State::find()->orderBy(['population' => SORT_DESC])->all();
+        $list = State::find()
+                ->orderBy(['population' => SORT_DESC])
+                ->where(['dateDeleted' => null])
+                ->all();
         return $this->render('states', [
             'list' => $list
         ]);
@@ -26,7 +29,12 @@ class ChartController extends MyController
     
     public function actionParties()
     {
-        $list = Party::find()->orderBy(['fame' => SORT_DESC])->with('state')->all();
+        $list = Party::find()
+                ->orderBy(['fame' => SORT_DESC])
+                ->with('state')
+                ->where(['dateDeleted' => null])
+                ->andWhere(['is not', 'dateConfirmed', null])
+                ->all();
         return $this->render('parties', [
             'list' => $list
         ]);
@@ -34,7 +42,9 @@ class ChartController extends MyController
     
     public function actionUsers()
     {
-        $list = User::find()->orderBy(['fame' => SORT_DESC])->all();
+        $list = User::find()
+                ->orderBy(['fame' => SORT_DESC])
+                ->all();
         return $this->render('users', [
             'list' => $list
         ]);
@@ -42,7 +52,11 @@ class ChartController extends MyController
     
     public function actionCompanies()
     {
-        $list = Company::find()->orderBy(['capitalization' => SORT_DESC])->all();
+        $list = Company::find()
+                ->orderBy(['capitalization' => SORT_DESC])
+                ->where(['dateDeleted' => null])
+                ->with('state')
+                ->all();
         return $this->render('companies', [
             'list' => $list
         ]);

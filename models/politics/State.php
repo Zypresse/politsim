@@ -263,6 +263,17 @@ class State extends ConstitutionOwner
         return $this->hasMany(Company::className(), ['stateId' => 'id']);
     }
     
+    public function getCompaniesGovermentAndHalfGoverment()
+    {
+        return $this->hasMany(Company::className(), ['stateId' => 'id'])
+                ->where(['or', ['isGoverment' => true], ['isHalfGoverment' => true]]);
+    }
+    
+    public function getTaxpayersGoverment()
+    {
+        return array_merge($this->posts, $this->agencies, $this->regions, $this->cities, [$this]);
+    }
+    
     public function getLeaderPost()
     {
         $article = $this->constitution->getArticleByType(ConstitutionArticleType::LEADER_POST);

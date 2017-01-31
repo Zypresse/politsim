@@ -29,7 +29,11 @@ class LicenseProto extends ObjectWithFixedPrototypes
         return [
             [
                 'id' => LicenseProtoType::BANK,
-                'name' => Yii::t('app', 'License for banking'),
+                'name' => Yii::t('app', 'Banking'),
+            ],
+            [
+                'id' => LicenseProtoType::CURRENCY_EMISSION,
+                'name' => Yii::t('app', 'Currency emission'),
             ],
         ];
     }

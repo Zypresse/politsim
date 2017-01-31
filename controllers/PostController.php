@@ -13,6 +13,15 @@ use Yii,
 final class PostController extends MyController
 {
     
+    public function actionView(int $id)
+    {
+        $post = $this->getPost($id);
+        return $this->render('view', [
+            'post' => $post,
+            'user' => $this->user,
+        ]);
+    }
+    
     public function actionConstitution(int $postId, $types)
     {
         $post = $this->getPost($postId);

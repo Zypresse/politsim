@@ -181,6 +181,11 @@ abstract class BillProto implements BillProtoInterface
      * Установить пост, руководязий агенством
      */
     const SET_AGENCY_LEADER = 34;
+    
+    /**
+     * Установить пост/агенство/ещё что-то государственное, как владельца гос. компании
+     */
+    const SET_SHAREHOLDER = 35;
 
     public static function findAll()
     {
@@ -226,6 +231,7 @@ abstract class BillProto implements BillProtoInterface
             
             static::COMPANY_CREATE => Yii::t('app/bills', 'Create goverment company'),            
             static::LICENSE_RULE => Yii::t('app/bills', 'Licenses rules management'),
+            static::SET_SHAREHOLDER => Yii::t('app/bills', 'Set goverment company shareholder'),
         ];
     }
     
@@ -271,6 +277,7 @@ abstract class BillProto implements BillProtoInterface
             static::SET_CITY_LEADER => 'city\\SetLeader',
             static::SET_STATE_LEADER => 'state\\SetLeader',
             static::SET_AGENCY_LEADER => 'agency\\SetLeader',
+            static::SET_SHAREHOLDER => 'company\\SetShareholder',
         ];
         
         return '\\app\\models\\politics\\bills\\prototypes\\'.$classes[$type];
@@ -318,6 +325,7 @@ abstract class BillProto implements BillProtoInterface
             static::SET_CITY_LEADER => 'city/set-leader',
             static::SET_STATE_LEADER => 'state/set-leader',
             static::SET_AGENCY_LEADER => 'agency/set-leader',
+            static::SET_SHAREHOLDER => 'company/set-shareholder',
         ];
         
         return '/work/bills/'.$views[$type];
@@ -361,6 +369,7 @@ abstract class BillProto implements BillProtoInterface
                 return Yii::t('app', 'Electoral districts');
             case static::COMPANY_CREATE:
             case static::LICENSE_RULE:
+            case static::SET_SHAREHOLDER:
                 return Yii::t('app', 'Economics');
             default:
                 return Yii::t('app', 'Basic bill types');
