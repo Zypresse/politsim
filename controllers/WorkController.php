@@ -79,8 +79,11 @@ class WorkController extends MyController
             }
         }
         
-        return $this->render($protoId ? BillProto::getViewByType($protoId) : 'new-bill-form', [
+        
+        return $protoId ? $this->render('new-bill-form', [
             'model' => $model,
+            'post' => $post,
+        ]) : $this->render('new-bill-list-form', [
             'post' => $post,
             'types' => $types,
         ]);

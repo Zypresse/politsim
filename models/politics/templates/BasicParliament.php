@@ -22,7 +22,7 @@ final class BasicParliament implements AgencyTemplateInterface
      * @param integer $stateId
      * @return Agency
      */
-    public static function create(int $stateId, $params = [])
+    public static function create(int $stateId, $params)
     {
         $state = State::findByPk($stateId);
         $agency = new Agency([

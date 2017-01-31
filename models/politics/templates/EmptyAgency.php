@@ -10,7 +10,7 @@ use app\models\politics\Agency;
 class EmptyAgency implements AgencyTemplateInterface
 {
     
-    public static function create(int $stateId, $params = [])
+    public static function create(int $stateId, $params)
     {
         $agency = new Agency([
             'stateId' => $stateId,

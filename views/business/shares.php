@@ -8,8 +8,6 @@ use app\components\LinkCreator,
 /* @var $shareholder app\models\economics\TaxPayer */
 /* @var $shares app\models\economics\Resource[] */
 
-$isOwner = $shareholder->getUtr() == $viewer->getUtr();
-
 ?>
 <div class="box-group">
     <?php foreach ($shares as $share): ?>
@@ -20,11 +18,9 @@ $isOwner = $shareholder->getUtr() == $viewer->getUtr();
         <div class="box-body">
             <?=MyHtmlHelper::formateNumberword($share->count, 's')?>
         </div>
-        <?php if ($isOwner): ?>
         <div class="box-footer">
-            <button class="btn btn-primary"><?=Yii::t('app', 'Control company')?></button>
+            <a href="#!company/control?id=<?=$share->company->id?>&utr=<?=$shareholder->getUtr()?>" class="btn btn-primary"><i class="fa fa-briefcase"></i> <?=Yii::t('app', 'Control company')?></a>
         </div>
-        <?php endif ?>
     </div>
     <?php endforeach ?>
 </div>

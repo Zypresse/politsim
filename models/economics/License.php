@@ -17,6 +17,7 @@ use Yii,
  * @property integer $dateGranted
  * @property integer $dateExpired
  * 
+ * @property LicenseProto $proto
  * @property Company $company
  * @property State $state
  * 
@@ -63,6 +64,11 @@ class License extends MyActiveRecord
         ];
     }
     
+    public function getProto()
+    {
+        return LicenseProto::findOne($this->protoId);
+    }
+
     public function getCompany()
     {
         return $this->hasOne(Company::className(), ['id' => 'companyId']);

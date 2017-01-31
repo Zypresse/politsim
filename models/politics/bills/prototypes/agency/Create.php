@@ -34,8 +34,8 @@ final class Create extends BillProto
         $template = AgencyTemplate::findOne($bill->dataArray['agencyTemplateId']);
         return Yii::t('app/bills', 'Create new organisation «{1}» ({2}) by template «{0}»', [
             $template->name,
-            Html::encode($params['name']),
-            Html::encode($params['nameShort']),
+            Html::encode($bill->dataArray['name']),
+            Html::encode($bill->dataArray['nameShort']),
         ]);
     }
 

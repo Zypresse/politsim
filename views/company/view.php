@@ -13,9 +13,9 @@ use yii\helpers\Html,
     <h1>
         <?=Html::encode($company->name)?>
     </h1>
-    <ol class="breadcrumb">
+<!--    <ol class="breadcrumb">
         <li class="active"><?=$company->flag ? Html::img($company->flag, ['style' => 'height: 8px; vertical-align: baseline;']) : ''?> <?=Html::encode($company->name)?></li>
-    </ol>
+    </ol>-->
 </section>
 <section class="content">
     <div class="row">

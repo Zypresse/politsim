@@ -18,6 +18,11 @@ use Yii,
  */
 class CompanyDecisionVote extends MyActiveRecord
 {
+    
+    const VARIANT_PLUS = 1;
+    const VARIANT_ABSTAIN = 2;
+    const VARIANT_MINUS = 3;
+    
     /**
      * @inheritdoc
      */
@@ -65,6 +70,14 @@ class CompanyDecisionVote extends MyActiveRecord
     public function getShareholder()
     {
         return $this->hasOne(Utr::className(), ['id' => 'shareholderId'])->one()->getObject;
+    }
+    
+    public function afterSave($insert, $changedAttributes)
+    {
+        if ($insert) {
+            $this->decision->addVote($this->variant);
+        }
+        return parent::afterSave($insert, $changedAttributes);
     }
     
 }

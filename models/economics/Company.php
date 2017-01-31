@@ -134,7 +134,7 @@ class Company extends TaxPayerModel
 
     public function isGoverment(int $stateId): bool
     {
-        return $this->isGoverment && (int)$this->stateId === $stateId;
+        return false;
     }
 
     public function isTaxedInState(int $stateId): bool
@@ -160,7 +160,10 @@ class Company extends TaxPayerModel
     
     public function getLicenses()
     {
-        return $this->hasMany(License::className(), ['companyId' => 'id']);
+        return $this->hasMany(License::className(), ['companyId' => 'id'])
+                ->where(['is not', 'dateGranted', null])
+                ->andWhere(['<', 'dateExpired', time()])
+                ->with('state');
     }
     
     public function updateParams($save = true)
