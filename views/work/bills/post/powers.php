@@ -127,7 +127,6 @@ $form = new ActiveForm();
                         break;
                 }
             }
-            console.log(licensesValue2);
             
             $('#bill-dataarray-bills input').prop('checked', false);
             if (bills & <?= Bills::VOTE ?>) {

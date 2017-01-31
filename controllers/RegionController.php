@@ -11,7 +11,8 @@ use Yii,
 /**
  * 
  */
-class RegionController extends MyController {
+class RegionController extends MyController
+{
     
     public function actionIndex($id)
     {
@@ -34,6 +35,14 @@ class RegionController extends MyController {
             'constitution' => $region->constitution,
             'user' => $this->user
         ]);
+    }
+    
+    public function actionConstitutionValue(int $regionId, int $type)
+    {
+        $region = $this->getRegion($regionId);
+        $article = $region->constitution->getArticleByTypeOrEmptyModel($type);
+        $this->result = $article->getPublicAttributes();
+        return $this->_r();
     }
     
     public function actionTiles(int $id = null, $ids = null)

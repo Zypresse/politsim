@@ -161,6 +161,26 @@ abstract class BillProto implements BillProtoInterface
      * Управление правилами выдачи лицензий
      */
     const LICENSE_RULE = 30;
+    
+    /**
+     * Установить пост, руководящий регионом
+     */
+    const SET_REGION_LEADER = 31;
+    
+    /**
+     * Установить пост, руководящий городом
+     */
+    const SET_CITY_LEADER = 32;
+    
+    /**
+     * Установить пост, руководящий страной
+     */
+    const SET_STATE_LEADER = 33;
+    
+    /**
+     * Установить пост, руководязий агенством
+     */
+    const SET_AGENCY_LEADER = 34;
 
     public static function findAll()
     {
@@ -169,9 +189,11 @@ abstract class BillProto implements BillProtoInterface
             static::CHANGE_FLAG_STATE => Yii::t('app/bills', 'Change state flag'),
             static::CHANGE_ANTHEM_STATE => Yii::t('app/bills', 'Change state anthem'),
             static::CHANGE_CAPITAL_STATE => Yii::t('app/bills', 'Change state capital'),
+            static::SET_STATE_LEADER => Yii::t('app/bills', 'Set state leader'),
             
             static::CREATE_AGENCY => Yii::t('app/bills', 'Create new agency'),
             static::RENAME_AGENCY => Yii::t('app/bills', 'Rename agency'),
+            static::SET_AGENCY_LEADER => Yii::t('app/bills', 'Set agency leader'),
             
             static::POST_DESTIGNATION => Yii::t('app/bills', 'Change agency post destignation type'),
             static::CREATE_POST => Yii::t('app/bills', 'Create new agency post'),
@@ -187,10 +209,12 @@ abstract class BillProto implements BillProtoInterface
             static::CREATE_REGION => Yii::t('app/bills', 'Seduce new region'),
             static::IMPLODE_REGIONS => Yii::t('app/bills', 'Implode regions'),
             static::CHANGE_REGIONS_BORDER => Yii::t('app/bills', 'Change regions border'),
+            static::SET_REGION_LEADER => Yii::t('app/bills', 'Set region leader'),
             
             static::RENAME_CITY => Yii::t('app/bills', 'Rename city'),
             static::CHANGE_FLAG_CITY => Yii::t('app/bills', 'Change city flag'),
             static::CHANGE_ANTHEM_CITY => Yii::t('app/bills', 'Change city anthem'),
+            static::SET_CITY_LEADER => Yii::t('app/bills', 'Set city leader'),
             
             static::CREATE_DISTRICT => Yii::t('app/bills', 'Seduce new electoral district'),
             static::IMPLODE_DISTRICTS => Yii::t('app/bills', 'Implode electoral districts'),
@@ -243,6 +267,10 @@ abstract class BillProto implements BillProtoInterface
             static::FIRE_FROM_POST => 'post\\Fire',
             static::COMPANY_CREATE => 'company\\Create',
             static::LICENSE_RULE => 'company\\LicenseRule',
+            static::SET_REGION_LEADER => 'region\\SetLeader',
+            static::SET_CITY_LEADER => 'city\\SetLeader',
+            static::SET_STATE_LEADER => 'state\\SetLeader',
+            static::SET_AGENCY_LEADER => 'agency\\SetLeader',
         ];
         
         return '\\app\\models\\politics\\bills\\prototypes\\'.$classes[$type];
@@ -286,6 +314,10 @@ abstract class BillProto implements BillProtoInterface
             static::FIRE_FROM_POST => 'post/fire',
             static::COMPANY_CREATE => 'company/create',
             static::LICENSE_RULE => 'company/license-rule',
+            static::SET_REGION_LEADER => 'region/set-leader',
+            static::SET_CITY_LEADER => 'city/set-leader',
+            static::SET_STATE_LEADER => 'state/set-leader',
+            static::SET_AGENCY_LEADER => 'agency/set-leader',
         ];
         
         return '/work/bills/'.$views[$type];
@@ -296,6 +328,7 @@ abstract class BillProto implements BillProtoInterface
         switch ($type) {
             case static::CREATE_AGENCY:
             case static::RENAME_AGENCY:
+            case static::SET_AGENCY_LEADER:
                 return Yii::t('app', 'Agencies');
             case static::POST_DESTIGNATION:
             case static::CREATE_POST:
@@ -311,10 +344,12 @@ abstract class BillProto implements BillProtoInterface
             case static::IMPLODE_REGIONS:
             case static::CHANGE_REGIONS_BORDER:
             case static::CHANGE_CAPITAL_REGION:
+            case static::SET_REGION_LEADER:
                 return Yii::t('app', 'Regions');
             case static::RENAME_CITY:
             case static::CHANGE_FLAG_CITY:
             case static::CHANGE_ANTHEM_CITY:
+            case static::SET_CITY_LEADER:
                 return Yii::t('app', 'Cities');
             case static::PARTIES_POLITIC:
             case static::MULTIPOST_POLITIC:
