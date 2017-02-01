@@ -6,7 +6,9 @@ use Yii,
     yii\behaviors\TimestampBehavior,
     app\models\base\MyActiveRecord,
     app\models\Message,
-    app\models\MessageType;
+    app\models\MessageType,
+    app\models\User,
+    app\models\NotificationProto;
 
 /**
  * Решение компании
@@ -143,6 +145,20 @@ class CompanyDecision extends MyActiveRecord
         return parent::beforeSave($insert);
     }
     
+    public function afterSave($insert, $changedAttributes)
+    {
+        if ($insert) {
+            foreach ($this->company->shares as $share) {
+                if (!$share->master->getUserControllerId() || !User::find()->where(['id' => $share->master->getUserControllerId()])->exists()) {
+                    continue;
+                }
+                Yii::$app->notificator->newCompanyDecision($share->master->getUserControllerId(), $this, $share->masterId == $this->initiatorId);
+            }
+        }
+        
+        return parent::afterSave($insert, $changedAttributes);
+    }
+    
     /**
      * 
      * @return boolean
@@ -151,6 +167,14 @@ class CompanyDecision extends MyActiveRecord
     {
         $this->isApproved = true;
         $this->dateFinished = time();
+        
+        foreach ($this->company->shares as $share) {
+            if (!$share->master->getUserControllerId() || !User::find()->where(['id' => $share->master->getUserControllerId()])->exists()) {
+                continue;
+            }
+            Yii::$app->notificator->companyDecisionAccepted($share->master->getUserControllerId(), $this);
+        }
+        
         return $this->save() && $this->proto->accept($this);
     }
     
@@ -162,6 +186,14 @@ class CompanyDecision extends MyActiveRecord
     {
         $this->isApproved = false;
         $this->dateFinished = time();
+        
+        foreach ($this->company->shares as $share) {
+            if (!$share->master->getUserControllerId() || !User::find()->where(['id' => $share->master->getUserControllerId()])->exists()) {
+                continue;
+            }
+            Yii::$app->notificator->companyDecisionDeclined($share->master->getUserControllerId(), $this);
+        }
+        
         return $this->save();
     }
         

@@ -23,4 +23,10 @@ return [
     'You are registered for elections' => 'Регистрация на выборах',
     'You win elections to post {0} in state {1}' => 'Вы выиграли выборы и заняли должность «{0}» в государстве {1}',
     'You win elections' => 'Вы выиграли выборы',
+    'Shareholders voting for decision «{0}» started in company {1}' => 'На голосование акционеров компании {1} вынесено новое предложение «{0}»',
+    'New shareholders decision in company {2}' => 'Новое предложение на голосовании акционеров компании «{2}»',
+    'Decision «{0}» accepted in company {1}' => 'Предложение «{0}» принято акционерами компании {1}',
+    'Decision accepted in company {2}' => 'Предложение в компании {2} принято',
+    'Decision «{0}» declined in company {1}' => 'Предложение «{0}» отклонено акционерами компании {1}',
+    'Decision declined in company {2}' => 'Предложение в компании {2} отклонено',
 ];
