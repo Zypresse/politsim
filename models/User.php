@@ -340,12 +340,11 @@ class User extends TaxPayerModel implements IdentityInterface
      * @param boolean $save
      * @return Modifier
      */
-    public function addModifier($protoId, $dateReceiving = null, $dateExpired = null, $save = true)
+    public function addModifier($protoId, $dateExpired = null, $save = true)
     {
         $modifier = new Modifier([
             'userId' => $this->id,
             'protoId' => $protoId,
-            'dateReceiving' => $dateReceiving ?? time(),
             'dateExpired' => $dateExpired
         ]);
         if ($save) {
@@ -355,8 +354,33 @@ class User extends TaxPayerModel implements IdentityInterface
         return $modifier;
     }
     
+    public function updateInfinityModifiers()
+    {
+        $isStateLeader = false;
+        foreach ($this->posts as $post) {
+            if ($post->isStateLeader) {
+                $isStateLeader = true;
+                if (!$this->getModifiers()->where(['protoId' => ModifierProto::STATE_LEADER])->exist()) {
+                    $this->addModifier(ModifierProto::STATE_LEADER);
+                }
+            }
+        }
+        if (!$isStateLeader) {
+            Modifier::updateAll([
+                'dateExpired' => time(),
+            ],[
+                'userId' => $this->id,
+                'protoId' => ModifierProto::STATE_LEADER,
+                'dateExpired' => null,
+            ]);
+        }
+    }
+    
     public function updateParams()
     {
+        
+        $this->updateInfinityModifiers();
+        
         $this->fame = $this->fameBase;
         $this->trust = $this->trustBase;
         $this->success = $this->successBase;

@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii,
+    yii\behaviors\TimestampBehavior,
     app\models\base\MyActiveRecord;
 
 /**
@@ -26,6 +27,21 @@ use Yii,
  */
 class Modifier extends MyActiveRecord
 {
+    
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::className(),
+                'createdAtAttribute' => 'dateReceiving',
+                'updatedAtAttribute' => false,
+            ],
+        ];
+    }
+    
     /**
      * @inheritdoc
      */
@@ -59,19 +75,7 @@ class Modifier extends MyActiveRecord
             'dateExpired' => Yii::t('app', 'Date Expired'),
         ];
     }
-    
-    public function beforeSave($insert)
-    {
         
-        if ($insert) {
-            if (!$this->dateReceiving) {
-                $this->dateReceiving = time();
-            }
-        }
-        
-        return parent::beforeSave($insert);
-    }
-    
     public function getUser()
     {
         return $this->hasOne(User::className(), ['id' => 'userId']);

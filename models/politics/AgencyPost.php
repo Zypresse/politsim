@@ -35,6 +35,7 @@ use Yii,
  * @property ConstitutionArticle[] $articles
  * 
  * @property AgencyPost[] $postsDestignated
+ * @property boolean $isStateLeader
  * 
  */
 class AgencyPost extends ElectionOwner
@@ -214,6 +215,12 @@ class AgencyPost extends ElectionOwner
         ConstitutionArticle::deleteAll(['ownerType' => $this->getConstitutionOwnerType(), 'ownerId' => $this->id]);
         Election::deleteAll(['whomType' => ElectionWhomType::POST, 'whomId' => $this->id]);
         return parent::afterDelete();
+    }
+    
+    public function getIsStateLeader()
+    {
+        $article = $this->state->constitution->getArticleByTypeOrEmptyModel(ConstitutionArticleType::LEADER_POST);
+        return (int) $article->value === (int) $this->id;
     }
 
 }

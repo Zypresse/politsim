@@ -29,6 +29,10 @@ class UpdateHourlyController extends Controller
             $this->calcPopDestinyPolygons();
             if ($debug) printf("Updated map of population destiny: %f s.".PHP_EOL, microtime(true)-$time);
             
+            $time = microtime(true);
+            $this->updateUsers();
+            if ($debug) printf("Updated users: %f s.".PHP_EOL, microtime(true)-$time);
+            
 //            $time = microtime(true);
 //            $this->updateRegions();
 //            if ($debug) printf("Updated regions: %f s.".PHP_EOL, microtime(true)-$time);
@@ -151,6 +155,14 @@ class UpdateHourlyController extends Controller
         
         file_put_contents(Yii::$app->basePath.'/data/polygons/popdestiny.json', json_encode($popdestiny));
     }
+    
+    private function updateUsers()
+    {
+        $users = User::find()->where(['isInvited' => true])->all();
+        foreach ($users as $user) {
+            $user->updateParams();
+        }
+    }
 
     /**
      * Update regions
@@ -209,7 +221,7 @@ class UpdateHourlyController extends Controller
      */
     private function updateCompanies()
     {
-        $companies = Company::find()->with(['shares', 'licensesExpired'])->all();
+        $companies = Company::find()->where(['dateDeleted' => null])->with(['shares', 'licensesExpired'])->all();
         foreach ($companies as $company) {
             /* @var $company Company */
             
