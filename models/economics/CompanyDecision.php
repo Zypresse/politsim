@@ -227,6 +227,11 @@ class CompanyDecision extends MyActiveRecord
             }
         }
         
+        return $this->calcResult();
+    }
+    
+    public function calcResult($end = false) : bool
+    {
         if ($this->votesSum == $this->company->sharesIssued) {
             if ($this->votesPlus > $this->votesMinus) {
                 return $this->accept();
@@ -241,7 +246,7 @@ class CompanyDecision extends MyActiveRecord
                 return $this->decline();
             }
         }
-        return $this->save();
+        return $end ? $this->decline() : $this->save();
     }
     
     public function getVotesSum()

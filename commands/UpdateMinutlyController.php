@@ -3,8 +3,8 @@
 namespace app\commands;
 
 use yii\console\Controller,
-    app\models\politics\bills\Bill;
-//    app\models\HoldingDecision,
+    app\models\politics\bills\Bill,
+    app\models\economics\CompanyDecision;
 //    app\models\factories\Factory,
 //    app\models\factories\FactoryAuction,
 //    app\models\Vacansy,
@@ -28,9 +28,9 @@ class UpdateMinutlyController extends Controller {
             $this->updateBills();
             if ($debug) printf("Updated bills: %f s.".PHP_EOL, microtime(true)-$time);
 
-//            $time = microtime(true);
-//            $this->updateHoldingDecisions();
-//            if ($debug) printf("Updated holding decisions: %f s.".PHP_EOL, microtime(true)-$time);
+            $time = microtime(true);
+            $this->updateCompaniesDecisions();
+            if ($debug) printf("Updated companies decisions: %f s.".PHP_EOL, microtime(true)-$time);
 //
 //            $time = microtime(true);
 //            $this->updateBuildinds();   
@@ -76,26 +76,15 @@ class UpdateMinutlyController extends Controller {
     /**
      * update holding decisions
      */
-    private function updateHoldingDecisions()
+    private function updateCompaniesDecisions()
     {
-        $decisions = HoldingDecision::find()->where('accepted = 0')->with('votes')->all();
+        $decisions = CompanyDecision::find()
+                ->where(['dateFinished' => null])
+                ->andWhere(['<', 'dateVotingFinished', time()])
+                ->all();
         foreach ($decisions as $decision) {
-            /* @var $decision HoldingDecision */
-            $za = 0; $protiv = 0;
-            foreach ($decision->votes as $vote) {
-                if ($vote->stock) {
-                    if (intval($vote->variant) === 1) {
-                        $za+=$vote->stock->getPercents();
-                    } elseif (intval($vote->variant) === 2) {
-                        $protiv+=$vote->stock->getPercents();
-                    }
-                }
-            }
-            if ($za > 50.0) {
-                $decision->accept();
-            } elseif ($protiv > 50.0 || $decision->created < time()-7*24*60*60) {
-                $decision->delete();
-            }
+            /* @var $decision CompanyDecision */
+            $decision->calcResult(true);
         }
         unset($decisions);
     }
