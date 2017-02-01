@@ -23,6 +23,9 @@ class NotificationProto extends ObjectWithFixedPrototypes
     const NEW_COMPANY_DECISION = 12;
     const COMPANY_DECISION_ACCEPTED = 13;
     const COMPANY_DECISION_DECLINED = 14;
+    const LICENSE_GRANTED = 15;
+    const LICENSE_EXPIRED = 16;
+    const LICENSE_REVOKED = 17;
     
     public $id;
     public $text;
@@ -137,6 +140,27 @@ class NotificationProto extends ObjectWithFixedPrototypes
                 'textShort' => 'Decision declined in company {2}',
                 'icon' => '<i class="fa fa-briefcase text-red"></i>',
                 'iconBg' => '<i class="fa fa-briefcase bg-red"></i>',
+            ],
+            [
+                'id' => static::LICENSE_GRANTED,
+                'text' => 'New license for «{0}» in state {3} granted to company {1}',
+                'textShort' => 'License granted to company {2}',
+                'icon' => '<i class="fa fa-legal text-green"></i>',
+                'iconBg' => '<i class="fa fa-legal bg-red"></i>',
+            ],
+            [
+                'id' => static::LICENSE_EXPIRED,
+                'text' => 'License for «{0}» in state {3} expired in company {1}',
+                'textShort' => 'License expired in company {2}',
+                'icon' => '<i class="fa fa-legal text-red"></i>',
+                'iconBg' => '<i class="fa fa-legal bg-red"></i>',
+            ],
+            [
+                'id' => static::LICENSE_REVOKED,
+                'text' => 'License for «{0}» in state {3} revoked in company {1}',
+                'textShort' => 'License revoked in company {2}',
+                'icon' => '<i class="fa fa-legal text-red"></i>',
+                'iconBg' => '<i class="fa fa-legal bg-red"></i>',
             ],
         ];
     }

@@ -68,6 +68,13 @@ final class LicenseController extends MyController
         $license->dateGranted = time();
         $license->dateExpired = time()+$license->state->getLicenseGrantedTime($license->protoId);
         $license->save();
+        
+        foreach ($license->company->shares as $share) {
+            if (!$share->master->getUserControllerId() || !User::find()->where(['id' => $share->master->getUserControllerId()])->exists()) {
+                continue;
+            }
+            Yii::$app->notificator->licenseGranted($share->master->getUserControllerId(), $license);
+        }
         return $this->_rOk();
         
     }
@@ -103,6 +110,13 @@ final class LicenseController extends MyController
         
         if ($license->dateExpired < time() || is_null($license->dateGranted)) {
             return $this->_r(Yii::t('app', "License can not be revoked"));
+        }
+        
+        foreach ($license->company->shares as $share) {
+            if (!$share->master->getUserControllerId() || !User::find()->where(['id' => $share->master->getUserControllerId()])->exists()) {
+                continue;
+            }
+            Yii::$app->notificator->licenseRevoked($share->master->getUserControllerId(), $license);
         }
         
         $license->delete();

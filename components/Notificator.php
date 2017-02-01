@@ -12,7 +12,8 @@ use Yii,
     app\models\politics\Party,
     app\models\politics\PartyPost,
     app\models\politics\AgencyPost,
-    app\models\economics\CompanyDecision;
+    app\models\economics\CompanyDecision,
+    app\models\economics\License;
 
 /**
  * 
@@ -274,6 +275,57 @@ class Notificator extends Component
             $decision->render(),
             LinkCreator::companyLink($decision->company),
             Html::encode($decision->company->name),
+        ], $readed);
+    }
+    
+    /**
+     * получена новая лицензия
+     * @param integer $userId
+     * @param License $license
+     * @param boolean $readed
+     * @return boolean
+     */
+    public function licenseGranted(int $userId, License $license, $readed = false)
+    {
+        return $this->notify($userId, NotificationProto::LICENSE_GRANTED, [
+            $license->proto->name,
+            LinkCreator::companyLink($license->company),
+            Html::encode($license->company->name),
+            LinkCreator::stateLink($license->state),
+        ], $readed);
+    }
+    
+    /**
+     * лицензия истекла
+     * @param integer $userId
+     * @param License $license
+     * @param boolean $readed
+     * @return boolean
+     */
+    public function licenseExpired(int $userId, License $license, $readed = false)
+    {
+        return $this->notify($userId, NotificationProto::LICENSE_EXPIRED, [
+            $license->proto->name,
+            LinkCreator::companyLink($license->company),
+            Html::encode($license->company->name),
+            LinkCreator::stateLink($license->state),
+        ], $readed);
+    }
+    
+    /**
+     * Лицензия отозвана
+     * @param integer $userId
+     * @param License $license
+     * @param boolean $readed
+     * @return boolean
+     */
+    public function licenseRevoked(int $userId, License $license, $readed = false)
+    {
+        return $this->notify($userId, NotificationProto::LICENSE_REVOKED, [
+            $license->proto->name,
+            LinkCreator::companyLink($license->company),
+            Html::encode($license->company->name),
+            LinkCreator::stateLink($license->state),
         ], $readed);
     }
     

@@ -408,6 +408,13 @@ class State extends ConstitutionOwner
         if (!$isNeedConfirmation) {
             $license->dateGranted = time();
             $license->dateExpired = time() + $this->getLicenseGrantedTime($protoId);
+            
+            foreach ($license->company->shares as $share) {
+                if (!$share->master->getUserControllerId() || !User::find()->where(['id' => $share->master->getUserControllerId()])->exists()) {
+                    continue;
+                }
+                Yii::$app->notificator->licenseGranted($share->master->getUserControllerId(), $license);
+            }
         }
         return $license->save();
     }

@@ -6,7 +6,8 @@ use Yii,
     yii\db\Query,
     yii\console\Controller,
     app\components\TileCombiner,
-    app\models\Tile;
+    app\models\Tile,
+    app\models\economics\Company;
 
 /**
  * Update hourly
@@ -40,9 +41,9 @@ class UpdateHourlyController extends Controller
 //            $this->updateParties();
 //            if ($debug) printf("Updated parties: %f s.".PHP_EOL, microtime(true)-$time);
 //
-//            $time = microtime(true);
-//            $this->updateHoldings();
-//            if ($debug) printf("Updated holdings: %f s.".PHP_EOL, microtime(true)-$time);
+            $time = microtime(true);
+            $this->updateCompanies();
+            if ($debug) printf("Updated companies: %f s.".PHP_EOL, microtime(true)-$time);
 //
 //            $time = microtime(true);
 //            $this->updatePopStudy();
@@ -206,20 +207,23 @@ class UpdateHourlyController extends Controller
     /**
      * Update holdings
      */
-    private function updateHoldings()
+    private function updateCompanies()
     {
-        $holdings = Holding::find()->with('stocks')->with('factories')->with('factories.proto')->all();
-        foreach ($holdings as $holding) {
-            /* @var $holding Holding */
+        $companies = Company::find()->with(['shares', 'licensesExpired'])->all();
+        foreach ($companies as $company) {
+            /* @var $company Company */
             
-            foreach ($holding->stocks as $stock) {
-                if ($stock->count < 1) {
-                    $stock->delete();
+            foreach ($company->licensesExpired as $license) {
+                foreach ($license->company->shares as $share) {
+                    if (!$share->master->getUserControllerId() || !User::find()->where(['id' => $share->master->getUserControllerId()])->exists()) {
+                        continue;
+                    }
+                    Yii::$app->notificator->licenseExpired($share->master->getUserControllerId(), $license);
                 }
+                $license->delete();
             }
             
-            $holding->calcCapital();
-            $holding->save();
+            $company->updateParams();
         }
     }
     

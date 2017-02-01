@@ -34,6 +34,7 @@ use Yii,
  * @property Resource[] $shares
  * @property License[] $licenses
  * @property License[] $licensesRequested
+ * @property License[] $licensesExpired
  * @property CompanyDecision[] $decisions
  * @property CompanyDecision[] $decisionsActive
  * @property CompanyDecision[] $decisionsArсhived
@@ -167,6 +168,13 @@ class Company extends TaxPayerModel
         return $this->hasMany(License::className(), ['companyId' => 'id'])
                 ->where(['is not', 'dateGranted', null])
                 ->andWhere(['>', 'dateExpired', time()])
+                ->with('state');
+    }
+    
+    public function getLicensesExpired()
+    {
+        return $this->hasMany(License::className(), ['companyId' => 'id'])
+                ->where(['<', 'dateExpired', time()])
                 ->with('state');
     }
     
