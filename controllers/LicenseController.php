@@ -66,7 +66,7 @@ final class LicenseController extends MyController
         }
         
         $license->dateGranted = time();
-        $license->dateExpired = time()+30*24*60*60;
+        $license->dateExpired = time()+$license->state->getLicenseGrantedTime($license->protoId);
         $license->save();
         return $this->_rOk();
         
@@ -77,7 +77,7 @@ final class LicenseController extends MyController
         $postId = (int) Yii::$app->request->post('postId');
         $licenseId = (int) Yii::$app->request->post('licenseId');
         
-        if (!$postId || !$partyId) {
+        if (!$postId || !$licenseId) {
             return $this->_r(Yii::t('app', 'Invalid params'));
         }
         
@@ -101,8 +101,8 @@ final class LicenseController extends MyController
             return $this->_r(Yii::t('app', "Not allowed"));
         }
         
-        if ($license->dateExpired || is_null($license->dateGranted)) {
-            return $this->_r(Yii::t('app', "License can not be granted"));
+        if ($license->dateExpired < time() || is_null($license->dateGranted)) {
+            return $this->_r(Yii::t('app', "License can not be revoked"));
         }
         
         $license->delete();

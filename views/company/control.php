@@ -121,39 +121,83 @@ use yii\helpers\Html,
             </div>
         </div>
         <div class="col-md-6">
-            <div class="box">
-                <div class="box-header">
-                    <span class="box-title">
-                        <i class="fa fa-legal"></i> <?=Yii::t('app', 'Licenses')?>
-                    </span>
-<!--                    <div class="box-tools pull-right">
-                        <button class="btn btn-xs btn-success">
-                            Получить лицензию
-                        </button>
-                    </div>-->
-                </div>
-                <div class="box-content">    
-                    <table class="table table-normal">
+            <div class="box-group">
+                <div class="box">
+                    <div class="box-header">
+                        <span class="box-title">
+                            <i class="fa fa-legal"></i> <?=Yii::t('app', 'Licenses')?>
+                        </span>
+                    </div>
+                    <div class="box-content">    
+                        <table class="table table-normal">
                         <?php if (count($company->licenses)): ?>
+                            <thead>
+                                <tr>
+                                    <td><?=Yii::t('app', 'License type')?></td>
+                                    <td><?=Yii::t('app', 'State')?></td>
+                                    <td><?=Yii::t('app', 'Date Granted')?></td>
+                                    <td><?=Yii::t('app', 'Date Expired')?></td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <?php foreach ($company->licenses as $license): ?>
+                                <tr>
+                                    <td><?= $license->proto->name ?></td>
+                                    <td><?= LinkCreator::stateLink($license->state) ?></td>
+                                    <td>
+                                    <?php if ($license->dateGranted): ?>
+                                        <span class="formatDate" data-unixtime="<?=$license->dateGranted?>" ><?=date('H:M d.m.Y', $license->dateGranted)?></span>
+                                    <?php else: ?>
+                                        <?=Yii::t('yii', '(not set)')?>
+                                    <?php endif ?>
+                                    </td>
+                                    <td>
+                                    <?php if ($license->dateExpired): ?>
+                                        <span class="formatDate" data-unixtime="<?=$license->dateExpired?>" ><?=date('H:M d.m.Y', $license->dateExpired)?></span>
+                                    <?php else: ?>
+                                        <?=Yii::t('yii', '(not set)')?>
+                                    <?php endif ?>
+                                    </td>
+                                </tr>
+                            <?php endforeach ?>
+                            </tbody>
+                        <?php else: ?>
+                            <tbody>
+                                <tr>
+                                    <td><?=Yii::t('app', 'Company have no one license')?></td>
+                                </tr>
+                            </tbody>
+                        <?php endif ?>
+                        </table>
+                    </div>
+                </div>
+                <?php if (count($company->licensesRequested)): ?>
+                <div class="box">
+                    <div class="box-header">
+                        <span class="box-title">
+                            <i class="fa fa-legal"></i> <?=Yii::t('app', 'Licenses requests')?>
+                        </span>
+                    </div>
+                    <div class="box-content">    
+                        <table class="table table-normal">
                             <thead>
                                 <tr>
                                     <td><?=Yii::t('app', 'License type')?></td>
                                     <td><?=Yii::t('app', 'State')?></td>
                                 </tr>
                             </thead>
-                            <?php foreach ($company->licenses as $license): ?>
+                            <tbody>
+                            <?php foreach ($company->licensesRequested as $license): ?>
                                 <tr>
                                     <td><?= $license->proto->name ?></td>
                                     <td><?= LinkCreator::stateLink($license->state) ?></td>
                                 </tr>
                             <?php endforeach ?>
-                        <?php else: ?>
-                            <tr>
-                                <td><?=Yii::t('app', 'Company have no one license')?></td>
-                            </tr>
-                        <?php endif ?>
-                    </table>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
+                <?php endif ?>
             </div>
         </div>
     </div>

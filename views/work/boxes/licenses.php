@@ -36,6 +36,8 @@ use app\components\LinkCreator,
                             <tr>
                                 <th><?= Yii::t('app', 'Company') ?></th>
                                 <th><?= Yii::t('app', 'Company type') ?></th>
+                                <th><?= Yii::t('app', 'License type') ?></th>
+                                <th><?= Yii::t('app', 'Date Pending') ?></th>
                                 <th><?= Yii::t('app', 'Action') ?></th>
                             </tr>
                         </thead>
@@ -45,6 +47,10 @@ use app\components\LinkCreator,
                                     <td><?= LinkCreator::companyLink($license->company) ?></td>
                                     <td>
                                         <?= $license->company->isGoverment ? Yii::t('app', 'Goverment company') : ($license->company->isHalfGoverment ? Yii::t('app', 'Half-goverment company') : Yii::t('app', 'Private company')) ?>
+                                    </td>
+                                    <td><?= $license->proto->name ?></td>
+                                    <td>
+                                        <span class="formatDate" data-unixtime="<?=$license->datePending?>" ><?=date('H:M d.m.Y', $license->datePending)?></span>
                                     </td>
                                     <td>
                                         <div class="btn-group">
@@ -65,6 +71,9 @@ use app\components\LinkCreator,
                             <tr>
                                 <th><?= Yii::t('app', 'Company') ?></th>
                                 <th><?= Yii::t('app', 'Company type') ?></th>
+                                <th><?= Yii::t('app', 'License type') ?></th>
+                                <th><?= Yii::t('app', 'Date Granted') ?></th>
+                                <th><?= Yii::t('app', 'Date Expired') ?></th>
                                 <th><?= Yii::t('app', 'Action') ?></th>
                             </tr>
                         </thead>
@@ -74,6 +83,21 @@ use app\components\LinkCreator,
                                     <td><?= LinkCreator::companyLink($license->company) ?></td>
                                     <td>
                                         <?= $license->company->isGoverment ? Yii::t('app', 'Goverment company') : ($license->company->isHalfGoverment ? Yii::t('app', 'Half-goverment company') : Yii::t('app', 'Private company')) ?>
+                                    </td>
+                                    <td><?= $license->proto->name ?></td>
+                                    <td>
+                                    <?php if ($license->dateGranted): ?>
+                                        <span class="formatDate" data-unixtime="<?=$license->dateGranted?>" ><?=date('H:M d.m.Y', $license->dateGranted)?></span>
+                                    <?php else: ?>
+                                        <?=Yii::t('yii', '(not set)')?>
+                                    <?php endif ?>
+                                    </td>
+                                    <td>
+                                    <?php if ($license->dateExpired): ?>
+                                        <span class="formatDate" data-unixtime="<?=$license->dateExpired?>" ><?=date('H:M d.m.Y', $license->dateExpired)?></span>
+                                    <?php else: ?>
+                                        <?=Yii::t('yii', '(not set)')?>
+                                    <?php endif ?>
                                     </td>
                                     <td>
                                         <div class="btn-group">

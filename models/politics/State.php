@@ -392,7 +392,7 @@ class State extends ConstitutionOwner
     
     public function getLicenseGrantedTime(int $protoId) : int
     {
-        return 365 * 30 * 24 * 60 * 60;
+        return 365 * 24 * 60 * 60;
     }
     
     public function getNewLicense(int $companyId, int $protoId) : bool
@@ -405,7 +405,7 @@ class State extends ConstitutionOwner
             'stateId' => $this->id,
             'companyId' => $companyId,
         ]);
-        if ($isNeedConfirmation) {
+        if (!$isNeedConfirmation) {
             $license->dateGranted = time();
             $license->dateExpired = time() + $this->getLicenseGrantedTime($protoId);
         }
