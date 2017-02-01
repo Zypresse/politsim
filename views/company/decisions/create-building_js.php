@@ -28,6 +28,33 @@ use app\models\economics\units\BuildingProto;
         'enableAjaxValidation': true
     });
     
+    $form.yiiActiveForm('add', {
+        'id': 'companydecision-dataarray-name',
+        'name': 'CompanyDecision[dataArray][name]',
+        'container': '.field-companydecision-dataarray-name',
+        'input': '#companydecision-dataarray-name',
+        'error': '.help-block',
+        'enableAjaxValidation': true
+    });
+    
+    $form.yiiActiveForm('add', {
+        'id': 'companydecision-dataarray-nameshort',
+        'name': 'CompanyDecision[dataArray][nameShort]',
+        'container': '.field-companydecision-dataarray-nameshort',
+        'input': '#companydecision-dataarray-nameshort',
+        'error': '.help-block',
+        'enableAjaxValidation': true
+    });
+    
+    $form.yiiActiveForm('add', {
+        'id': 'companydecision-dataarray-size',
+        'name': 'CompanyDecision[dataArray][size]',
+        'container': '.field-companydecision-dataarray-size',
+        'input': '#companydecision-dataarray-size',
+        'error': '.help-block',
+        'enableAjaxValidation': true
+    });
+    
     var isOnlyCities = false;
         
     function onStateChange() {
@@ -51,7 +78,7 @@ use app\models\economics\units\BuildingProto;
                 minLon = 180,
                 maxLat = -180,
                 maxLon = -180;
-            for (var i = 0; i < data.result.lenth; i++) {
+            for (var i = 0; i < data.result.length; i++) {
                 var tile = data.result[i];
                 tile.lat = parseFloat(tile.lat);
                 tile.lon = parseFloat(tile.lon);
@@ -70,6 +97,7 @@ use app\models\economics\units\BuildingProto;
                 }
                 tiles.push(renderTile(tile.id, tile.x, tile.y, tile.coords, isOnlyCities && !tile.cityId));
             }
+            buildMap.fitBounds([[minLat-0.1, minLon-0.1], [maxLat+0.1, maxLon+0.1]]);
         });
     }
     
@@ -100,15 +128,15 @@ use app\models\economics\units\BuildingProto;
     var buildMarker = null;
     
     var buildingIcon = L.icon({
-        iconUrl: '/img/building.png',
-        iconRetinaUrl: '/img/building@2x.png',
+        iconUrl: '/img/office-building-icon.png',
+        iconRetinaUrl: '/img/office-building-icon@2x.png',
         iconSize: [32, 32]
     });
     
     function clickFeatureBuild(e) {
         if (!e.target.isDisabled) {
             if (buildMarker === null) {
-                buildMarker = L.marker(e.target.getCentroid(), {icon: homeIcon});
+                buildMarker = L.marker(e.target.getCentroid(), {icon: buildingIcon});
                 buildMarker.addTo(buildMap);
             } else {
                 buildMarker.setLatLng(e.target.getCentroid());
@@ -167,7 +195,6 @@ use app\models\economics\units\BuildingProto;
     
     setTimeout(function(){
         buildMap.invalidateSize();
-        buildMap.fitBounds([[minLat-0.1, minLon-0.1], [maxLat+0.1, maxLon+0.1]]);
     },300);
     
 </script>

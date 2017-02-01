@@ -2,6 +2,7 @@
 
 use yii\helpers\ArrayHelper,
     yii\helpers\Html,
+    kartik\range\RangeInput,
     app\components\MyHtmlHelper,
     app\models\economics\units\BuildingProto,
     app\models\politics\State;
@@ -14,6 +15,13 @@ use yii\helpers\ArrayHelper,
 
 ?>
 <?= $form->field($model, 'dataArray[protoId]')->dropDownList(BuildingProto::getList())->label(Yii::t('app', 'Building type')) ?>
+<?= $form->field($model, 'dataArray[name]')->textInput()->label(Yii::t('app', 'Building name')) ?>
+<?= $form->field($model, 'dataArray[nameShort]')->textInput()->label(Yii::t('app', 'Building short name')) ?>
+<?= $form->field($model, 'dataArray[size]')->widget(RangeInput::classname(), [
+    'options' => ['style' => 'width: 60px'],
+    'html5Options' => ['min'=>1, 'max'=>1024, 'step'=>1],
+    'addon' => ['append'=>['content'=>'star']]
+])->label(Yii::t('app', 'Building size')) ?>
 <div class="form-group">
     <label class="control-label" ><?=Yii::t('app', 'Location')?></label>
     <?= Html::dropDownList('selectedStateId', $company->stateId, ArrayHelper::map(State::find()->where(['dateDeleted' => null])->orderBy(['name' => SORT_ASC])->all(), 'id', 'name'), ['id' => 'selected-state-id', 'class' => 'form-control']) ?>

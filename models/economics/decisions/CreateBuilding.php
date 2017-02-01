@@ -68,5 +68,12 @@ final class CreateBuilding extends CompanyDecisionProto
         
         return !count($decision->getErrors());
     }
+    
+    public function getDefaultData(CompanyDecision $decision)
+    {
+        return [
+            'size' => 1,
+        ];
+    }
 
 }

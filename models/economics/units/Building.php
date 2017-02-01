@@ -33,13 +33,14 @@ use Yii,
  * @property integer $dateBuilded
  * @property integer $dateDeleted
  * @property integer $managerId
- * @property integer $status
+ * @property integer $statusId
  * @property integer $taskId
  * @property integer $taskSubId
  * @property double $taskFactor
  * @property integer $utr
  * 
  * @property BuildingProto $proto
+ * @property Status $status
  * @property TaxPayer $master
  * @property Tile $tile
  * @property City $city
@@ -79,7 +80,7 @@ class Building extends BaseUnit
     {
         return [
             [['protoId', 'tileId', 'name', 'nameShort', 'size'], 'required'],
-            [['protoId', 'masterId', 'tileId', 'size', 'dateCreated', 'dateBuilded', 'dateDeleted', 'managerId', 'status', 'taskId', 'taskSubId', 'utr'], 'integer', 'min' => 0],
+            [['protoId', 'masterId', 'tileId', 'size', 'dateCreated', 'dateBuilded', 'dateDeleted', 'managerId', 'statusId', 'taskId', 'taskSubId', 'utr'], 'integer', 'min' => 0],
             [['deterioration', 'efficiencyWorkersCount', 'efficiencyWorkersСontentment', 'efficiencyEquipmentCount', 'efficiencyEquipmentQuality', 'efficiencyBuildingDeterioration', 'efficiencyTile', 'efficiencyCompany', 'taskFactor'], 'number', 'min' => 0, 'max' => 1],
             [['name'], 'string', 'max' => 255],
             [['nameShort'], 'string', 'max' => 6],
@@ -116,7 +117,7 @@ class Building extends BaseUnit
             'dateBuilded' => Yii::t('app', 'Date Builded'),
             'dateDeleted' => Yii::t('app', 'Date Deleted'),
             'managerId' => Yii::t('app', 'Manager ID'),
-            'status' => Yii::t('app', 'Status'),
+            'statusId' => Yii::t('app', 'Status'),
             'taskId' => Yii::t('app', 'Task ID'),
             'taskSubId' => Yii::t('app', 'Task Sub ID'),
             'taskFactor' => Yii::t('app', 'Task Factor'),
@@ -127,6 +128,11 @@ class Building extends BaseUnit
     public function getProto()
     {
         return BuildingProto::instantiate($this->protoId);
+    }
+    
+    public function getStatus()
+    {
+        return Status::findOne($this->statusId);
     }
     
     public function getMasterUtr()

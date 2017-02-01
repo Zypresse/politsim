@@ -36,7 +36,7 @@ class m170201_092403_update_units extends Migration
             // управляющий
             'managerId' => 'UNSIGNED INTEGER REFERENCES users(id) DEFAULT NULL',
             // статус работы
-            'status' => 'UNSIGNED INTEGER(2) NOT NULL DEFAULT 0',
+            'statusId' => 'UNSIGNED INTEGER(2) NOT NULL DEFAULT 0',
             // текущее задание (ID задания)
             'taskId' => 'UNSIGNED INTEGER(4) DEFAULT NULL',
             'taskSubId' => 'UNSIGNED INTEGER DEFAULT NULL',
@@ -83,7 +83,7 @@ class m170201_092403_update_units extends Migration
             // управляющий
             'managerId' => 'UNSIGNED INTEGER REFERENCES users(id) DEFAULT NULL',
             // статус работы
-            'status' => 'UNSIGNED INTEGER(2) NOT NULL DEFAULT 0',
+            'statusId' => 'UNSIGNED INTEGER(2) NOT NULL DEFAULT 0',
             // текущее задание (ID задания)
             'taskId' => 'UNSIGNED INTEGER(4) DEFAULT NULL',
             'taskSubId' => 'UNSIGNED INTEGER DEFAULT NULL',
@@ -133,7 +133,7 @@ class m170201_092403_update_units extends Migration
             // управляющий
             'managerId' => 'UNSIGNED INTEGER REFERENCES users(id) DEFAULT NULL',
             // статус работы
-            'status' => 'UNSIGNED INTEGER(2) NOT NULL DEFAULT 0',
+            'statusId' => 'UNSIGNED INTEGER(2) NOT NULL DEFAULT 0',
             // текущее задание (ID задания)
             'taskId' => 'UNSIGNED INTEGER(4) DEFAULT NULL',
             'taskSubId' => 'UNSIGNED INTEGER DEFAULT NULL',

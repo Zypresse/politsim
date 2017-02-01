@@ -232,7 +232,7 @@ use yii\helpers\Html,
                                 </td>
                                 <td><?= LinkCreator::buildingLink($building) ?></td>
                                 <td><?= $building->proto->name ?></td>
-                                <td><?= $building->status ?></td>
+                                <td><?= $building->status->icon ?></td>
                             </tr>
                         <?php endforeach ?>
                         </tbody>

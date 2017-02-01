@@ -38,7 +38,7 @@ abstract class BuildingProto extends Model
     
     public static function instantiate(int $id)
     {
-        $className = $this->getClassNameByType($id);
+        $className = static::getClassNameByType($id);
         return new $className;
     }
     

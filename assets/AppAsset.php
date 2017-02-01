@@ -31,7 +31,7 @@ class AppAsset extends AssetBundle
         'css/skin-black.css',
         'css/leaflet.css',
         'css/leaflet.label.css',
-        'css/style.css',
+        'css/style.css?v2',
     ];
     public $js = [
         'js/bootstrap.js',
@@ -60,6 +60,7 @@ class AppAsset extends AssetBundle
         'yii\bootstrap\BootstrapAsset',
         'yii\widgets\ActiveFormAsset',
         'franciscomaya\sceditor\SCEditorAsset',
+        'kartik\base\WidgetAsset',
     ];
     
     public function __construct($config = array()) {

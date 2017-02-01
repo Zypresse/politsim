@@ -793,3 +793,7 @@ ul.twPc-Arrange {
     -o-transform: translate(100%, 0);
     transform: translate(100%, 0);
 }
+
+.input-group .input-group-addon.addon-range {
+    width: 100%;
+}
