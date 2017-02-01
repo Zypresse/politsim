@@ -7,6 +7,8 @@ use Yii,
 
 /**
  * 
+ * @property string $name
+ * 
  */
 abstract class BuildingProto extends Model
 {
@@ -20,6 +22,11 @@ abstract class BuildingProto extends Model
         ];
     }
     
+    public static function exist(int $id)
+    {
+        return isset(static::getList()[$id]);
+    }
+
     public static function getClassNameByType(int $id)
     {
         $classes = [

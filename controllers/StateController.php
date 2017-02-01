@@ -79,6 +79,16 @@ final class StateController extends MyController
         }
         return $this->_r();
     }
+    
+    public function actionRegions(int $id)
+    {
+        $state = $this->getState($id);
+        $this->result = [];
+        foreach ($state->regions as $region) {
+            $this->result[] = $region->getPublicAttributes();
+        }
+        return $this->_r();
+    }
 
 
     private function getState(int $id)

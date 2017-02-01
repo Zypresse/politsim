@@ -203,6 +203,49 @@ use yii\helpers\Html,
     </div>
     <div class="row">
         <div class="col-md-12">
+            <div class="box box-default">
+                <div class="box-header">
+                    <h4 class="box-title"><?=Yii::t('app', 'Buildings')?></h4>
+                </div>
+                <div class="box-body">
+                <?php if (count($company->buildings)): ?>
+                    <table class="table table-condensed table-bordered">
+                        <thead>
+                            <tr>
+                                <th><?= Yii::t('app', 'Location') ?></th>
+                                <th><?= Yii::t('app', 'Name') ?></th>
+                                <th><?= Yii::t('app', 'Type') ?></th>
+                                <th><?= Yii::t('app', 'Status') ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <?php foreach ($company->getBuildings()->with(['region', 'city'])->all() as $building): ?>
+                            <tr>
+                                <td>
+                                <?php if ($building->city): ?>
+                                    <?= LinkCreator::cityLink($building->city) ?>
+                                <?php elseif ($building->region): ?>
+                                    <?= LinkCreator::regionLink($building->region) ?>
+                                <?php else: ?>
+                                    <?= Yii::t('app', 'Unknown location') ?>
+                                <?php endif ?>
+                                </td>
+                                <td><?= LinkCreator::buildingLink($building) ?></td>
+                                <td><?= $building->proto->name ?></td>
+                                <td><?= $building->status ?></td>
+                            </tr>
+                        <?php endforeach ?>
+                        </tbody>
+                    </table>
+                <?php else: ?>
+                    <?=Yii::t('app', 'No one building')?>
+                <?php endif ?>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
             <div class="box box-info">
                 <div class="box-header">
                     <h4 class="box-title"><?=Yii::t('app', 'Active decisions')?></h4>

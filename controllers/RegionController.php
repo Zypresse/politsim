@@ -73,6 +73,7 @@ class RegionController extends MyController
                     'x' => $tile->x,
                     'y' => $tile->y,
                     'regionId' => $tile->regionId,
+                    'cityId' => $tile->cityId,
                     'coords' => $tile->coords,
                 ];
             }

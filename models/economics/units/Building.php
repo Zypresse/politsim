@@ -7,7 +7,9 @@ use Yii,
     app\models\economics\Utr,
     app\models\economics\UtrType,
     app\models\User,
-    app\models\Tile;
+    app\models\Tile,
+    app\models\politics\Region,
+    app\models\politics\City;
 
 /**
  * This is the model class for table "buildings".
@@ -28,6 +30,7 @@ use Yii,
  * @property double $efficiencyTile
  * @property double $efficiencyCompany
  * @property integer $dateCreated
+ * @property integer $dateBuilded
  * @property integer $dateDeleted
  * @property integer $managerId
  * @property integer $status
@@ -36,8 +39,11 @@ use Yii,
  * @property double $taskFactor
  * @property integer $utr
  * 
+ * @property BuildingProto $proto
  * @property TaxPayer $master
  * @property Tile $tile
+ * @property City $city
+ * @property Region $region
  * @property User $manager
  * 
  */
@@ -73,7 +79,7 @@ class Building extends BaseUnit
     {
         return [
             [['protoId', 'tileId', 'name', 'nameShort', 'size'], 'required'],
-            [['protoId', 'masterId', 'tileId', 'size', 'dateCreated', 'dateDeleted', 'managerId', 'status', 'taskId', 'taskSubId', 'utr'], 'integer', 'min' => 0],
+            [['protoId', 'masterId', 'tileId', 'size', 'dateCreated', 'dateBuilded', 'dateDeleted', 'managerId', 'status', 'taskId', 'taskSubId', 'utr'], 'integer', 'min' => 0],
             [['deterioration', 'efficiencyWorkersCount', 'efficiencyWorkersСontentment', 'efficiencyEquipmentCount', 'efficiencyEquipmentQuality', 'efficiencyBuildingDeterioration', 'efficiencyTile', 'efficiencyCompany', 'taskFactor'], 'number', 'min' => 0, 'max' => 1],
             [['name'], 'string', 'max' => 255],
             [['nameShort'], 'string', 'max' => 6],
@@ -107,6 +113,7 @@ class Building extends BaseUnit
             'efficiencyTile' => Yii::t('app', 'Efficiency Tile'),
             'efficiencyCompany' => Yii::t('app', 'Efficiency Company'),
             'dateCreated' => Yii::t('app', 'Date Created'),
+            'dateBuilded' => Yii::t('app', 'Date Builded'),
             'dateDeleted' => Yii::t('app', 'Date Deleted'),
             'managerId' => Yii::t('app', 'Manager ID'),
             'status' => Yii::t('app', 'Status'),
@@ -115,6 +122,11 @@ class Building extends BaseUnit
             'taskFactor' => Yii::t('app', 'Task Factor'),
             'utr' => Yii::t('app', 'Utr'),
         ];
+    }
+    
+    public function getProto()
+    {
+        return BuildingProto::instantiate($this->protoId);
     }
     
     public function getMasterUtr()
@@ -130,6 +142,18 @@ class Building extends BaseUnit
     public function getTile()
     {
         return $this->hasOne(Tile::className(), ['id' => 'tileId']);
+    }
+    
+    public function getRegion()
+    {
+        return $this->hasOne(Region::className(), ['id' => 'regionId'])
+                ->via('tile');
+    }
+    
+    public function getCity()
+    {
+        return $this->hasOne(City::className(), ['id' => 'cityId'])
+                ->via('tile');
     }
     
     public function getManager()

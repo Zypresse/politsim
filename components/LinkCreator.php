@@ -10,7 +10,8 @@ use yii\helpers\Html,
     app\models\politics\Party,
     app\models\politics\Agency,
     app\models\politics\AgencyPost,
-    app\models\economics\Company;
+    app\models\economics\Company,
+    app\models\economics\units\Building;
 
 /**
  * 
@@ -42,6 +43,8 @@ abstract class LinkCreator
                 return static::postLink($object);
             case Company::className():
                 return static::companyLink($object);
+            case Building::className():
+                return static::buildingLink($object);
         }
     }
     
@@ -166,6 +169,16 @@ abstract class LinkCreator
     public static function companyLink(Company $company)
     {
         return static::render($company->flag, $company->name, '#!company/view&id='.$company->id);
+    }
+    
+    /**
+     * 
+     * @param Building $building
+     * @return string
+     */
+    public static function buildingLink(Building $building)
+    {
+        return static::render(null, $building->name, '#!building/view&id='.$building->id);
     }
     
 }

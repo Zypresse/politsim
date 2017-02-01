@@ -6,7 +6,8 @@ use Yii,
     yii\behaviors\TimestampBehavior,
     app\models\economics\TaxPayerModel,
     app\models\User,
-    app\models\politics\State;
+    app\models\politics\State,
+    app\models\economics\units\Building;
 
 /**
  * Акционерные общества
@@ -30,6 +31,7 @@ use Yii,
  * 
  * @property State $state
  * @property Building $mainOffice
+ * @property Building[] $buildings
  * @property User $director
  * @property Resource[] $shares
  * @property License[] $licenses
@@ -202,6 +204,13 @@ class Company extends TaxPayerModel
         return $this->getDecisions()
                 ->where(['is not', 'dateFinished', null])
                 ->orderBy(['dateCreated' => SORT_DESC]);
+    }
+    
+    public function getBuildings()
+    {
+        $this->getUtrForced();
+        return $this->hasMany(Building::className(), ['masterId' => 'utr'])
+                ->where(['dateDeleted' => null]);
     }
     
     public function updateParams($save = true)

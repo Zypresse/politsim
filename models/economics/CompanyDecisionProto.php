@@ -19,12 +19,18 @@ abstract class CompanyDecisionProto
      * Получить лицензию
      */
     const GET_LICENSE = 2;
+    
+    /**
+     * Построить новое здание (обычное)
+     */
+    const CREATE_BUILDING = 3;
         
     public static function findAll()
     {
         return [
             static::SET_DIRECTOR => Yii::t('app', 'Set director'),
             static::GET_LICENSE => Yii::t('app', 'Get new license'),
+            static::CREATE_BUILDING => Yii::t('app', 'Create new building'),
         ];
     }
     
@@ -38,6 +44,7 @@ abstract class CompanyDecisionProto
         $classes = [
             static::SET_DIRECTOR => 'SetDirector',
             static::GET_LICENSE => 'GetLicense',
+            static::CREATE_BUILDING => 'CreateBuilding',
         ];
         
         return '\\app\\models\\economics\\decisions\\'.$classes[$type];
@@ -53,6 +60,7 @@ abstract class CompanyDecisionProto
         $views = [
             static::SET_DIRECTOR => 'set-director',
             static::GET_LICENSE => 'get-license',
+            static::CREATE_BUILDING => 'create-building',
         ];
         
         return '/company/decisions/'.$views[$type];

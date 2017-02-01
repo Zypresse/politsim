@@ -7,11 +7,7 @@ use Yii,
     app\models\economics\CompanyDecision,
     app\models\economics\CompanyDecisionProto,
     app\models\politics\State,
-    app\models\politics\LicenseRule,
-    app\models\economics\License,
-    app\models\economics\LicenseProto,
-    app\models\economics\LicenseProtoType,
-    app\models\politics\constitution\ConstitutionArticleType;
+    app\models\economics\LicenseProto;
 
 /**
  * 

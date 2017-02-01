@@ -30,6 +30,7 @@ class m170201_092403_update_units extends Migration
 
             // дата постройки
             'dateCreated' => 'UNSIGNED INTEGER NOT NULL',
+            'dateBuilded' => 'UNSIGNED INTEGER DEFAULT NULL',
             'dateDeleted' => 'UNSIGNED INTEGER DEFAULT NULL',
 
             // управляющий
@@ -76,6 +77,7 @@ class m170201_092403_update_units extends Migration
 
             // дата постройки
             'dateCreated' => 'UNSIGNED INTEGER NOT NULL',
+            'dateBuilded' => 'UNSIGNED INTEGER DEFAULT NULL',
             'dateDeleted' => 'UNSIGNED INTEGER DEFAULT NULL',
 
             // управляющий
