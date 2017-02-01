@@ -3,6 +3,7 @@
 namespace app\models\economics;
 
 use Yii,
+    yii\behaviors\TimestampBehavior,
     app\models\base\MyActiveRecord,
     app\models\politics\State;
 
@@ -26,6 +27,18 @@ use Yii,
  */
 class License extends MyActiveRecord
 {
+    
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::className(),
+                'createdAtAttribute' => 'datePending',
+                'updatedAtAttribute' => false,
+            ],
+        ];
+    }
+    
     /**
      * @inheritdoc
      */
@@ -40,7 +53,7 @@ class License extends MyActiveRecord
     public function rules()
     {
         return [
-            [['protoId', 'stateId', 'companyId', 'datePending'], 'required'],
+            [['protoId', 'stateId', 'companyId'], 'required'],
             [['protoId'], 'integer'],
             [['stateId', 'companyId', 'datePending', 'dateGranted', 'dateExpired'], 'integer', 'min' => 0],
             [['companyId'], 'exist', 'skipOnError' => true, 'targetClass' => Company::className(), 'targetAttribute' => ['companyId' => 'id']],

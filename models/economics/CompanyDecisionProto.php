@@ -14,11 +14,17 @@ abstract class CompanyDecisionProto
      * Назначить директора
      */
     const SET_DIRECTOR = 1;
+    
+    /**
+     * Получить лицензию
+     */
+    const GET_LICENSE = 2;
         
     public static function findAll()
     {
         return [
             static::SET_DIRECTOR => Yii::t('app', 'Set director'),
+            static::GET_LICENSE => Yii::t('app', 'Get new license'),
         ];
     }
     
@@ -31,6 +37,7 @@ abstract class CompanyDecisionProto
     {
         $classes = [
             static::SET_DIRECTOR => 'SetDirector',
+            static::GET_LICENSE => 'GetLicense',
         ];
         
         return '\\app\\models\\economics\\decisions\\'.$classes[$type];
@@ -45,6 +52,7 @@ abstract class CompanyDecisionProto
     {
         $views = [
             static::SET_DIRECTOR => 'set-director',
+            static::GET_LICENSE => 'get-license',
         ];
         
         return '/company/decisions/'.$views[$type];

@@ -258,6 +258,16 @@ class State extends ConstitutionOwner
         return $this->hasMany(LicenseRule::className(), ['stateId' => 'id']);
     }
     
+    /**
+     * 
+     * @param integer $id
+     * @return LicenseRule
+     */
+    public function getLicenseRuleByProto(int $id)
+    {
+        return $this->hasOne(LicenseRule::className(), ['stateId' => 'id'])->where(['protoId' => $id])->one();
+    }
+    
     public function getCompanies()
     {
         return $this->hasMany(Company::className(), ['stateId' => 'id']);
@@ -351,6 +361,7 @@ class State extends ConstitutionOwner
     
     public function getIsPartiesCreatingAllowed()
     {
+        /* @var $article Parties */
         $article = $this->constitution->getArticleByType(ConstitutionArticleType::PARTIES);
         return $article && ($article->value == Parties::NEED_CONFIRM || $article->value == Parties::ALLOWED);
     }
@@ -362,6 +373,7 @@ class State extends ConstitutionOwner
      */
     public function isCompaniesCreatingAllowedFor($taxPayer)
     {
+        /* @var $article Business */
         $article = $this->constitution->getArticleByType(ConstitutionArticleType::BUSINESS);
         if (is_null($article)) {
             return false;
@@ -376,6 +388,28 @@ class State extends ConstitutionOwner
     public function getRecommendedParliamentSize() : int
     {
         return $this->getDistricts()->count();
+    }
+    
+    public function getLicenseGrantedTime(int $protoId) : int
+    {
+        return 365 * 30 * 24 * 60 * 60;
+    }
+    
+    public function getNewLicense(int $companyId, int $protoId) : bool
+    {
+        $licenseRule = $this->getLicenseRuleByProto($protoId);
+        $isNeedConfirmation = is_null($licenseRule) || $licenseRule->isNeedConfirmation;
+        
+        $license = new License([
+            'protoId' => $protoId,
+            'stateId' => $this->id,
+            'companyId' => $companyId,
+        ]);
+        if ($isNeedConfirmation) {
+            $license->dateGranted = time();
+            $license->dateExpired = time() + $this->getLicenseGrantedTime($protoId);
+        }
+        return $license->save();
     }
 
 }

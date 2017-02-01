@@ -30,7 +30,7 @@ final class SetDirector extends CompanyDecisionProto
 
     public function validate(CompanyDecision $decision): bool
     {
-        if (is_null($decision->dataArray['userId']) || !$decision->dataArray['userId']) {
+        if (!isset($decision->dataArray['userId']) || !$decision->dataArray['userId']) {
             $decision->addError('dataArray[userId]', Yii::t('app', 'User is required field'));
         } elseif (!User::find()->where(['id' => $decision->dataArray['userId']])->exists()) {
             $decision->addError('dataArray[userId]', Yii::t('app', 'Invalid user'));
