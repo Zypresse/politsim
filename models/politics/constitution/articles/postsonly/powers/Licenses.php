@@ -75,11 +75,15 @@ final class Licenses extends Powers
     
     public function getName()
     {
-        $names = [];
-        foreach ($this->value2 as $id) {
-            $names[] = LicenseProto::findOne($id)->name;
+        if ($this->value2) {
+            $names = [];
+            foreach ($this->value2 as $id) {
+                $names[] = LicenseProto::findOne($id)->name;
+            }
+            return parent::getName().' '.Yii::t('app', 'for licenses types:').' '.implode(',', $names);
+        } else {
+            return parent::getName();
         }
-        return parent::getName().' '.Yii::t('app', 'for licenses types:').' '.implode(',', $names);
     }
     
 }
