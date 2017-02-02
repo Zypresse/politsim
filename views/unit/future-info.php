@@ -28,3 +28,13 @@
         <?php endforeach ?>
     </ul>
 <?php endif ?>
+<?php if (count($proto->workPopsPacks)): ?>
+    <h5>
+        <?= Yii::t('app', 'Firm will needs around this workers counts:') ?>
+    </h5>
+    <ul>
+        <?php foreach ($proto->workPopsPacks as $pack): ?>
+            <li><?= $pack->popClass->name ?> — <?= $pack->count * $size ?></li>
+        <?php endforeach ?>
+    </ul>
+<?php endif ?>

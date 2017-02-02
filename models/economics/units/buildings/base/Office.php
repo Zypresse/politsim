@@ -5,6 +5,8 @@ namespace app\models\economics\units\buildings\base;
 use Yii,
     app\models\economics\ResourcePack,
     app\models\economics\ResourceProto,
+    app\models\population\PopPack,
+    app\models\population\PopClass,
     app\models\economics\units\BuildingProto;
 
 /**
@@ -31,6 +33,13 @@ final class Office extends BuildingProto
     {
         return [
             
+        ];
+    }
+
+    public function getWorkPopsPacks()
+    {
+        return [
+            new PopPack(1, PopClass::PLANKTON),
         ];
     }
 

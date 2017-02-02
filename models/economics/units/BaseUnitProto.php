@@ -10,6 +10,7 @@ use Yii,
  * @property string $name
  * @property \app\models\economics\ResourcePack[] $buildResourcesPacks
  * @property \app\models\economics\LicenseProto[] $buildLicenses
+ * @property \app\models\population\PopPack[] $workPopsPacks
  * 
  */
 abstract class BaseUnitProto extends Model
@@ -40,5 +41,7 @@ abstract class BaseUnitProto extends Model
     abstract public function getBuildResourcesPacks();
     
     abstract public function getBuildLicenses();
+    
+    abstract public function getWorkPopsPacks();
     
 }

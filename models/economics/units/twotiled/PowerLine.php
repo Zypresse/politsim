@@ -34,4 +34,11 @@ final class PowerLine extends BuildingTwotiledProto
         ];
     }
 
+    public function getWorkPopsPacks()
+    {
+        return [
+            
+        ];
+    }
+
 }
