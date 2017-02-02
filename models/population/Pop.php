@@ -4,12 +4,15 @@ namespace app\models\population;
 
 use Yii,
     app\models\Tile,
+    app\models\politics\City,
+    app\models\politics\Region,
     app\models\economics\UtrType,
     app\models\economics\TaxPayerModel;
 
 /**
  * This is the model class for table "pops".
  *
+ * @property integer $id
  * @property integer $count
  * @property integer $classId
  * @property integer $nationId
@@ -18,10 +21,11 @@ use Yii,
  * @property string $religions
  * @property string $genders
  * @property string $ages
- * @property double $contentment
+ * @property double $contentmentLow
+ * @property double $contentmentMiddle
+ * @property double $contentmentHigh
  * @property double $agression
  * @property double $consciousness
- * @property integer $dateLastWageGet
  * @property integer $utr
  * 
  * @property Tile $tile
@@ -45,8 +49,8 @@ class Pop extends TaxPayerModel
     {
         return [
             [['classId', 'nationId', 'tileId', 'ideologies', 'religions', 'genders', 'ages'], 'required'],
-            [['count', 'classId', 'nationId', 'tileId', 'dateLastWageGet', 'utr'], 'integer', 'min' => 0],
-            [['contentment', 'agression', 'consciousness'], 'number', 'min' => 0],
+            [['count', 'classId', 'nationId', 'tileId', 'utr'], 'integer', 'min' => 0],
+            [['contentmentLow', 'contentmentMiddle', 'contentmentHigh', 'agression', 'consciousness'], 'number', 'min' => 0],
             [['ideologies', 'religions', 'genders', 'ages'], 'string'],
             [['tileId', 'classId', 'nationId'], 'unique', 'targetAttribute' => ['tileId', 'classId', 'nationId'], 'message' => 'The combination of Class ID, Nation ID and Tile ID has already been taken.'],
             [['utr'], 'exist', 'skipOnError' => true, 'targetClass' => Utr::className(), 'targetAttribute' => ['utr' => 'id']],
@@ -68,10 +72,11 @@ class Pop extends TaxPayerModel
             'religions' => Yii::t('app', 'Religions'),
             'genders' => Yii::t('app', 'Genders'),
             'ages' => Yii::t('app', 'Ages'),
-            'contentment' => Yii::t('app', 'Contentment'),
+            'contentmentLow' => Yii::t('app', 'Contentment Low'),
+            'contentmentMiddle' => Yii::t('app', 'Contentment Middle'),
+            'contentmentHigh' => Yii::t('app', 'Contentment High'),
             'agression' => Yii::t('app', 'Agression'),
             'consciousness' => Yii::t('app', 'Consciousness'),
-            'dateLastWageGet' => Yii::t('app', 'Date Last Wage Get'),
             'utr' => Yii::t('app', 'Utr'),
         ];
     }
@@ -79,6 +84,18 @@ class Pop extends TaxPayerModel
     public function getTile()
     {
         return $this->hasOne(Tile::className(), ['id' => 'tileId']);
+    }
+    
+    public function getCity()
+    {
+        return $this->hasOne(City::className(), ['id' => 'cityId'])
+                ->via('tile');
+    }
+    
+    public function getRegion()
+    {
+        return $this->hasOne(Region::className(), ['id' => 'regionId'])
+                ->via('tile');
     }
     
     public function getNation()
@@ -115,12 +132,7 @@ class Pop extends TaxPayerModel
     {
         return false;
     }
-    
-    public static function primaryKey()
-    {
-        return ['classId', 'nationId', 'tileId'];
-    }
-    
+        
     /**
      * 
      * @return array
