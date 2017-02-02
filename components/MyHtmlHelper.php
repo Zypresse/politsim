@@ -21,6 +21,9 @@ class MyHtmlHelper {
 
     public static function customIcon($file, $title = '', $style = '', $attrs = [])
     {
+        if (strpos($file, '.') === false) {
+            $file = '/img/'.$file.'.png';
+        }
         $attrs_str = '';
         if (is_array($attrs)) {
             foreach ($attrs as $key => $value) {

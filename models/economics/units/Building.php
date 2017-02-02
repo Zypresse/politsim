@@ -196,5 +196,5 @@ class Building extends BaseUnit
     {
         return (int)$this->managerId === $userId;
     }
-
+    
 }

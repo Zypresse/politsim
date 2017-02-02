@@ -8,9 +8,30 @@ use app\models\economics\TaxPayerModel;
  * Здание/трубопровод/движимое здание/армия
  * 
  * @property integer $protoId
+ * @property TaxPayerModel $master
  * 
  */
 abstract class BaseUnit extends TaxPayerModel
 {
+    
+    /**
+     * Меняет баланс плательщика
+     * @param integer $currencyId
+     * @param double $delta
+     */
+    public function changeBalance(int $currencyId, $delta)
+    {
+        return $this->master->changeBalance($currencyId, $delta);
+    }
+
+    /**
+     * Возвращает баланс плательщика в у.е.
+     * @param integer $currencyId
+     * @return double
+     */
+    public function getBalance(int $currencyId)
+    {
+        return $this->master->getBalance($currencyId);
+    }
     
 }

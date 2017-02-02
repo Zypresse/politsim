@@ -45,6 +45,8 @@ abstract class LinkCreator
                 return static::companyLink($object);
             case Building::className():
                 return static::buildingLink($object);
+            default:
+                return $object->canGetProperty('name') ? $object->name : '…';
         }
     }
     

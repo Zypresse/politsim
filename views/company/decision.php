@@ -20,7 +20,7 @@ $company = $decision->company;
         <?=BusinessViewAsWidget::widget()?>
     </div>
     <h1>
-        <?= Yii::t('app', 'Decision #{0}', [$decision->id]) ?>
+        <?= LinkCreator::companyLink($company) ?>
     </h1>
 </section>
 <section class="content">

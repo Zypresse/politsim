@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html,
+    app\components\widgets\BusinessViewAsWidget,
     app\components\LinkCreator,
     app\components\MyHtmlHelper;
 
@@ -80,7 +81,18 @@ use yii\helpers\Html,
                         </div>
                     </div>
                 </div>
+                <div class="box-footer">
+                    <?=BusinessViewAsWidget::widget()?>
+                    <button class="btn btn-primary" id="control-company-btn" ><i class="fa fa-briefcase"></i> <?=Yii::t('app', 'Control this company')?></button>
+                </div>
             </div>
         </div>
     </div>
 </section>
+<script type="text/javascript">
+    
+    $('#control-company-btn').click(function(){
+        load_page('company/control', {id:<?=$company->id?>,utr:$('#select-using-utr').val()});
+    });
+    
+</script>

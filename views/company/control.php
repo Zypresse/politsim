@@ -215,11 +215,12 @@ use yii\helpers\Html,
                                 <th><?= Yii::t('app', 'Location') ?></th>
                                 <th><?= Yii::t('app', 'Name') ?></th>
                                 <th><?= Yii::t('app', 'Type') ?></th>
+                                <th><?= Yii::t('app', 'Manager') ?></th>
                                 <th><?= Yii::t('app', 'Status') ?></th>
                             </tr>
                         </thead>
                         <tbody>
-                        <?php foreach ($company->getBuildings()->with(['region', 'city'])->all() as $building): ?>
+                        <?php foreach ($company->getBuildings()->with(['region', 'city', 'manager'])->all() as $building): ?>
                             <tr>
                                 <td>
                                 <?php if ($building->city): ?>
@@ -232,7 +233,8 @@ use yii\helpers\Html,
                                 </td>
                                 <td><?= LinkCreator::buildingLink($building) ?></td>
                                 <td><?= $building->proto->name ?></td>
-                                <td><?= $building->status->icon ?></td>
+                                <td><?= $building->manager ? LinkCreator::userLink($building->manager) : Yii::t('yii', '(not set)') ?></td>
+                                <td><?= $building->status->name ?></td>
                             </tr>
                         <?php endforeach ?>
                         </tbody>

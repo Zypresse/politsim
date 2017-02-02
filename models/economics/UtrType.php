@@ -10,7 +10,8 @@ use app\models\User,
     app\models\politics\Agency,
     app\models\politics\AgencyPost,
     app\models\politics\Party,
-    app\models\economics\Company;
+    app\models\economics\Company,
+    app\models\economics\units\Building;
 
 /**
  * 
@@ -48,6 +49,7 @@ abstract class UtrType
             static::PARTY => Party::className(),
             static::POP => Pop::className(),
             static::COMPANY => Company::className(),
+            static::BUILDING => Building::className(),
         ][$type];
     }
     

@@ -24,13 +24,20 @@ abstract class CompanyDecisionProto
      * Построить новое здание (обычное)
      */
     const CREATE_BUILDING = 3;
-        
+    
+    /**
+     * Назначить управляющего юнитом
+     */
+    const SET_MANAGER = 4;
+
+
     public static function findAll()
     {
         return [
             static::SET_DIRECTOR => Yii::t('app', 'Set director'),
             static::GET_LICENSE => Yii::t('app', 'Get new license'),
             static::CREATE_BUILDING => Yii::t('app', 'Create new building'),
+            static::SET_MANAGER => Yii::t('app', 'Set manager'),
         ];
     }
     
@@ -45,6 +52,7 @@ abstract class CompanyDecisionProto
             static::SET_DIRECTOR => 'SetDirector',
             static::GET_LICENSE => 'GetLicense',
             static::CREATE_BUILDING => 'CreateBuilding',
+            static::SET_MANAGER => 'SetManager',
         ];
         
         return '\\app\\models\\economics\\decisions\\'.$classes[$type];
@@ -61,6 +69,7 @@ abstract class CompanyDecisionProto
             static::SET_DIRECTOR => 'set-director',
             static::GET_LICENSE => 'get-license',
             static::CREATE_BUILDING => 'create-building',
+            static::SET_MANAGER => 'set-manager',
         ];
         
         return '/company/decisions/'.$views[$type];

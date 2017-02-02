@@ -31,6 +31,7 @@ use Yii,
  * 
  * @property State $state
  * @property Building $mainOffice
+ * @property BaseUnit[] $objects
  * @property Building[] $buildings
  * @property User $director
  * @property Resource[] $shares
@@ -211,6 +212,11 @@ class Company extends TaxPayerModel
         $this->getUtrForced();
         return $this->hasMany(Building::className(), ['masterId' => 'utr'])
                 ->where(['dateDeleted' => null]);
+    }
+    
+    public function getObjects()
+    {
+        return $this->buildings; // + buildingsTwotiled & units
     }
     
     public function updateParams($save = true)
