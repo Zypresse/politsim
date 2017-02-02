@@ -7,7 +7,9 @@ use Yii,
     app\models\economics\TaxPayerModel,
     app\models\User,
     app\models\politics\State,
-    app\models\economics\units\Building;
+    app\models\economics\units\Building,
+    app\models\economics\units\BuildingTwotiled,
+    app\models\economics\units\Unit;
 
 /**
  * Акционерные общества
@@ -33,6 +35,8 @@ use Yii,
  * @property Building $mainOffice
  * @property BaseUnit[] $objects
  * @property Building[] $buildings
+ * @property BuildingTwotiled[] $buildingsTwotiled
+ * @property Unit[] $units
  * @property User $director
  * @property Resource[] $shares
  * @property License[] $licenses
@@ -214,9 +218,23 @@ class Company extends TaxPayerModel
                 ->where(['dateDeleted' => null]);
     }
     
+    public function getBuildingsTwotiled()
+    {
+        $this->getUtrForced();
+        return $this->hasMany(BuildingTwotiled::className(), ['masterId' => 'utr'])
+                ->where(['dateDeleted' => null]);
+    }
+    
+    public function getUnits()
+    {
+        $this->getUtrForced();
+        return $this->hasMany(Unit::className(), ['masterId' => 'utr'])
+                ->where(['dateDeleted' => null]);
+    }
+    
     public function getObjects()
     {
-        return $this->buildings; // + buildingsTwotiled & units
+        return array_merge($this->buildings, $this->buildingsTwotiled, $this->units);
     }
     
     public function updateParams($save = true)

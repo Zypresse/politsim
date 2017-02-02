@@ -205,7 +205,7 @@ use yii\helpers\Html,
         <div class="col-md-12">
             <div class="box box-default">
                 <div class="box-header">
-                    <h4 class="box-title"><?=Yii::t('app', 'Buildings')?></h4>
+                    <h4 class="box-title"><i class="fa fa-building"></i> <?=Yii::t('app', 'Buildings')?></h4>
                 </div>
                 <div class="box-body">
                 <?php if (count($company->buildings)): ?>
@@ -235,6 +235,104 @@ use yii\helpers\Html,
                                 <td><?= $building->proto->name ?></td>
                                 <td><?= $building->manager ? LinkCreator::userLink($building->manager) : Yii::t('yii', '(not set)') ?></td>
                                 <td><?= $building->status->name ?></td>
+                            </tr>
+                        <?php endforeach ?>
+                        </tbody>
+                    </table>
+                <?php else: ?>
+                    <?=Yii::t('app', 'No one building')?>
+                <?php endif ?>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-default">
+                <div class="box-header">
+                    <h4 class="box-title"><i class="fa fa-flash"></i> <?=Yii::t('app', 'Twotiled buildings')?></h4>
+                </div>
+                <div class="box-body">
+                <?php if (count($company->buildingsTwotiled)): ?>
+                    <table class="table table-condensed table-bordered">
+                        <thead>
+                            <tr>
+                                <th><?= Yii::t('app', 'Location') ?></th>
+                                <th><?= Yii::t('app', 'Name') ?></th>
+                                <th><?= Yii::t('app', 'Type') ?></th>
+                                <th><?= Yii::t('app', 'Manager') ?></th>
+                                <th><?= Yii::t('app', 'Status') ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <?php foreach ($company->getBuildingsTwotiled()->with(['region', 'city', 'region2', 'city2', 'manager'])->all() as $building): ?>
+                            <tr>
+                                <td>
+                                <?php if ($building->city): ?>
+                                    <?= LinkCreator::cityLink($building->city) ?>
+                                <?php elseif ($building->region): ?>
+                                    <?= LinkCreator::regionLink($building->region) ?>
+                                <?php else: ?>
+                                    <?= Yii::t('app', 'Unknown location') ?>
+                                <?php endif ?>
+                                    —
+                                <?php if ($building->city2): ?>
+                                    <?= LinkCreator::cityLink($building->city2) ?>
+                                <?php elseif ($building->region2): ?>
+                                    <?= LinkCreator::regionLink($building->region2) ?>
+                                <?php else: ?>
+                                    <?= Yii::t('app', 'Unknown location') ?>
+                                <?php endif ?>
+                                </td>
+                                <td><?= LinkCreator::buildingTwotiledLink($building) ?></td>
+                                <td><?= $building->proto->name ?></td>
+                                <td><?= $building->manager ? LinkCreator::userLink($building->manager) : Yii::t('yii', '(not set)') ?></td>
+                                <td><?= $building->status->name ?></td>
+                            </tr>
+                        <?php endforeach ?>
+                        </tbody>
+                    </table>
+                <?php else: ?>
+                    <?=Yii::t('app', 'No one building')?>
+                <?php endif ?>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-default">
+                <div class="box-header">
+                    <h4 class="box-title"><i class="fa fa-map-marker"></i> <?=Yii::t('app', 'Units')?></h4>
+                </div>
+                <div class="box-body">
+                <?php if (count($company->units)): ?>
+                    <table class="table table-condensed table-bordered">
+                        <thead>
+                            <tr>
+                                <th><?= Yii::t('app', 'Current location') ?></th>
+                                <th><?= Yii::t('app', 'Name') ?></th>
+                                <th><?= Yii::t('app', 'Type') ?></th>
+                                <th><?= Yii::t('app', 'Manager') ?></th>
+                                <th><?= Yii::t('app', 'Status') ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <?php foreach ($company->getUnits()->with(['region', 'city', 'manager'])->all() as $unit): ?>
+                            <tr>
+                                <td>
+                                <?php if ($unit->city): ?>
+                                    <?= LinkCreator::cityLink($unit->city) ?>
+                                <?php elseif ($unit->region): ?>
+                                    <?= LinkCreator::regionLink($unit->region) ?>
+                                <?php else: ?>
+                                    <?= Yii::t('app', 'Unknown location') ?>
+                                <?php endif ?>
+                                </td>
+                                <td><?= LinkCreator::unitLink($unit) ?></td>
+                                <td><?= $unit->proto->name ?></td>
+                                <td><?= $unit->manager ? LinkCreator::userLink($unit->manager) : Yii::t('yii', '(not set)') ?></td>
+                                <td><?= $unit->status->name ?></td>
                             </tr>
                         <?php endforeach ?>
                         </tbody>

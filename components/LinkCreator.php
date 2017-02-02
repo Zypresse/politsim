@@ -11,7 +11,9 @@ use yii\helpers\Html,
     app\models\politics\Agency,
     app\models\politics\AgencyPost,
     app\models\economics\Company,
-    app\models\economics\units\Building;
+    app\models\economics\units\Building,
+    app\models\economics\units\BuildingTwotiled,
+    app\models\economics\units\Unit;
 
 /**
  * 
@@ -45,6 +47,10 @@ abstract class LinkCreator
                 return static::companyLink($object);
             case Building::className():
                 return static::buildingLink($object);
+            case BuildingTwotiled::className():
+                return static::buildingTwotiledLink($object);
+            case Unit::className():
+                return static::unitLink($object);
             default:
                 return $object->canGetProperty('name') ? $object->name : '…';
         }
@@ -181,6 +187,26 @@ abstract class LinkCreator
     public static function buildingLink(Building $building)
     {
         return static::render(null, $building->name, '#!building?id='.$building->id);
+    }
+    
+    /**
+     * 
+     * @param BuildingTwotiled $building
+     * @return string
+     */
+    public static function buildingTwotiledLink(BuildingTwotiled $building)
+    {
+        return static::render(null, $building->name, '#!building-twotiled?id='.$building->id);
+    }
+    
+    /**
+     * 
+     * @param Unit $building
+     * @return string
+     */
+    public static function unitLink(Unit $unit)
+    {
+        return static::render(null, $unit->name, '#!unit?id='.$unit->id);
     }
     
 }
