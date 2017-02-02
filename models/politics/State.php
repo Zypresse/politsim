@@ -3,6 +3,7 @@
 namespace app\models\politics;
 
 use Yii,
+    app\models\User,
     app\models\economics\UtrType,
     app\models\politics\constitution\Constitution,
     app\models\politics\constitution\ConstitutionArticleType,
@@ -175,7 +176,9 @@ class State extends ConstitutionOwner
         
     public function getRegions()
     {
-        return $this->hasMany(Region::classname(), ['stateId' => 'id'])->where(['dateDeleted' => null]);
+        return $this->hasMany(Region::classname(), ['stateId' => 'id'])
+                ->where(['dateDeleted' => null])
+                ->orderBy(['name' => SORT_ASC]);
     }
         
     public function getDistricts()
@@ -186,7 +189,8 @@ class State extends ConstitutionOwner
     public function getCities()
     {
         return $this->hasMany(City::className(), ['regionId' => 'id'])
-                ->via('regions');
+                ->via('regions')
+                ->orderBy(['name' => SORT_ASC]);
     }
     
     public function getAgencies()

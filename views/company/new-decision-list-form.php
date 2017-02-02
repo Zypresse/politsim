@@ -8,13 +8,11 @@
 ?>
 <div class="box">
     <div class="box-body">
-        <div class="btn-group">
-        <?php foreach ($types as $id => $name): ?>
-            <button class="btn btn-default new-decision-type-btn" data-id="<?=$id?>">
-                <?=$name?>
-            </button>
-        <?php endforeach ?>
-        </div>
+    <?php foreach ($types as $id => $name): ?>
+        <button class="btn btn-default new-decision-type-btn" data-id="<?=$id?>">
+            <?=$name?>
+        </button>
+    <?php endforeach ?>
     </div>
 </div>
 <script type="text/javascript">

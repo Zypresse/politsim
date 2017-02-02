@@ -25,7 +25,7 @@ abstract class UnitProto extends BaseUnitProto
     public static function getClassNameByType(int $id)
     {
         $classes = [
-            static::OFFICE => 'ConstructionFirm',
+            static::CONSTRUCTION_FIRM => 'ConstructionFirm',
         ];
         
         return '\\app\\models\\economics\\units\\units\\'.$classes[$id];

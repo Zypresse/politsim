@@ -25,7 +25,7 @@ abstract class BuildingTwotiledProto extends BaseUnitProto
     public static function getClassNameByType(int $id)
     {
         $classes = [
-            static::OFFICE => 'PowerLine',
+            static::POWER_LINE => 'PowerLine',
         ];
         
         return '\\app\\models\\economics\\units\\twotiled\\'.$classes[$id];

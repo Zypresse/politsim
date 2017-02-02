@@ -29,6 +29,16 @@ abstract class CompanyDecisionProto
      * Назначить управляющего юнитом
      */
     const SET_MANAGER = 4;
+    
+    /**
+     * Построить новое двухтайловое здание
+     */
+    const CREATE_BUILDING_TWOTILED = 5;
+    
+    /**
+     * Создать новое движимое предприятие
+     */
+    const CREATE_UNIT = 6;
 
 
     public static function findAll()
@@ -38,6 +48,8 @@ abstract class CompanyDecisionProto
             static::GET_LICENSE => Yii::t('app', 'Get new license'),
             static::CREATE_BUILDING => Yii::t('app', 'Create new building'),
             static::SET_MANAGER => Yii::t('app', 'Set manager'),
+            static::CREATE_BUILDING_TWOTILED => Yii::t('app', 'Create new line'),
+            static::CREATE_UNIT => Yii::t('app', 'Create new unit'),
         ];
     }
     
@@ -53,6 +65,8 @@ abstract class CompanyDecisionProto
             static::GET_LICENSE => 'GetLicense',
             static::CREATE_BUILDING => 'CreateBuilding',
             static::SET_MANAGER => 'SetManager',
+            static::CREATE_BUILDING_TWOTILED => 'CreateBuildingTwotiled',
+            static::CREATE_UNIT => 'CreateUnit',
         ];
         
         return '\\app\\models\\economics\\decisions\\'.$classes[$type];
@@ -70,6 +84,8 @@ abstract class CompanyDecisionProto
             static::GET_LICENSE => 'get-license',
             static::CREATE_BUILDING => 'create-building',
             static::SET_MANAGER => 'set-manager',
+            static::CREATE_BUILDING_TWOTILED => 'create-building-twotiled',
+            static::CREATE_UNIT => 'create-unit',
         ];
         
         return '/company/decisions/'.$views[$type];
