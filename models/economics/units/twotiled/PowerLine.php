@@ -27,4 +27,11 @@ final class PowerLine extends BuildingTwotiledProto
         ];
     }
 
+    public function getBuildLicenses()
+    {
+        return [
+            // TODO: лицензия на транспортировку электричества
+        ];
+    }
+
 }

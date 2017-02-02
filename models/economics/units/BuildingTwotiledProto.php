@@ -2,8 +2,7 @@
 
 namespace app\models\economics\units;
 
-use Yii,
-    yii\base\Model;
+use Yii;
 
 /**
  * 
@@ -11,7 +10,7 @@ use Yii,
  * @property \app\models\economics\ResourcePack[] $buildResourcesPacks
  * 
  */
-abstract class BuildingTwotiledProto extends Model
+abstract class BuildingTwotiledProto extends BaseUnitProto
 {
     
     const POWER_LINE = 1;
@@ -23,11 +22,6 @@ abstract class BuildingTwotiledProto extends Model
         ];
     }
     
-    public static function exist(int $id)
-    {
-        return isset(static::getList()[$id]);
-    }
-
     public static function getClassNameByType(int $id)
     {
         $classes = [
@@ -36,15 +30,5 @@ abstract class BuildingTwotiledProto extends Model
         
         return '\\app\\models\\economics\\units\\twotiled\\'.$classes[$id];
     }
-    
-    public static function instantiate(int $id)
-    {
-        $className = static::getClassNameByType($id);
-        return new $className;
-    }
-    
-    abstract public function getName();
-    
-    abstract public function getBuildResourcesPacks();
-    
+        
 }

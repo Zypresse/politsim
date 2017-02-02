@@ -35,6 +35,10 @@ class LicenseProto extends ObjectWithFixedPrototypes
                 'id' => LicenseProtoType::CURRENCY_EMISSION,
                 'name' => Yii::t('app', 'Currency emission'),
             ],
+            [
+                'id' => LicenseProtoType::BUILDING_CONSTRUCTION,
+                'name' => Yii::t('app', 'Buildings construction'),
+            ],
         ];
     }
 

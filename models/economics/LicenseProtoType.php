@@ -18,4 +18,9 @@ abstract class LicenseProtoType
      */
     const CURRENCY_EMISSION = 2;
     
+    /**
+     * Постройка знаний
+     */
+    const BUILDING_CONSTRUCTION = 3;
+    
 }

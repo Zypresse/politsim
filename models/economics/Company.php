@@ -178,6 +178,13 @@ class Company extends TaxPayerModel
                 ->with('state');
     }
     
+    public function isHaveLicense(int $protoId, int $stateId)
+    {
+        return $this->getLicenses()
+                ->andWhere(['protoId' => $protoId, 'stateId' => $stateId])
+                ->exists();
+    }
+    
     public function getLicensesExpired()
     {
         return $this->hasMany(License::className(), ['companyId' => 'id'])

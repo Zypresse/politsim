@@ -5,14 +5,26 @@
 /* @var $size integer */
 
 ?>
-<h5>
-<?=Yii::t('app', 'Building of type {0} of size {1} needs next resources to build:', [
-    $proto->name,
-    $size,
-])?>
-</h5>
-<ul>
-<?php foreach ($proto->buildResourcesPacks as $pack): ?>
-    <li><?=$pack->proto->name?> — <?=$pack->count*$size?> <?=$pack->proto->icon?></li>
-<?php endforeach ?>
-</ul>
+<?php if (count($proto->buildResourcesPacks)): ?>
+    <h5>
+    <?=Yii::t('app', 'Building of type {0} of size {1} needs next resources to build:', [
+        $proto->name,
+        $size,
+    ])?>
+    </h5>
+    <ul>
+        <?php foreach ($proto->buildResourcesPacks as $pack): ?>
+            <li><?= $pack->proto->name ?> — <?= $pack->count * $size ?> <?= $pack->proto->icon ?></li>
+        <?php endforeach ?>
+    </ul>
+<?php endif ?>
+<?php if (count($proto->buildLicenses)): ?>
+    <h5>
+        <?= Yii::t('app', 'Company needs next licenses to build:') ?>
+    </h5>
+    <ul>
+        <?php foreach ($proto->buildLicenses as $licenseProto): ?>
+            <li><?= $licenseProto->name ?></li>
+        <?php endforeach ?>
+    </ul>
+<?php endif ?>

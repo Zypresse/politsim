@@ -26,5 +26,12 @@ final class Office extends BuildingProto
             new ResourcePack(1, ResourceProto::BUILDING_CONSTRUCTING),
         ];
     }
+    
+    public function getBuildLicenses()
+    {
+        return [
+            
+        ];
+    }
 
 }

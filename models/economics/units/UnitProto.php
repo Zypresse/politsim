@@ -2,8 +2,7 @@
 
 namespace app\models\economics\units;
 
-use Yii,
-    yii\base\Model;
+use Yii;
 
 /**
  * 
@@ -11,7 +10,7 @@ use Yii,
  * @property \app\models\economics\ResourcePack[] $buildResourcesPacks
  * 
  */
-abstract class UnitProto extends Model
+abstract class UnitProto extends BaseUnitProto
 {
     
     const CONSTRUCTION_FIRM = 1;
@@ -22,11 +21,6 @@ abstract class UnitProto extends Model
             static::CONSTRUCTION_FIRM => Yii::t('app', 'Construction firm'),
         ];
     }
-    
-    public static function exist(int $id)
-    {
-        return isset(static::getList()[$id]);
-    }
 
     public static function getClassNameByType(int $id)
     {
@@ -36,15 +30,5 @@ abstract class UnitProto extends Model
         
         return '\\app\\models\\economics\\units\\units\\'.$classes[$id];
     }
-    
-    public static function instantiate(int $id)
-    {
-        $className = static::getClassNameByType($id);
-        return new $className;
-    }
-    
-    abstract public function getName();
-    
-    abstract public function getBuildResourcesPacks();
     
 }

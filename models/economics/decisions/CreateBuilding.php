@@ -52,8 +52,17 @@ final class CreateBuilding extends CompanyDecisionProto
         if (!isset($decision->dataArray['tileId']) || !$decision->dataArray['tileId']) {
             $decision->addError('dataArray[tileId]', Yii::t('app', 'Tile is required field'));
         } else {
-            if (!Tile::find()->where(['id' => $decision->dataArray['tileId']])->exists()) {
+            $tile = Tile::findByPk($decision->dataArray['tileId']);
+            if (is_null($tile) || is_null($tile->region) || !$tile->region->stateId) {
                 $decision->addError('dataArray[tileId]', Yii::t('app', 'Invalid tile'));
+            } else {
+                $proto = BuildingProto::instantiate($decision->dataArray['protoId']);
+                foreach ($proto->buildLicenses as $licenseProto) {
+                    if (!$decision->company->isHaveLicense($licenseProto->id, $tile->region->stateId)) {
+                        $decision->addError('dataArray[protoId]', Yii::t('app', 'Company have not required licenses to construct building of selected type in this state'));
+                        break;
+                    }
+                }
             }
         }
         if (!isset($decision->dataArray['name']) || !$decision->dataArray['name']) {
