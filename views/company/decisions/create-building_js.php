@@ -8,6 +8,7 @@ use app\models\economics\units\BuildingProto;
 <script type="text/javascript">
     
     $('#company-new-decision-list-form-modal .modal-dialog').addClass('modal-lg');
+    $('#company-new-decision-list-form-modal-label').append(' — <?= Yii::t('app', 'Create new building')?>');
     $('#build-map').css('height', 300);
     
     $form.yiiActiveForm('add', {
@@ -182,11 +183,23 @@ use app\models\economics\units\BuildingProto;
                 isOnlyCities = true;
                 break;
         }
+        onSizeChange();
+    }
+    
+    function onSizeChange()
+    {
+        var id = parseInt($('#companydecision-dataarray-protoid').val()),
+            size = parseInt($('#companydecision-dataarray-size').val());
+        $('#future-building-info').empty();
+        get_html('building/future-info', {protoId:id, size:size}, function(data){
+            $('#future-building-info').html(data);
+        });
     }
     
     $('#selected-state-id').change(onStateChange);
     $('#selected-region-id').change(onRegionChange);
     $('#companydecision-dataarray-protoid').change(onProtoChange);
+    $('#companydecision-dataarray-size').change(onSizeChange);
     
     $(function(){
         onRegionChange();

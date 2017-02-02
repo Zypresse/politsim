@@ -15,6 +15,7 @@ class PopClass extends ObjectWithFixedPrototypes
     public $color;
     
     const LUMPEN = 0;
+    const WORKER = 1;
 
     protected static function getList()
     {
@@ -23,6 +24,11 @@ class PopClass extends ObjectWithFixedPrototypes
                 'id' => static::LUMPEN,
                 'name' => Yii::t('app', 'Lumpen'),
                 'color' => '#999',
+            ],
+            [
+                'id' => static::WORKER,
+                'name' => Yii::t('app', 'Worker'),
+                'color' => '#f00',
             ],
         ];
     }

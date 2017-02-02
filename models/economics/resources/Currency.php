@@ -3,6 +3,7 @@
 namespace app\models\economics\resources;
 
 use Yii,
+    yii\helpers\Html,
     app\models\economics\resources\base\SubtypesResourceProto;
 
 /**
@@ -57,5 +58,15 @@ final class Currency extends SubtypesResourceProto
             'exchangeRateReal' => Yii::t('app', 'Exchange Rate Real'),
         ];
     }
-    
+
+    public function getName()
+    {
+        return Html::encode($this->name);
+    }
+
+    public function getIcon()
+    {
+        return Html::encode($this->nameShort);
+    }
+
 }

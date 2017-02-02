@@ -178,7 +178,7 @@ abstract class LinkCreator
      */
     public static function buildingLink(Building $building)
     {
-        return static::render(null, $building->name, '#!building/view&id='.$building->id);
+        return static::render(null, $building->name, '#!building?id='.$building->id);
     }
     
 }

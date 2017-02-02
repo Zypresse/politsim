@@ -5,6 +5,8 @@
 ?>
 <script type="text/javascript">
     
+    $('#company-new-decision-list-form-modal-label').append(' — <?= Yii::t('app', 'Set director')?>');
+    
     $form.yiiActiveForm('add', {
         'id': 'companydecision-dataarray-userid',
         'name': 'CompanyDecision[dataArray][userId]',

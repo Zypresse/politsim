@@ -31,8 +31,8 @@ final class Business extends BillProto
     {
         /* @var $article BusinessArticle */
         $article = $bill->state->constitution->getArticleByTypeOrEmptyModel(ConstitutionArticleType::BUSINESS);
-        $article->value = !!$bill->dataArray['value'] ?? false;
-        $article->value2 = !!$bill->dataArray['value2'] ?? false;
+        $article->value = isset($bill->dataArray['value']) ? !!$bill->dataArray['value'] : false;
+        $article->value2 = isset($bill->dataArray['value2']) ? !!$bill->dataArray['value2'] : false;
         return Yii::t('app', 'Business:').' '.$article->name;
     }
 

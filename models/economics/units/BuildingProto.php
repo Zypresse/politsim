@@ -8,6 +8,7 @@ use Yii,
 /**
  * 
  * @property string $name
+ * @property \app\models\economics\ResourcePack[] $buildResourcesPacks
  * 
  */
 abstract class BuildingProto extends Model
@@ -43,5 +44,7 @@ abstract class BuildingProto extends Model
     }
     
     abstract public function getName();
+    
+    abstract public function getBuildResourcesPacks();
     
 }

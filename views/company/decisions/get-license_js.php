@@ -5,6 +5,8 @@
 ?>
 <script type="text/javascript">
     
+    $('#company-new-decision-list-form-modal-label').append(' — <?= Yii::t('app', 'Get new license')?>');
+    
     $form.yiiActiveForm('add', {
         'id': 'companydecision-dataarray-stateid',
         'name': 'CompanyDecision[dataArray][stateId]',
