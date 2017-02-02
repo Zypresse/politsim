@@ -186,6 +186,11 @@ abstract class BillProto implements BillProtoInterface
      * Установить пост/агенство/ещё что-то государственное, как владельца гос. компании
      */
     const SET_SHAREHOLDER = 35;
+    
+    /**
+     * Изменить настройки создания зп
+     */
+    const BILLS = 36;
 
     public static function findAll()
     {
@@ -228,6 +233,7 @@ abstract class BillProto implements BillProtoInterface
             static::PARTIES_POLITIC => Yii::t('app/bills', 'Change parties politic'),
             static::MULTIPOST_POLITIC => Yii::t('app/bills', 'Allow/disallow more than one agency post to user'),
             static::BUSINESS => Yii::t('app/bills', 'Allow/disallow buisness'),
+            static::BILLS => Yii::t('app/bills', 'Change bills creating rules'),
             
             static::COMPANY_CREATE => Yii::t('app/bills', 'Create goverment company'),            
             static::LICENSE_RULE => Yii::t('app/bills', 'Licenses rules management'),
@@ -278,6 +284,7 @@ abstract class BillProto implements BillProtoInterface
             static::SET_STATE_LEADER => 'state\\SetLeader',
             static::SET_AGENCY_LEADER => 'agency\\SetLeader',
             static::SET_SHAREHOLDER => 'company\\SetShareholder',
+            static::BILLS => 'constitution\\Bills',
         ];
         
         return '\\app\\models\\politics\\bills\\prototypes\\'.$classes[$type];
@@ -326,6 +333,7 @@ abstract class BillProto implements BillProtoInterface
             static::SET_STATE_LEADER => 'state/set-leader',
             static::SET_AGENCY_LEADER => 'agency/set-leader',
             static::SET_SHAREHOLDER => 'company/set-shareholder',
+            static::BILLS => 'constitution/bills',
         ];
         
         return '/work/bills/'.$views[$type];
@@ -362,6 +370,7 @@ abstract class BillProto implements BillProtoInterface
             case static::PARTIES_POLITIC:
             case static::MULTIPOST_POLITIC:
             case static::BUSINESS:
+            case static::BILLS:
                 return Yii::t('app', 'Constitution');
             case static::CREATE_DISTRICT:
             case static::IMPLODE_DISTRICTS:

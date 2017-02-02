@@ -96,6 +96,11 @@ class ConstitutionArticle extends MyActiveRecord
         return $this->value;
     }
     
+    public function getFullName()
+    {
+        return $this->getName();
+    }
+    
     /**
      * @param string $attribute the attribute currently being validated
      * @param mixed $params the value of the "params" given in the rule

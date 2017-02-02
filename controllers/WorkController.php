@@ -100,6 +100,17 @@ class WorkController extends MyController
                 return $this->_r(Yii::t('app', 'Not allowed'));
             }
             
+            $article = $post->state->constitution->getArticleByTypeOrEmptyModel(ConstitutionArticleType::BILLS);
+            $countBillsByPostAllowed = (int)$article->value2;
+            if ($countBillsByPostAllowed > 0) {
+                $countBillsByPost = (int)$post->state->getBillsActive()
+                                            ->andWhere(['postId' => $post->id])
+                                            ->count();
+                if ($countBillsByPost >= $countBillsByPostAllowed) {
+                    return $this->_r(Yii::t('app', 'You can not make more {0} bills in same time', [$countBillsByPostAllowed]));
+                }
+            }
+            
             if ($model->save()) {
                 return $this->_rOk();
             } else {
