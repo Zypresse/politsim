@@ -144,12 +144,31 @@ final class Create extends BillProto
      */
     public function validate($bill): bool
     {
+        $post = new AgencyPost([
+            'stateId' => $bill->stateId,
+        ]);
+        
         if (!isset($bill->dataArray['name']) || !$bill->dataArray['name']) {
             $bill->addError('dataArray[name]', Yii::t('app/bills', 'Agency post name is required field'));
+        } else {
+            $post->name = $bill->dataArray['name'];
         }
         if (!isset($bill->dataArray['nameShort']) || !$bill->dataArray['nameShort']) {
             $bill->addError('dataArray[nameShort]', Yii::t('app/bills', 'Agency post short name is required field'));
+        } else {
+            $post->nameShort = $bill->dataArray['nameShort'];
         }
+        
+        if (!count($bill->getErrors())) {
+            if (!$post->validate()) {
+                foreach ($post->getErrors() as $attr => $errors) {
+                    foreach ($errors as $error) {
+                        $bill->addError("dataArray[{$attr}]", $error);
+                    }
+                }
+            }
+        }
+        
         if (!isset($bill->dataArray['agencyId']) || !$bill->dataArray['agencyId']) {
             $bill->addError('dataArray[agencyId]', Yii::t('app/bills', 'Agency is required field'));
         } else {

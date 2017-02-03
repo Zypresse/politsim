@@ -36,6 +36,19 @@ class Rename extends BillProto
         if (!isset($bill->dataArray['nameShort']) || !$bill->dataArray['nameShort']) {
             $bill->addError('dataArray[nameShort]', Yii::t('app/bills', 'State short name is required field'));
         }
+        
+        if (!count($bill->getErrors())) {
+            $bill->state->name = $bill->dataArray['name'];
+            $bill->state->nameShort = $bill->dataArray['nameShort'];
+            if (!$bill->state->validate()) {
+                foreach ($bill->state->getErrors() as $attr => $errors) {
+                    foreach ($errors as $error) {
+                        $bill->addError("dataArray[{$attr}]", $error);
+                    }
+                }
+            }
+        }
+        
         return !count($bill->getErrors());
     }
 

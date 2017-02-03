@@ -138,6 +138,18 @@ class Create extends BillProto
             $bill->addError('dataArray[nameShort]', Yii::t('app/bills', 'Region short name is required field'));
         }
         
+        if (!count($bill->getErrors()) && isset($region)) {
+            $region->name = $bill->dataArray['name'];
+            $region->nameShort = $bill->dataArray['nameShort'];
+            if (!$region->validate()) {
+                foreach ($region->getErrors() as $attr => $errors) {
+                    foreach ($errors as $error) {
+                        $bill->addError("dataArray[{$attr}]", $error);
+                    }
+                }
+            }
+        }
+        
         return !count($bill->getErrors());
         
     }

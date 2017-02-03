@@ -54,8 +54,8 @@ class AgencyPost extends ElectionOwner
     public function rules()
     {
         return [
-            [['stateId', 'partyId', 'userId'], 'integer', 'min' => 0],
             [['stateId', 'name', 'nameShort'], 'required'],
+            [['stateId', 'partyId', 'userId'], 'integer', 'min' => 0],
             [['name'], 'string', 'max' => 255],
             [['nameShort'], 'string', 'max' => 6],
             [['stateId'], 'exist', 'skipOnError' => true, 'targetClass' => State::className(), 'targetAttribute' => ['stateId' => 'id']],

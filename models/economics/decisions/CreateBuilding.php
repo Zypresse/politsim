@@ -18,15 +18,7 @@ final class CreateBuilding extends CompanyDecisionProto
     
     public function accept(CompanyDecision $decision): bool
     {
-        $building = new Building([
-            'masterId' => $decision->company->getUtr(),
-            'protoId' => $decision->dataArray['protoId'],
-            'tileId' => $decision->dataArray['tileId'],
-            'name' => $decision->dataArray['name'],
-            'nameShort' => $decision->dataArray['nameShort'],
-            'size' => $decision->dataArray['size'],
-        ]);
-        
+        $building = $this->instantiateBuilding($decision);
         return $building->save();
     }
 
@@ -75,6 +67,17 @@ final class CreateBuilding extends CompanyDecisionProto
             $decision->addError('dataArray[size]', Yii::t('app', 'Building size is required field'));
         }
         
+        if (!count($decision->getErrors())) {
+            $building = $this->instantiateBuilding($decision);
+            if (!$building->validate()) {
+                foreach ($building->getErrors() as $attr => $errors) {
+                    foreach ($errors as $error) {
+                        $decision->addError("dataArray[{$attr}]", $error);
+                    }
+                }
+            }
+        }
+        
         return !count($decision->getErrors());
     }
     
@@ -83,6 +86,18 @@ final class CreateBuilding extends CompanyDecisionProto
         return [
             'size' => 1,
         ];
+    }
+    
+    private function instantiateBuilding(CompanyDecision $decision) : Building
+    {
+        return new Building([
+            'masterId' => $decision->company->getUtr(),
+            'protoId' => $decision->dataArray['protoId'],
+            'tileId' => $decision->dataArray['tileId'],
+            'name' => $decision->dataArray['name'],
+            'nameShort' => $decision->dataArray['nameShort'],
+            'size' => $decision->dataArray['size'],
+        ]);
     }
 
 }
