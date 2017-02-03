@@ -5,7 +5,7 @@ namespace app\controllers;
 use Yii,
     yii\web\NotFoundHttpException,
     app\models\politics\AgencyPost,
-    app\components\MyController;
+    app\controllers\base\MyController;
 
 /**
  * 

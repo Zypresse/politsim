@@ -2,14 +2,14 @@
 
 namespace app\controllers;
 
-use app\components\MyController,
+use app\controllers\base\MyController,
     app\models\politics\State,
     app\models\politics\Citizenship;
 
 /**
  * 
  */
-class CitizenshipController extends MyController
+final class CitizenshipController extends MyController
 {
     
     public function actionIndex()

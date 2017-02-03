@@ -3,15 +3,13 @@
 namespace app\controllers;
 
 use Yii,
-    app\components\MyController,
+    app\controllers\base\MyController,
     app\models\economics\License,
     app\models\User,
     app\models\politics\constitution\ConstitutionArticleType,
     app\models\politics\constitution\articles\postsonly\Powers,
     app\models\politics\constitution\articles\postsonly\powers\Licenses,
     app\models\politics\AgencyPost,
-    yii\web\Response,
-    yii\widgets\ActiveForm,
     yii\filters\VerbFilter;
 
 /**

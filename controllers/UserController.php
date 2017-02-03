@@ -7,7 +7,7 @@ use Yii,
     yii\web\Response,
     yii\helpers\Html,
     app\components\MyHtmlHelper,
-    app\components\MyController,
+    app\controllers\base\MyController,
     app\components\LinkCreator,
     app\models\User,
     app\models\Ideology,
@@ -20,7 +20,7 @@ use Yii,
  *
  * @author ilya
  */
-class UserController extends MyController
+final class UserController extends MyController
 {
         
     public function actionProfile($id = false)

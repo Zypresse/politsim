@@ -3,7 +3,7 @@
 namespace app\controllers;
 
 use Yii,
-    app\components\MyController,
+    app\controllers\base\MyController,
     app\models\politics\State;
 
 /**
@@ -11,7 +11,7 @@ use Yii,
  *
  * @author ilya
  */
-class MapController extends MyController
+final class MapController extends MyController
 {
     
     public function actionIndex($mode = '2d')

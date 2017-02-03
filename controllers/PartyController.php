@@ -3,7 +3,7 @@
 namespace app\controllers;
 
 use Yii,
-    app\components\MyController,
+    app\controllers\base\MyController,
     app\models\politics\Party,
     app\models\User,
     app\models\politics\PartyPost,
@@ -20,7 +20,7 @@ use Yii,
 /**
  * 
  */
-class PartyController extends MyController
+final class PartyController extends MyController
 {
     
     public function behaviors()

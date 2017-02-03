@@ -2,49 +2,30 @@
 
 namespace app\controllers;
 
-use Yii,
-    yii\web\NotFoundHttpException,
-    app\components\MyController,
+use app\controllers\base\BaseUnitController,
     app\models\economics\units\BuildingTwotiled,
-    app\models\economics\units\BuildingTwotiledProto;
+    app\models\economics\units\BuildingTwotiledProto,
+    app\models\economics\UtrType;
 
 /**
  * 
  */
-final class BuildingTwotiledController extends MyController
+final class BuildingTwotiledController extends BaseUnitController
 {
     
-    public function actionIndex(int $id)
+    public static function getModelClassName()
     {
-        $building = $this->loadBuilding($id);
-        return $this->render('view', [
-            'building' => $building,
-            'user' => $this->user,
-        ]);
+        return BuildingTwotiled::className();
     }
-    
-    public function actionFutureInfo(int $protoId, int $size)
+
+    public static function getModelProtoClassName()
     {
-        $proto = BuildingTwotiledProto::instantiate($protoId);
-        return $this->render('future-info', [
-            'proto' => $proto,
-            'size' => $size,
-        ]);
+        return BuildingTwotiledProto::className();
     }
-    
-    /**
-     * 
-     * @param integer $id
-     * @return Building
-     * @throws NotFoundHttpException
-     */
-    private function loadBuilding(int $id)
+
+    public static function getModelUtrType()
     {
-        $building = BuildingTwotiled::findByPk($id);
-        if (is_null($building)) {
-            throw new NotFoundHttpException(Yii::t('app', 'Building not found'));
-        }
-        return $building;
+        return UtrType::BUILDINGTWOTILED;
     }
-    
+
 }

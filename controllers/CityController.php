@@ -2,13 +2,13 @@
 
 namespace app\controllers;
 
-use app\components\MyController,
+use app\controllers\base\MyController,
     app\models\politics\City;
 
 /**
  * 
  */
-class CityController extends MyController
+final class CityController extends MyController
 {
     
     public function actionIndex($id)

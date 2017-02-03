@@ -4,14 +4,14 @@ namespace app\controllers;
 
 use Yii,
     yii\filters\VerbFilter,
-    app\components\MyController,
+    app\controllers\base\MyController,
     app\models\Message,
     app\models\MessageType;
 
 /**
  * 
  */
-class MessagesController extends MyController
+final class MessagesController extends MyController
 {
     
     public function behaviors()

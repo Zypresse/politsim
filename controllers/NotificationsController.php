@@ -3,7 +3,7 @@
 namespace app\controllers;
 
 use Yii,
-    app\components\MyController,
+    app\controllers\base\MyController,
     app\models\Notification;
 
 /**
@@ -11,7 +11,7 @@ use Yii,
  *
  * @author ilya
  */
-class NotificationsController extends MyController
+final class NotificationsController extends MyController
 {
     
     /**

@@ -4,13 +4,13 @@ namespace app\controllers;
 
 use Yii,
     yii\web\NotFoundHttpException,
-    app\components\MyController,
+    app\controllers\base\MyController,
     app\models\politics\Agency;
 
 /**
  * 
  */
-class AgencyController extends MyController
+final class AgencyController extends MyController
 {
     
     public function actionConstitutionValue(int $agencyId, int $type)

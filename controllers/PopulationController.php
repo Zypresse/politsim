@@ -4,7 +4,7 @@ namespace app\controllers;
 
 use Yii,
     yii\web\NotFoundHttpException,
-    app\components\MyController,
+    app\controllers\base\MyController,
     app\models\politics\State,
     app\models\politics\Region,
     app\models\politics\City;
@@ -12,7 +12,7 @@ use Yii,
 /**
  * 
  */
-class PopulationController extends MyController {
+final class PopulationController extends MyController {
     
     public function actionState($id)
     {

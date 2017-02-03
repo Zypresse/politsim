@@ -2,12 +2,12 @@
 
 namespace app\controllers;
 
-use app\components\MyController;
+use app\controllers\base\MyController;
 
 /**
  * 
  */
-class DealingsController extends MyController
+final class DealingsController extends MyController
 {
     
     public function actionIndex()

@@ -13,12 +13,12 @@ use Yii,
     yii\widgets\ActiveForm,
     yii\web\Response,
     yii\filters\VerbFilter,
-    app\components\MyController;
+    app\controllers\base\MyController;
 
 /**
  * 
  */
-class WorkController extends MyController
+final class WorkController extends MyController
 {
     
     public function behaviors()

@@ -2,7 +2,7 @@
 
 namespace app\controllers;
 
-use app\components\MyController,
+use app\controllers\base\MyController,
     app\models\politics\Party,
     app\models\politics\State,
     app\models\User,
@@ -13,7 +13,7 @@ use app\components\MyController,
  *
  * @author dev
  */
-class ChartController extends MyController
+final class ChartController extends MyController
 {
     
     public function actionStates()

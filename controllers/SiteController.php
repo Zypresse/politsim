@@ -12,7 +12,7 @@ use Yii,
     app\models\InviteForm,
     app\components\vkapi\VkApi;
 
-class SiteController extends Controller
+final class SiteController extends Controller
 {
 
     public function actions()

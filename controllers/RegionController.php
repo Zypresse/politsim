@@ -5,13 +5,13 @@ namespace app\controllers;
 use Yii,
     yii\web\NotFoundHttpException,
     yii\helpers\Html,
-    app\components\MyController,
+    app\controllers\base\MyController,
     app\models\politics\Region;
 
 /**
  * 
  */
-class RegionController extends MyController
+final class RegionController extends MyController
 {
     
     public function actionIndex($id)
