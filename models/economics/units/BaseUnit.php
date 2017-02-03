@@ -2,13 +2,15 @@
 
 namespace app\models\economics\units;
 
-use app\models\economics\TaxPayerModel;
+use app\models\economics\TaxPayerModel,
+    app\models\economics\units\Vacancy;
 
 /**
  * Здание/трубопровод/движимое здание/армия
  * 
  * @property integer $protoId
  * @property TaxPayerModel $master
+ * @property Vacancy[] $vacancies
  * 
  */
 abstract class BaseUnit extends TaxPayerModel
@@ -32,6 +34,12 @@ abstract class BaseUnit extends TaxPayerModel
     public function getBalance(int $currencyId)
     {
         return $this->master->getBalance($currencyId);
+    }
+    
+    public function getVacancies()
+    {
+        $this->getUtrForced();
+        return $this->hasMany(Vacancy::className(), ['objectId' => 'utr']);
     }
     
 }
