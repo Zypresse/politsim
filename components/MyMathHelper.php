@@ -62,7 +62,6 @@ class MyMathHelper {
                 }
             }
         }
-        var_dump($realCount, $sumCount);
         foreach ($values as $id => $count) {
             $percents = round(100 * $count / $sumCount,2);
             $values[$id] = $percents;

@@ -186,8 +186,9 @@ class Bill extends MyActiveRecord
     {
         $this->data = json_encode($this->dataArray);
         if ($insert) {
-            $article = $this->state->constitution->getArticleByType(ConstitutionArticleType::BILLS);
-            $this->dateVotingFinished = time() + $article->value * 60 * 60;
+            $article = $this->state->constitution->getArticleByTypeOrEmptyModel(ConstitutionArticleType::BILLS);
+            $time = $article->value ?? 24;
+            $this->dateVotingFinished = time() + $time * 60 * 60;
         }
         return parent::beforeSave($insert);
     }

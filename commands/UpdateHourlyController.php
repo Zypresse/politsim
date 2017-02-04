@@ -6,7 +6,11 @@ use Yii,
     yii\db\Query,
     yii\console\Controller,
     app\components\TileCombiner,
+    app\models\User,
     app\models\Tile,
+    app\models\politics\Region,
+    app\models\politics\State,
+    app\models\politics\Party,
     app\models\economics\Company;
 
 /**
@@ -33,18 +37,18 @@ class UpdateHourlyController extends Controller
             $this->updateUsers();
             if ($debug) printf("Updated users: %f s.".PHP_EOL, microtime(true)-$time);
             
-//            $time = microtime(true);
-//            $this->updateRegions();
-//            if ($debug) printf("Updated regions: %f s.".PHP_EOL, microtime(true)-$time);
-//
-//            $time = microtime(true);
-//            $this->updateStates();
-//            if ($debug) printf("Updated states: %f s.".PHP_EOL, microtime(true)-$time);
-//
-//            $time = microtime(true);
-//            $this->updateParties();
-//            if ($debug) printf("Updated parties: %f s.".PHP_EOL, microtime(true)-$time);
-//
+            $time = microtime(true);
+            $this->updateRegions();
+            if ($debug) printf("Updated regions: %f s.".PHP_EOL, microtime(true)-$time);
+
+            $time = microtime(true);
+            $this->updateStates();
+            if ($debug) printf("Updated states: %f s.".PHP_EOL, microtime(true)-$time);
+
+            $time = microtime(true);
+            $this->updateParties();
+            if ($debug) printf("Updated parties: %f s.".PHP_EOL, microtime(true)-$time);
+
             $time = microtime(true);
             $this->updateCompanies();
             if ($debug) printf("Updated companies: %f s.".PHP_EOL, microtime(true)-$time);
@@ -169,11 +173,10 @@ class UpdateHourlyController extends Controller
      */
     private function updateRegions()
     {
-        $regions = Region::find()->all();
+        $regions = Region::find()->where(['is not', 'stateId', null])->all();
         foreach ($regions as $region) {
             /* @var $region Region */
-            $region->calcPopulation();
-            $region->save();
+            $region->updateParams(true, false);
         }
     }
 
@@ -182,18 +185,10 @@ class UpdateHourlyController extends Controller
      */
     private function updateStates()
     {
-        $states = State::find()->with('regions')->with('regions.cores')->all();
+        $states = State::find()->with('regions')->all();
         foreach ($states as $state) {
             /* @var $state State */
-            $state->calcPopulation();
-            $state->calcSumStar();
-            $state->updateCores();
-            
-            if ($state->population === 0) {
-                $state->delete();
-            } else {
-                $state->save();
-            }
+            $state->updateParams(true, false);
         }
     }
 
@@ -206,13 +201,7 @@ class UpdateHourlyController extends Controller
 
         foreach ($parties as $party) {
             /* @var $party Party */
-            $party->calcRating();
-            
-            if (count($party->members) === 0) {
-                $party->delete();
-            } else {
-                $party->save();
-            }            
+            $party->updateParams();
         }
     }
     
