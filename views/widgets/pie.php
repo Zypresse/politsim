@@ -17,9 +17,9 @@
         <table class="table table-bordered table-condensed">
             <thead>
                 <tr>
-                    <th></th>
+                    <th style="width: 30px;"></th>
                     <th><?= $colName ?></th>
-                    <th><?= Yii::t('app', 'Percents') ?></th>
+                    <th><?= Yii::t('app', 'Dole') ?></th>
                 </tr>
             </thead>
             <tbody>

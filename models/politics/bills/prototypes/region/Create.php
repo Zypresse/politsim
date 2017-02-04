@@ -29,20 +29,30 @@ class Create extends BillProto
             'stateId' => $bill->stateId,
         ]);
         $region->save();
+        if ($region->biggestCity) {
+            $region->link('city', $region->biggestCity);
+        }
         Tile::updateAll([
             'regionId' => $region->id,
         ], ['in', 'id', $bill->dataArray['tiles']]);
         $region->updateParams();
         
         $oldRegion = Region::findByPk($bill->dataArray['regionId']);
-        foreach ($oldRegion->cities as $city) {
-            $city->updateParams();
-        }
-        $oldRegion->updateParams();
         
-        if ($region->biggestCity) {
-            $region->link('city', $region->biggestCity);
+        foreach ($oldRegion->cities as $city) {
+            $allTilesInNew = true;
+            foreach ($city->tiles as $tile) {
+                if ($tile->regionId != $region->id) {
+                    $allTilesInNew = false;
+                    break;
+                }
+            }
+            if ($allTilesInNew) {
+                $city->link('region', $region);
+            }
         }
+        
+        $oldRegion->updateParams();
         
         return true;
     }
@@ -126,6 +136,18 @@ class Create extends BillProto
         }
         if (!isset($bill->dataArray['nameShort']) || !$bill->dataArray['nameShort']) {
             $bill->addError('dataArray[nameShort]', Yii::t('app/bills', 'Region short name is required field'));
+        }
+        
+        if (!count($bill->getErrors()) && isset($region)) {
+            $region->name = $bill->dataArray['name'];
+            $region->nameShort = $bill->dataArray['nameShort'];
+            if (!$region->validate()) {
+                foreach ($region->getErrors() as $attr => $errors) {
+                    foreach ($errors as $error) {
+                        $bill->addError("dataArray[{$attr}]", $error);
+                    }
+                }
+            }
         }
         
         return !count($bill->getErrors());

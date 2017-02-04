@@ -21,7 +21,7 @@ class AppAsset extends AssetBundle
     public $css = [
         'https://fonts.googleapis.com/css?family=Open+Sans:400,600,800&subset=latin,cyrillic',
         'https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css',
-//        'https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css',
+        'css/jquery-ui-theme.css',
         'css/square.css',
 //        'css/snackbar.min.css',
 //        'css/spectrum.css',
@@ -31,7 +31,7 @@ class AppAsset extends AssetBundle
         'css/skin-black.css',
         'css/leaflet.css',
         'css/leaflet.label.css',
-        'css/style.css',
+        'css/style.css?v2',
     ];
     public $js = [
         'js/bootstrap.js',
@@ -52,7 +52,7 @@ class AppAsset extends AssetBundle
 //        'js/leaflet.geometryutil.js',
         'js/leaflet-geodesy.js',
         'js/leaflet3d.js',
-        'js/script_all.js?v2',
+        'js/script_all.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',
@@ -60,12 +60,13 @@ class AppAsset extends AssetBundle
         'yii\bootstrap\BootstrapAsset',
         'yii\widgets\ActiveFormAsset',
         'franciscomaya\sceditor\SCEditorAsset',
+        'kartik\base\WidgetAsset',
     ];
     
     public function __construct($config = array()) {
         
         if (!Yii::$app->user->isGuest && Yii::$app->user->identity->isInvited) {
-            $this->js[] = 'js/script_authorized.js?v2';
+            $this->js[] = 'js/script_authorized.js';
         }
         
         if (Yii::$app->user->id > 3) {

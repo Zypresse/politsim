@@ -194,17 +194,17 @@ $this->title = 'Political Simulator';
             <ul class="treeview-menu">
                 <li>
                     <a href="#!map">
-                        <i class="fa fa-flag"></i> Тестовая карта
-                    </a>
-                </li>
-                <li>
-                    <a href="#!map/political">
                         <i class="fa fa-flag"></i> Политическая карта
                     </a>
                 </li>
                 <li>
                     <a href="#!map/historical">
-                        <i class="fa fa-legal"></i> Карта исторических территорий
+                        <i class="fa fa-legal"></i> Карта претензий
+                    </a>
+                </li>
+                <li>
+                    <a href="#!map/economical">
+                        <i class="fa fa-briefcase"></i> Экономическая карта
                     </a>
                 </li>
                 <li>

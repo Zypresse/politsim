@@ -21,6 +21,9 @@ class MyHtmlHelper {
 
     public static function customIcon($file, $title = '', $style = '', $attrs = [])
     {
+        if (strpos($file, '.') === false) {
+            $file = '/img/'.$file.'.png';
+        }
         $attrs_str = '';
         if (is_array($attrs)) {
             foreach ($attrs as $key => $value) {
@@ -30,7 +33,7 @@ class MyHtmlHelper {
         } else {
             $attrs_str .= $attrs;
         }
-        return "<img src='/img/{$file}.png' alt='{$title}' title='{$title}' style='{$style}' {$attrs_str} />";
+        return "<img src='{$file}' alt='{$title}' title='{$title}' style='{$style}' {$attrs_str} />";
     }
 
     public static function icon($str, $style = 'vertical-align: baseline;', $attrs = [])
@@ -283,7 +286,7 @@ class MyHtmlHelper {
 
     public static function moneyFormat($money, $decimals = 0)
     {
-        return '<span class="status-'.($money>0?'success':'error').'">'.number_format($money, $decimals, '.', '&nbsp;') . ' ' . static::icon('money').'</span>';
+        return '<span class="status-'.($money>0?'success':'error').'">'.number_format($money, $decimals, '.', '&nbsp;') . ' ' . static::icon('money', '').'</span>';
     }
 
     public static function timeFormatFuture($time)

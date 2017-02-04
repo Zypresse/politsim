@@ -13,6 +13,7 @@ class ModifierProto extends ObjectWithFixedPrototypes
 {
     
     const OLDFAG = 1;
+    const STATE_LEADER = 2;
 
     public $id;
     public $name;
@@ -29,8 +30,15 @@ class ModifierProto extends ObjectWithFixedPrototypes
                 'id' => static::OLDFAG,
                 'name' => Yii::t('app', 'Oldfag'),
                 'icon' => Url::to('img/user_oldman.png'),
-                'success' => 1
-            ]
+                'success' => 1,
+            ],
+            [
+                'id' => static::STATE_LEADER,
+                'name' => Yii::t('app', 'State leader'),
+                'icon' => Url::to('img/ceo.png'),
+                'fame' => 3,
+                'success' => 3,
+            ],
         ];
     }
 

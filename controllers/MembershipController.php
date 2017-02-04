@@ -3,7 +3,7 @@
 namespace app\controllers;
 
 use Yii,
-    app\components\MyController,
+    app\controllers\base\MyController,
     app\models\politics\Party,
     app\models\politics\PartyPost,
     app\models\politics\Membership,
@@ -14,7 +14,7 @@ use Yii,
 /**
  * 
  */
-class MembershipController extends MyController
+final class MembershipController extends MyController
 {
     
     public function actionIndex()

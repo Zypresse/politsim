@@ -5,7 +5,7 @@ namespace app\controllers;
 use Yii,
     yii\web\NotFoundHttpException,
     yii\filters\VerbFilter,
-    app\components\MyController,
+    app\controllers\base\MyController,
     app\models\politics\bills\Bill,
     app\models\politics\bills\BillVote,
     app\models\politics\AgencyPost,

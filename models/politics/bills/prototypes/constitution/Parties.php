@@ -65,7 +65,7 @@ class Parties extends BillProto
             $bill->addError('dataArray[value3]', Yii::t('app/bills', 'Parties registration cost is required field'));
         } else {
             /* @var $article \app\models\politics\constitution\articles\statesonly\Parties */
-            $article = $bill->state->constitution->getArticleByType(ConstitutionArticleType::PARTIES);
+            $article = $bill->state->constitution->getArticleByTypeOrEmptyModel(ConstitutionArticleType::PARTIES);
             $article->value = $bill->dataArray['value'];
             $article->value2 = $bill->dataArray['value2'];
             $article->value3 = $bill->dataArray['value3'];

@@ -13,12 +13,12 @@ use Yii,
     yii\widgets\ActiveForm,
     yii\web\Response,
     yii\filters\VerbFilter,
-    app\components\MyController;
+    app\controllers\base\MyController;
 
 /**
  * 
  */
-class WorkController extends MyController
+final class WorkController extends MyController
 {
     
     public function behaviors()
@@ -79,8 +79,11 @@ class WorkController extends MyController
             }
         }
         
-        return $this->render($protoId ? BillProto::getViewByType($protoId) : 'new-bill-form', [
+        
+        return $protoId ? $this->render('new-bill-form', [
             'model' => $model,
+            'post' => $post,
+        ]) : $this->render('new-bill-list-form', [
             'post' => $post,
             'types' => $types,
         ]);
@@ -95,6 +98,17 @@ class WorkController extends MyController
 
             if (!$post->constitution->isCanCreateNewBill()) {
                 return $this->_r(Yii::t('app', 'Not allowed'));
+            }
+            
+            $article = $post->state->constitution->getArticleByTypeOrEmptyModel(ConstitutionArticleType::BILLS);
+            $countBillsByPostAllowed = (int)$article->value2;
+            if ($countBillsByPostAllowed > 0) {
+                $countBillsByPost = (int)$post->state->getBillsActive()
+                                            ->andWhere(['postId' => $post->id])
+                                            ->count();
+                if ($countBillsByPost >= $countBillsByPostAllowed) {
+                    return $this->_r(Yii::t('app', 'You can not make more {0} bills in same time', [$countBillsByPostAllowed]));
+                }
             }
             
             if ($model->save()) {

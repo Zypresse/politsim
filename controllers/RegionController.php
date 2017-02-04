@@ -5,13 +5,14 @@ namespace app\controllers;
 use Yii,
     yii\web\NotFoundHttpException,
     yii\helpers\Html,
-    app\components\MyController,
+    app\controllers\base\MyController,
     app\models\politics\Region;
 
 /**
  * 
  */
-class RegionController extends MyController {
+final class RegionController extends MyController
+{
     
     public function actionIndex($id)
     {
@@ -34,6 +35,14 @@ class RegionController extends MyController {
             'constitution' => $region->constitution,
             'user' => $this->user
         ]);
+    }
+    
+    public function actionConstitutionValue(int $regionId, int $type)
+    {
+        $region = $this->getRegion($regionId);
+        $article = $region->constitution->getArticleByTypeOrEmptyModel($type);
+        $this->result = $article->getPublicAttributes();
+        return $this->_r();
     }
     
     public function actionTiles(int $id = null, $ids = null)
@@ -64,6 +73,7 @@ class RegionController extends MyController {
                     'x' => $tile->x,
                     'y' => $tile->y,
                     'regionId' => $tile->regionId,
+                    'cityId' => $tile->cityId,
                     'coords' => $tile->coords,
                 ];
             }

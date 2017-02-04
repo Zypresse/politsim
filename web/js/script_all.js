@@ -19,6 +19,51 @@ Theme = (function() {
 if (typeof VK !== 'undefined') {
     VK.init({apiId: 4540646});
 }
+
+var docCookies = {
+    getItem: function (sKey) {
+        return decodeURIComponent(document.cookie.replace(new RegExp("(?:(?:^|.*;)\\s*" + encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=\\s*([^;]*).*$)|^.*$"), "$1")) || null;
+    },
+    setItem: function (sKey, sValue, vEnd, sPath, sDomain, bSecure) {
+        if (!sKey || /^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)) { return false; }
+        var sExpires = "";
+        if (vEnd) {
+            switch (vEnd.constructor) {
+                case Number:
+                    sExpires = vEnd === Infinity ? "; expires=Fri, 31 Dec 9999 23:59:59 GMT" : "; max-age=" + vEnd;
+                    break;
+                case String:
+                    sExpires = "; expires=" + vEnd;
+                    break;
+                case Date:
+                    sExpires = "; expires=" + vEnd.toUTCString();
+                    break;
+            }
+        }
+        document.cookie = encodeURIComponent(sKey) + "=" + encodeURIComponent(sValue) + sExpires + (sDomain ? "; domain=" + sDomain : "") + (sPath ? "; path=" + sPath : "") + (bSecure ? "; secure" : "");
+        return true;
+    },
+    removeItem: function (sKey, sPath, sDomain) {
+        if (!sKey || !this.hasItem(sKey)) { return false; }
+        document.cookie = encodeURIComponent(sKey) + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT" + ( sDomain ? "; domain=" + sDomain : "") + ( sPath ? "; path=" + sPath : "");
+        return true;
+    },
+    hasItem: function (sKey) {
+        return (new RegExp("(?:^|;\\s*)" + encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=")).test(document.cookie);
+    },
+    keys: /* optional method: you can safely remove it! */ function () {
+        var aKeys = document.cookie.replace(/((?:^|\s*;)[^\=]+)(?=;|$)|^\s*|\s*(?:\=[^;]*)?(?:\1|$)/g, "").split(/\s*(?:\=[^;]*)?;\s*/);
+        for (var nIdx = 0; nIdx < aKeys.length; nIdx++) { aKeys[nIdx] = decodeURIComponent(aKeys[nIdx]); }
+        return aKeys;
+    }
+};
+
+var viewAsUtr = docCookies.getItem('viewAsUtr');
+
+function setViewAsUtr(val) {
+    viewAsUtr = val;
+    docCookies.setItem('viewAsUtr', val, 24*60*60);
+}
             
 var current_page, current_page_params, currentPageInterval;
 
@@ -44,7 +89,16 @@ $(function () {
     } else {
         $('#account_settings_button').show();
     }
-})
+    
+    $.widget( "custom.autocompleteUsersSearch", $.ui.autocomplete, {
+        _renderItem: function( ul, item ) {
+            return $( "<li>" )
+                .attr( "data-value", item.value )
+                .append( item.label )
+                .appendTo( ul );
+        }
+    });
+});
 
 function roundd(x, n) {
     return parseFloat(x.toFixed(n));
@@ -433,6 +487,7 @@ function createAjaxModal(action, params, title, buttons, modalId, bodyId, modalC
     if ($('#'+modalId)[0]) {
         $('#'+bodyId).html('<div class="text-center"><br><br><br>Загрузка...<br><br><br><br><br></div>');
         $('#'+modalId+'-footer').html(buttons);
+        $('#'+modalId+'-label').text(title);
     } else {
         $(document.body).append(
             '<div style="display:none" class="modal fade" id="'+modalId+'" tabindex="-1" role="dialog" aria-labelledby="'+modalId+'-label" aria-hidden="true"><div class="modal-dialog '+modalClass+'"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button><h3 id="'+modalId+'-label">'+title+'</h3></div><div id="'+bodyId+'" class="modal-body"><div class="text-center"><br><br><br>Загрузка...<br><br><br><br><br></div></div><div id="'+modalId+'-footer" class="modal-footer">'+buttons+'</div></div></div></div>'

@@ -2,7 +2,7 @@
 
 namespace app\controllers;
 
-use app\components\MyController,
+use app\controllers\base\MyController,
     app\models\politics\elections\Election,
     app\models\politics\elections\ElectionVoteUser,
     app\models\politics\State,
@@ -12,7 +12,7 @@ use app\components\MyController,
 /**
  * 
  */
-class ElectionsController extends MyController
+final class ElectionsController extends MyController
 {
     
     public function actionIndex()

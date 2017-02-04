@@ -20,6 +20,12 @@ class NotificationProto extends ObjectWithFixedPrototypes
     const DELETED_PARTY_POST = 9;
     const REGISTERED_FOR_POST_ELECTIONS = 10;
     const WINNED_POST_ELECTION = 11;
+    const NEW_COMPANY_DECISION = 12;
+    const COMPANY_DECISION_ACCEPTED = 13;
+    const COMPANY_DECISION_DECLINED = 14;
+    const LICENSE_GRANTED = 15;
+    const LICENSE_EXPIRED = 16;
+    const LICENSE_REVOKED = 17;
     
     public $id;
     public $text;
@@ -113,6 +119,48 @@ class NotificationProto extends ObjectWithFixedPrototypes
                 'textShort' => 'You win elections',
                 'icon' => '<i class="fa fa-university text-green"></i>',
                 'iconBg' => '<i class="fa fa-university bg-green"></i>',
+            ],
+            [
+                'id' => static::NEW_COMPANY_DECISION,
+                'text' => 'Shareholders voting for decision «{0}» started in company {1}',
+                'textShort' => 'New shareholders decision in company {2}',
+                'icon' => '<i class="fa fa-briefcase text-blue"></i>',
+                'iconBg' => '<i class="fa fa-briefcase bg-blue"></i>',
+            ],
+            [
+                'id' => static::COMPANY_DECISION_ACCEPTED,
+                'text' => 'Decision «{0}» accepted in company {1}',
+                'textShort' => 'Decision accepted in company {2}',
+                'icon' => '<i class="fa fa-briefcase text-green"></i>',
+                'iconBg' => '<i class="fa fa-briefcase bg-green"></i>',
+            ],
+            [
+                'id' => static::COMPANY_DECISION_DECLINED,
+                'text' => 'Decision «{0}» declined in company {1}',
+                'textShort' => 'Decision declined in company {2}',
+                'icon' => '<i class="fa fa-briefcase text-red"></i>',
+                'iconBg' => '<i class="fa fa-briefcase bg-red"></i>',
+            ],
+            [
+                'id' => static::LICENSE_GRANTED,
+                'text' => 'New license for «{0}» in state {3} granted to company {1}',
+                'textShort' => 'License granted to company {2}',
+                'icon' => '<i class="fa fa-legal text-green"></i>',
+                'iconBg' => '<i class="fa fa-legal bg-red"></i>',
+            ],
+            [
+                'id' => static::LICENSE_EXPIRED,
+                'text' => 'License for «{0}» in state {3} expired in company {1}',
+                'textShort' => 'License expired in company {2}',
+                'icon' => '<i class="fa fa-legal text-red"></i>',
+                'iconBg' => '<i class="fa fa-legal bg-red"></i>',
+            ],
+            [
+                'id' => static::LICENSE_REVOKED,
+                'text' => 'License for «{0}» in state {3} revoked in company {1}',
+                'textShort' => 'License revoked in company {2}',
+                'icon' => '<i class="fa fa-legal text-red"></i>',
+                'iconBg' => '<i class="fa fa-legal bg-red"></i>',
             ],
         ];
     }

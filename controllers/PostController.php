@@ -5,13 +5,22 @@ namespace app\controllers;
 use Yii,
     yii\web\NotFoundHttpException,
     app\models\politics\AgencyPost,
-    app\components\MyController;
+    app\controllers\base\MyController;
 
 /**
  * 
  */
 final class PostController extends MyController
 {
+    
+    public function actionView(int $id)
+    {
+        $post = $this->getPost($id);
+        return $this->render('view', [
+            'post' => $post,
+            'user' => $this->user,
+        ]);
+    }
     
     public function actionConstitution(int $postId, $types)
     {
@@ -23,7 +32,7 @@ final class PostController extends MyController
             } else {
                 $subType = null;
             }
-            $article = $post->constitution->getArticleByType($type, $subType);
+            $article = $post->constitution->getArticleByTypeOrEmptyModel($type, $subType);
             $this->result[] = $article->getPublicAttributes();
         }
         return $this->_r();

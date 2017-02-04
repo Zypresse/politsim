@@ -4,9 +4,10 @@ namespace app\controllers;
 
 use Yii,
     yii\web\NotFoundHttpException,
-    app\components\MyController,
+    app\controllers\base\MyController,
     app\models\politics\State,
-    app\models\politics\Agency;
+    app\models\politics\Agency,
+    app\models\politics\LicenseRule;
 
 /**
  * 
@@ -63,6 +64,33 @@ final class StateController extends MyController
         ]);
     }
     
+    public function actionLicenseRuleInfo(int $id, int $protoId)
+    {
+        $state = $this->getState($id);
+        
+        $rule = LicenseRule::findOne([
+            'stateId' => $state->id,
+            'protoId' => $protoId,
+        ]);
+        if (is_null($rule)) {
+            $this->result = null;
+        } else {
+            $this->result = $rule->getPublicAttributes();
+        }
+        return $this->_r();
+    }
+    
+    public function actionRegions(int $id)
+    {
+        $state = $this->getState($id);
+        $this->result = [];
+        foreach ($state->regions as $region) {
+            $this->result[] = $region->getPublicAttributes();
+        }
+        return $this->_r();
+    }
+
+
     private function getState(int $id)
     {
         $state = State::findByPk($id);

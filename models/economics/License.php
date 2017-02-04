@@ -3,6 +3,7 @@
 namespace app\models\economics;
 
 use Yii,
+    yii\behaviors\TimestampBehavior,
     app\models\base\MyActiveRecord,
     app\models\politics\State;
 
@@ -17,6 +18,7 @@ use Yii,
  * @property integer $dateGranted
  * @property integer $dateExpired
  * 
+ * @property LicenseProto $proto
  * @property Company $company
  * @property State $state
  * 
@@ -25,6 +27,18 @@ use Yii,
  */
 class License extends MyActiveRecord
 {
+    
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::className(),
+                'createdAtAttribute' => 'datePending',
+                'updatedAtAttribute' => false,
+            ],
+        ];
+    }
+    
     /**
      * @inheritdoc
      */
@@ -39,7 +53,7 @@ class License extends MyActiveRecord
     public function rules()
     {
         return [
-            [['protoId', 'stateId', 'companyId', 'datePending'], 'required'],
+            [['protoId', 'stateId', 'companyId'], 'required'],
             [['protoId'], 'integer'],
             [['stateId', 'companyId', 'datePending', 'dateGranted', 'dateExpired'], 'integer', 'min' => 0],
             [['companyId'], 'exist', 'skipOnError' => true, 'targetClass' => Company::className(), 'targetAttribute' => ['companyId' => 'id']],
@@ -63,6 +77,11 @@ class License extends MyActiveRecord
         ];
     }
     
+    public function getProto()
+    {
+        return LicenseProto::findOne($this->protoId);
+    }
+
     public function getCompany()
     {
         return $this->hasOne(Company::className(), ['id' => 'companyId']);

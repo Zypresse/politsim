@@ -6,7 +6,10 @@ use Yii,
     yii\behaviors\TimestampBehavior,
     app\models\economics\TaxPayerModel,
     app\models\User,
-    app\models\politics\State;
+    app\models\politics\State,
+    app\models\economics\units\Building,
+    app\models\economics\units\BuildingTwotiled,
+    app\models\economics\units\Unit;
 
 /**
  * Акционерные общества
@@ -30,9 +33,18 @@ use Yii,
  * 
  * @property State $state
  * @property Building $mainOffice
+ * @property BaseUnit[] $objects
+ * @property Building[] $buildings
+ * @property BuildingTwotiled[] $buildingsTwotiled
+ * @property Unit[] $units
  * @property User $director
  * @property Resource[] $shares
  * @property License[] $licenses
+ * @property License[] $licensesRequested
+ * @property License[] $licensesExpired
+ * @property CompanyDecision[] $decisions
+ * @property CompanyDecision[] $decisionsActive
+ * @property CompanyDecision[] $decisionsArсhived
  * 
  */
 class Company extends TaxPayerModel
@@ -134,7 +146,7 @@ class Company extends TaxPayerModel
 
     public function isGoverment(int $stateId): bool
     {
-        return $this->isGoverment && (int)$this->stateId === $stateId;
+        return false;
     }
 
     public function isTaxedInState(int $stateId): bool
@@ -160,7 +172,76 @@ class Company extends TaxPayerModel
     
     public function getLicenses()
     {
-        return $this->hasMany(License::className(), ['companyId' => 'id']);
+        return $this->hasMany(License::className(), ['companyId' => 'id'])
+                ->where(['is not', 'dateGranted', null])
+                ->andWhere(['>', 'dateExpired', time()])
+                ->with('state');
+    }
+    
+    public function isHaveLicense(int $protoId, int $stateId)
+    {
+        return $this->getLicenses()
+                ->andWhere(['protoId' => $protoId, 'stateId' => $stateId])
+                ->exists();
+    }
+    
+    public function getLicensesExpired()
+    {
+        return $this->hasMany(License::className(), ['companyId' => 'id'])
+                ->where(['<', 'dateExpired', time()])
+                ->with('state');
+    }
+    
+    public function getLicensesRequested()
+    {
+        return $this->hasMany(License::className(), ['companyId' => 'id'])
+                ->where(['dateGranted' => null])
+                ->with('state');
+    }
+    
+    public function getDecisions()
+    {
+        return $this->hasMany(CompanyDecision::className(), ['companyId' => 'id']);
+    }
+    
+    public function getDecisionsActive()
+    {
+        return $this->getDecisions()
+                ->where(['dateFinished' => null])
+                ->orderBy(['dateCreated' => SORT_DESC]);
+    }
+    
+    public function getDecisionsArсhived()
+    {
+        return $this->getDecisions()
+                ->where(['is not', 'dateFinished', null])
+                ->orderBy(['dateCreated' => SORT_DESC]);
+    }
+    
+    public function getBuildings()
+    {
+        $this->getUtrForced();
+        return $this->hasMany(Building::className(), ['masterId' => 'utr'])
+                ->where(['dateDeleted' => null]);
+    }
+    
+    public function getBuildingsTwotiled()
+    {
+        $this->getUtrForced();
+        return $this->hasMany(BuildingTwotiled::className(), ['masterId' => 'utr'])
+                ->where(['dateDeleted' => null]);
+    }
+    
+    public function getUnits()
+    {
+        $this->getUtrForced();
+        return $this->hasMany(Unit::className(), ['masterId' => 'utr'])
+                ->where(['dateDeleted' => null]);
+    }
+    
+    public function getObjects()
+    {
+        return array_merge($this->buildings, $this->buildingsTwotiled, $this->units);
     }
     
     public function updateParams($save = true)
@@ -198,6 +279,47 @@ class Company extends TaxPayerModel
         if ($save) {
             $this->save();
         }
+    }
+    
+    
+    /**
+     * 
+     * @param \app\models\User $creator
+     * @return boolean
+     */
+    public function createNew(User $creator)
+    {
+        $this->directorId = $creator->id;
+        
+        if ($this->save()) {
+        
+            $share = new Resource([
+                'protoId' => ResourceProto::SHARE,
+                'subProtoId' => $this->id,
+                'masterId' => $creator->getUtr(),
+                'locationId' => $creator->getUtr(),
+                'count' => $this->sharesIssued,
+            ]);
+
+            if ($share->save()) {
+                // TODO деньги на счёт компании
+                return true;
+            }
+
+            $this->addErrors($share->getErrors());
+        }
+        
+        return false;
+    }
+    
+    public function isShareholder(int $utr)
+    {
+        foreach ($this->shares as $share) {
+            if ((int)$share->masterId === $utr) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

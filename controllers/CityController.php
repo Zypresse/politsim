@@ -2,13 +2,14 @@
 
 namespace app\controllers;
 
-use app\components\MyController,
+use app\controllers\base\MyController,
     app\models\politics\City;
 
 /**
  * 
  */
-class CityController extends MyController {
+final class CityController extends MyController
+{
     
     public function actionIndex($id)
     {
@@ -20,5 +21,13 @@ class CityController extends MyController {
             'city' => $city,
             'user' => $this->user
         ]);
+    }
+    
+    public function actionConstitutionValue(int $cityId, int $type)
+    {
+        $city = $this->getRegion($cityId);
+        $article = $city->constitution->getArticleByTypeOrEmptyModel($type);
+        $this->result = $article->getPublicAttributes();
+        return $this->_r();
     }
 }

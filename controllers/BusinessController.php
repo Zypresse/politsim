@@ -4,11 +4,15 @@ namespace app\controllers;
 
 use Yii,
     yii\web\NotFoundHttpException,
-    app\components\MyController,
-    app\models\User,
+    yii\widgets\ActiveForm,
+    yii\web\Response,
+    app\controllers\base\MyController,
+    app\models\economics\Utr,
     app\models\economics\Company,
     app\models\economics\Resource,
-    app\models\economics\ResourceProto;
+    app\models\economics\ResourceProto,
+    app\models\politics\State,
+    app\models\politics\constitution\ConstitutionArticleType;
 
 /**
  * 
@@ -16,33 +20,88 @@ use Yii,
 final class BusinessController extends MyController
 {
     
-    public function actionIndex($userId = false)
+    public function actionIndex()
     {
-        
-        if (!$userId) {
-            $userId = Yii::$app->user->id;
+        return $this->render('index', [
+            'viewer' => $this->user,
+        ]);
+    }
+    
+    public function actionShares(int $utr)
+    {
+        $utrModel = Utr::findByPk($utr);
+        if (is_null($utrModel)) {
+            throw new NotFoundHttpException(Yii::t('app', 'UTR not found'));
         }
-        $user = $this->loadUser($userId);
         
         $shares = Resource::find()->where([
-            'masterId' => $user->getUtr(),
+            'masterId' => $utr,
             'protoId' => ResourceProto::SHARE,
-        ])->all();
+        ])->with('company')->all();
         
-        return $this->render('index', [
-            'user' => $user,
+        return $this->render('shares', [
+            'shareholder' => $utrModel->object,
             'shares' => $shares,
             'viewer' => $this->user,
         ]);
     }
     
-    public function loadUser(int $id)
+    public function actionCreateCompanyForm()
     {
-        $user = User::findByPk($id);
-        if (is_null($user)) {
-            throw new NotFoundHttpException(Yii::t('app', 'User not found'));
+        $model = new Company();
+
+        if (!$this->user->tile || !$this->user->tile->region || !$this->user->tile->region->state) {
+            return $this->_r(Yii::t('app', 'Not allowed'));
         }
-        return $user;
+        
+        $state = $this->user->tile->region->state;
+        
+        if (!$state->isCompaniesCreatingAllowedFor($this->user)) {
+            return $this->_r(Yii::t('app', 'Not allowed'));
+        }
+
+        $model->stateId = $state->id;
+        
+        if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return ActiveForm::validate($model);
+        }
+        
+        return $this->render('create-company-form', [
+            'model' => $model,
+            'user' => $this->user,
+            'state' => $state,
+            'article' => $state->constitution->getArticleByType(ConstitutionArticleType::BUSINESS),
+        ]);
     }
     
+    public function actionCreateCompany()
+    { 
+        $model = new Company();
+        if ($model->load(Yii::$app->request->post())) {
+            
+            $state = State::findByPk($model->stateId);
+            
+            if (is_null($state)) {
+                return $this->_r(Yii::t('app', 'State not found'));
+            }
+            
+            if (!$state->isCompaniesCreatingAllowedFor($this->user)) {
+                return $this->_r(Yii::t('app', 'Not allowed'));
+            }
+                        
+            // TODO: стоимость регистрации компании
+                        
+            $transaction = Yii::$app->db->beginTransaction();
+            if ($model->createNew($this->user)) {
+                $model->updateParams();
+                $transaction->commit();
+                return $this->_rOk();
+            }
+            $transaction->rollBack();
+            return $this->_r($model->getErrors());
+        }
+        return $this->_r(Yii::t('app', 'Undefined error'));
+    }
+        
 }

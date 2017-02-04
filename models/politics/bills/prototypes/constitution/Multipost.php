@@ -51,7 +51,7 @@ class Multipost extends BillProto
     public function getDefaultData($bill)
     {
         /* @var $article \app\models\politics\constitution\articles\statesonly\Multipost */
-        $article = $bill->state->constitution->getArticleByType(ConstitutionArticleType::MULTIPOST);
+        $article = $bill->state->constitution->getArticleByTypeOrEmptyModel(ConstitutionArticleType::MULTIPOST);
         return ['value' => !!$article->value];
     }
 

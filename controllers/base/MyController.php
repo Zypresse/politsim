@@ -16,7 +16,7 @@
 *	Секретный ключ из которого генерируется auth_key — в app/config/params.php
 */
 
-namespace app\components;
+namespace app\controllers\base;
 
 use Yii,
     yii\web\Controller,
@@ -28,7 +28,7 @@ use Yii,
  * @property \app\components\Notificator $notificator
  */
 
-class MyController extends Controller
+abstract class MyController extends Controller
 {
     
     public $layout = "api";

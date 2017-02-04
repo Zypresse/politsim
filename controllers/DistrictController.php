@@ -3,7 +3,7 @@
 namespace app\controllers;
 
 use Yii,
-    app\components\MyController,
+    app\controllers\base\MyController,
     app\models\politics\elections\ElectoralDistrict,
     yii\web\NotFoundHttpException;
 

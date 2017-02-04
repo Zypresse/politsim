@@ -50,7 +50,7 @@ class PopInfoMenuWidget extends Widget
     public function init(){
         parent::init();
         if (!$this->statesQuery) {
-            $this->statesQuery = State::find();
+            $this->statesQuery = State::find()->where(['is', 'dateDeleted', null]);
         }
         if ($this->activeCity) {
             $this->activeRegion = $this->activeCity->region;

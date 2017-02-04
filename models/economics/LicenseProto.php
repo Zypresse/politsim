@@ -24,12 +24,20 @@ class LicenseProto extends ObjectWithFixedPrototypes
     public $name;
 
 
-    protected static function getList()
+    public static function getList()
     {
         return [
             [
                 'id' => LicenseProtoType::BANK,
-                'name' => Yii::t('app', 'License for banking'),
+                'name' => Yii::t('app', 'Banking'),
+            ],
+            [
+                'id' => LicenseProtoType::CURRENCY_EMISSION,
+                'name' => Yii::t('app', 'Currency emission'),
+            ],
+            [
+                'id' => LicenseProtoType::BUILDING_CONSTRUCTION,
+                'name' => Yii::t('app', 'Buildings construction'),
             ],
         ];
     }

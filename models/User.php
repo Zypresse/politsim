@@ -87,7 +87,7 @@ class User extends TaxPayerModel implements IdentityInterface
      */
     public function getTaxStateId()
     {
-        return (int)$this->location->getTaxStateId();
+        return $this->tile && $this->tile->region ? (int)$this->tile->region->stateId : 0;
     }
     
     /**
@@ -97,7 +97,12 @@ class User extends TaxPayerModel implements IdentityInterface
      */
     public function isTaxedInState(int $stateId)
     {
-        return (int)$this->location->isTaxedInState($stateId);
+        foreach ($this->states as $state) {
+            if ((int) $state->id === $stateId) {
+                return true;
+            }
+        }
+        return false;
     }
     
     /**
@@ -115,7 +120,7 @@ class User extends TaxPayerModel implements IdentityInterface
      */
     public function isUserController(int $userId)
     {
-        return (int)$this->id === $userId;
+        return ((int)$this->id) === $userId;
     }    
 
     public static function findIdentity($id)
@@ -224,7 +229,7 @@ class User extends TaxPayerModel implements IdentityInterface
     private $_ideology = null;
     public function getIdeology()
     {
-        if (is_null($this->_ideology)) {
+        if (is_null($this->_ideology) && $this->ideologyId) {
             $this->_ideology = Ideology::findOne($this->ideologyId);
         }
         return $this->_ideology;
@@ -233,7 +238,7 @@ class User extends TaxPayerModel implements IdentityInterface
     private $_religion = null;
     public function getReligion()
     {
-        if (is_null($this->_religion)) {
+        if (is_null($this->_religion) && $this->religionId) {
             $this->_religion = Religion::findOne($this->religionId);
         }
         return $this->_religion;
@@ -335,12 +340,11 @@ class User extends TaxPayerModel implements IdentityInterface
      * @param boolean $save
      * @return Modifier
      */
-    public function addModifier($protoId, $dateReceiving = null, $dateExpired = null, $save = true)
+    public function addModifier($protoId, $dateExpired = null, $save = true)
     {
         $modifier = new Modifier([
             'userId' => $this->id,
             'protoId' => $protoId,
-            'dateReceiving' => $dateReceiving ?? time(),
             'dateExpired' => $dateExpired
         ]);
         if ($save) {
@@ -350,8 +354,33 @@ class User extends TaxPayerModel implements IdentityInterface
         return $modifier;
     }
     
+    public function updateInfinityModifiers()
+    {
+        $isStateLeader = false;
+        foreach ($this->posts as $post) {
+            if ($post->isStateLeader) {
+                $isStateLeader = true;
+                if (!$this->getModifiers()->where(['protoId' => ModifierProto::STATE_LEADER])->exist()) {
+                    $this->addModifier(ModifierProto::STATE_LEADER);
+                }
+            }
+        }
+        if (!$isStateLeader) {
+            Modifier::updateAll([
+                'dateExpired' => time(),
+            ],[
+                'userId' => $this->id,
+                'protoId' => ModifierProto::STATE_LEADER,
+                'dateExpired' => null,
+            ]);
+        }
+    }
+    
     public function updateParams()
     {
+        
+        $this->updateInfinityModifiers();
+        
         $this->fame = $this->fameBase;
         $this->trust = $this->trustBase;
         $this->success = $this->successBase;

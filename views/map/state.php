@@ -53,7 +53,8 @@ use yii\helpers\Html,
         localStorage.setItem('center-lng',map.getCenter().lng);
     });
     
-    var regions = {};
+    var regions = {},
+        cities = {};
     
     <?php foreach($state->regions as $region): ?>
         regions[<?=$region->id?>] = L.multiPolygon([<?=$region->polygon?>],{
@@ -63,8 +64,32 @@ use yii\helpers\Html,
             fillOpacity: 0.5,
             weight: 1,
             title: '<?=Html::encode($region->name)?>'
-        }).bindLabel('<?=Html::encode($region->name)?>');
+        }).bindLabel('<?=Html::encode($region->name)?>')
+        .bindPopup('<?=($region->flag ? Html::img($region->flag, ['style' => 'width:20px']).' ' : '').Html::a(Html::encode($region->name), '/#!region&id='.$region->id)?><br><button class="btn btn-xs btn-primary btn-relocate" data-location-type="region" data-location-id="<?=$region->id?>" ><?=Yii::t('app', 'Relocate here')?></button>');;
         regions[<?=$region->id?>].addTo(map);  
     <?php endforeach ?>
+        
+    <?php foreach($state->cities as $city): ?>
+        cities[<?=$city->id?>] = L.multiPolygon([<?=$city->polygon?>],{
+            color: '#000',
+            opacity: 1,
+            fillColor: '#fff',
+            fillOpacity: 0.5,
+            weight: 1,
+            title: '<?=Html::encode($city->name)?>'
+        }).bindLabel('<?=Html::encode($city->name)?>')
+        .bindPopup('<?=($city->flag ? Html::img($city->flag, ['style' => 'width:20px']).' ' : '').Html::a(Html::encode($city->name), '/#!city&id='.$city->id)?><br><button class="btn btn-xs btn-primary btn-relocate" data-location-type="city" data-location-id="<?=$city->id?>" ><?=Yii::t('app', 'Relocate here')?></button>');;
+        cities[<?=$city->id?>].addTo(map);  
+    <?php endforeach ?>
+        
+    $('.leaflet-popup-pane').on('click', '.btn-relocate', function(){
+        var type = $(this).data('locationType'),
+            id = $(this).data('locationId');
+        
+        createAjaxModal('user/relocate-form', {type:type,id:id},
+            '<?=Yii::t('app', 'Relocate to <span id="relocate-to-name">{0}</span>', [''])?>',
+            '<button class="btn btn-primary" id="btn-set-relocate" disabled="disabled"><?=Yii::t('app', 'Relocate')?></button><button class="btn btn-danger" data-dismiss="modal" aria-hidden="true"><?=Yii::t('app', 'Cancel')?></button>'
+        );
+    });
     
 </script>

@@ -18,7 +18,7 @@ abstract class ObjectWithFixedPrototypes extends Object
      * @param integer $id
      * @return \static
      */
-    public static function findOne($id)
+    public static function findOne(int $id)
     {
         foreach (static::getList() as $object) {
             if ($object['id'] == $id) {

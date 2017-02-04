@@ -5,7 +5,8 @@ namespace app\models;
 use app\models\politics\constitution\ConstitutionArticleType,
     app\models\politics\constitution\articles\postsonly\Powers,
     app\models\politics\constitution\articles\postsonly\powers\Bills,
-    app\models\politics\bills\Bill;
+    app\models\politics\bills\Bill,
+    app\models\economics\CompanyDecision;
 
 /**
  * 
@@ -22,6 +23,11 @@ class MessageType
      * Обсуждение законопроекта
      */
     const BILL_DISQUSSION = 2;
+    
+    /**
+     * Обсуждение законопроекта
+     */
+    const DECISION_DISQUSSION = 3;
     
     /**
      * 
@@ -47,6 +53,12 @@ class MessageType
                     }
                 }
                 return false;
+            case static::DECISION_DISQUSSION:
+                $decision = CompanyDecision::findByPk($recipientId);
+                if (is_null($decision) || is_null($decision->company)) {
+                    return false;
+                }
+                return $decision->company->isShareholder($who->getUtr());
         }
         return true;
     }

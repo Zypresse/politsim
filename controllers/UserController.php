@@ -3,18 +3,24 @@
 namespace app\controllers;
 
 use Yii,
-    app\components\MyController,
+    yii\web\NotFoundHttpException,
+    yii\web\Response,
+    yii\helpers\Html,
+    app\components\MyHtmlHelper,
+    app\controllers\base\MyController,
     app\components\LinkCreator,
     app\models\User,
     app\models\Ideology,
-    app\models\Religion;
+    app\models\Religion,
+    app\models\politics\Region,
+    app\models\politics\City;
 
 /**
  * Description of UserController
  *
  * @author ilya
  */
-class UserController extends MyController
+final class UserController extends MyController
 {
         
     public function actionProfile($id = false)
@@ -105,6 +111,35 @@ class UserController extends MyController
         return $this->_r();
     }
     
+    public function actionGlobalFind($term, $stateId = null)
+    {
+        $query = User::find()
+                ->filterWhere(['like', 'name', $term]);
+        
+        if ($stateId) {
+            $query = $query->joinWith('citizenships')
+                    ->andWhere(['citizenships.stateId' => $stateId])
+                    ->andWhere(['IS NOT', 'citizenships.stateId', NULL]);
+        }
+        
+        $models = $query->all();
+        $this->result = [];
+        /* @var $model User */
+        foreach ($models as $model) {
+            $this->result[] = [
+                'id' => $model->id,
+                'value' => Html::encode($model->name),
+                'label' => Html::img($model->avatar, ['style' => 'width:32px']).' '.Html::encode($model->name)
+                        .' <span class="star">'.$model->fame.MyHtmlHelper::icon('star').'</span>'
+                        .' <span class="heart">'.$model->trust.MyHtmlHelper::icon('heart').'</span>'
+                        .' <span class="chart_pie">'.$model->success.MyHtmlHelper::icon('chart_pie').'</span>',
+            ];
+        }
+        
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return $this->result;
+    }
+    
     public function actionInfo(int $id)
     {
         $user = User::findByPk($id);
@@ -114,5 +149,39 @@ class UserController extends MyController
         
         $this->result = $user->getPublicAttributes();
         return $this->_r();
+    }
+    
+    public function actionRelocateForm($type, $id)
+    {
+        switch ($type) {
+            case 'region':
+                $object = Region::findByPk($id);
+                break;
+            case 'city':
+                $object = City::findByPk($id);
+                break;
+            default:
+                return $this->_r(Yii::t('app', 'Invalid params'));
+        }
+        
+        if (is_null($object)) {
+            throw new NotFoundHttpException(Yii::t('app', '{0} not found', [$type]));
+        }
+        
+        return $this->render('relocate',[
+            'user' => $this->user,
+            'object' => $object,
+        ]);
+    }
+    
+    public function actionRelocate()
+    {
+        $tileId = (int) Yii::$app->request->post('tileId');
+        $this->user->tileId = $tileId;
+        if ($this->user->save()) {
+            return $this->_rOk();
+        } else {
+            return $this->_r($this->user->getErrors());
+        }
     }
 }

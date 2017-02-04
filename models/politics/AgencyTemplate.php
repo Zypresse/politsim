@@ -18,6 +18,8 @@ class AgencyTemplate extends ObjectWithFixedPrototypes
     
     const BASIC_PARLIAMENT = 1;
     
+    const EMPTY_AGENCY = 2;
+    
     protected static function getList()
     {
         return [
@@ -25,6 +27,11 @@ class AgencyTemplate extends ObjectWithFixedPrototypes
                 'id' => static::BASIC_PARLIAMENT,
                 'name' => Yii::t('app', 'Basic parliament'),
                 'class' => 'BasicParliament',
+            ],
+            [
+                'id' => static::EMPTY_AGENCY,
+                'name' => Yii::t('app', 'Empty agency'),
+                'class' => 'EmptyAgency',
             ],
         ];
     }
@@ -34,10 +41,10 @@ class AgencyTemplate extends ObjectWithFixedPrototypes
      * @param integer $stateId
      * @return Agency
      */
-    public function create(int $stateId)
+    public function create(int $stateId, $params)
     {
         $className = '\\app\\models\\politics\\templates\\'.$this->class;
-        return $className::create($stateId);
+        return $className::create($stateId, $params);
     }
 
 }

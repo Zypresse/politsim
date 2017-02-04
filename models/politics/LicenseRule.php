@@ -5,7 +5,8 @@ namespace app\models\politics;
 use Yii,
     app\models\base\MyActiveRecord,
     app\models\politics\State,
-    app\models\economics\LicenseProto;
+    app\models\economics\LicenseProto,
+    app\models\economics\Company;
 
 /**
  * Правила по выдаче лицензий
@@ -40,6 +41,21 @@ class LicenseRule extends MyActiveRecord
      */
     const ALLOWED_ALL = 4;
     
+    public static function getWhichAllowedNamesList()
+    {
+        return [
+            LicenseRule::ALLOWED_GOVERMENT => Yii::t('app', 'Only goverment companies'),
+            LicenseRule::ALLOWED_HALF_GOVERMENT => Yii::t('app', 'Only goverment and half-goverment companies'),
+            LicenseRule::ALLOWED_LOCAL => Yii::t('app', 'Only residents'),
+            LicenseRule::ALLOWED_ALL => Yii::t('app', 'Allowed for all'),
+        ];
+    }
+    
+    public static function getWhichAllowedName(int $id)
+    {
+        return static::getWhichAllowedNamesList()[$id];
+    }
+
     /**
      * @inheritdoc
      */
@@ -89,5 +105,26 @@ class LicenseRule extends MyActiveRecord
         return $this->hasOne(State::className(), ['id' => 'stateId']);
     }
     
+    public static function primaryKey()
+    {
+        return ['protoId', 'stateId'];
+    }
+    
+    public function isCompanyAllowed(Company $company) : bool
+    {
+        $isResident = (int)$company->stateId === (int)$this->stateId;
+        if ($isResident) {
+            switch ((int)$this->whichCompaniesAllowed) {
+                case static::ALLOWED_GOVERMENT:
+                    return $company->isGoverment;
+                case static::ALLOWED_HALF_GOVERMENT:
+                    return $company->isGoverment || $company->isHalfGoverment;
+                default:
+                    return true;
+            }
+        } else {
+            return (int)$this->whichCompaniesAllowed === static::ALLOWED_ALL;
+        }
+    }
     
 }

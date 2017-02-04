@@ -84,7 +84,7 @@ use yii\helpers\Html,
                 <?php foreach ($user->getPostsByState($bill->stateId)->all() as $post): ?>
                     <?php
                     /* @var $powersBills Bills */
-                    $powersBills = $post->constitution->getArticleByType(ConstitutionArticleType::POWERS, Powers::BILLS);
+                    $powersBills = $post->constitution->getArticleByTypeOrEmptyModel(ConstitutionArticleType::POWERS, Powers::BILLS);
                     
                     $canVoteCurrent = $powersBills->isSelected(Bills::VOTE);
                     if ($canVoteCurrent) {

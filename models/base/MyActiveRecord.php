@@ -21,6 +21,9 @@ abstract class MyActiveRecord extends ActiveRecord {
      * @return static
      */
     public static function findByPk($id) {
+        if ((int) $id < 0) {
+            return null;
+        }
         return static::find()->where(["id" => $id])->one();
     }
 

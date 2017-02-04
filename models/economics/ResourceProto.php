@@ -16,12 +16,17 @@ class ResourceProto
     /**
      * Условная "работа", результат труда нпц
      */
-    const WORK = 2;
+    const WORK = -2;
     
     /**
      * Акция
      */
     const SHARE = 3;
+    
+    /**
+     * Строительство зданий
+     */
+    const BUILDING_CONSTRUCTING = -1;
     
     public static function getClassNameByType(int $id)
     {
@@ -29,6 +34,7 @@ class ResourceProto
             static::MONEY => 'Currency',
             static::WORK => 'Work',
             static::SHARE => 'Share',
+            static::BUILDING_CONSTRUCTING => 'BuildingConstructing',
         ];
         
         return 'app\\models\\economics\\resources\\'.$classes[$id];

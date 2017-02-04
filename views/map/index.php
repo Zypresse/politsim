@@ -62,7 +62,7 @@ use yii\helpers\Html;
             weight: 1,
             title: '<?=Html::encode($state->name)?>'
         }).bindLabel('<?=Html::encode($state->name)?>')
-        .bindPopup('<?=Html::img($state->flag, ['style' => 'width:20px']).' '.Html::a(Html::encode($state->name), '/#!state&id='.$state->id)?>');
+        .bindPopup('<?=Html::img($state->flag, ['style' => 'width:20px']).' '.Html::a(Html::encode($state->name), '/#!state&id='.$state->id)?><br><?=Html::a(Yii::t('app', 'Look at map'), ['/#!map/state', 'id' => $state->id], ['class' => 'btn btn-default'])?>');
         states[<?=$state->id?>].addTo(map);        
     <?php endforeach ?>
             

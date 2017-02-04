@@ -65,5 +65,10 @@ abstract class TaxPayerModel extends MyActiveRecord implements TaxPayer
         } 
         return $this->utr;
     }
+    
+    public function getUtrForced()
+    {
+        return $this->getUtr();
+    }
 
 }

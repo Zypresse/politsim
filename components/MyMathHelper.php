@@ -46,12 +46,14 @@ class MyMathHelper {
      */
     public static function sumPercents($objects, $attributeJSON, $attributeCount, $sumCount)
     {
+        $realCount = 0;
         $values = [];
         foreach ($objects as $object) {
+            $realCount += $object->$attributeCount;
             if ($object->$attributeJSON) {
                 $objectValues = json_decode($object->$attributeJSON, true);
                 foreach ($objectValues as $id => $percents) {
-                    $count = (int)round($object->$attributeCount*$percents/100);
+                    $count = $object->$attributeCount*$percents/100;
                     if (isset($values[$id])) {
                         $values[$id] += $count;
                     } else {
@@ -60,6 +62,7 @@ class MyMathHelper {
                 }
             }
         }
+        var_dump($realCount, $sumCount);
         foreach ($values as $id => $count) {
             $percents = round(100 * $count / $sumCount,2);
             $values[$id] = $percents;

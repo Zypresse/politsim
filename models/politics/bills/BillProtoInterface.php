@@ -17,7 +17,6 @@ interface BillProtoInterface
      */
     public function validate($bill) : bool;
     
-    
     /**
      * 
      * @param Bill $bill

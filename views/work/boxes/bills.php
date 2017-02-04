@@ -68,7 +68,7 @@ use yii\helpers\Html,
             'work/new-bill-form',
             {postId:$(this).data('postId')},
             '<?=Yii::t('app', 'New bill')?>',
-            '<button id="new-bill-confirm-btn" onclick="$(\'#new-bill-form\').yiiActiveForm(\'submitForm\')" class="btn btn-primary new-bill-confirm-btn" ><?=Yii::t('app', 'Create new bill')?></button><button class="btn btn-danger" data-dismiss="modal" aria-hidden="true"><?=Yii::t('app', 'Close')?></button>'
+            '<button id="new-bill-confirm-btn" onclick="$(\'#new-bill-form\').yiiActiveForm(\'submitForm\')" class="btn btn-primary new-bill-confirm-btn hide" ><?=Yii::t('app', 'Create new bill')?></button><button class="btn btn-danger" data-dismiss="modal" aria-hidden="true"><?=Yii::t('app', 'Close')?></button>'
         );
     });
 </script>

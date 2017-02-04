@@ -3,18 +3,21 @@
 namespace app\models\politics;
 
 use Yii,
+    app\models\User,
     app\models\economics\UtrType,
     app\models\politics\constitution\Constitution,
     app\models\politics\constitution\ConstitutionArticleType,
     app\models\politics\constitution\ConstitutionOwnerType,
     app\models\politics\constitution\ConstitutionOwner,
     app\models\politics\constitution\articles\statesonly\Parties,
+    app\models\politics\constitution\articles\statesonly\Business,
     app\models\population\Pop,
     app\models\Tile,
     app\models\politics\bills\Bill,
     app\models\politics\elections\ElectoralDistrict,
     app\models\economics\License,
     app\models\economics\Company,
+    app\models\economics\TaxPayer,
     app\components\RegionCombiner,
     app\components\MyMathHelper;
 
@@ -60,6 +63,7 @@ use Yii,
  * @property ElectoralDistrict[] $districts
  * @property Company[] $companies
  * @property License[] $licenses
+ * @property License[] $licensesUnconfirmed
  * @property LicenseRule[] $licenseRules
  *
  * @author ilya
@@ -172,7 +176,9 @@ class State extends ConstitutionOwner
         
     public function getRegions()
     {
-        return $this->hasMany(Region::classname(), ['stateId' => 'id'])->where(['dateDeleted' => null]);
+        return $this->hasMany(Region::classname(), ['stateId' => 'id'])
+                ->where(['dateDeleted' => null])
+                ->orderBy(['name' => SORT_ASC]);
     }
         
     public function getDistricts()
@@ -183,7 +189,8 @@ class State extends ConstitutionOwner
     public function getCities()
     {
         return $this->hasMany(City::className(), ['regionId' => 'id'])
-                ->via('regions');
+                ->via('regions')
+                ->orderBy(['name' => SORT_ASC]);
     }
     
     public function getAgencies()
@@ -208,7 +215,7 @@ class State extends ConstitutionOwner
         return $this->hasMany(Party::className(), ['stateId' => 'id'])
                 ->where(['dateDeleted' => null, 'dateConfirmed' => null]);
     }
-    
+        
     public function getTiles()
     {
         return $this->hasMany(Tile::className(), ['regionId' => 'id'])
@@ -239,7 +246,15 @@ class State extends ConstitutionOwner
     
     public function getLicenses()
     {
-        return $this->hasMany(License::className(), ['stateId' => 'id']);
+        return $this->hasMany(License::className(), ['stateId' => 'id'])
+                ->where(['is not', 'dateGranted', null])
+                ->andWhere('dateGranted < dateExpired');
+    }
+    
+    public function getLicensesUnconfirmed()
+    {
+        return $this->hasMany(License::className(), ['stateId' => 'id'])
+                ->where(['dateGranted' => null]);
     }
     
     public function getLicenseRules()
@@ -247,9 +262,30 @@ class State extends ConstitutionOwner
         return $this->hasMany(LicenseRule::className(), ['stateId' => 'id']);
     }
     
+    /**
+     * 
+     * @param integer $id
+     * @return LicenseRule
+     */
+    public function getLicenseRuleByProto(int $id)
+    {
+        return $this->hasOne(LicenseRule::className(), ['stateId' => 'id'])->where(['protoId' => $id])->one();
+    }
+    
     public function getCompanies()
     {
         return $this->hasMany(Company::className(), ['stateId' => 'id']);
+    }
+    
+    public function getCompaniesGovermentAndHalfGoverment()
+    {
+        return $this->hasMany(Company::className(), ['stateId' => 'id'])
+                ->where(['or', ['isGoverment' => true], ['isHalfGoverment' => true]]);
+    }
+    
+    public function getTaxpayersGoverment()
+    {
+        return array_merge($this->posts, $this->agencies, $this->regions, $this->cities, [$this]);
     }
     
     public function getLeaderPost()
@@ -329,13 +365,62 @@ class State extends ConstitutionOwner
     
     public function getIsPartiesCreatingAllowed()
     {
+        /* @var $article Parties */
         $article = $this->constitution->getArticleByType(ConstitutionArticleType::PARTIES);
         return $article && ($article->value == Parties::NEED_CONFIRM || $article->value == Parties::ALLOWED);
+    }
+    
+    /**
+     * 
+     * @param TaxPayer $taxPayer
+     * @return boolean
+     */
+    public function isCompaniesCreatingAllowedFor($taxPayer)
+    {
+        /* @var $article Business */
+        $article = $this->constitution->getArticleByType(ConstitutionArticleType::BUSINESS);
+        if (is_null($article)) {
+            return false;
+        }
+        if ($taxPayer->isTaxedInState($this->id)) {
+            return !!$article->value;
+        } else {
+            return !!$article->value2;
+        }
     }
     
     public function getRecommendedParliamentSize() : int
     {
         return $this->getDistricts()->count();
+    }
+    
+    public function getLicenseGrantedTime(int $protoId) : int
+    {
+        return 365 * 24 * 60 * 60;
+    }
+    
+    public function getNewLicense(int $companyId, int $protoId) : bool
+    {
+        $licenseRule = $this->getLicenseRuleByProto($protoId);
+        $isNeedConfirmation = is_null($licenseRule) || $licenseRule->isNeedConfirmation;
+        
+        $license = new License([
+            'protoId' => $protoId,
+            'stateId' => $this->id,
+            'companyId' => $companyId,
+        ]);
+        if (!$isNeedConfirmation) {
+            $license->dateGranted = time();
+            $license->dateExpired = time() + $this->getLicenseGrantedTime($protoId);
+            
+            foreach ($license->company->shares as $share) {
+                if (!$share->master->getUserControllerId() || !User::find()->where(['id' => $share->master->getUserControllerId()])->exists()) {
+                    continue;
+                }
+                Yii::$app->notificator->licenseGranted($share->master->getUserControllerId(), $license);
+            }
+        }
+        return $license->save();
     }
 
 }
