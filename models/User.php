@@ -58,6 +58,8 @@ use Yii,
  * @property Religion $religion Религия
  * @property Tile $tile Тайл
  * @property Modifier[] $modifiers Модификаторы
+ * @property TwitterProfile $profile Профиль в твиттере
+ * 
  */
 class User extends TaxPayerModel implements IdentityInterface
 {
@@ -319,7 +321,8 @@ class User extends TaxPayerModel implements IdentityInterface
     
     public function getModifiers()
     {
-        return $this->hasMany(Modifier::className(), ['userId' => 'id'])->where(['<', 'dateExpired', time()]);
+        return $this->hasMany(Modifier::className(), ['userId' => 'id'])
+                ->where(['or', ['<', 'dateExpired', time()], ['dateExpired' => null]]);
     }
     
     public function getModifiersAll()
@@ -330,6 +333,11 @@ class User extends TaxPayerModel implements IdentityInterface
     public function getTile()
     {
         return $this->hasOne(Tile::className(), ['id' => 'tileId']);
+    }
+    
+    public function getProfile()
+    {
+        return $this->hasOne(TwitterProfile::className(), ['userId' => 'id']);
     }
     
     /**
@@ -360,7 +368,12 @@ class User extends TaxPayerModel implements IdentityInterface
         foreach ($this->posts as $post) {
             if ($post->isStateLeader) {
                 $isStateLeader = true;
-                if (!$this->getModifiers()->where(['protoId' => ModifierProto::STATE_LEADER])->exist()) {
+                if (!$this->getModifiersAll()
+                        ->where([
+                            'protoId' => ModifierProto::STATE_LEADER,
+                        ])
+                        ->andWhere(['or', ['>', 'dateExpired', time()], ['dateExpired' => null]])
+                        ->exists()) {
                     $this->addModifier(ModifierProto::STATE_LEADER);
                 }
             }
