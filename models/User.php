@@ -58,6 +58,8 @@ use Yii,
  * @property Religion $religion Религия
  * @property Tile $tile Тайл
  * @property Modifier[] $modifiers Модификаторы
+ * @property TwitterProfile $profile Профиль в твиттере
+ * 
  */
 class User extends TaxPayerModel implements IdentityInterface
 {
@@ -330,6 +332,11 @@ class User extends TaxPayerModel implements IdentityInterface
     public function getTile()
     {
         return $this->hasOne(Tile::className(), ['id' => 'tileId']);
+    }
+    
+    public function getProfile()
+    {
+        return $this->hasOne(TwitterProfile::className(), ['userId' => 'id']);
     }
     
     /**
