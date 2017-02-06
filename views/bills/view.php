@@ -310,8 +310,4 @@ use yii\helpers\Html,
         });
     });
     
-<<<<<<< HEAD
 </script>
-=======
-</script>
->>>>>>> test

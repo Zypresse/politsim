@@ -191,6 +191,11 @@ abstract class BillProto implements BillProtoInterface
      * Изменить настройки создания зп
      */
     const BILLS = 36;
+    
+    /**
+     * Изменить гос. валюту
+     */
+    const CURRENCY = 37;
 
     public static function findAll()
     {
@@ -234,6 +239,7 @@ abstract class BillProto implements BillProtoInterface
             static::MULTIPOST_POLITIC => Yii::t('app/bills', 'Allow/disallow more than one agency post to user'),
             static::BUSINESS => Yii::t('app/bills', 'Allow/disallow buisness'),
             static::BILLS => Yii::t('app/bills', 'Change bills creating rules'),
+            static::CURRENCY => Yii::t('app/bills', 'Change state currency'),
             
             static::COMPANY_CREATE => Yii::t('app/bills', 'Create goverment company'),            
             static::LICENSE_RULE => Yii::t('app/bills', 'Licenses rules management'),
@@ -285,6 +291,7 @@ abstract class BillProto implements BillProtoInterface
             static::SET_AGENCY_LEADER => 'agency\\SetLeader',
             static::SET_SHAREHOLDER => 'company\\SetShareholder',
             static::BILLS => 'constitution\\Bills',
+            static::CURRENCY => 'constitution\\Currency',
         ];
         
         return '\\app\\models\\politics\\bills\\prototypes\\'.$classes[$type];
@@ -334,6 +341,7 @@ abstract class BillProto implements BillProtoInterface
             static::SET_AGENCY_LEADER => 'agency/set-leader',
             static::SET_SHAREHOLDER => 'company/set-shareholder',
             static::BILLS => 'constitution/bills',
+            static::CURRENCY => 'constitution/currency',
         ];
         
         return '/work/bills/'.$views[$type];
@@ -371,6 +379,7 @@ abstract class BillProto implements BillProtoInterface
             case static::MULTIPOST_POLITIC:
             case static::BUSINESS:
             case static::BILLS:
+            case static::CURRENCY:
                 return Yii::t('app', 'Constitution');
             case static::CREATE_DISTRICT:
             case static::IMPLODE_DISTRICTS:
