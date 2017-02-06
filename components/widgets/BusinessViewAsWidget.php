@@ -37,6 +37,9 @@ class BusinessViewAsWidget extends Widget {
                 $this->utrs[$post->getUtr()] = Html::encode($post->name).' ('.Html::encode($post->state->name).')';
             }
         }
+        if (is_null($this->selectedUtr)) {
+            $this->selectedUtr = $this->user->getUtr();
+        }
     }
 
 

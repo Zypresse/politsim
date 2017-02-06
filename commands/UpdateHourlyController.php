@@ -8,6 +8,8 @@ use Yii,
     app\components\TileCombiner,
     app\models\User,
     app\models\Tile,
+    app\models\population\Pop,
+    app\models\population\PopClass,
     app\models\politics\Region,
     app\models\politics\State,
     app\models\politics\Party,
@@ -230,25 +232,29 @@ class UpdateHourlyController extends Controller
     
     private function updatePopStudy()
     {
-        $regions = Region::find()->all();
-        foreach ($regions as $region) {
-//            echo $region->name.": ".PHP_EOL;
+        $tiles = Tile::find()->where(['is not', 'regionId', null])->andWhere(['>', 'population', 0])->all();
+        /* @var $tile Tile */
+        foreach ($tiles as $tile) {
             $vacansiesSumByPopClass = [];
             $baseSpeeds = [];
-            foreach ($region->vacansiesWithSalary as $vacansy) {
-                if (isset($vacansiesSumByPopClass[$vacansy->pop_class_id])) {
-                    $vacansiesSumByPopClass[$vacansy->pop_class_id] += $vacansy->count_all;
-                } else {
-                    $vacansiesSumByPopClass[$vacansy->pop_class_id] = $vacansy->count_all;
-                    $baseSpeeds[$vacansy->pop_class_id] = $vacansy->popClass->base_speed;
+            foreach ($tile->allUnits as $building) {
+                echo $building->name.PHP_EOL;
+                foreach ($building->getVacancies()->all() as $vacansy) {
+                    if (isset($vacansiesSumByPopClass[$vacansy->popClassId])) {
+                        $vacansiesSumByPopClass[$vacansy->popClassId] += $vacansy->countAll;
+                    } else {
+                        $vacansiesSumByPopClass[$vacansy->popClassId] = (int)$vacansy->countAll;
+                        $baseSpeeds[$vacansy->popClassId] = $vacansy->popClass->baseSpeed;
+                    }
                 }
             }
             
-            $unworkers = Population::find()->where(['class'=>2,'region_id'=>$region->id])->all();
+            $unworkers = $tile->lumpens;
             shuffle($unworkers);
             
             foreach ($vacansiesSumByPopClass as $popClassID => $countAll) {
-                $allreadyStudied = Yii::$app->db->createCommand("SELECT sum(count) FROM ".Population::tableName()." WHERE class = {$popClassID} AND region_id = {$region->id}")->queryScalar();
+                $allreadyStudied = (int)$tile->getPops()->where(['classId' => $popClassID])->sum('count');
+                
 //                echo $popClassID.": ".$allreadyStudied."/".$countAll.PHP_EOL;
                 if ($allreadyStudied >= $countAll) {
                     continue;
@@ -264,17 +270,14 @@ class UpdateHourlyController extends Controller
                 $studied = 0;
                 
                 foreach ($unworkers as $unworker) {
-                    if ($popClassID === 1 && $unworker->sex === 1 && mt_rand() > 0.4) {
-                        continue;
-                    }
                     if ($unworker->count <= $speed-$studied) {
-                        $unworker->class = $popClassID;
+                        $unworker->classId = $popClassID;
                         $unworker->save();
                         $studied+=$unworker->count;
                     } else {
                         $new_unworker = $unworker->slice($speed-$studied);
                         
-                        $new_unworker->class = $popClassID;
+                        $new_unworker->classId = $popClassID;
                         $new_unworker->save();
                         
                         $studied += $new_unworker->count;

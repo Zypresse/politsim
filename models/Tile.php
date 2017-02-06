@@ -6,7 +6,11 @@ use Yii,
     app\models\politics\Region,
     app\models\politics\City,
     app\models\population\Pop,
+    app\models\population\PopClass,
     app\models\politics\elections\ElectoralDistrict,
+    app\models\economics\units\Building,
+    app\models\economics\units\BuildingTwotiled,
+    app\models\economics\units\Unit,
     app\models\base\MyActiveRecord;
 
 /**
@@ -28,6 +32,12 @@ use Yii,
  * @property City $city
  * @property ElectoralDistrict $electoralDistrict
  * @property Pop[] $pops
+ * @property Pop[] $lumpens
+ * @property Building[] $buildings
+ * @property BuildingTwotiled[] $buildingsTwotiledStarted
+ * @property BuildingTwotiled[] $buildingsTwotiledEnded
+ * @property Unit[] $units
+ * @property \app\models\economics\units\BaseUnit $allUnits
  * 
  * @property double $latFactor
  * @property array $coords
@@ -83,6 +93,40 @@ class Tile extends MyActiveRecord
     public function getPops()
     {
         return $this->hasMany(Pop::className(), ['tileId' => 'id']);
+    }
+    
+    public function getLumpens()
+    {
+        return $this->hasMany(Pop::className(), ['tileId' => 'id'])-where(['classId' => PopClass::LUMPEN]);
+    }
+    
+    public function getBuildings()
+    {
+        return $this->hasMany(Building::className(), ['tileId' => 'id']);
+    }
+    
+    public function getBuildingsTwotiledStarted()
+    {
+        return $this->hasMany(BuildingTwotiled::className(), ['tileId' => 'id']);
+    }
+    
+    public function getBuildingsTwotiledEnded()
+    {
+        return $this->hasMany(BuildingTwotiled::className(), ['tile2Id' => 'id']);
+    }
+    
+    public function getUnits()
+    {
+        return $this->hasMany(Unit::className(), ['tileId' => 'id']);
+    }
+    
+    public function getAllUnits()
+    {
+        return array_merge(
+            array_unique(array_merge($this->buildingsTwotiledEnded, $this->buildingsTwotiledStarted)),
+            $this->buildings,
+            $this->units
+        );
     }
     
     public function getLatFactor()

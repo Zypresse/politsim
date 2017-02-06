@@ -191,5 +191,23 @@ class Pop extends TaxPayerModel
         
         return $tmpPops;
     }
+    
+    public function slice(int $count, $newParams = [])
+    {
+//        if (!isset($newParams['tileId'])) {
+//            $newParams['tileId'] = $this->tileId;
+//        }
+//        if (!isset($newParams['classId'])) {
+//            $newParams['classId'] = $this->classId;
+//        }
+//        if (!isset($newParams['nationId'])) {
+//            $newParams['nationId'] = $this->nationId;
+//        }
+//        $newPop = static::findOrCreate($newParams);
+//        $newPop += $count;
+//        
+//        $this->count -= $count;
+//        $this->save();
+    }
 
 }

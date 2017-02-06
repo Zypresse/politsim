@@ -11,6 +11,10 @@ use Yii,
     app\components\TileCombiner,
     app\models\Tile,
     app\models\population\Pop,
+    app\models\population\PopClass,
+    app\models\economics\units\Unit,
+    app\models\economics\units\Building,
+    app\models\economics\units\BuildingTwotiled,
     app\components\MyMathHelper;
 
 /**
@@ -48,8 +52,13 @@ use Yii,
  * @property City[] $cities
  * @property Tile[] $tiles
  * @property Pop[] $pops
+ * @property Pop[] $lumpens
  * @property Constitution $constitution
  * @property Region $implodedToRegion
+ * @property Building $buildings
+ * @property BuildingTwotiled $buildingsTwotiled
+ * @property Unit $units
+ * @property \app\models\economics\units\BaseUnit $allUnits
  * 
  */
 class Region extends ConstitutionOwner
@@ -191,6 +200,62 @@ class Region extends ConstitutionOwner
         return $this->_pops;
     }
     
+    public function getLumpens()
+    {
+        $pops = [];
+        foreach ($this->tiles as $tile) {
+            $pops = array_merge($pops, $tile->getPops()->andWhere(['classId' => PopClass::LUMPEN])->all());
+        }
+        return $pops;
+    }
+    
+    public function getBuildings()
+    {
+        $tileIds = $this->getTiles()->select(['id'])->column();
+        $buildings = [];
+        foreach ($tileIds as $tileId) {
+            $buildings = array_merge($buildings, Building::find()
+                    ->where(['tileId' => $tileId])
+                    ->andWhere(['dateDeleted' => null])
+//                    ->andWhere(['<', 'dateBuilded', time()])
+                    ->all());
+        }
+        return $buildings;
+    }
+    
+    public function getBuildingsTwotiled()
+    {
+        $tileIds = $this->getTiles()->select(['id'])->column();
+        $buildings = [];
+        foreach ($tileIds as $tileId) {
+            $buildings = array_merge($buildings, BuildingTwotiled::find()
+                    ->where(['or', ['tileId' => $tileId], ['tile2Id' => $tileId]])
+                    ->andWhere(['dateDeleted' => null])
+//                    ->andWhere(['<', 'dateBuilded', time()])
+                    ->all());
+        }
+        $buildings = array_unique($buildings);
+        return $buildings;
+    }
+    
+    public function getUnits()
+    {
+        $tileIds = $this->getTiles()->select(['id'])->column();
+        $buildings = [];
+        foreach ($tileIds as $tileId) {
+            $buildings = array_merge($buildings, Unit::find()
+                    ->where(['tileId' => $tileId])
+                    ->andWhere(['dateDeleted' => null])
+                    ->all());
+        }
+        return $buildings;
+    }
+    
+    public function getAllUnits()
+    {
+        return array_merge($this->buildings, $this->buildingsTwotiled, $this->units);
+    }
+        
     private function getPolygonFilePath()
     {
         return Yii::$app->basePath.'/data/polygons/regions/'.$this->id.'.json';        
@@ -228,7 +293,7 @@ class Region extends ConstitutionOwner
             foreach ($tile->pops as $pop) {
                 $tile->population += $pop->count;
             }
-            $tile->save();
+//            $tile->save();
             $this->population += $tile->population;
         }
         
@@ -241,7 +306,6 @@ class Region extends ConstitutionOwner
         $classes = [];
         $this->agression = 0;
         $this->consciousness = 0;
-        $this->contentment = 0;
         foreach ($this->pops as $pop) {
             if (isset($nations[$pop->nationId])) {
                 $nations[$pop->nationId] += $pop->count;
@@ -255,13 +319,11 @@ class Region extends ConstitutionOwner
             }
             $this->agression += $pop->agression;
             $this->consciousness += $pop->consciousness;
-            $this->contentment += $pop->contentment;
         }
         
         if (count($this->pops)) {
             $this->agression /= count($this->pops);
             $this->consciousness /= count($this->pops);
-            $this->contentment /= count($this->pops);
         }
         
         foreach ($nations as $nationId => $count) {

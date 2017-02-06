@@ -21,7 +21,7 @@ use yii\helpers\Html,
 <section class="content">
     <div class="row">
         <div class="col-md-12">            
-            <div class="box">
+            <div class="box box-info">
                 <div class="box-header">
                     <h1>
                         <?= Html::encode($building->name) ?>
@@ -71,6 +71,22 @@ use yii\helpers\Html,
                             </p>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h4 class="box-title"><?= Yii::t('app', 'Workers') ?></h4>
+                </div>
+                <div class="box-body">
+                    <?php foreach ($building->vacancies as $vacancy): ?>
+                    <pre>
+                        <?php var_dump($vacancy->pops) ?>
+                    </pre>
+                    <?php endforeach ?>
                 </div>
             </div>
         </div>
