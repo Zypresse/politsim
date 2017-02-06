@@ -39,6 +39,11 @@ abstract class CompanyDecisionProto
      * Создать новое движимое предприятие
      */
     const CREATE_UNIT = 6;
+    
+    /**
+     * Выпустить новую валюту
+     */
+    const NEW_CURRENCY = 7;
 
 
     public static function findAll()
@@ -50,6 +55,7 @@ abstract class CompanyDecisionProto
             static::SET_MANAGER => Yii::t('app', 'Set manager'),
             static::CREATE_BUILDING_TWOTILED => Yii::t('app', 'Create new line'),
             static::CREATE_UNIT => Yii::t('app', 'Create new unit'),
+            static::NEW_CURRENCY => Yii::t('app', 'Create new currency'),
         ];
     }
     
@@ -67,6 +73,7 @@ abstract class CompanyDecisionProto
             static::SET_MANAGER => 'SetManager',
             static::CREATE_BUILDING_TWOTILED => 'CreateBuildingTwotiled',
             static::CREATE_UNIT => 'CreateUnit',
+            static::NEW_CURRENCY => 'NewCurrency',
         ];
         
         return '\\app\\models\\economics\\decisions\\'.$classes[$type];
@@ -86,6 +93,7 @@ abstract class CompanyDecisionProto
             static::SET_MANAGER => 'set-manager',
             static::CREATE_BUILDING_TWOTILED => 'create-building-twotiled',
             static::CREATE_UNIT => 'create-unit',
+            static::NEW_CURRENCY => 'new-currency',
         ];
         
         return '/company/decisions/'.$views[$type];

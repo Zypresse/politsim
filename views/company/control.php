@@ -344,6 +344,39 @@ use yii\helpers\Html,
             </div>
         </div>
     </div>
+    <?php if (count($company->currencies)): ?>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-default">
+                <div class="box-header">
+                    <h4 class="box-title"><i class="fa fa-money"></i> <?=Yii::t('app', 'Currencies')?></h4>
+                </div>
+                <div class="box-body">
+                    <table class="table table-condensed table-bordered">
+                        <thead>
+                            <tr>
+                                <th><?= Yii::t('app', 'Name') ?></th>
+                                <th><?= Yii::t('app', 'Name Short') ?></th>
+                                <th><?= Yii::t('app', 'Exhange Rate') ?></th>
+                                <th><?= Yii::t('app', 'Exhange Rate Real') ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <?php foreach ($company->currencies as $currency): ?>
+                            <tr>
+                                <td><?= Html::encode($currency->name) ?></td>
+                                <td><?= Html::encode($currency->nameShort) ?></td>
+                                <td><?= Html::encode($currency->exchangeRate) ?></td>
+                                <td><?= Html::encode($currency->exchangeRateReal) ?></td>
+                            </tr>
+                        <?php endforeach ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php endif ?>
     <div class="row">
         <div class="col-md-12">
             <div class="box box-info">
@@ -426,5 +459,5 @@ use yii\helpers\Html,
             '<button id="new-decision-confirm-btn" onclick="$(\'#new-decision-form\').yiiActiveForm(\'submitForm\')" class="btn btn-primary new-decision-confirm-btn hide" ><?=Yii::t('app', 'Suggest new decision')?></button><button class="btn btn-danger" data-dismiss="modal" aria-hidden="true"><?=Yii::t('app', 'Close')?></button>'
         );
     });
-
+    
 </script>

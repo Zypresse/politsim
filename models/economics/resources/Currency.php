@@ -4,6 +4,7 @@ namespace app\models\economics\resources;
 
 use Yii,
     yii\helpers\Html,
+    app\models\economics\Utr,
     app\models\economics\resources\base\SubtypesResourceProto;
 
 /**
@@ -36,7 +37,8 @@ final class Currency extends SubtypesResourceProto
         return [
             [['emissionerId', 'name', 'nameShort'], 'required'],
             [['emissionerId'], 'integer', 'min' => 0],
-            [['inflation', 'exchangeRate', 'exchangeRateReal'], 'number'],
+            [['inflation', 'exchangeRate', 'exchangeRateReal'], 'number', 'min' => 0],
+            [['exchangeRate'], 'moreThanZero'],
             [['name'], 'string', 'max' => 255],
             [['nameShort'], 'string', 'max' => 6],
             [['emissionerId'], 'exist', 'skipOnError' => true, 'targetClass' => Utr::className(), 'targetAttribute' => ['emissionerId' => 'id']],
