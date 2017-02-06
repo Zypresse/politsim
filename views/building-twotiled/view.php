@@ -94,10 +94,26 @@ use yii\helpers\Html,
                         <h4 class="box-title"><?= Yii::t('app', 'Actions') ?></h4>
                     </div>
                     <div class="box-body">
-
+                        <button id="btn-control-vacancies" class="btn btn-success"><i class="fa fa-money"></i> <?= Yii::t('app', 'Control vacancies') ?></button>
                     </div>
                 </div>
             </div>
         </div>
     <?php endif ?>
 </section>
+<?php if ($building->isUserController($user->id)): ?>
+<script type="text/javascript">
+    
+    var btnCloseModal = '<button class="btn btn-danger" data-dismiss="modal" aria-hidden="true"><?=Yii::t('app', 'Close')?></button>';
+
+    $('#btn-control-vacancies').click(function(){
+        createAjaxModal(
+            'building-twotiled/vacancies',
+            {id:<?=$building->id?>},
+            '<?= Yii::t('app', 'Vacancies') ?>',
+            btnCloseModal
+        );
+    });
+    
+</script>
+<?php endif ?>
