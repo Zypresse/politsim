@@ -333,13 +333,19 @@ class TestController extends Controller
                 foreach ($city->tiles as $tile) {
                     $sumPercents = 0;
                     foreach ($nations as $nationId => $percents) {
+                        $count = round($tile->population * $percents / 100);
                         $sumPercents += $percents;
                         $ideologies = '{"0":100}';
                         $religions = $city->religions ? $city->religions : '{"0":100}';
-                        $genders = $city->genders ? $city->genders : '{"1":55,"2":45}';
+                        $gendersData = $city->genders ? json_decode($city->genders, true) : [1 => 55, 2 => 45];
+                        foreach ($gendersData as $genderId => $value) {
+                            $cCount = round($count*$value/100);
+                            $gendersData[$genderId] = 100*$cCount/$count;
+                        }
+                        $genders = json_encode($gendersData);
                         $ages = $city->ages ? $city->ages : '{"18":100}';
                         $pops[] = [
-                            'count' => round($tile->population * $percents / 100, 2),
+                            'count' => $count,
                             'classId' => PopClass::LUMPEN,
                             'nationId' => $nationId,
                             'tileId' => $tile->id,
@@ -354,7 +360,7 @@ class TestController extends Controller
                             'consciousness' => 0,
                         ];
                     }
-                    var_dump($sumPercents);
+//                    var_dump($sumPercents);
                 }
                 echo Yii::$app->db->createCommand()->batchInsert('pops', ['count', 'classId', 'nationId', 'tileId', 'ideologies', 'religions', 'genders', 'ages', 'contentmentLow', 'contentmentMiddle', 'contentmentHigh', 'agression', 'consciousness'], $pops)->execute();
                 echo ' '.$city->name.' pops inserted'.PHP_EOL;
@@ -368,12 +374,18 @@ class TestController extends Controller
             $pops = [];
             foreach ($tilesNotInCities as $tile) {
                 foreach ($nations as $nationId => $percents) {
+                    $count = round($tile->population * $percents / 100);
                     $ideologies = '{"0":100}';
                     $religions = $region->religions ? $region->religions : '{"0":100}';
-                    $genders = $region->genders ? $region->genders : '{"1":55,"2":45}';
+                    $gendersData = $region->genders ? json_decode($region->genders, true) : [1 => 55, 2 => 45];
+                    foreach ($gendersData as $genderId => $value) {
+                        $cCount = round($count*$value/100);
+                        $gendersData[$genderId] = 100*$cCount/$count;
+                    }
+                    $genders = json_encode($gendersData);
                     $ages = $region->ages ? $region->ages : '{"18":100}';
                     $pops[] = [
-                        'count' => round($tile->population * $percents / 100),
+                        'count' => $count,
                         'classId' => PopClass::LUMPEN,
                         'nationId' => $nationId,
                         'tileId' => $tile->id,

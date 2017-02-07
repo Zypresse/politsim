@@ -97,7 +97,7 @@ class Tile extends MyActiveRecord
     
     public function getLumpens()
     {
-        return $this->hasMany(Pop::className(), ['tileId' => 'id'])-where(['classId' => PopClass::LUMPEN]);
+        return $this->hasMany(Pop::className(), ['tileId' => 'id'])->where(['classId' => PopClass::LUMPEN]);
     }
     
     public function getBuildings()

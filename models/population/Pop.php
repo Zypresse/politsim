@@ -6,6 +6,7 @@ use Yii,
     app\models\Tile,
     app\models\politics\City,
     app\models\politics\Region,
+    app\models\economics\Utr,
     app\models\economics\UtrType,
     app\models\economics\TaxPayerModel;
 
@@ -50,8 +51,10 @@ class Pop extends TaxPayerModel
         return [
             [['classId', 'nationId', 'tileId', 'ideologies', 'religions', 'genders', 'ages'], 'required'],
             [['count', 'classId', 'nationId', 'tileId', 'utr'], 'integer', 'min' => 0],
+            [['count'], 'moreThanZero'],
             [['contentmentLow', 'contentmentMiddle', 'contentmentHigh', 'agression', 'consciousness'], 'number', 'min' => 0],
             [['ideologies', 'religions', 'genders', 'ages'], 'string'],
+            [['ideologies', 'religions', 'genders', 'ages'], 'validatePercents'],
             [['tileId', 'classId', 'nationId'], 'unique', 'targetAttribute' => ['tileId', 'classId', 'nationId'], 'message' => 'The combination of Class ID, Nation ID and Tile ID has already been taken.'],
             [['utr'], 'exist', 'skipOnError' => true, 'targetClass' => Utr::className(), 'targetAttribute' => ['utr' => 'id']],
             [['tileId'], 'exist', 'skipOnError' => true, 'targetClass' => Tile::className(), 'targetAttribute' => ['tileId' => 'id']],
@@ -192,22 +195,54 @@ class Pop extends TaxPayerModel
         return $tmpPops;
     }
     
-    public function slice(int $count, $newParams = [])
+    public function sliceToNewClass(int $count, int $classId) : bool
     {
-//        if (!isset($newParams['tileId'])) {
-//            $newParams['tileId'] = $this->tileId;
-//        }
-//        if (!isset($newParams['classId'])) {
-//            $newParams['classId'] = $this->classId;
-//        }
-//        if (!isset($newParams['nationId'])) {
-//            $newParams['nationId'] = $this->nationId;
-//        }
-//        $newPop = static::findOrCreate($newParams);
-//        $newPop += $count;
-//        
-//        $this->count -= $count;
-//        $this->save();
+        $newParams = $this->attributes;
+        unset($newParams['id']);
+        $newParams['classId'] = $classId;
+        $newPop = static::findOrCreate([
+            'classId' => $classId,
+            'nationId' => $this->nationId,
+            'tileId' => $this->tileId,
+        ], false, $newParams);
+        $newPop->count += $count;
+        $this->count -= $count;
+        $tran = $this->getDb()->beginTransaction();
+        if ($this->save() && $newPop->save()) {
+            $tran->commit();
+            return true;
+        } else {
+            $tran->rollBack();
+            $this->addErrors($newPop->getErrors());
+            return false;
+        }
+    }
+    
+    public function validatePercents($attribute, $params)
+    {
+        $data = json_decode($this->$attribute, true);
+        echo $this->getAttributeLabel($attribute).': '.PHP_EOL;
+        $sumCount = 0;
+        foreach ($data as $key => $percent) {
+            $count = round($this->count*$percent/100);
+            echo $key.': '.$percent.'%'.' — '.$count.PHP_EOL;
+            if ($count < 1) {
+//                $this->addError($attribute, Yii::t('app', 'Attribute «{0}» have less than one pop with id {1}', [
+//                    $this->getAttributeLabel($attribute),
+//                    $key,
+//                ]));
+//                return false;
+            }
+            $sumCount += $count;
+        }
+        echo 'Population: '.$this->count.', sum counts: '.$sumCount.PHP_EOL;
+        if ((int)$sumCount !== (int)$this->count) {
+            $this->addError($attribute, Yii::t('app', 'Attribute «{0}» have more or less 100% of population', [
+                $this->getAttributeLabel($attribute),
+            ]));
+            return false;
+        }
+        return true;
     }
 
 }

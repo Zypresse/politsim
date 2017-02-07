@@ -10,6 +10,7 @@ use Yii,
     app\models\Tile,
     app\models\population\Pop,
     app\models\population\PopClass,
+    app\models\politics\City,
     app\models\politics\Region,
     app\models\politics\State,
     app\models\politics\Party,
@@ -40,6 +41,10 @@ class UpdateHourlyController extends Controller
             if ($debug) printf("Updated users: %f s.".PHP_EOL, microtime(true)-$time);
             
             $time = microtime(true);
+            $this->updateCities();
+            if ($debug) printf("Updated cities: %f s.".PHP_EOL, microtime(true)-$time);
+            
+            $time = microtime(true);
             $this->updateRegions();
             if ($debug) printf("Updated regions: %f s.".PHP_EOL, microtime(true)-$time);
 
@@ -54,10 +59,10 @@ class UpdateHourlyController extends Controller
             $time = microtime(true);
             $this->updateCompanies();
             if ($debug) printf("Updated companies: %f s.".PHP_EOL, microtime(true)-$time);
-//
-//            $time = microtime(true);
-//            $this->updatePopStudy();
-//            if ($debug) printf("Updated populations study: %f s.".PHP_EOL, microtime(true)-$time);
+
+            $time = microtime(true);
+            $this->updatePopStudy();
+            if ($debug) printf("Updated populations study: %f s.".PHP_EOL, microtime(true)-$time);
 //
 //            $time = microtime(true);
 //            $this->updatePopWorkers();
@@ -171,6 +176,18 @@ class UpdateHourlyController extends Controller
     }
 
     /**
+     * Update cities
+     */
+    private function updateCities()
+    {
+        $cities = City::find()->where(['is not', 'regionId', null])->all();
+        foreach ($cities as $city) {
+            /* @var $city City */
+            $city->updateParams(true, false);
+        }
+    }
+
+    /**
      * Update regions
      */
     private function updateRegions()
@@ -232,7 +249,7 @@ class UpdateHourlyController extends Controller
     
     private function updatePopStudy()
     {
-        $tiles = Tile::find()->where(['is not', 'regionId', null])->andWhere(['>', 'population', 0])->all();
+        $tiles = Tile::find()->where(['>', 'population', 0])->all();
         /* @var $tile Tile */
         foreach ($tiles as $tile) {
             $vacansiesSumByPopClass = [];
@@ -275,12 +292,11 @@ class UpdateHourlyController extends Controller
                         $unworker->save();
                         $studied+=$unworker->count;
                     } else {
-                        $new_unworker = $unworker->slice($speed-$studied);
-                        
-                        $new_unworker->classId = $popClassID;
-                        $new_unworker->save();
-                        
-                        $studied += $new_unworker->count;
+                        if ($unworker->sliceToNewClass($speed-$studied, $popClassID)) {                    
+                            $studied += $speed-$studied;
+                        } else {
+                            var_dump($unworker->getErrors());
+                        }
                     }
                     
                     if ($studied >= $speed) break;
