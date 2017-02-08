@@ -307,27 +307,32 @@ class UpdateHourlyController extends Controller
     
     private function updatePopWorkers()
     {
-        $regions = Region::find()->all();
-        foreach ($regions as $region) {
-            foreach ($region->vacansiesWithSalaryAndCount as $vacansy) {
-//                var_dump($vacansy->factory_id . ': ' . $vacansy->salary);
-                $setted = 0;
-                foreach ($region->populationGroupsWithoutFactory as $popGroup) {
-                    if ($popGroup->class == $vacansy->pop_class_id && !($popGroup->factory_id)) {
-                        
-                        if ($popGroup->count <= $vacansy->count_need) {
-                            $popGroup->factory_id = $vacansy->factory_id;                        
-                            $popGroup->save();
-                            $setted += $popGroup->count;
-                        } else {
-                            $newPG = $popGroup->slice($vacansy->count_need);
-                            $newPG->factory_id = $vacansy->factory_id;
-                            $newPG->save();
-                            $setted += $newPG->count;
-                        }                
+        $tiles = Tile::find()->where(['>', 'population', 0])->all();
+        /* @var $tile Tile */
+        foreach ($tiles as $tile) {
+            foreach ($tile->allUnits as $building) {
+                foreach ($building->vacancies as $vacancy) {
+                    if ($vacancy->countFree == 0) {
+                        continue;
                     }
-                    if ($setted >= $vacansy->count_need) {
-                        break;
+                    $setted = 0;
+                    $unworkers = $tile->getPops()->where(['classId' => $vacancy->popClassId])->all();
+                    /* @var $popGroup Pop */
+                    foreach ($unworkers as $popGroup) {
+                        if (!($popGroup->vacancy)) {
+                            if ($popGroup->count <= $vacansy->countFree) {
+                                $popGroup->link('vacancy', $vacancy);
+                                $setted += $popGroup->count;
+                            } else {
+                                $newPG = $popGroup->slice($vacansy->count_need);
+                                $newPG->factory_id = $vacansy->factory_id;
+                                $newPG->save();
+                                $setted += $newPG->count;
+                            }                
+                        }
+                        if ($setted >= $vacansy->count_need) {
+                            break;
+                        }
                     }
                 }
             }

@@ -8,7 +8,8 @@ use Yii,
     app\models\politics\Region,
     app\models\economics\Utr,
     app\models\economics\UtrType,
-    app\models\economics\TaxPayerModel;
+    app\models\economics\TaxPayerModel,
+    app\models\economics\units\Vacancy;
 
 /**
  * This is the model class for table "pops".
@@ -31,6 +32,7 @@ use Yii,
  * 
  * @property Tile $tile
  * @property Nation $nation
+ * @property Vacancy $vacancy
  * 
  */
 class Pop extends TaxPayerModel
@@ -104,6 +106,12 @@ class Pop extends TaxPayerModel
     public function getNation()
     {
         return Nation::findOne($this->nationId);
+    }
+    
+    public function getVacancy()
+    {
+        return $this->hasOne(Vacancy::className(), ['id' => 'vacancyId'])
+                ->viaTable('vacanciesToPops', ['popId' => 'id']);
     }
     
     public function getTaxStateId()
