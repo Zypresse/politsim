@@ -86,16 +86,33 @@ use yii\helpers\Html,
                     </div>
                 </div>
             </div>
-<!--            <div class="box">
+            <div class="box">
                 <div class="box-header">
                     <h2 class="box-title">
                         <?=Yii::t('app', 'Population groups')?>
                     </h2>
                 </div>
                 <div class="box-body">
-                    
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr></tr>
+                        </thead>
+                        <tbody>
+                        <?php foreach ($city->pseudoPops as $group): ?>
+                            <tr>
+                                <td><?=$group->count?></td>
+                                <td><?=$group->nation->name?></td>
+                                <td><?=$group->class->name?></td>
+                                <td><?=$group->religion->name?></td>
+                                <td><?=$group->ideology->name?></td>
+                                <td><?=$group->age?></td>
+                                <td><?=[null, Yii::t('app', 'Female'), Yii::t('app', 'Male')][$group->gender]?></td>
+                            </tr>
+                        <?php endforeach ?>
+                        </tbody>
+                    </table>
                 </div>
-            </div>-->
+            </div>
         </div>
     </div>
 </section>

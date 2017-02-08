@@ -10,7 +10,8 @@ use Yii,
     app\components\TileCombiner,
     app\components\MyMathHelper,
     app\models\Tile,
-    app\models\population\Pop;
+    app\models\population\Pop,
+    app\models\population\PseudoPop;
 
 /**
  * Город
@@ -29,6 +30,7 @@ use Yii,
  * @property Region $region
  * @property Tile[] $tiles
  * @property Pop[] $pops
+ * @property PseudoPop[] $pseudoPops
  * @property Constitution $constitution
  */
 class City extends ConstitutionOwner
@@ -127,6 +129,15 @@ class City extends ConstitutionOwner
     public function getPops()
     {
         return $this->hasMany(Pop::className(), ['tileId' => 'id'])->via('tiles');
+    }
+    
+    public function getPseudoPops()
+    {
+        $pops = [];
+        foreach ($this->pops as $pop) {
+            $pops = array_merge($pops, $pop->getPseudoGroups());
+        }
+        return PseudoPop::unityIgnoreTile($pops);
     }
         
     private function getPolygonFilePath()

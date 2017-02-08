@@ -12,6 +12,7 @@ use Yii,
     app\models\Tile,
     app\models\population\Pop,
     app\models\population\PopClass,
+    app\models\population\PseudoPop,
     app\models\economics\units\Unit,
     app\models\economics\units\Building,
     app\models\economics\units\BuildingTwotiled,
@@ -53,6 +54,7 @@ use Yii,
  * @property Tile[] $tiles
  * @property Pop[] $pops
  * @property Pop[] $lumpens
+ * @property PseudoPop[] $pseudoPops
  * @property Constitution $constitution
  * @property Region $implodedToRegion
  * @property Building $buildings
@@ -198,6 +200,15 @@ class Region extends ConstitutionOwner
             }
         }
         return $this->_pops;
+    }
+    
+    public function getPseudoPops()
+    {
+        $pops = [];
+        foreach ($this->pops as $pop) {
+            $pops = array_merge($pops, $pop->getPseudoGroups());
+        }
+        return PseudoPop::unityIgnoreTile($pops);
     }
     
     public function getLumpens()

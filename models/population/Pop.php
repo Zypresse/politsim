@@ -179,7 +179,7 @@ class Pop extends TaxPayerModel
         $ages = json_decode($this->ages, true);
         foreach ($ages as $age => $percents) {
             foreach ($tmpPopsWithGenders as $tmpPop) {
-                $tmpPops[] = [
+                $tmpPops[] = new PseudoPop([
                     'ideologyId' => $tmpPop['ideologyId'],
                     'religionId' => $tmpPop['religionId'],
                     'gender' => $tmpPop['gender'],
@@ -188,7 +188,7 @@ class Pop extends TaxPayerModel
                     'classId' => $this->classId,
                     'tileId' => $this->tileId,
                     'count' => round($tmpPop['count']*$percents/100)
-                ];
+                ]);
             }
         }
         
