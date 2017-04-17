@@ -99,5 +99,16 @@ abstract class MyActiveRecord extends ActiveRecord {
         }
         return true;
     }
+    
+    public function moreThanZero($attribute, $params = [])
+    {
+        if ($this->$attribute <= 0) {
+            $this->addError($attribute, Yii::t('app', '«{0}» must be more than 0', [
+                $this->getAttributeLabel($attribute),
+            ]));
+            return false;
+        }
+        return true;
+    }
 
 }

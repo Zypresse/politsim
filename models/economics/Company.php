@@ -9,7 +9,8 @@ use Yii,
     app\models\politics\State,
     app\models\economics\units\Building,
     app\models\economics\units\BuildingTwotiled,
-    app\models\economics\units\Unit;
+    app\models\economics\units\Unit,
+    app\models\economics\resources\Currency;
 
 /**
  * Акционерные общества
@@ -45,6 +46,7 @@ use Yii,
  * @property CompanyDecision[] $decisions
  * @property CompanyDecision[] $decisionsActive
  * @property CompanyDecision[] $decisionsArсhived
+ * @property Currency[] $currencies
  * 
  */
 class Company extends TaxPayerModel
@@ -242,6 +244,12 @@ class Company extends TaxPayerModel
     public function getObjects()
     {
         return array_merge($this->buildings, $this->buildingsTwotiled, $this->units);
+    }
+    
+    public function getCurrencies()
+    {
+        $this->getUtrForced();
+        return $this->hasMany(Currency::className(), ['emissionerId' => 'utr']);
     }
     
     public function updateParams($save = true)

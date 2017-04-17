@@ -250,7 +250,7 @@ final class CompanyController extends MyController
             return $this->_r($vote->getErrors());
         }
     }
-    
+        
     private function getCompany(int $id)
     {
         $company = Company::findByPk($id);

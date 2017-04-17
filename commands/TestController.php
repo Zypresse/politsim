@@ -39,7 +39,7 @@ class TestController extends Controller
 //        echo models\Region::findByPk(33)->getPolygon(true);
 //        echo models\State::findByPk(5)->getPolygon(true);
 //        echo models\Tile::find()->count('id');
-//        $state = State::find()->one();
+        $state = State::find()->one();
 //        var_dump($state->getUtr());
 //        
 //        $state->updateParams(true, false);
@@ -51,7 +51,7 @@ class TestController extends Controller
 //        }
 //        echo $pop;
 //        echo count($state->tiles);
-//        echo count($state->pops);
+        echo count($state->pops);
 //        
 //        $randCounts = [1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0];
 //        for ($i = 0; $i < 100; $i++) {
@@ -68,9 +68,9 @@ class TestController extends Controller
 //        $company = Company::find()->one();
 //        echo $company->name.PHP_EOL;
 //        var_dump($company->updateParams());
-        $region = Region::find()->where(['name' => 'Минская область'])->one();
-        echo count($region->pops).PHP_EOL;
-        var_dump($region->updateParams());
+//        $region = Region::find()->where(['name' => 'Минская область'])->one();
+//        echo count($region->pops).PHP_EOL;
+//        var_dump($region->updateParams());
         
     }
     
@@ -120,7 +120,7 @@ class TestController extends Controller
     public function actionUpdateTiles()
     {
         Yii::$app->db->createCommand()->truncateTable('tiles')->execute();
-        for ($i = 0; $i < 36; $i++) {
+        for ($i = 0; $i < 33; $i++) {
             $data = json_decode(file_get_contents(Yii::$app->basePath.'/data/default/tiles/part'.$i.'.json'));
             array_pop($data);
             echo "part$i loaded".PHP_EOL;
@@ -317,44 +317,6 @@ class TestController extends Controller
         }
         $state->updateParams(true, false);
     }
-        
-    public function actionPopulationDestinyPolygons()
-    {
-        
-        /* @var $tiles Tile[] */
-        $tiles = Tile::find()->where(['>', 'population', 0])->all();
-        
-        $uniques = [];
-        foreach ($tiles as $tile) {
-            $pop = (int)round( intval($tile->population) / $tile->area );
-            if ($pop < 100) {
-                $i = 0;
-            } elseif ($pop < 500) {
-                $i = 1;
-            } elseif ($pop < 2000) {
-                $i = 2;
-            } else {
-                $i = 3;
-            }
-            if (isset($uniques[$i])) {
-                $uniques[$i][] = $tile;
-            } else {
-                $uniques[$i] = [$tile];
-            }
-        }
-        
-        $popdestiny = [];
-        foreach ($uniques as $i => $tiles) {
-            $path = TileCombiner::combineList($tiles);
-            $popdestiny[] = [
-                'i' => $i,
-                'path' => $path
-            ];
-            echo "path for $i saved".PHP_EOL;
-        }
-        
-        file_put_contents(Yii::$app->basePath.'/data/polygons/popdestiny.json', json_encode($popdestiny));
-    }
     
     public function actionUpdatePops()
     {
@@ -371,13 +333,19 @@ class TestController extends Controller
                 foreach ($city->tiles as $tile) {
                     $sumPercents = 0;
                     foreach ($nations as $nationId => $percents) {
+                        $count = round($tile->population * $percents / 100);
                         $sumPercents += $percents;
                         $ideologies = '{"0":100}';
                         $religions = $city->religions ? $city->religions : '{"0":100}';
-                        $genders = $city->genders ? $city->genders : '{"1":55,"2":45}';
+                        $gendersData = $city->genders ? json_decode($city->genders, true) : [1 => 55, 2 => 45];
+                        foreach ($gendersData as $genderId => $value) {
+                            $cCount = round($count*$value/100);
+                            $gendersData[$genderId] = 100*$cCount/$count;
+                        }
+                        $genders = json_encode($gendersData);
                         $ages = $city->ages ? $city->ages : '{"18":100}';
                         $pops[] = [
-                            'count' => round($tile->population * $percents / 100, 2),
+                            'count' => $count,
                             'classId' => PopClass::LUMPEN,
                             'nationId' => $nationId,
                             'tileId' => $tile->id,
@@ -385,14 +353,17 @@ class TestController extends Controller
                             'religions' => $religions,
                             'genders' => $genders,
                             'ages' => $ages,
-                            'contentment' => 0,
+                            'contentmentLow' => 0,
+                            'contentmentMiddle' => 0,
+                            'contentmentHigh' => 0,
                             'agression' => 0,
                             'consciousness' => 0,
                         ];
                     }
-                    var_dump($sumPercents);
+//                    var_dump($sumPercents);
                 }
-                echo Yii::$app->db->createCommand()->batchInsert('pops', ['count', 'classId', 'nationId', 'tileId', 'ideologies', 'religions', 'genders', 'ages', 'contentment', 'agression', 'consciousness'], $pops)->execute();
+                echo Yii::$app->db->createCommand()->batchInsert('pops', ['count', 'classId', 'nationId', 'tileId', 'ideologies', 'religions', 'genders', 'ages', 'contentmentLow', 'contentmentMiddle', 'contentmentHigh', 'agression', 'consciousness'], $pops)->execute();
+                echo ' '.$city->name.' pops inserted'.PHP_EOL;
                 
                 $city->updateParams(true, false);
                 echo $city->name.' updated'.PHP_EOL;
@@ -403,12 +374,18 @@ class TestController extends Controller
             $pops = [];
             foreach ($tilesNotInCities as $tile) {
                 foreach ($nations as $nationId => $percents) {
+                    $count = round($tile->population * $percents / 100);
                     $ideologies = '{"0":100}';
                     $religions = $region->religions ? $region->religions : '{"0":100}';
-                    $genders = $region->genders ? $region->genders : '{"1":55,"2":45}';
+                    $gendersData = $region->genders ? json_decode($region->genders, true) : [1 => 55, 2 => 45];
+                    foreach ($gendersData as $genderId => $value) {
+                        $cCount = round($count*$value/100);
+                        $gendersData[$genderId] = 100*$cCount/$count;
+                    }
+                    $genders = json_encode($gendersData);
                     $ages = $region->ages ? $region->ages : '{"18":100}';
                     $pops[] = [
-                        'count' => round($tile->population * $percents / 100),
+                        'count' => $count,
                         'classId' => PopClass::LUMPEN,
                         'nationId' => $nationId,
                         'tileId' => $tile->id,
@@ -416,13 +393,16 @@ class TestController extends Controller
                         'religions' => $religions,
                         'genders' => $genders,
                         'ages' => $ages,
-                        'contentment' => 0,
+                        'contentmentLow' => 0,
+                        'contentmentMiddle' => 0,
+                        'contentmentHigh' => 0,
                         'agression' => 0,
                         'consciousness' => 0,
                     ];
                 }
             }
-            echo Yii::$app->db->createCommand()->batchInsert('pops', ['count', 'classId', 'nationId', 'tileId', 'ideologies', 'religions', 'genders', 'ages', 'contentment', 'agression', 'consciousness'], $pops)->execute();
+            echo Yii::$app->db->createCommand()->batchInsert('pops', ['count', 'classId', 'nationId', 'tileId', 'ideologies', 'religions', 'genders', 'ages', 'contentmentLow', 'contentmentMiddle', 'contentmentHigh', 'agression', 'consciousness'], $pops)->execute();
+            echo ' '.$region->name.' pops inserted'.PHP_EOL;
             $region->updateParams(true, false);
             echo $region->name.' updated'.PHP_EOL;
         }

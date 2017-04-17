@@ -8,6 +8,9 @@ use Yii,
     app\components\TileCombiner,
     app\models\User,
     app\models\Tile,
+    app\models\population\Pop,
+    app\models\population\PopClass,
+    app\models\politics\City,
     app\models\politics\Region,
     app\models\politics\State,
     app\models\politics\Party,
@@ -38,6 +41,10 @@ class UpdateHourlyController extends Controller
             if ($debug) printf("Updated users: %f s.".PHP_EOL, microtime(true)-$time);
             
             $time = microtime(true);
+            $this->updateCities();
+            if ($debug) printf("Updated cities: %f s.".PHP_EOL, microtime(true)-$time);
+            
+            $time = microtime(true);
             $this->updateRegions();
             if ($debug) printf("Updated regions: %f s.".PHP_EOL, microtime(true)-$time);
 
@@ -52,10 +59,10 @@ class UpdateHourlyController extends Controller
             $time = microtime(true);
             $this->updateCompanies();
             if ($debug) printf("Updated companies: %f s.".PHP_EOL, microtime(true)-$time);
-//
-//            $time = microtime(true);
-//            $this->updatePopStudy();
-//            if ($debug) printf("Updated populations study: %f s.".PHP_EOL, microtime(true)-$time);
+
+            $time = microtime(true);
+            $this->updatePopStudy();
+            if ($debug) printf("Updated populations study: %f s.".PHP_EOL, microtime(true)-$time);
 //
 //            $time = microtime(true);
 //            $this->updatePopWorkers();
@@ -169,6 +176,18 @@ class UpdateHourlyController extends Controller
     }
 
     /**
+     * Update cities
+     */
+    private function updateCities()
+    {
+        $cities = City::find()->where(['is not', 'regionId', null])->all();
+        foreach ($cities as $city) {
+            /* @var $city City */
+            $city->updateParams(true, false);
+        }
+    }
+
+    /**
      * Update regions
      */
     private function updateRegions()
@@ -230,25 +249,29 @@ class UpdateHourlyController extends Controller
     
     private function updatePopStudy()
     {
-        $regions = Region::find()->all();
-        foreach ($regions as $region) {
-//            echo $region->name.": ".PHP_EOL;
+        $tiles = Tile::find()->where(['>', 'population', 0])->all();
+        /* @var $tile Tile */
+        foreach ($tiles as $tile) {
             $vacansiesSumByPopClass = [];
             $baseSpeeds = [];
-            foreach ($region->vacansiesWithSalary as $vacansy) {
-                if (isset($vacansiesSumByPopClass[$vacansy->pop_class_id])) {
-                    $vacansiesSumByPopClass[$vacansy->pop_class_id] += $vacansy->count_all;
-                } else {
-                    $vacansiesSumByPopClass[$vacansy->pop_class_id] = $vacansy->count_all;
-                    $baseSpeeds[$vacansy->pop_class_id] = $vacansy->popClass->base_speed;
+            foreach ($tile->allUnits as $building) {
+                echo $building->name.PHP_EOL;
+                foreach ($building->getVacancies()->all() as $vacansy) {
+                    if (isset($vacansiesSumByPopClass[$vacansy->popClassId])) {
+                        $vacansiesSumByPopClass[$vacansy->popClassId] += $vacansy->countAll;
+                    } else {
+                        $vacansiesSumByPopClass[$vacansy->popClassId] = (int)$vacansy->countAll;
+                        $baseSpeeds[$vacansy->popClassId] = $vacansy->popClass->baseSpeed;
+                    }
                 }
             }
             
-            $unworkers = Population::find()->where(['class'=>2,'region_id'=>$region->id])->all();
+            $unworkers = $tile->lumpens;
             shuffle($unworkers);
             
             foreach ($vacansiesSumByPopClass as $popClassID => $countAll) {
-                $allreadyStudied = Yii::$app->db->createCommand("SELECT sum(count) FROM ".Population::tableName()." WHERE class = {$popClassID} AND region_id = {$region->id}")->queryScalar();
+                $allreadyStudied = (int)$tile->getPops()->where(['classId' => $popClassID])->sum('count');
+                
 //                echo $popClassID.": ".$allreadyStudied."/".$countAll.PHP_EOL;
                 if ($allreadyStudied >= $countAll) {
                     continue;
@@ -264,20 +287,16 @@ class UpdateHourlyController extends Controller
                 $studied = 0;
                 
                 foreach ($unworkers as $unworker) {
-                    if ($popClassID === 1 && $unworker->sex === 1 && mt_rand() > 0.4) {
-                        continue;
-                    }
                     if ($unworker->count <= $speed-$studied) {
-                        $unworker->class = $popClassID;
+                        $unworker->classId = $popClassID;
                         $unworker->save();
                         $studied+=$unworker->count;
                     } else {
-                        $new_unworker = $unworker->slice($speed-$studied);
-                        
-                        $new_unworker->class = $popClassID;
-                        $new_unworker->save();
-                        
-                        $studied += $new_unworker->count;
+                        if ($unworker->sliceToNewClass($speed-$studied, $popClassID)) {                    
+                            $studied += $speed-$studied;
+                        } else {
+                            var_dump($unworker->getErrors());
+                        }
                     }
                     
                     if ($studied >= $speed) break;
@@ -288,27 +307,32 @@ class UpdateHourlyController extends Controller
     
     private function updatePopWorkers()
     {
-        $regions = Region::find()->all();
-        foreach ($regions as $region) {
-            foreach ($region->vacansiesWithSalaryAndCount as $vacansy) {
-//                var_dump($vacansy->factory_id . ': ' . $vacansy->salary);
-                $setted = 0;
-                foreach ($region->populationGroupsWithoutFactory as $popGroup) {
-                    if ($popGroup->class == $vacansy->pop_class_id && !($popGroup->factory_id)) {
-                        
-                        if ($popGroup->count <= $vacansy->count_need) {
-                            $popGroup->factory_id = $vacansy->factory_id;                        
-                            $popGroup->save();
-                            $setted += $popGroup->count;
-                        } else {
-                            $newPG = $popGroup->slice($vacansy->count_need);
-                            $newPG->factory_id = $vacansy->factory_id;
-                            $newPG->save();
-                            $setted += $newPG->count;
-                        }                
+        $tiles = Tile::find()->where(['>', 'population', 0])->all();
+        /* @var $tile Tile */
+        foreach ($tiles as $tile) {
+            foreach ($tile->allUnits as $building) {
+                foreach ($building->vacancies as $vacancy) {
+                    if ($vacancy->countFree == 0) {
+                        continue;
                     }
-                    if ($setted >= $vacansy->count_need) {
-                        break;
+                    $setted = 0;
+                    $unworkers = $tile->getPops()->where(['classId' => $vacancy->popClassId])->all();
+                    /* @var $popGroup Pop */
+                    foreach ($unworkers as $popGroup) {
+                        if (!($popGroup->vacancy)) {
+                            if ($popGroup->count <= $vacansy->countFree) {
+                                $popGroup->link('vacancy', $vacancy);
+                                $setted += $popGroup->count;
+                            } else {
+                                $newPG = $popGroup->slice($vacansy->count_need);
+                                $newPG->factory_id = $vacansy->factory_id;
+                                $newPG->save();
+                                $setted += $newPG->count;
+                            }                
+                        }
+                        if ($setted >= $vacansy->count_need) {
+                            break;
+                        }
                     }
                 }
             }

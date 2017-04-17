@@ -20,7 +20,9 @@ class Currency extends DropdownArticle
     public function rules()
     {
         $rules = parent::rules();
+        $rules[3][0] = ['value3'];
         $rules[] = [['value'], 'exist', 'skipOnError' => false, 'targetClass' => CurrencyModel::className(), 'targetAttribute' => ['value' => 'id']];
+        $rules[] = [['value2'], 'boolean'];
         return $rules;
     }
 

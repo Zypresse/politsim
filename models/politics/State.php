@@ -224,8 +224,14 @@ class State extends ConstitutionOwner
     
     public function getPops()
     {
-        return $this->hasMany(Pop::className(), ['tileId' => 'id'])
-                ->via('tiles');
+        // Too many SQL variables
+//        return $this->hasMany(Pop::className(), ['tileId' => 'id'])
+//                ->via('tiles');
+        $pops = [];
+        foreach ($this->tiles as $tile) {
+            $pops = array_merge($pops, $tile->pops);
+        }
+        return $pops;
     }
     
     public function getBills()

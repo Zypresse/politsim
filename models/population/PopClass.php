@@ -14,6 +14,7 @@ class PopClass extends ObjectWithFixedPrototypes
     public $name;
     public $color;
     public $icon;
+    public $baseSpeed = 0;
     
     const LUMPEN = 0;
     const WORKER = 1;
@@ -40,18 +41,21 @@ class PopClass extends ObjectWithFixedPrototypes
                 'name' => Yii::t('app', 'Worker'),
                 'color' => '#f00',
                 'icon' => '/img/pop-classes/Worker.png',
+                'baseSpeed' => 0.5,
             ],
             [
                 'id' => static::ENFORCER,
                 'name' => Yii::t('app', 'Enforcer'),
                 'color' => '#00f',
                 'icon' => '/img/pop-classes/Enforcer.png',
+                'baseSpeed' => 0.3,
             ],
             [
                 'id' => static::FARMER,
                 'name' => Yii::t('app', 'Farmer'),
                 'color' => '#0e5',
                 'icon' => '/img/pop-classes/Farmer.png',
+                'baseSpeed' => 0.5,
             ],
             [
                 'id' => static::DEPENDENT,
@@ -64,24 +68,28 @@ class PopClass extends ObjectWithFixedPrototypes
                 'name' => Yii::t('app', 'Businessman'),
                 'color' => '#e0e',
                 'icon' => '/img/pop-classes/Businessman.png',
+                'baseSpeed' => 0.3,
             ],
             [
                 'id' => static::OFFICIAL,
                 'name' => Yii::t('app', 'Official'),
                 'color' => '#90f',
                 'icon' => '',
+                'baseSpeed' => 0.2,
             ],
             [
                 'id' => static::INTELLECTUAL,
                 'name' => Yii::t('app', 'Intellectual'),
                 'color' => '#f0e',
                 'icon' => '/img/pop-classes/Intellectual.png',
+                'baseSpeed' => 0.2,
             ],
             [
                 'id' => static::PLANKTON,
                 'name' => Yii::t('app', 'Clerks'),
                 'color' => '#8B0000',
                 'icon' => '',
+                'baseSpeed' => 0.2,
             ],
             [
                 'id' => static::CRIMINAL,

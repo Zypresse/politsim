@@ -6,8 +6,10 @@ use Yii,
     app\models\Tile,
     app\models\politics\City,
     app\models\politics\Region,
+    app\models\economics\Utr,
     app\models\economics\UtrType,
-    app\models\economics\TaxPayerModel;
+    app\models\economics\TaxPayerModel,
+    app\models\economics\units\Vacancy;
 
 /**
  * This is the model class for table "pops".
@@ -30,6 +32,7 @@ use Yii,
  * 
  * @property Tile $tile
  * @property Nation $nation
+ * @property Vacancy $vacancy
  * 
  */
 class Pop extends TaxPayerModel
@@ -50,8 +53,10 @@ class Pop extends TaxPayerModel
         return [
             [['classId', 'nationId', 'tileId', 'ideologies', 'religions', 'genders', 'ages'], 'required'],
             [['count', 'classId', 'nationId', 'tileId', 'utr'], 'integer', 'min' => 0],
+            [['count'], 'moreThanZero'],
             [['contentmentLow', 'contentmentMiddle', 'contentmentHigh', 'agression', 'consciousness'], 'number', 'min' => 0],
             [['ideologies', 'religions', 'genders', 'ages'], 'string'],
+            [['ideologies', 'religions', 'genders', 'ages'], 'validatePercents'],
             [['tileId', 'classId', 'nationId'], 'unique', 'targetAttribute' => ['tileId', 'classId', 'nationId'], 'message' => 'The combination of Class ID, Nation ID and Tile ID has already been taken.'],
             [['utr'], 'exist', 'skipOnError' => true, 'targetClass' => Utr::className(), 'targetAttribute' => ['utr' => 'id']],
             [['tileId'], 'exist', 'skipOnError' => true, 'targetClass' => Tile::className(), 'targetAttribute' => ['tileId' => 'id']],
@@ -101,6 +106,12 @@ class Pop extends TaxPayerModel
     public function getNation()
     {
         return Nation::findOne($this->nationId);
+    }
+    
+    public function getVacancy()
+    {
+        return $this->hasOne(Vacancy::className(), ['id' => 'vacancyId'])
+                ->viaTable('vacanciesToPops', ['popId' => 'id']);
     }
     
     public function getTaxStateId()
@@ -176,7 +187,7 @@ class Pop extends TaxPayerModel
         $ages = json_decode($this->ages, true);
         foreach ($ages as $age => $percents) {
             foreach ($tmpPopsWithGenders as $tmpPop) {
-                $tmpPops[] = [
+                $tmpPops[] = new PseudoPop([
                     'ideologyId' => $tmpPop['ideologyId'],
                     'religionId' => $tmpPop['religionId'],
                     'gender' => $tmpPop['gender'],
@@ -185,11 +196,61 @@ class Pop extends TaxPayerModel
                     'classId' => $this->classId,
                     'tileId' => $this->tileId,
                     'count' => round($tmpPop['count']*$percents/100)
-                ];
+                ]);
             }
         }
         
         return $tmpPops;
+    }
+    
+    public function sliceToNewClass(int $count, int $classId) : bool
+    {
+        $newParams = $this->attributes;
+        unset($newParams['id']);
+        $newParams['classId'] = $classId;
+        $newPop = static::findOrCreate([
+            'classId' => $classId,
+            'nationId' => $this->nationId,
+            'tileId' => $this->tileId,
+        ], false, $newParams);
+        $newPop->count += $count;
+        $this->count -= $count;
+        $tran = $this->getDb()->beginTransaction();
+        if ($this->save() && $newPop->save()) {
+            $tran->commit();
+            return true;
+        } else {
+            $tran->rollBack();
+            $this->addErrors($newPop->getErrors());
+            return false;
+        }
+    }
+    
+    public function validatePercents($attribute, $params)
+    {
+        $data = json_decode($this->$attribute, true);
+        echo $this->getAttributeLabel($attribute).': '.PHP_EOL;
+        $sumCount = 0;
+        foreach ($data as $key => $percent) {
+            $count = round($this->count*$percent/100);
+            echo $key.': '.$percent.'%'.' — '.$count.PHP_EOL;
+            if ($count < 1) {
+//                $this->addError($attribute, Yii::t('app', 'Attribute «{0}» have less than one pop with id {1}', [
+//                    $this->getAttributeLabel($attribute),
+//                    $key,
+//                ]));
+//                return false;
+            }
+            $sumCount += $count;
+        }
+        echo 'Population: '.$this->count.', sum counts: '.$sumCount.PHP_EOL;
+        if ((int)$sumCount !== (int)$this->count) {
+            $this->addError($attribute, Yii::t('app', 'Attribute «{0}» have more or less 100% of population', [
+                $this->getAttributeLabel($attribute),
+            ]));
+            return false;
+        }
+        return true;
     }
 
 }

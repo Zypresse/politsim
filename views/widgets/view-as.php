@@ -24,11 +24,7 @@ use yii\helpers\Html;
         setViewAsUtr($('#select-using-utr').val());
     });
     
-    <?php if ($selectedUtr): ?>
-        setViewAsUtr(<?=$selectedUtr?>);
-    <?php else: ?>
-        setViewAsUtr(viewAsUtr);
-    <?php endif ?>
+    setViewAsUtr(viewAsUtr);
     $('#select-using-utr').val(viewAsUtr).attr('selected', 'selected');
     
 </script>
