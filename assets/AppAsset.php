@@ -26,7 +26,7 @@ class AppAsset extends AssetBundle
 //        'css/snackbar.min.css',
 //        'css/spectrum.css',
         'css/dataTables.bootstrap.css',
-        'css/bootstrap.css',
+//        'css/bootstrap.css',
         'css/AdminLTE.css',
         'css/skin-black.css',
         'css/leaflet.css',

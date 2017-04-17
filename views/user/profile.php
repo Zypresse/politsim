@@ -37,7 +37,6 @@ $viewer = Yii::$app->user->identity;
                         </span>
                         <div class="modifier-box-content">
                             <span class="modifier-box-text">
-                                <strong><?=$modifier->name?></strong>
                                 <div class="pull-right">
                                 <?php if ($modifier->fame): ?>
                                     <span class="star"><?=($modifier->fame>0?'+':'').$modifier->fame.' '.MyHtmlHelper::icon('star', '')?></span>

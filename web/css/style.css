@@ -20,7 +20,8 @@
     border-radius: 6px;
     font-family: Verdana;
     font-size: 14px;
-    padding: 2px 4px 4px;
+    font-weight: 400;
+    padding: 2px 4px;
 }
 
 .star > img, .heart > img, .chart_pie > img {
@@ -796,4 +797,9 @@ ul.twPc-Arrange {
 
 .input-group .input-group-addon.addon-range {
     width: 100%;
+}
+
+.view-as-select {
+    width: auto;
+    max-width: 100%;
 }

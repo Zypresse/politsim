@@ -97,6 +97,11 @@ $this->title = 'Political Simulator';
             </div>
             <div class="pull-left info">
                 <p><?=Yii::$app->user->identity->name?></p>
+                <p>
+                    <span class="star"><span class="autoupdated-fame"><?= Yii::$app->user->identity->fame ?></span> <?= MyHtmlHelper::icon('star') ?></span>
+                    <span class="heart"><span class="autoupdated-trust"><?= Yii::$app->user->identity->trust ?></span> <?= MyHtmlHelper::icon('heart') ?></span>
+                    <span class="chart_pie"><span class="autoupdated-success"><?= Yii::$app->user->identity->success ?></span> <?= MyHtmlHelper::icon('chart_pie') ?></span>
+                </p>
                 <strong id="head_money"></strong> <?//=MyHtmlHelper::icon('money')?>
             </div>
         </div>

@@ -12,8 +12,7 @@ use yii\helpers\Html;
     &nbsp;
     <?=Html::dropDownList('select-using-utr', $selectedUtr, $utrs, [
         'id' => 'select-using-utr',
-        'class' => 'form-control inline',
-        'style' => 'width: auto;',
+        'class' => 'form-control inline view-as-select',
     ])?>
 </div>
 

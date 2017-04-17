@@ -45,11 +45,11 @@ $isHaveCitizenship = $user->isHaveCitizenship($state->id);
                     <h4 class="box-title"><?=Yii::t('app', 'Additional info')?></h4>
                 </div>
                 <div class="box-body">
-                    <a href="#!state/constitution&id=<?=$state->id?>" class="btn btn-default btn-block"><i class="fa fa-list-alt"></i> <?=Yii::t('app', 'Look constitution')?></a>
-                    <?=Html::a('<i class="fa fa-group"></i> '.Yii::t('app', 'Population info'),'#!population/state&id='.$state->id,['class' => 'btn btn-default btn-block'])?>
-                    <a href="#!elections/state&id=<?=$state->id?>" class="btn btn-default btn-block"><i class="fa fa-university"></i> <?=Yii::t('app', 'Elections list')?></a>
-                    <a href="#!map/state&id=<?=$state->id?>" class="btn btn-default btn-block"><i class="fa fa-globe"></i> <?=Yii::t('app', 'Look at map')?></a>
-                    <a href="#!state/bills&id=<?=$state->id?>" class="btn btn-default btn-block"><i class="fa fa-list"></i> <?=Yii::t('app', 'State bills')?></a>
+                    <a href="#!state/constitution&id=<?=$state->id?>" class="btn btn-default btn-block"><i class="fa fa-list-alt"></i> <?=Yii::t('app', 'Constitution')?></a>
+                    <?=Html::a('<i class="fa fa-group"></i> '.Yii::t('app', 'Population'),'#!population/state&id='.$state->id,['class' => 'btn btn-default btn-block'])?>
+                    <a href="#!elections/state&id=<?=$state->id?>" class="btn btn-default btn-block"><i class="fa fa-university"></i> <?=Yii::t('app', 'Elections')?></a>
+                    <a href="#!map/state&id=<?=$state->id?>" class="btn btn-default btn-block"><i class="fa fa-globe"></i> <?=Yii::t('app', 'Political map')?></a>
+                    <a href="#!state/bills&id=<?=$state->id?>" class="btn btn-default btn-block"><i class="fa fa-list"></i> <?=Yii::t('app', 'Bills')?></a>
                 </div>
             </div>
             <div class="box box-solid box-primary">
@@ -183,7 +183,7 @@ $isHaveCitizenship = $user->isHaveCitizenship($state->id);
                             <?php foreach ($state->regions as $region): ?>
                             <tr>
                                 <td><?=LinkCreator::regionLink($region)?></td>
-                                <td><?=MyHtmlHelper::formateNumberword($region->population, 'h')?> <?=Html::a(Yii::t('app', 'Population info'),'#!population/region&id='.$region->id,['class' => 'btn btn-info btn-xs'])?></td>
+                                <td><?=MyHtmlHelper::formateNumberword($region->population, 'h')?> <?=Html::a(Yii::t('app', 'Population'),'#!population/region&id='.$region->id,['class' => 'btn btn-info btn-xs'])?></td>
                             </tr>
                             <?php endforeach ?>
                         </tbody>
