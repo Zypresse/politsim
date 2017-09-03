@@ -1,6 +1,6 @@
 {
     "name": "lazzyteam/politsim",
-    "description": "Political Simulator API",
+    "description": "Political Simulator",
     "keywords": [],
     "homepage": "http://politsim.lazzyteam.pw/",
     "type": "project",
@@ -21,7 +21,8 @@
         "yiisoft/yii2-jui": "~2.0.0",
         "bupy7/yii2-bbcode": "1.*",
         "franciscomaya/yii2-sceditor" : "dev-master",
-        "kartik-v/yii2-widget-rangeinput": "*"
+        "kartik-v/yii2-widget-rangeinput": "*",
+        "dmstr/yii2-adminlte-asset": "2.*"
     },
     "require-dev": {
         "yiisoft/yii2-codeception": "*",

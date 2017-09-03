@@ -19,22 +19,22 @@ class AppAsset extends AssetBundle
     public $basePath = '@webroot';
     public $baseUrl = '@web';
     public $css = [
-        'https://fonts.googleapis.com/css?family=Open+Sans:400,600,800&subset=latin,cyrillic',
-        'https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css',
+//        'https://fonts.googleapis.com/css?family=Open+Sans:400,600,800&subset=latin,cyrillic',
+//        'https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css',
         'css/jquery-ui-theme.css',
         'css/square.css',
 //        'css/snackbar.min.css',
 //        'css/spectrum.css',
         'css/dataTables.bootstrap.css',
 //        'css/bootstrap.css',
-        'css/AdminLTE.css',
+//        'css/AdminLTE.css',
         'css/skin-black.css',
         'css/leaflet.css',
         'css/leaflet.label.css',
         'css/style.css?v2',
     ];
     public $js = [
-        'js/bootstrap.js',
+//        'js/bootstrap.js',
         'js/app.js',
         'js/fullscreen.js',
         'js/icheck.js',
@@ -61,16 +61,13 @@ class AppAsset extends AssetBundle
         'yii\widgets\ActiveFormAsset',
         'franciscomaya\sceditor\SCEditorAsset',
         'kartik\base\WidgetAsset',
+        'dmstr\web\AdminLteAsset',
     ];
     
     public function __construct($config = array()) {
         
         if (!Yii::$app->user->isGuest && Yii::$app->user->identity->isInvited) {
             $this->js[] = 'js/script_authorized.js';
-        }
-        
-        if (Yii::$app->user->id > 3) {
-            $this->js[] = '//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js';
         }
         
         return parent::__construct($config);
