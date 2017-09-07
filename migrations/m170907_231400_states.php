@@ -2,7 +2,7 @@
 
 use yii\db\Migration;
 
-class m170903_185407_states extends Migration
+class m170907_231400_states extends Migration
 {
     
     public function safeUp()
@@ -18,14 +18,11 @@ class m170903_185407_states extends Migration
             'govermentFormId' => $this->integer(2)->unsigned()->null(),
             'stateStructureId' => $this->integer(1)->unsigned()->null(),
             'population' => $this->integer()->unsigned()->notNull()->defaultValue(0),
-            'contentment' => $this->double()->unsigned()->notNull()->defaultValue(0),
-            'agression' => $this->double()->unsigned()->notNull()->defaultValue(0),
-            'consciousness' => $this->double()->unsigned()->notNull()->defaultValue(0),
             'usersCount' => $this->integer()->unsigned()->notNull()->defaultValue(0),
             'usersFame' => $this->integer()->unsigned()->notNull()->defaultValue(0),
             'dateCreated' => $this->integer()->unsigned()->null(),
             'dateDeleted' => $this->integer()->unsigned()->null(),
-            'utr' => $this->integer()->unsigned()->null(),
+            'utr' => $this->integer()->unsigned()->unique()->null(),
         ]);
         $this->createIndex('nameStates', 'states', ['name']);
         $this->createIndex('nameShortStates', 'states', ['nameShort']);
@@ -38,10 +35,33 @@ class m170903_185407_states extends Migration
         $this->createIndex('dateCreatedStates', 'states', ['dateCreated']);
         $this->createIndex('dateDeletedStates', 'states', ['dateDeleted']);
         $this->createIndex('utrStates', 'states', ['utr'], true);
+        $this->addForeignKey('cityIdStatesRef', 'states', ['cityId'], 'cities', ['id']);
+        
+        $this->addForeignKey('regionsStateIdRef', 'regions', ['stateId'], 'states', ['id']);
+        $this->addForeignKey('billsStateIdRef', 'bills', ['stateId'], 'states', ['id']);
+        $this->addForeignKey('agenciesStateIdRef', 'agencies', ['stateId'], 'states', ['id']);
+        $this->addForeignKey('agenciesPostsStateIdRef', 'agenciesPosts', ['stateId'], 'states', ['id']);
     }
 
     public function safeDown()
     {
+        $this->dropForeignKey('agenciesPostsStateIdRef', 'agenciesPosts');
+        $this->dropForeignKey('agenciesStateIdRef', 'agencies');
+        $this->dropForeignKey('billsStateIdRef', 'bills');
+        $this->dropForeignKey('regionsStateIdRef', 'regions');
+        
+        $this->dropForeignKey('cityIdStatesRef', 'states');
+        $this->dropIndex('nameStates', 'states');
+        $this->dropIndex('nameShortStates', 'states');
+        $this->dropIndex('cityIdStates', 'states');
+        $this->dropIndex('govermentFormIdStates', 'states');
+        $this->dropIndex('stateStructureIdStates', 'states');
+        $this->dropIndex('populationStates', 'states');
+        $this->dropIndex('usersCountStates', 'states');
+        $this->dropIndex('usersFameStates', 'states');
+        $this->dropIndex('dateCreatedStates', 'states');
+        $this->dropIndex('dateDeletedStates', 'states');
+        $this->dropIndex('utrStates', 'states');
         $this->dropTable('states');
     }
 

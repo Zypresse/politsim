@@ -2,7 +2,7 @@
 
 use yii\db\Migration;
 
-class m170903_162712_constitutionArticles extends Migration
+class m170907_232200_constitutionArticles extends Migration
 {
     public function safeUp()
     {
@@ -19,10 +19,14 @@ class m170903_162712_constitutionArticles extends Migration
         ]);
         $this->createIndex('ownerConstitution', 'constitutionArticles', ['ownerType', 'ownerId']);
         $this->createIndex('typeConstitution', 'constitutionArticles', ['type', 'subType']);
+        $this->createIndex('constitutionArticleUnique', 'constitutionArticles', ['ownerType', 'ownerId', 'type', 'subType'], true);
     }
 
     public function safeDown()
     {
+        $this->dropIndex('ownerConstitution', 'constitutionArticles');
+        $this->dropIndex('typeConstitution', 'constitutionArticles');
+        $this->dropIndex('constitutionArticleUnique', 'constitutionArticles');
         $this->dropTable('constitutionArticles');
     }
 

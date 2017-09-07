@@ -2,7 +2,7 @@
 
 use yii\db\Migration;
 
-class m170903_184355_regions extends Migration
+class m170907_230001_regions extends Migration
 {
     
     public function safeUp()
@@ -16,15 +16,12 @@ class m170903_184355_regions extends Migration
             'flag' => $this->string(255)->null(),
             'anthem' => $this->string(255)->null(),
             'population' => $this->integer()->unsigned()->notNull()->defaultValue(0),
-            'contentment' => $this->double()->unsigned()->notNull()->defaultValue(0),
-            'agression' => $this->double()->unsigned()->notNull()->defaultValue(0),
-            'consciousness' => $this->double()->unsigned()->notNull()->defaultValue(0),
             'usersCount' => $this->integer()->unsigned()->notNull()->defaultValue(0),
             'usersFame' => $this->integer()->unsigned()->notNull()->defaultValue(0),
             'dateCreated' => $this->integer()->unsigned()->null(),
             'dateDeleted' => $this->integer()->unsigned()->null(),
             'implodedTo' => $this->integer()->unsigned()->null(),
-            'utr' => $this->integer()->unsigned()->null(),
+            'utr' => $this->integer()->unsigned()->unique()->null(),
         ]);
         $this->createIndex('stateIdRegions', 'regions', ['stateId']);
         $this->createIndex('cityIdRegions', 'regions', ['cityId']);
@@ -37,10 +34,29 @@ class m170903_184355_regions extends Migration
         $this->createIndex('dateDeletedRegions', 'regions', ['dateDeleted']);
         $this->createIndex('implodedToRegions', 'regions', ['implodedTo']);
         $this->createIndex('utrRegions', 'regions', ['utr'], true);
+        $this->addForeignKey('regionsCityIdRef', 'regions', ['cityId'], 'cities', ['id']);
+        $this->addForeignKey('regionsImplodedToRef', 'regions', ['implodedTo'], 'regions', ['id']);
+        
+        $this->addForeignKey('citiesRegionIdRef', 'cities', ['regionId'], 'regions', ['id']);
     }
 
     public function safeDown()
     {
+        $this->dropForeignKey('citiesRegionIdRef', 'cities');
+        
+        $this->dropForeignKey('regionsCityIdRef', 'regions');
+        $this->dropForeignKey('regionsImplodedToRef', 'regions');
+        $this->dropIndex('stateIdRegions', 'regions');
+        $this->dropIndex('cityIdRegions', 'regions');
+        $this->dropIndex('nameRegions', 'regions');
+        $this->dropIndex('nameShortRegions', 'regions');
+        $this->dropIndex('populationRegions', 'regions');
+        $this->dropIndex('usersCountRegions', 'regions');
+        $this->dropIndex('usersFameRegions', 'regions');
+        $this->dropIndex('dateCreatedRegions', 'regions');
+        $this->dropIndex('dateDeletedRegions', 'regions');
+        $this->dropIndex('implodedToRegions', 'regions');
+        $this->dropIndex('utrRegions', 'regions');
         $this->dropTable('regions');
     }
 

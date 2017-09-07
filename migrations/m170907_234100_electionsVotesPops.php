@@ -2,7 +2,7 @@
 
 use yii\db\Migration;
 
-class m170903_165521_electionsVotesPops extends Migration
+class m170907_234100_electionsVotesPops extends Migration
 {
     
     public function safeUp()
@@ -22,10 +22,18 @@ class m170903_165521_electionsVotesPops extends Migration
         $this->createIndex('election2varianPops', 'electionsVotesPops', ['electionId', 'variant']);
         $this->createIndex('districtIdVotesPops', 'electionsVotesPops', ['districtId']);
         $this->createIndex('dateCreatedVotesPops', 'electionsVotesPops', ['dateCreated']);
+        $this->addForeignKey('electionIdVotesPopsRef', 'electionsVotesPops', ['electionId'], 'elections', ['id']);
     }
 
     public function safeDown()
     {
+        $this->dropForeignKey('electionIdVotesPopsRef', 'electionsVotesPops');
+        $this->dropIndex('election2tile2variant', 'electionsVotesPops');
+        $this->dropIndex('electionIdVotesPops', 'electionsVotesPops');
+        $this->dropIndex('tileIdVotesPops', 'electionsVotesPops');
+        $this->dropIndex('election2varianPops', 'electionsVotesPops');
+        $this->dropIndex('districtIdVotesPops', 'electionsVotesPops');
+        $this->dropIndex('dateCreatedVotesPops', 'electionsVotesPops');
         $this->dropTable('electionsVotesPops');
     }
 

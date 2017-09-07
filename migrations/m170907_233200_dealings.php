@@ -2,16 +2,9 @@
 
 use yii\db\Migration;
 
-class m170903_163310_dealings extends Migration
+class m170907_233200_dealings extends Migration
 {
- /*
-  * `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-	`type` UNSIGNED INTEGER(3) NOT NULL,
-	`initiator` UNSIGNED INTEGER REFERENCES utr(id) NOT NULL,
-	`receiver` UNSIGNED INTEGER REFERENCES utr(id) NOT NULL,
-	`dateCreated` UNSIGNED INTEGER NOT NULL,
-	`dateApproved` UNSIGNED INTEGER DEFAULT NULL
-  */   
+    
     public function safeUp()
     {
         $this->createTable('dealings', [
@@ -33,6 +26,11 @@ class m170903_163310_dealings extends Migration
 
     public function safeDown()
     {
+        $this->dropIndex('typeDealings', 'dealings');
+        $this->dropIndex('initiatorDealings', 'dealings');
+        $this->dropIndex('receiverDealings', 'dealings');
+        $this->dropIndex('dateCreatedDealings', 'dealings');
+        $this->dropIndex('dateApprovedDealings', 'dealings');
         $this->dropTable('dealings');
     }
 

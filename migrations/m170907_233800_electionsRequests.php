@@ -2,18 +2,11 @@
 
 use yii\db\Migration;
 
-class m170903_164826_electionsRequests extends Migration
+class m170907_233800_electionsRequests extends Migration
 {
     
     public function safeUp()
     {
-        /*
-         * `electionId` UNSIGNED INTEGER REFERENCES elections(id) NOT NULL,
-	`type` UNSIGNED INTEGER(1) NOT NULL,
-	`objectId` UNSIGNED INTEGER NOT NULL,
-	`variant` UNSIGNED INTEGER(3) NOT NULL,
-	`dateCreated` UNSIGNED INTEGER NOT NULL
-         */
         $this->createTable('electionsRequests', [
             'id' => $this->primaryKey()->unsigned()->notNull(),
             'electionId' => $this->integer()->unsigned()->notNull(),
@@ -29,10 +22,20 @@ class m170903_164826_electionsRequests extends Migration
         $this->createIndex('variantElectionsRequests', 'electionsRequests', ['electionId', 'variant'], true);
         $this->createIndex('dateCreatedElectionsRequests', 'electionsRequests', ['dateCreated']);
         $this->createIndex('dateApprovedElectionsRequests', 'electionsRequests', ['dateApproved']);
+        $this->createIndex('Elections2Object', 'electionsRequests', ['electionId', 'objectId'], true);
+        $this->addForeignKey('electionIdElectionsRequestsRef', 'electionsRequests', ['electionId'], 'elections', ['id']);
     }
 
     public function safeDown()
     {
+        $this->dropForeignKey('electionIdElectionsRequestsRef', 'electionsRequests');
+        $this->dropIndex('electionIdElectionsRequests', 'electionsRequests');
+        $this->dropIndex('typeElectionsRequests', 'electionsRequests');
+        $this->dropIndex('objectIdElectionsRequests', 'electionsRequests');
+        $this->dropIndex('variantElectionsRequests', 'electionsRequests');
+        $this->dropIndex('dateCreatedElectionsRequests', 'electionsRequests');
+        $this->dropIndex('dateApprovedElectionsRequests', 'electionsRequests');
+        $this->dropIndex('Elections2Object', 'electionsRequests');
         $this->dropTable('electionsRequests');
     }
 

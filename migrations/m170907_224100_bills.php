@@ -2,7 +2,7 @@
 
 use yii\db\Migration;
 
-class m170903_155544_bills extends Migration
+class m170907_224100_bills extends Migration
 {
     
     public function safeUp()
@@ -32,10 +32,23 @@ class m170903_155544_bills extends Migration
         $this->createIndex('isApprovedBills', 'bills', ['isApproved']);
         $this->createIndex('vetoPostIdBills', 'bills', ['vetoPostId']);
         $this->createIndex('isDictatorBillBills', 'bills', ['isDictatorBill']);
+        $this->addForeignKey('initiatorIdBillsRef', 'bills', ['initiatorId'], 'agenciesPosts', ['id']);
+        $this->addForeignKey('vetoPostIdBillsRef', 'bills', ['vetoPostId'], 'agenciesPosts', ['id']);
     }
 
     public function safeDown()
     {
+        $this->dropForeignKey('initiatorIdBillsRef', 'bills');
+        $this->dropForeignKey('vetoPostIdBillsRef', 'bills');
+        $this->dropIndex('isDictatorBillBills', 'bills');
+        $this->dropIndex('vetoPostIdBills', 'bills');
+        $this->dropIndex('isApprovedBills', 'bills');
+        $this->dropIndex('dateFinishedBills', 'bills');
+        $this->dropIndex('dateVotingFinishedBills', 'bills');
+        $this->dropIndex('dateCreatedBills', 'bills');
+        $this->dropIndex('initiatorIdBills', 'bills');
+        $this->dropIndex('stateIdBills', 'bills');
+        $this->dropIndex('protoIdBills', 'bills');
         $this->dropTable('bills');
     }
 
