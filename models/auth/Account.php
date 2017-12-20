@@ -18,6 +18,9 @@ use yii\behaviors\TimestampBehavior;
  * @property integer $dateCreated Registration date
  * @property integer $dateExpected Date of next payment
  * @property integer $activeUserId Last selected (primary) person
+ *
+ * @property User[] $users
+ *
  */
 class Account extends ActiveRecord
 {
@@ -31,6 +34,9 @@ class Account extends ActiveRecord
 
     }
 
+    /**
+     * @inheritdoc
+     */
     public function behaviors()
     {
 	return [
@@ -76,6 +82,15 @@ class Account extends ActiveRecord
 	    'dateExpected' => 'Дата следующего платежа',
 	    'activeUserId' => 'Активный персонаж',
 	];
+
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUsers()
+    {
+	return $this->hasMany(User::className(), ['accountId' => 'id']);
 
     }
 
