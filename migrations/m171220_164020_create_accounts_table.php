@@ -26,13 +26,13 @@ class m171220_164020_create_accounts_table extends Migration
 	    'activeUserId' => $this->integer()->unsigned()->defaultValue(null),
 	]);
 
+
 	$this->createIndex('accountsEmail', 'accounts', ['email']);
 	$this->createIndex('accountsStatus', 'accounts', ['status']);
 	$this->createIndex('accountsRole', 'accounts', ['role']);
 	$this->createIndex('accountsDateCreated', 'accounts', ['dateCreated']);
 	$this->createIndex('accountsDateExpected', 'accounts', ['dateExpected']);
 	$this->createIndex('accountsActiveUserId', 'accounts', ['activeUserId']);
-
     }
 
     /**
@@ -48,7 +48,6 @@ class m171220_164020_create_accounts_table extends Migration
 	$this->dropIndex('accountsDateExpected', 'accounts');
 
 	$this->dropTable('accounts');
-
     }
 
 }

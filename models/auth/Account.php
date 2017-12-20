@@ -3,7 +3,7 @@
 namespace app\models\auth;
 
 use Yii;
-use yii\db\ActiveRecord;
+use app\models\base\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
 
 /**
@@ -31,7 +31,6 @@ class Account extends ActiveRecord
     public static function tableName()
     {
 	return 'accounts';
-
     }
 
     /**
@@ -46,7 +45,6 @@ class Account extends ActiveRecord
 		'updatedAtAttribute' => false,
 	    ],
 	];
-
     }
 
     /**
@@ -63,7 +61,6 @@ class Account extends ActiveRecord
 	    [['accessToken'], 'unique'],
 	    [['email'], 'unique'],
 	];
-
     }
 
     /**
@@ -82,7 +79,6 @@ class Account extends ActiveRecord
 	    'dateExpected' => 'Дата следующего платежа',
 	    'activeUserId' => 'Активный персонаж',
 	];
-
     }
 
     /**
@@ -91,7 +87,6 @@ class Account extends ActiveRecord
     public function getUsers()
     {
 	return $this->hasMany(User::className(), ['accountId' => 'id']);
-
     }
 
 }

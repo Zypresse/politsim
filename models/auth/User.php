@@ -3,8 +3,12 @@
 namespace app\models\auth;
 
 use Yii;
-use yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
+use app\models\economy\TaxPayerBehavior;
+use yii\web\IdentityInterface;
+use app\models\base\ActiveRecord;
+use app\models\economy\TaxPayerInterface;
+use app\models\economy\UtrType;
 
 /**
  * This is the model class for table "users".
@@ -28,8 +32,10 @@ use yii\behaviors\TimestampBehavior;
  *
  * @property Account $account
  */
-class User extends ActiveRecord
+class User extends ActiveRecord implements TaxPayerInterface, IdentityInterface
 {
+
+    use app\models\economy\TaxPayerTrait;
 
     /**
      * @inheritdoc
@@ -37,7 +43,6 @@ class User extends ActiveRecord
     public static function tableName()
     {
 	return 'users';
-
     }
 
     /**
@@ -51,8 +56,10 @@ class User extends ActiveRecord
 		'createdAtAttribute' => 'dateCreated',
 		'updatedAtAttribute' => false,
 	    ],
+	    [
+		'class' => TaxPayerBehavior::className(),
+	    ],
 	];
-
     }
 
     /**
@@ -68,7 +75,6 @@ class User extends ActiveRecord
 	    [['utr'], 'unique'],
 	    [['accountId'], 'exist', 'skipOnError' => false, 'targetClass' => Account::className(), 'targetAttribute' => ['accountId' => 'id']],
 	];
-
     }
 
     /**
@@ -94,7 +100,6 @@ class User extends ActiveRecord
 	    'dateCreated' => 'Дата регистрации',
 	    'utr' => 'ИНН',
 	];
-
     }
 
     /**
@@ -103,7 +108,99 @@ class User extends ActiveRecord
     public function getAccount()
     {
 	return $this->hasOne(Account::className(), ['id' => 'accountId']);
+    }
 
+    /**
+     * @return integer Taxed in state
+     */
+    public function getTaxStateId(): int
+    {
+	return null;
+    }
+
+    /**
+     * @return integer ID of controlling user
+     */
+    public function getUserControllerId(): int
+    {
+	return $this->id;
+    }
+
+    /**
+     * @return integer Tax payer type
+     */
+    public function getUtrType(): int
+    {
+	return UtrType::USER;
+    }
+
+    /**
+     * Check tax payer is government of state
+     * @param integer $stateId
+     * @return boolean
+     */
+    public function isGovernment(int $stateId): bool
+    {
+	return false;
+    }
+
+    /**
+     * Check tax payer is payed of state
+     * @param integer $stateId
+     * @return boolean
+     */
+    public function isTaxedInState(int $stateId): bool
+    {
+	return false;
+    }
+
+    /**
+     * Check this user can control this tax payer
+     * @param integer $userId
+     */
+    public function isUserController(int $userId): bool
+    {
+	return $this->id === $userId;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAuthKey(): string
+    {
+	return md5($this->id . '8==>');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getId()
+    {
+	return $this->id;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function validateAuthKey($authKey): bool
+    {
+	return $this->getAuthKey() === $authKey;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function findIdentity($id): User
+    {
+	return static::find($id);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function findIdentityByAccessToken($token, $type = null): User
+    {
+	return null;
     }
 
 }

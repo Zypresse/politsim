@@ -42,7 +42,6 @@ class m171220_165731_create_users_table extends Migration
 	$this->createIndex('usersDateCreated', 'users', ['dateCreated']);
 	$this->createIndex('usersUtr', 'users', ['utr'], true);
 	$this->addForeignKey('usersAccountIdRef', 'users', ['accountId'], 'accounts', ['id']);
-
     }
 
     /**
@@ -50,8 +49,18 @@ class m171220_165731_create_users_table extends Migration
      */
     public function down()
     {
+	$this->dropForeignKey('usersAccountIdRef', 'users');
+	$this->dropIndex('usersAccountId', 'users');
+	$this->dropIndex('usersName', 'users');
+	$this->dropIndex('usersGender', 'users');
+	$this->dropIndex('usersTileId', 'users');
+	$this->dropIndex('usersIdeologyId', 'users');
+	$this->dropIndex('usersFame', 'users');
+	$this->dropIndex('usersTrust', 'users');
+	$this->dropIndex('usersSuccess', 'users');
+	$this->dropIndex('usersDateCreated', 'users');
+	$this->dropIndex('usersUtr', 'users');
 	$this->dropTable('users');
-
     }
 
 }
