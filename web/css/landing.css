@@ -4,7 +4,7 @@
 
 body {
     background: black;
-    font-family: 'Raleway', sans-serif;
+    font-family: 'Ubuntu', sans-serif;
     letter-spacing: 0.65px;
     line-height: 1.8;
     font-weight: 400;
@@ -61,7 +61,8 @@ iframe {
 */
 
 a {
-    color:#a0ce4e;
+    text-decoration:none;
+    color:#003eff;
     -webkit-transition:all 0.125s cubic-bezier( 0.3, 0.1, 0.58, 1 );
     -moz-transition:all 0.125s cubic-bezier( 0.3, 0.1, 0.58, 1 );
     -o-transition:all 0.125s cubic-bezier( 0.3, 0.1, 0.58, 1 );
@@ -69,13 +70,12 @@ a {
 }
 
 a:hover, a:focus {
-    text-decoration:none;
     outline:none;
-    color:rgb(135, 184, 50);
+    color:#003399;
 }
 
 h1, h2, h3, h4, h5, h6 {
-    font-family:'Raleway', sans-serif;
+    font-family:'Ubuntu', sans-serif;
     line-height:1.4;
     font-weight:700;
     margin:0 0 20px;
@@ -233,7 +233,7 @@ p, ul, ol, .form-group {
     border:2px solid #dadada;
     height:44px;
     padding:13px 16px;
-    font-family:'Raleway', sans-serif;
+    font-family:'Ubuntu', sans-serif;
     text-transform:uppercase;
     letter-spacing:1.3px;
     font-weight:700;
@@ -329,7 +329,7 @@ p, ul, ol, .form-group {
 */
 
 .btn {
-	font-family:'Raleway', sans-serif;
+	font-family:'Ubuntu', sans-serif;
 	text-transform:uppercase;
 	letter-spacing:1.3px;
 	font-weight:700;
@@ -735,4 +735,8 @@ p, ul, ol, .form-group {
     .multi-columns-row .col-lg-2:nth-child(6n + 7){ clear:left; }
     .multi-columns-row .col-lg-1:nth-child(12n + 13){ clear:left; }
 
+}
+
+.text-center {
+    text-align: center;
 }
