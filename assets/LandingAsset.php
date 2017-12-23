@@ -17,9 +17,6 @@ class LandingAsset extends AssetBundle
 	'/js/jquery.countdown.min.js',
 	'/js/landing.js',
     ];
-    public $depends = [
-//	'yii\web\YiiAsset',
-//	'yii\bootstrap\BootstrapAsset',
-    ];
+    public $depends = [];
 
 }
