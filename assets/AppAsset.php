@@ -21,8 +21,8 @@ class AppAsset extends AssetBundle
     public $js = [
 	'js/fullscreen.js',
 	'js/jquery-dateFormat.min.js',
-//        'js/serialize-object.js',
-	'js/pace.min.js',
+//      'js/serialize-object.js',
+//	'js/pace.min.js',
 	'js/jquery.dataTables.min.js',
 	'js/dataTables.bootstrap.min.js',
 	'js/leaflet.js',

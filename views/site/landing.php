@@ -1,6 +1,6 @@
 <?php
 
-use yii\web\YiiAsset;
+use yii\helpers\Html;
 
 /* @var $this \yii\web\View */
 
@@ -37,7 +37,14 @@ $this->registerJs("init();");
 		</svg>
 
 		<h1 class="m-b-40">Political Simulator</h1>
-		<p class="lead m-b-60">Строй бизнес. Управляй государством. Пиши в твиттер. <br class="hidden-xs"> Бета-релиз 15 апреля 2018.</p>
+		<p class="lead m-b-60">
+		    Строй бизнес. Управляй государством. Пиши в твиттер.
+		    <br class="hidden-xs" />
+		    Бета-релиз 15 апреля 2018.
+		</p>
+		<p class="lead m-b-60">
+		    <?= Html::a('Вход', ["login"], ['class' => 'btn btn-success btn-sm']) ?> <?= Html::a('Регистрация', ["register"], ['class' => 'btn btn-primary btn-sm']) ?>
+		</p>
 
 		<div id="countdown" class="m-b-100" data-countdown="2018/04/15"></div>
 

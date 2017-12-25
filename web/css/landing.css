@@ -484,6 +484,7 @@ p, ul, ol, .form-group {
 	display:table-cell;
 	vertical-align:middle;
 	height:100%;
+        font-size: 16px;
 }
 
 @media (max-width: 1024px){
@@ -555,6 +556,7 @@ p, ul, ol, .form-group {
 
 .overlay-dark{
 	color:#fff;
+        background-color: rgba(0,0,0,0.5);
 }
 
 .overlay-dark h1, .overlay-dark h2, .overlay-dark h3, .overlay-dark h4, .overlay-dark h5, .overlay-dark h6{
@@ -735,8 +737,4 @@ p, ul, ol, .form-group {
     .multi-columns-row .col-lg-2:nth-child(6n + 7){ clear:left; }
     .multi-columns-row .col-lg-1:nth-child(12n + 13){ clear:left; }
 
-}
-
-.text-center {
-    text-align: center;
 }
