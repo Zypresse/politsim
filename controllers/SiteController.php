@@ -38,12 +38,17 @@ class SiteController extends Controller
 	return [
 	    'access' => [
 		'class' => AccessControl::className(),
-		'only' => ['logout'],
+		'only' => ['logout', 'register', 'login'],
 		'rules' => [
 		    [
 			'actions' => ['logout'],
 			'allow' => true,
 			'roles' => ['@'],
+		    ],
+		    [
+			'actions' => ['login', 'register'],
+			'allow' => true,
+			'roles' => ['?'],
 		    ],
 		],
 	    ],
@@ -62,7 +67,27 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
+	$this->layout = 'landing';
 	return $this->render('landing');
+    }
+
+    /**
+     * Registration page
+     * @return string
+     */
+    public function actionRegister()
+    {
+	return $this->render('register');
+    }
+
+    /**
+     * Log out
+     * @return string
+     */
+    public function actionLogout()
+    {
+	Yii::$app->user->logout();
+	return $this->goHome();
     }
 
 }

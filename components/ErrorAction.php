@@ -37,6 +37,7 @@ class ErrorAction extends YiiErrorAction
 	    Yii::$app->response->format = 'json';
 	    $result = ['result' => 'error', 'error' => $code . ' ' . $name . ': ' . $message];
 	} else {
+	    $this->controller->layout = 'landing';
 	    $result = $this->controller->render('error', [
 		'code' => $code,
 		'name' => $name,

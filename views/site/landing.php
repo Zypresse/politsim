@@ -7,11 +7,9 @@ use yii\helpers\Html;
 $this->registerJs("init();");
 
 ?>
-
 <div class="page-loader">
     <div class="loader">Loading...</div>
 </div>
-
 <div class="wrapper">
     <section id="hero" class="module-hero overlay-dark">
 	<div class="hero-caption">

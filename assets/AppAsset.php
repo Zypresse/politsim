@@ -16,11 +16,13 @@ class AppAsset extends AssetBundle
 	'css/skin-black.css',
 	'css/leaflet.css',
 	'css/leaflet.label.css',
+	'css/icheck-blue.css',
 	'css/style.css',
     ];
     public $js = [
 	'js/fullscreen.js',
 	'js/jquery-dateFormat.min.js',
+	'js/icheck.min.js',
 //      'js/serialize-object.js',
 //	'js/pace.min.js',
 	'js/jquery.dataTables.min.js',
