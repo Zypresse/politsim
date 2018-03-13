@@ -2,7 +2,7 @@
 
 use yii\db\Migration;
 
-class m170909_175500_traits extends Migration
+class m180313_183059_create_traits_table extends Migration
 {
     
     public function safeUp()

@@ -2,7 +2,7 @@
 
 use yii\db\Migration;
 
-class m170907_233200_dealings extends Migration
+class m180313_184654_create_dealings_table extends Migration
 {
     
     public function safeUp()
@@ -14,7 +14,6 @@ class m170907_233200_dealings extends Migration
             'receiver' => $this->integer()->unsigned()->notNull(),
             'dateCreated' => $this->integer()->unsigned()->notNull(),
             'dateApproved' => $this->integer()->unsigned()->null(),
-            'amount' => $this->double()->notNull(),
             'items' => 'JSONB DEFAULT NULL',
         ]);
         $this->createIndex('typeDealings', 'dealings', ['type']);

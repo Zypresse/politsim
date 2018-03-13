@@ -2,7 +2,7 @@
 
 use yii\db\Migration;
 
-class m170903_180728_messages extends Migration
+class m180313_183019_create_messages_table extends Migration
 {
     
     public function safeUp()
@@ -28,6 +28,12 @@ class m170903_180728_messages extends Migration
 
     public function safeDown()
     {
+        $this->dropIndex('type2recipientMessages', 'messages');
+        $this->dropIndex('senderIdMessages', 'messages');
+        $this->dropIndex('recipientIdMessages', 'messages');
+        $this->dropIndex('dateCreatedMessages', 'messages');
+        $this->dropIndex('dateUpdatedMessages', 'messages');
+        $this->dropIndex('dateDeletedMessages', 'messages');
         $this->dropTable('messages');
     }
 

@@ -78,7 +78,7 @@ $this->registerJs("init();");
 		<div class="col-sm-12">
 
 		    <div class="copyright text-center m-t-40">
-			© Разработка <a href="https://lazzyteam.pw"><b>LazzyTeam</b></a>.
+			LazzyTeam
 		    </div>
 
 		</div>

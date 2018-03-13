@@ -2,7 +2,7 @@
 
 use yii\db\Migration;
 
-class m170907_232600_parties extends Migration
+class m180313_184448_create_parties_and_posts_table extends Migration
 {
     
     public function safeUp()

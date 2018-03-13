@@ -2,7 +2,7 @@
 
 use yii\db\Migration;
 
-class m170909_184450_tiles extends Migration
+class m180313_181824_create_tiles_table extends Migration
 {
     
     public function safeUp()
@@ -31,22 +31,14 @@ class m170909_184450_tiles extends Migration
         
         $this->addForeignKey('tilesRegion', 'tiles', ['regionId'], 'regions', ['id']);
         $this->addForeignKey('tilesCity', 'tiles', ['cityId'], 'cities', ['id']);
-        $this->addForeignKey('tilesDistrict', 'tiles', ['districtId'], 'electoralDistricts', ['id']);
-        
         $this->addForeignKey('usersTile', 'users', ['tileId'], 'tiles', ['id']);
-        $this->addForeignKey('electionsVotesPopsTileRef', 'electionsVotesPops', ['tileId'], 'tiles', ['id']);
-        $this->addForeignKey('electionsVotesUsersTileRef', 'electionsVotesUsers', ['tileId'], 'tiles', ['id']);
     }
 
     public function safeDown()
     {
         $this->dropForeignKey('usersTile', 'users');
-        $this->dropForeignKey('electionsVotesPopsTileRef', 'electionsVotesPops');
-        $this->dropForeignKey('electionsVotesUsersTileRef', 'electionsVotesUsers');
-        
         $this->dropForeignKey('tilesRegion', 'tiles');
         $this->dropForeignKey('tilesCity', 'tiles');
-        $this->dropForeignKey('tilesDistrict', 'tiles');
         
         $this->dropIndex('tilesXY', 'tiles');
         $this->dropIndex('tilesLatLon', 'tiles');

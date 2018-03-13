@@ -2,7 +2,7 @@
 
 use yii\db\Migration;
 
-class m170903_175858_memberships extends Migration
+class m180313_185323_create_memberships_table extends Migration
 {
     
     public function safeUp()
@@ -16,10 +16,17 @@ class m170903_175858_memberships extends Migration
         $this->createIndex('user2party', 'memberships', ['userId', 'partyId'], true);
         $this->createIndex('dateCreatedMemberships', 'memberships', ['dateCreated']);
         $this->createIndex('dateApprovedMemberships', 'memberships', ['dateApproved']);
+        $this->addForeignKey('userIdMemberships', 'memberships', ['userId'], 'users', ['id']);
+        $this->addForeignKey('partyIdMemberships', 'memberships', ['partyId'], 'parties', ['id']);
     }
 
     public function safeDown()
     {
+        $this->dropIndex('user2party', 'memberships');
+        $this->dropIndex('dateCreatedMemberships', 'memberships');
+        $this->dropIndex('dateApprovedMemberships', 'memberships');
+        $this->dropForeignKey('userIdMemberships', 'memberships');
+        $this->dropForeignKey('partyIdMemberships', 'memberships');
         $this->dropTable('memberships');
     }
 

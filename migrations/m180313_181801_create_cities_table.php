@@ -2,7 +2,7 @@
 
 use yii\db\Migration;
 
-class m170907_230000_cities extends Migration
+class m180313_181801_create_cities_table extends Migration
 {
     
     public function safeUp()
@@ -17,6 +17,7 @@ class m170907_230000_cities extends Migration
             'population' => $this->integer()->unsigned()->notNull()->defaultValue(0),
             'usersCount' => $this->integer()->unsigned()->notNull()->defaultValue(0),
             'usersFame' => $this->integer()->unsigned()->notNull()->defaultValue(0),
+            'polygon' => 'JSONB DEFAULT NULL',
             'utr' => $this->integer()->unique()->null(),
         ]);
         $this->createIndex('regionIdCities', 'cities', ['regionId']);

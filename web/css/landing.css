@@ -738,3 +738,7 @@ p, ul, ol, .form-group {
     .multi-columns-row .col-lg-1:nth-child(12n + 13){ clear:left; }
 
 }
+
+.copyright {
+    color: white;
+}

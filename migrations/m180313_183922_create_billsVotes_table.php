@@ -2,7 +2,7 @@
 
 use yii\db\Migration;
 
-class m170907_224500_billsVotes extends Migration
+class m180313_183922_create_billsVotes_table extends Migration
 {
     
     public function safeUp()

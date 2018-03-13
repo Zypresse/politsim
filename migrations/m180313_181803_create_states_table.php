@@ -2,7 +2,7 @@
 
 use yii\db\Migration;
 
-class m170907_231400_states extends Migration
+class m180313_181803_create_states_table extends Migration
 {
     
     public function safeUp()
@@ -22,6 +22,7 @@ class m170907_231400_states extends Migration
             'usersFame' => $this->integer()->unsigned()->notNull()->defaultValue(0),
             'dateCreated' => $this->integer()->unsigned()->null(),
             'dateDeleted' => $this->integer()->unsigned()->null(),
+            'polygon' => 'JSONB DEFAULT NULL',
             'utr' => $this->integer()->unsigned()->unique()->null(),
         ]);
         $this->createIndex('nameStates', 'states', ['name']);
@@ -38,16 +39,10 @@ class m170907_231400_states extends Migration
         $this->addForeignKey('cityIdStatesRef', 'states', ['cityId'], 'cities', ['id']);
         
         $this->addForeignKey('regionsStateIdRef', 'regions', ['stateId'], 'states', ['id']);
-        $this->addForeignKey('billsStateIdRef', 'bills', ['stateId'], 'states', ['id']);
-        $this->addForeignKey('agenciesStateIdRef', 'agencies', ['stateId'], 'states', ['id']);
-        $this->addForeignKey('agenciesPostsStateIdRef', 'agenciesPosts', ['stateId'], 'states', ['id']);
     }
 
     public function safeDown()
     {
-        $this->dropForeignKey('agenciesPostsStateIdRef', 'agenciesPosts');
-        $this->dropForeignKey('agenciesStateIdRef', 'agencies');
-        $this->dropForeignKey('billsStateIdRef', 'bills');
         $this->dropForeignKey('regionsStateIdRef', 'regions');
         
         $this->dropForeignKey('cityIdStatesRef', 'states');

@@ -2,7 +2,7 @@
 
 use yii\db\Migration;
 
-class m170907_222800_agencies extends Migration
+class m180313_183304_create_agencies_and_posts_tables extends Migration
 {
     
     public function safeUp()

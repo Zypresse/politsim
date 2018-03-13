@@ -2,7 +2,7 @@
 
 use yii\db\Migration;
 
-class m170907_232000_citizenships extends Migration
+class m180313_184016_create_citizenships_table extends Migration
 {
     
     public function safeUp()
@@ -17,10 +17,12 @@ class m170907_232000_citizenships extends Migration
         $this->createIndex('dateCreatedCitizenships', 'citizenships', ['dateCreated']);
         $this->createIndex('dateApprovedCitizenships', 'citizenships', ['dateApproved']);
         $this->addForeignKey('user2stateStateRef', 'citizenships', ['stateId'], 'states', ['id']);
+        $this->addForeignKey('user2stateUserRef', 'citizenships', ['userId'], 'users', ['id']);
     }
 
     public function safeDown()
     {
+        $this->dropForeignKey('user2stateUserRef', 'citizenships');
         $this->dropForeignKey('user2stateStateRef', 'citizenships');
         $this->dropIndex('user2state', 'citizenships');
         $this->dropIndex('dateCreatedCitizenships', 'citizenships');

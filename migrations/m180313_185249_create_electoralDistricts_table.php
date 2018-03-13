@@ -2,7 +2,7 @@
 
 use yii\db\Migration;
 
-class m170908_000300_electoralDistricts extends Migration
+class m180313_185249_create_electoralDistricts_table extends Migration
 {
     
     public function safeUp()
@@ -12,6 +12,7 @@ class m170908_000300_electoralDistricts extends Migration
             'stateId' => $this->integer()->unsigned()->notNull(),
             'name' => $this->string(255)->notNull(),
             'nameShort' => $this->string(10)->notNull(),
+            'polygon' => 'JSONB DEFAULT NULL',
         ]);
         $this->createIndex('stateIdDistricts', 'electoralDistricts', ['stateId']);
         $this->createIndex('nameDistricts', 'electoralDistricts', ['name']);
