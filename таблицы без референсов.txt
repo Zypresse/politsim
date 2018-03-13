@@ -1,0 +1,12 @@
+таблицы без референсов
+
+agencies (utr)
+agenciesPosts (utr)
+cities (utr)
+regions (utr)
+states (utr)
+parties (utr)
+dealings (utr)
+electionsVotesPops (tile)
+users (tile, utr)
+electionsVotesUsers (tile)
