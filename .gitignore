@@ -45,12 +45,10 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-
 config/db.php
 config/params.php
 config/auth-clients.php
 web/.htaccess
-mail
 vendor
 
 nbproject
@@ -62,5 +60,3 @@ tests/codeception.yml
 tests/codeception/
 yii.bat
 
-composer.lock
-all-lands.json
