@@ -8,7 +8,7 @@ use yii\db\ActiveRecord as YiiActiveRecord;
 /**
  * Custom active record
  */
-abstract class ActiveRecord extends YiiActiveRecord
+class ActiveRecord extends YiiActiveRecord
 {
 
     /**

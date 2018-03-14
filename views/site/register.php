@@ -22,16 +22,16 @@ $this->registerJs("
 			<svg xmlns="http://www.w3.org/2000/svg" width="50px" height="50px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" style="vertical-align: top;" >
 			    <g>
 				<circle cx="50" cy="50" r="45" fill="none" stroke="none" />
-				<circle cx="50" cy="50" r="35" fill="none" stroke="#444" stroke-width="3"/>
-				<ellipse cx="50" cy="50" fill="none" ry="35" stroke="#444" stroke-width="3" rx="25">
+				<circle cx="50" cy="50" r="35" fill="none" stroke="#a5a5a5" stroke-width="5"/>
+				<ellipse cx="50" cy="50" fill="none" ry="35" stroke="#a5a5a5" stroke-width="3" rx="25">
 				</ellipse>
-				<ellipse cx="50" cy="50" fill="none" ry="35" stroke="#444" stroke-width="3" rx="13">
+				<ellipse cx="50" cy="50" fill="none" ry="35" stroke="#a5a5a5" stroke-width="3" rx="13">
 				</ellipse>
-				<ellipse cx="50" cy="50" fill="none" ry="35" stroke="#444" stroke-width="3" rx="0.1">
+				<ellipse cx="50" cy="50" fill="none" ry="35" stroke="#a5a5a5" stroke-width="3" rx="0.1">
 				</ellipse>
-				<ellipse cx="50" cy="30" ry="0.1" fill="none" rx="28" stroke="#444" stroke-width="3"/>
-				<ellipse cx="50" cy="50" ry="0.1" fill="none" rx="34" stroke="#444" stroke-width="3"/>
-				<ellipse cx="50" cy="70" ry="0.1" fill="none" rx="28" stroke="#444" stroke-width="3"/>
+				<ellipse cx="50" cy="30" ry="0.1" fill="none" rx="28" stroke="#a5a5a5" stroke-width="3"/>
+				<ellipse cx="50" cy="50" ry="0.1" fill="none" rx="34" stroke="#a5a5a5" stroke-width="3"/>
+				<ellipse cx="50" cy="70" ry="0.1" fill="none" rx="28" stroke="#a5a5a5" stroke-width="3"/>
 			    </g>
 			</svg>
 			Political Simulator

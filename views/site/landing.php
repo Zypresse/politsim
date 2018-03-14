@@ -11,14 +11,14 @@ $this->registerJs("init();");
     <div class="loader">Loading...</div>
 </div>
 <div class="wrapper">
-    <section id="hero" class="module-hero overlay-dark">
+    <section id="hero" class="module-hero overlay-dark noselect">
 	<div class="hero-caption">
 	    <div class="hero-text">
 
 		<svg xmlns="http://www.w3.org/2000/svg" width="300px" height="300px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" class="m-b-100">
 		    <g>
 			<circle cx="50" cy="50" r="45" fill="none" stroke="none" />
-			<circle cx="50" cy="50" r="35" fill="none" stroke="#fff" stroke-width="3"/>
+			<circle cx="50" cy="50" r="35" fill="none" stroke="#fff" stroke-width="4"/>
 			<ellipse cx="50" cy="50" fill="none" ry="35" stroke="#fff" stroke-width="3" rx="29.5448">
 			    <animate attributeName="rx" calcMode="linear" values="35;0;35" keyTimes="0;0.6;1" dur="1.5s" begin="0s" repeatCount="indefinite"/>
 			</ellipse>

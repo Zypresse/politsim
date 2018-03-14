@@ -20,6 +20,7 @@ use yii\behaviors\TimestampBehavior;
  * @property integer $activeUserId Last selected (primary) person
  *
  * @property User[] $users
+ * @property AccountProvider[] $providers
  *
  */
 class Account extends ActiveRecord
@@ -87,6 +88,14 @@ class Account extends ActiveRecord
     public function getUsers()
     {
 	return $this->hasMany(User::className(), ['accountId' => 'id']);
+    }
+    
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProviders()
+    {
+	return $this->hasMany(AccountProvider::className(), ['accountId' => 'id']);
     }
 
 }

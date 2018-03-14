@@ -17,7 +17,7 @@ LandingAsset::register($this);
 
 
 <div class="error-page">
-    <section id="hero" class="module-hero overlay-dark">
+    <section id="hero" class="module-hero overlay-dark noselect">
 	<div class="hero-caption">
 	    <div class="hero-text">
 		<h1 class="headline text-red"><?= $code ?> <?= Html::encode($name) ?></h1>

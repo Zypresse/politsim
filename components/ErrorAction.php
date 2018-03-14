@@ -4,7 +4,6 @@ namespace app\components;
 
 use Yii;
 use yii\web\ErrorAction as YiiErrorAction;
-use yii\base\Exception;
 use yii\web\NotFoundHttpException;
 
 /**

@@ -11,10 +11,9 @@ class m180313_181824_create_tiles_table extends Migration
             'id' => $this->primaryKey()->unsigned()->notNull(),
             'x' => $this->smallInteger(6)->notNull(),
             'y' => $this->smallInteger(6)->notNull(),
-            'lat' => $this->double()->notNull(),
-            'lon' => $this->double()->notNull(),
-            'isWater' => $this->boolean()->notNull()->defaultValue(false),
-            'isLand' => $this->boolean()->notNull()->defaultValue(false),
+            'lat' => $this->integer()->notNull(),
+            'lon' => $this->integer()->notNull(),
+            'biome' => $this->smallinteger(2)->unsigned()->notNull()->defaultValue(0),
             'population' => $this->integer()->unsigned()->notNull()->defaultValue(0),
             'regionId' => $this->integer()->unsigned()->null(),
             'cityId' => $this->integer()->unsigned()->null(),
@@ -22,8 +21,7 @@ class m180313_181824_create_tiles_table extends Migration
         ]);
         $this->createIndex('tilesXY', 'tiles', ['x', 'y'], true);
         $this->createIndex('tilesLatLon', 'tiles', ['lat', 'lon'], true);
-        $this->createIndex('tilesIsWater', 'tiles', ['isWater']);
-        $this->createIndex('tileIsLand', 'tiles', ['isLand']);
+        $this->createIndex('tilesBiome', 'tiles', ['biome']);
         $this->createIndex('populationTiles', 'tiles', 'population');
         $this->createIndex('tilesRegionId', 'tiles', ['regionId']);
         $this->createIndex('tilesСityId', 'tiles', ['cityId']);
@@ -42,8 +40,7 @@ class m180313_181824_create_tiles_table extends Migration
         
         $this->dropIndex('tilesXY', 'tiles');
         $this->dropIndex('tilesLatLon', 'tiles');
-        $this->dropIndex('tilesIsWater', 'tiles');
-        $this->dropIndex('tileIsLand', 'tiles');
+        $this->dropIndex('tilesBiome', 'tiles');
         $this->dropIndex('populationTiles', 'tiles');
         $this->dropIndex('tilesRegionId', 'tiles');
         $this->dropIndex('tilesСityId', 'tiles');
