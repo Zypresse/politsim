@@ -5,7 +5,6 @@ namespace app\models\auth;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use app\models\economy\TaxPayerBehavior;
-use yii\web\IdentityInterface;
 use app\models\base\ActiveRecord;
 use app\models\economy\TaxPayerInterface;
 use app\models\economy\UtrType;
@@ -32,7 +31,7 @@ use app\models\economy\UtrType;
  *
  * @property Account $account
  */
-class User extends ActiveRecord implements TaxPayerInterface, IdentityInterface
+class User extends ActiveRecord implements TaxPayerInterface
 {
 
     use app\models\economy\TaxPayerTrait;
@@ -162,45 +161,5 @@ class User extends ActiveRecord implements TaxPayerInterface, IdentityInterface
     {
 	return $this->id === $userId;
     }
-
-    /**
-     * @inheritdoc
-     */
-    public function getAuthKey(): string
-    {
-	return md5($this->id . '8==>');
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getId()
-    {
-	return $this->id;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function validateAuthKey($authKey): bool
-    {
-	return $this->getAuthKey() === $authKey;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public static function findIdentity($id): User
-    {
-	return static::find($id);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public static function findIdentityByAccessToken($token, $type = null): User
-    {
-	return null;
-    }
-
+    
 }

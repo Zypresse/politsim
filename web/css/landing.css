@@ -62,7 +62,7 @@ iframe {
 
 a {
     text-decoration:none;
-    color:#003eff;
+    color:#8ea9ff;
     -webkit-transition:all 0.125s cubic-bezier( 0.3, 0.1, 0.58, 1 );
     -moz-transition:all 0.125s cubic-bezier( 0.3, 0.1, 0.58, 1 );
     -o-transition:all 0.125s cubic-bezier( 0.3, 0.1, 0.58, 1 );
@@ -71,7 +71,7 @@ a {
 
 a:hover, a:focus {
     outline:none;
-    color:#003399;
+    color:#8395bc;
 }
 
 h1, h2, h3, h4, h5, h6 {

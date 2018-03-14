@@ -19,7 +19,7 @@ $config = [
             'class' => 'yii\caching\FileCache',
         ],
         'user' => [
-            'identityClass' => 'app\models\User',
+            'identityClass' => 'app\models\auth\Account',
             'enableAutoLogin' => true,
         ],
         'errorHandler' => [
@@ -45,9 +45,7 @@ $config = [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
-            'rules' => [
-                'profile' => 'user/profile',
-            ],            
+            'rules' => [],            
         ],
         'authClientCollection' => [
             'class' => 'yii\authclient\Collection',
@@ -57,6 +55,11 @@ $config = [
         'notificator' => [
             'class' => 'app\components\Notificator',
         ]
+    ],
+    'modules' => [
+        'admin' => [
+            'class' => 'app\modules\admin\Module',
+        ],
     ],
     'params' => $params,
 ];

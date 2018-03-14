@@ -5,6 +5,7 @@ namespace app\models\auth;
 use Yii;
 use app\models\base\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
+use yii\web\IdentityInterface;
 
 /**
  * This is the model class for table "accounts".
@@ -23,15 +24,18 @@ use yii\behaviors\TimestampBehavior;
  * @property AccountProvider[] $providers
  *
  */
-class Account extends ActiveRecord
+class Account extends ActiveRecord implements IdentityInterface
 {
+    
+    const ROLE_USER = 1;
+    const ROLE_ADMIN = 100;
 
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-	return 'accounts';
+        return 'accounts';
     }
 
     /**
@@ -39,13 +43,13 @@ class Account extends ActiveRecord
      */
     public function behaviors()
     {
-	return [
-	    [
-		'class' => TimestampBehavior::className(),
-		'createdAtAttribute' => 'dateCreated',
-		'updatedAtAttribute' => false,
-	    ],
-	];
+        return [
+            [
+                'class' => TimestampBehavior::className(),
+                'createdAtAttribute' => 'dateCreated',
+                'updatedAtAttribute' => false,
+            ],
+        ];
     }
 
     /**
@@ -53,15 +57,15 @@ class Account extends ActiveRecord
      */
     public function rules()
     {
-	return [
-	    [['email', 'accessToken'], 'required'],
-	    [['role', 'status', 'dateCreated', 'dateExpected', 'activeUserId'], 'integer'],
-	    [['email'], 'string', 'max' => 256],
-	    [['password'], 'string', 'max' => 512],
-	    [['accessToken'], 'string', 'max' => 255],
-	    [['accessToken'], 'unique'],
-	    [['email'], 'unique'],
-	];
+        return [
+            [['email', 'accessToken'], 'required'],
+            [['role', 'status', 'dateCreated', 'dateExpected', 'activeUserId'], 'integer'],
+            [['email'], 'string', 'max' => 256],
+            [['password'], 'string', 'max' => 512],
+            [['accessToken'], 'string', 'max' => 255],
+            [['accessToken'], 'unique'],
+            [['email'], 'unique'],
+        ];
     }
 
     /**
@@ -69,17 +73,17 @@ class Account extends ActiveRecord
      */
     public function attributeLabels()
     {
-	return [
-	    'id' => 'ID',
-	    'email' => 'E-mail',
-	    'password' => 'Пароль',
-	    'accessToken' => 'Авторизационный ключ',
-	    'role' => 'Роль',
-	    'status' => 'Статус',
-	    'dateCreated' => 'Дата регистрации',
-	    'dateExpected' => 'Дата следующего платежа',
-	    'activeUserId' => 'Активный персонаж',
-	];
+        return [
+            'id' => 'ID',
+            'email' => 'E-mail',
+            'password' => 'Пароль',
+            'accessToken' => 'Авторизационный ключ',
+            'role' => 'Роль',
+            'status' => 'Статус',
+            'dateCreated' => 'Дата регистрации',
+            'dateExpected' => 'Дата следующего платежа',
+            'activeUserId' => 'Активный персонаж',
+        ];
     }
 
     /**
@@ -87,15 +91,40 @@ class Account extends ActiveRecord
      */
     public function getUsers()
     {
-	return $this->hasMany(User::className(), ['accountId' => 'id']);
+        return $this->hasMany(User::className(), ['accountId' => 'id']);
     }
-    
+
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getProviders()
     {
-	return $this->hasMany(AccountProvider::className(), ['accountId' => 'id']);
+        return $this->hasMany(AccountProvider::className(), ['accountId' => 'id']);
+    }
+
+    public function getAuthKey(): string
+    {
+        return '';
+    }
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function validateAuthKey($authKey): bool
+    {
+        return false;
+    }
+
+    public static function findIdentity($id): IdentityInterface
+    {
+        return self::findOne($id);
+    }
+
+    public static function findIdentityByAccessToken($token, $type = null): IdentityInterface
+    {
+        return null;
     }
 
 }
