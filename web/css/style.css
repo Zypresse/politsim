@@ -801,3 +801,7 @@ ul.twPc-Arrange {
 .register-logo a {
     color: #a5a5a5;
 }
+
+.checkbox .field-registrationform-agreeterms label {
+    padding-left: 0;
+}

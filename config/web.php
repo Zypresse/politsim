@@ -45,16 +45,20 @@ $config = [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
-            'rules' => [],            
+            'rules' => [
+                'registration' => 'auth/register',
+                'login' => 'auth/login',
+                'logout' => 'auth/logout',
+            ],            
         ],
         'authClientCollection' => [
             'class' => 'yii\authclient\Collection',
             'clients' => $authClients,
         ],
         'i18n' => $i18n,
-        'notificator' => [
-            'class' => 'app\components\Notificator',
-        ]
+//        'notificator' => [
+//            'class' => 'app\components\Notificator',
+//        ]
     ],
     'modules' => [
         'admin' => [

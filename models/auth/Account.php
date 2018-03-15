@@ -124,7 +124,34 @@ class Account extends ActiveRecord implements IdentityInterface
 
     public static function findIdentityByAccessToken($token, $type = null): IdentityInterface
     {
-        return null;
+        return self::find()->where(['accessToken' => $token])->one();
+    }
+    
+    /**
+     * 
+     * @param string $password
+     */
+    public function setPassword($password)
+    {
+        $this->password = password_hash($password, PASSWORD_BCRYPT);
+    }
+    
+    /**
+     * 
+     * @param string $password
+     * @return boolean
+     */
+    public function passwordVerify($password)
+    {
+        return password_verify($password, $this->password);
+    }
+    
+    /**
+     * 
+     */
+    public function generateAccessToken()
+    {
+        $this->accessToken = sha1(mt_rand().$this->email);
     }
 
 }
