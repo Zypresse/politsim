@@ -5,6 +5,9 @@ namespace app\controllers;
 use Yii;
 use app\controllers\base\AppController;
 use app\models\auth\User;
+use app\models\auth\Account;
+use yii\web\NotFoundHttpException;
+use app\exceptions\NotAllowedHttpException;
 
 /**
  * Description of UserController
@@ -18,6 +21,8 @@ class UserController extends AppController
     {
         return $this->render('profile', [
             'model' => $this->getModel($id),
+            'viewer' => null, // viewer User
+            'isOwner' => false,
         ]);
     }
     
@@ -40,6 +45,18 @@ class UserController extends AppController
         return $this->render('create', [
             'model' => $model,
         ]);
+    }
+    
+    public function actionSelect(int $id)
+    {
+        $model = $this->getModel($id);
+        if ($model->accountId !== Yii::$app->user->id && Yii::$app->user->identity->role !== Account::ROLE_ADMIN) {
+            throw new NotAllowedHttpException();
+        }
+        
+        Yii::$app->user->identity->activeUserId = $id;
+        Yii::$app->user->identity->save();
+        return $this->redirect(["user/profile", "id" => $id]);
     }
     
     /**

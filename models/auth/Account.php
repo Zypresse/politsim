@@ -20,6 +20,7 @@ use yii\web\IdentityInterface;
  * @property integer $dateExpected Date of next payment
  * @property integer $activeUserId Last selected (primary) person
  *
+ * @property User $currentUser
  * @property User[] $users
  * @property AccountProvider[] $providers
  *
@@ -84,6 +85,14 @@ class Account extends ActiveRecord implements IdentityInterface
             'dateExpected' => 'Дата следующего платежа',
             'activeUserId' => 'Активный персонаж',
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCurrentUser()
+    {
+        return $this->hasOne(User::className(), ['id' => 'activeUserId']);
     }
 
     /**

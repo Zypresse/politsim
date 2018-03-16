@@ -1,6 +1,7 @@
 <?php
 
 use yii\bootstrap\Html;
+use app\helpers\Icon;
 
 /* @var $this \yii\web\View */
 /* @var $model \app\models\auth\Account */
@@ -23,12 +24,27 @@ use yii\bootstrap\Html;
         </div>
         <div class="box-body">
         <?php if (count($model->users)): ?>
+            <table class="table table-bordered table-hover">
             <?php foreach($model->users as $user): ?>
-            <p>
-                <?= Html::img($user->avatar, ['style' => 'width: 50px']) ?>
-                <?= Html::a($user->name, ["user/profile", "id" => $user->id]) ?>
-            </p>
+                <tr>
+                    <td>
+                        <?= Html::a(Html::img($user->avatar, ['style' => 'width: 16px']).'&nbsp;'.Html::encode($user->name), ["user/profile", "id" => $user->id]) ?>
+                    </td>
+                    <td>
+                        <span class="star"><span class="autoupdated-fame"><?= $user->fame ?></span> <?= Icon::draw(Icon::STAR) ?></span>
+                        <span class="heart"><span class="autoupdated-trust"><?= $user->trust ?></span> <?= Icon::draw(Icon::HEART) ?></span>
+                        <span class="chart_pie"><span class="autoupdated-success"><?= $user->success ?></span> <?= Icon::draw(Icon::CHARTPIE) ?></span>
+                    </td>
+                    <td>
+                    <?php if (Yii::$app->user->identity->activeUserId === $user->id): ?>
+                        Сейчас используется этот персонаж
+                    <?php else: ?>
+                        <?= Html::a('<i class="fa fa-check"></i> Выбрать', ["user/select", "id" => $user->id], ['class' => 'btn btn-flat btn-primary']) ?>
+                    <?php endif ?>
+                    </td>
+                </tr>
             <?php endforeach ?>
+            </table>
         <?php else: ?>
             У вас пока нет ни одного персонажа
         <?php endif ?>
