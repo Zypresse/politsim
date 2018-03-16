@@ -17,7 +17,7 @@ class RegistrationForm extends Model
      *
      * @var Account
      */
-    public $model = null;
+    public $identity = null;
     
     /**
      *
@@ -97,13 +97,13 @@ class RegistrationForm extends Model
             return false;
         }
         
-        $model = new Account([
+        $identity = new Account([
             'email' => $this->email,
         ]);
-        $model->setPassword($this->password);
-        $model->generateAccessToken();
-        $model->save();
-        $this->model = $model;
+        $identity->setPassword($this->password);
+        $identity->generateAccessToken();
+        $identity->save();
+        $this->identity = $identity;
         return true;
     }
 

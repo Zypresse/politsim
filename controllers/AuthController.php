@@ -78,7 +78,8 @@ class AuthController extends Controller
     {
         $model = new RegistrationForm();
         if ($model->load(Yii::$app->request->post()) && $model->register()) {
-            return $this->redirect(['account/profile', 'id' => $model->model->id]);
+            Yii::$app->user->login($model->identity);
+            return $this->redirect(['account/profile', 'id' => $model->identity->id]);
         }
 	return $this->render('register', [
             'model' => $model,
