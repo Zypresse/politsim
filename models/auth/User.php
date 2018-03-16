@@ -9,6 +9,7 @@ use app\models\base\ActiveRecord;
 use app\models\economy\TaxPayerInterface;
 use app\models\economy\UtrType;
 use yii\web\UploadedFile;
+use yii\imagine\Image;
 
 /**
  * This is the model class for table "users".
@@ -194,10 +195,15 @@ class User extends ActiveRecord implements TaxPayerInterface
             $this->addError('avatarFile', 'Error #'.$this->avatarFile->error);
             return false;
         }
-        mkdir(Yii::$app->basePath.'/web/upload/avatars/'.$this->id);
-        $path = Yii::$app->basePath.'/web/upload/avatars/'.$this->id.'/';
-        $this->avatarFile->saveAs($path.'300.jpg', false);
-        $this->avatarFile->saveAs($path.'50.jpg', true);
+        
+        $path = Yii::getAlias("@webroot/upload/avatars/{$this->id}/");
+        if (!is_dir($path)) {
+            mkdir($path);
+        }
+        
+        Image::thumbnail($this->avatarFile->tempName , 50, 50)->save($path.'50.jpg', ['quality' => 80]);
+        Image::resize($this->avatarFile->tempName, 300, null, true)->save($path.'300.jpg', ['quality' => 80]);
+        
         $this->avatarBig = '/upload/avatars/'.$this->id.'/300.jpg';
         $this->avatar = '/upload/avatars/'.$this->id.'/50.jpg';
         return $this->save();
