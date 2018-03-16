@@ -56,14 +56,13 @@ $this->registerJs("
 			    </div>
 			    <!-- /.col -->
 			    <div class="col-xs-4">
-                                <?= Html::submitButton("Зарегистрироваться", ['class' => "btn btn-primary btn-block btn-flat"]) ?>
+                                <?= Html::submitButton("Поехали", ['class' => "btn btn-primary btn-block btn-flat"]) ?>
 			    </div>
 			    <!-- /.col -->
 			</div>
                     <?php ActiveForm::end() ?>
 
 		    <div class="social-auth-links text-center">
-			<p>- OR -</p>
 			<a href="#" class="btn btn-block btn-social btn-vk btn-flat"><i class="fa fa-vk"></i> Войти через
 			    VK</a>
 			<a href="#" class="btn btn-block btn-social btn-facebook btn-flat"><i class="fa fa-facebook"></i> Войти через

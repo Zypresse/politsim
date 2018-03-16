@@ -8,6 +8,7 @@ use yii\authclient\AuthAction;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use app\models\auth\RegistrationForm;
+use app\models\auth\LoginForm;
 
 /**
  * Авторизация и аутентификация
@@ -38,17 +39,12 @@ class AuthController extends Controller
 	return [
 	    'access' => [
 		'class' => AccessControl::className(),
-		'only' => ['logout', 'register', 'login'],
+		'only' => ['logout'],
 		'rules' => [
 		    [
 			'actions' => ['logout'],
 			'allow' => true,
 			'roles' => ['@'],
-		    ],
-		    [
-			'actions' => ['login', 'register'],
-			'allow' => true,
-			'roles' => ['?'],
 		    ],
 		],
 	    ],
@@ -67,7 +63,18 @@ class AuthController extends Controller
      */
     public function actionLogin()
     {
-	return $this->render('login');
+        if (!Yii::$app->user->isGuest) {
+            return $this->redirect(['account/profile', 'id' => Yii::$app->user->id]);
+        }
+        
+        $model = new LoginForm();
+        if ($model->load(Yii::$app->request->post()) && $model->login()) {
+            Yii::$app->user->login($model->identity);
+            return $this->redirect(['account/profile', 'id' => $model->identity->id]);
+        }
+	return $this->render('login', [
+            'model' => $model,
+        ]);
     }
 
     /**
@@ -76,6 +83,10 @@ class AuthController extends Controller
      */
     public function actionRegister()
     {
+        if (!Yii::$app->user->isGuest) {
+            return $this->redirect(['account/profile', 'id' => Yii::$app->user->id]);
+        }
+        
         $model = new RegistrationForm();
         if ($model->load(Yii::$app->request->post()) && $model->register()) {
             Yii::$app->user->login($model->identity);

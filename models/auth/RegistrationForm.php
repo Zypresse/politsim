@@ -53,7 +53,7 @@ class RegistrationForm extends Model
             [['email', 'password', 'passwordConfirm', 'agreeTerms'], 'required'],
             [['email'], 'string', 'max' => 256],
             [['password', 'passwordConfirm'], 'string'],
-            [['email'], 'unique', 'targetClass' => Account::class, 'message' => Yii::t('app', 'This email has already been taken.')],
+            [['email'], 'unique', 'targetClass' => Account::class, 'message' => Yii::t('app', 'Этот email уже занят.')],
             [['email'], 'email'],
             [['passwordConfirm'], 'repeatedPassword'],
             [['agreeTerms'], 'isTrue'],
@@ -63,7 +63,7 @@ class RegistrationForm extends Model
     public function repeatedPassword($attribute, $params = [])
     {
         if ($this->$attribute !== $this->password) {
-            $this->addError($attribute, Yii::t('app', '«{0}» must be equal to «{1}»', [
+            $this->addError($attribute, Yii::t('app', 'Пароли не совпадают', [
                         $this->getAttributeLabel($attribute),
                         $this->getAttributeLabel('password'),
             ]));
@@ -75,7 +75,7 @@ class RegistrationForm extends Model
     public function isTrue($attribute, $params = [])
     {
         if (!$this->$attribute) {
-            $this->addError($attribute, Yii::t('app', 'Click this fucking checkbox'));
+            $this->addError($attribute, Yii::t('app', 'Нажми на квадратик, сука'));
             return false;
         }
         return true;
@@ -84,10 +84,7 @@ class RegistrationForm extends Model
     public function attributeLabels()
     {
         return [
-            'email' => Yii::t('app', 'Email'),
-            'password' => Yii::t('app', 'Password'),
-            'passwordConfirm' => Yii::t('app', 'Password again'),
-            'agreeTerms' => Yii::t('app', 'I agree the terms')
+            'agreeTerms' => 'Я не пидор'
         ];
     }
 

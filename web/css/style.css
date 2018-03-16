@@ -798,10 +798,14 @@ ul.twPc-Arrange {
     text-align: left;
 }
 
-.register-logo a {
+.register-logo a, .login-logo a {
     color: #a5a5a5;
 }
 
-.checkbox .field-registrationform-agreeterms label {
+.checkbox .field-registrationform-agreeterms label, .checkbox .field-loginform-rememberme label {
     padding-left: 0;
+}
+
+.login-box-body a.text-center {
+    display: block;
 }

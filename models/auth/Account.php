@@ -117,12 +117,17 @@ class Account extends ActiveRecord implements IdentityInterface
         return false;
     }
 
-    public static function findIdentity($id): IdentityInterface
+    public static function findIdentity($id): Account
     {
         return self::findOne($id);
     }
 
-    public static function findIdentityByAccessToken($token, $type = null): IdentityInterface
+    public static function findIdentityByAccessToken($token, $type = null): Account
+    {
+        return self::find()->where(['accessToken' => $token])->one();
+    }
+
+    public static function findIdentityByEmail($email): Account
     {
         return self::find()->where(['accessToken' => $token])->one();
     }
