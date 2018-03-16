@@ -2,10 +2,8 @@
 
 namespace app\controllers;
 
+use Yii;
 use yii\web\Controller;
-use yii\authclient\AuthAction;
-use yii\filters\AccessControl;
-use yii\filters\VerbFilter;
 use app\components\ErrorAction;
 
 /**
@@ -32,6 +30,10 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
+        if (!Yii::$app->user->isGuest) {
+            return $this->redirect(['account/profile', 'id' => Yii::$app->user->id]);
+        }
+        
 	$this->layout = 'landing';
 	return $this->render('landing');
     }

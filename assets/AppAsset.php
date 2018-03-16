@@ -24,7 +24,6 @@ class AppAsset extends AssetBundle
 	'js/jquery-dateFormat.min.js',
 	'js/icheck.min.js',
 //      'js/serialize-object.js',
-//	'js/pace.min.js',
 	'js/jquery.dataTables.min.js',
 	'js/dataTables.bootstrap.min.js',
 	'js/leaflet.js',
@@ -32,6 +31,7 @@ class AppAsset extends AssetBundle
 	'js/leaflet.geometryutil.js',
 	'js/leaflet-geodesy.js',
 	'js/leaflet3d.js',
+	'js/app.js',
 	'js/script.js',
     ];
     public $depends = [

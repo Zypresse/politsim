@@ -19,10 +19,18 @@ AppAsset::register($this);
         <title><?= Html::encode($this->title) ?></title>
 	<?php $this->head() ?>
     </head>
-    <body>
-        <?php $this->beginBody() ?>
-        <?= $content ?>
-        <?php $this->endBody() ?>
+    <body class="skin-black sidebar-mini">
+	<?php $this->beginBody() ?>
+        <div class="wrapper">
+            <?= $this->render('_header') ?>
+            <?= $this->render('_sidebar') ?>
+            <div id="bigcontainer" class="content-wrapper">
+                <div id="page_content" >
+                    <?= $content ?>
+                </div>
+            </div>
+        </div>
+	<?php $this->endBody() ?>
     </body>
 </html>
 <?php $this->endPage() ?>

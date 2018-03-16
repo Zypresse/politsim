@@ -55,12 +55,6 @@ var docCookies = {
 };
 
 $(function () {
-    $(document).on('click','a',function(){
-        if ($(this).attr('href') == "#") {
-            return false;
-        }
-    });
-    $(document).ajaxStart(function() { Pace.restart(); });
     $.widget( "custom.autocompleteUsersSearch", $.ui.autocomplete, {
         _renderItem: function( ul, item ) {
             return $( "<li>" )
