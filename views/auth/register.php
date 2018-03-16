@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this \yii\web\View */
+/* @var $model \app\models\auth\RegistrationForm */
 
 $this->registerJs("
     $('input').iCheck({
@@ -40,12 +41,12 @@ $this->registerJs("
 		</div>
 
 		<div class="register-box-body">
-		    <p class="login-box-msg"><?= Yii::t('app', 'Register a new membership') ?></p>
+		    <p class="login-box-msg">Регистрация нового аккаунта</p>
 
                     <?php $form = ActiveForm::begin([]) ?>
                         <?= $form->field($model, 'email', ['options' => ['class' => 'form-group has-feedback']])->input('email', ['placeholder' => 'Email'])->label(false)->hint('<span class="glyphicon glyphicon-envelope form-control-feedback"></span>') ?>
-                        <?= $form->field($model, 'password', ['options' => ['class' => 'form-group has-feedback']])->passwordInput(['placeholder' => 'Password'])->label(false)->hint('<span class="glyphicon glyphicon-lock form-control-feedback"></span>') ?>
-                        <?= $form->field($model, 'passwordConfirm', ['options' => ['class' => 'form-group has-feedback']])->passwordInput(['placeholder' => 'Retype password'])->label(false)->hint('<span class="glyphicon glyphicon-log-in form-control-feedback"></span>') ?>
+                        <?= $form->field($model, 'password', ['options' => ['class' => 'form-group has-feedback']])->passwordInput(['placeholder' => 'Пароль'])->label(false)->hint('<span class="glyphicon glyphicon-lock form-control-feedback"></span>') ?>
+                        <?= $form->field($model, 'passwordConfirm', ['options' => ['class' => 'form-group has-feedback']])->passwordInput(['placeholder' => 'Ещё раз пароль'])->label(false)->hint('<span class="glyphicon glyphicon-log-in form-control-feedback"></span>') ?>
 			
 			<div class="row">
 			    <div class="col-xs-8">
@@ -55,7 +56,7 @@ $this->registerJs("
 			    </div>
 			    <!-- /.col -->
 			    <div class="col-xs-4">
-				<button type="submit" class="btn btn-primary btn-block btn-flat">Register</button>
+                                <?= Html::submitButton("Зарегистрироваться", ['class' => "btn btn-primary btn-block btn-flat"]) ?>
 			    </div>
 			    <!-- /.col -->
 			</div>
@@ -63,15 +64,15 @@ $this->registerJs("
 
 		    <div class="social-auth-links text-center">
 			<p>- OR -</p>
-			<a href="#" class="btn btn-block btn-social btn-vk btn-flat"><i class="fa fa-vk"></i> Sign up using
+			<a href="#" class="btn btn-block btn-social btn-vk btn-flat"><i class="fa fa-vk"></i> Войти через
 			    VK</a>
-			<a href="#" class="btn btn-block btn-social btn-facebook btn-flat"><i class="fa fa-facebook"></i> Sign up using
+			<a href="#" class="btn btn-block btn-social btn-facebook btn-flat"><i class="fa fa-facebook"></i> Войти через
 			    Facebook</a>
-			<a href="#" class="btn btn-block btn-social btn-google btn-flat"><i class="fa fa-google-plus"></i> Sign up using
+			<a href="#" class="btn btn-block btn-social btn-google btn-flat"><i class="fa fa-google-plus"></i> Войти через
 			    Google+</a>
 		    </div>
 
-		    <a href="login.html" class="text-center">I already have a membership</a>
+		    <a href="/login" class="text-center">У меня уже есть аккаунт</a>
 		</div>
 		<!-- /.form-box -->
 	    </div>
