@@ -8,6 +8,7 @@ use app\models\economy\TaxPayerBehavior;
 use app\models\base\ActiveRecord;
 use app\models\economy\TaxPayerInterface;
 use app\models\economy\UtrType;
+use yii\web\UploadedFile;
 
 /**
  * This is the model class for table "users".
@@ -34,7 +35,17 @@ use app\models\economy\UtrType;
 class User extends ActiveRecord implements TaxPayerInterface
 {
 
-    use app\models\economy\TaxPayerTrait;
+    use \app\models\economy\TaxPayerTrait;
+    
+    const GENDER_UNKNOWN = 0;
+    const GENDER_FEMALE = 1;
+    const GENDER_MALE = 2;
+    
+    /**
+     *
+     * @var \yii\web\UploadedFile
+     */
+    public $avatarFile;
 
     /**
      * @inheritdoc
@@ -73,6 +84,8 @@ class User extends ActiveRecord implements TaxPayerInterface
 	    [['name'], 'string', 'max' => 255],
 	    [['utr'], 'unique'],
 	    [['accountId'], 'exist', 'skipOnError' => false, 'targetClass' => Account::className(), 'targetAttribute' => ['accountId' => 'id']],
+            [['avatarFile'], 'file'],
+            [['avatarFile'], 'safe'],
 	];
     }
 
@@ -84,7 +97,7 @@ class User extends ActiveRecord implements TaxPayerInterface
 	return [
 	    'id' => 'ID',
 	    'accountId' => 'Аккаунт',
-	    'name' => 'Имя',
+	    'name' => 'Полное имя',
 	    'avatar' => 'Аватар',
 	    'avatarBig' => 'Аватар (большой)',
 	    'gender' => 'Пол',
@@ -98,7 +111,19 @@ class User extends ActiveRecord implements TaxPayerInterface
 	    'successBase' => 'Базовая успешность',
 	    'dateCreated' => 'Дата регистрации',
 	    'utr' => 'ИНН',
+            'avatarFile' => 'Фотография',
 	];
+    }
+    
+    /**
+     * @return array
+     */
+    public static function gendersList()
+    {
+        return [
+            self::GENDER_MALE => 'Мужской',
+            self::GENDER_FEMALE => 'Женский',
+        ];
     }
 
     /**
@@ -160,6 +185,22 @@ class User extends ActiveRecord implements TaxPayerInterface
     public function isUserController(int $userId): bool
     {
 	return $this->id === $userId;
+    }
+    
+    public function saveAvatar()
+    {
+        $this->avatarFile = UploadedFile::getInstance($this, 'avatarFile');
+        if ($this->avatarFile->error) {
+            $this->addError('avatarFile', 'Error #'.$this->avatarFile->error);
+            return false;
+        }
+        mkdir(Yii::$app->basePath.'/web/upload/avatars/'.$this->id);
+        $path = Yii::$app->basePath.'/web/upload/avatars/'.$this->id.'/';
+        $this->avatarFile->saveAs($path.'300.jpg', false);
+        $this->avatarFile->saveAs($path.'50.jpg', true);
+        $this->avatarBig = '/upload/avatars/'.$this->id.'/300.jpg';
+        $this->avatar = '/upload/avatars/'.$this->id.'/50.jpg';
+        return $this->save();
     }
     
 }

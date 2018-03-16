@@ -22,7 +22,7 @@ class TaxPayerBehavior extends Behavior
     public function events()
     {
 	return [
-	    ActiveRecord::EVENT_BEFORE_INSERT => 'beforeInsert',
+	    ActiveRecord::EVENT_AFTER_INSERT => 'afterInsert',
 	];
 
     }
@@ -31,7 +31,7 @@ class TaxPayerBehavior extends Behavior
      * Create UTR before insert
      * @param Event $event
      */
-    public function beforeInsert(Event $event)
+    public function afterInsert(Event $event)
     {
 	$model = new Utr([
 	    'objectType' => $this->owner->utrType,

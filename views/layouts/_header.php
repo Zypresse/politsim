@@ -70,9 +70,8 @@ use yii\helpers\Html;
                         <li class="user-footer">
                             <div class="text-center">
                                 <div class="btn-group">
-                                    <?= Html::a('<i class="fa fa-user"></i> Профиль', '/profile', ['class' => 'btn btn-primary btn-xs']) ?>
-                                    <?= Html::a('<i class="fa fa-cog"></i> Настройки', "/account/settings", ['class' => 'btn btn-info btn-xs']) ?>
-                                    <?= Html::a('<i class="fa fa-sign-out"></i> Выход', ["site/logout"], [
+                                    <?= Html::a('<i class="fa fa-cog"></i> Настройки акканута', ["/account/profile", 'id' => Yii::$app->user->id ], ['class' => 'btn btn-info btn-xs']) ?>
+                                    <?= Html::a('<i class="fa fa-sign-out"></i> Выход', ["auth/logout"], [
                                         'class' => 'btn btn-warning btn-xs',
                                         'data' => [
                                             'confirm' => 'Are you sure you want to sign out?',

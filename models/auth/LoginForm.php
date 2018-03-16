@@ -77,6 +77,8 @@ class LoginForm extends Model
         }
         
         $this->identity = $identity;
+        //                                                        10 years
+        Yii::$app->user->login($identity, $this->rememberMe ? 60 * 60 * 24 * 365 * 10 : 0);
         return true;
     }
 

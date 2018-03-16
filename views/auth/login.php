@@ -6,14 +6,6 @@ use yii\widgets\ActiveForm;
 /* @var $this \yii\web\View */
 /* @var $model \app\models\auth\LoginForm */
 
-$this->registerJs("
-    $('input').iCheck({
-	checkboxClass: 'icheckbox_square-blue',
-	radioClass: 'iradio_square-blue',
-	increaseArea: '20%' // optional
-    });
-");
-
 ?>
 <div class="wrapper">
     <section id="hero" class="module-hero overlay-dark">

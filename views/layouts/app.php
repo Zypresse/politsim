@@ -25,9 +25,7 @@ AppAsset::register($this);
             <?= $this->render('_header') ?>
             <?= $this->render('_sidebar') ?>
             <div id="bigcontainer" class="content-wrapper">
-                <div id="page_content" >
-                    <?= $content ?>
-                </div>
+                <?= $content ?>
             </div>
         </div>
 	<?php $this->endBody() ?>

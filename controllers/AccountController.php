@@ -2,8 +2,7 @@
 
 namespace app\controllers;
 
-use yii\web\Controller;
-use yii\filters\AccessControl;
+use app\controllers\base\AppController;
 use yii\web\NotFoundHttpException;
 use app\models\auth\Account;
 
@@ -12,28 +11,8 @@ use app\models\auth\Account;
  *
  * @author ilya
  */
-class AccountController extends Controller
+class AccountController extends AppController
 {
-    
-    public $layout = 'app';
-    
-    /**
-     * @inheritdoc
-     */
-    public function behaviors()
-    {
-	return [
-	    'access' => [
-		'class' => AccessControl::className(),
-		'rules' => [
-		    [
-			'allow' => true,
-			'roles' => ['@'],
-		    ],
-		],
-	    ],
-	];
-    }
     
     /**
      * 

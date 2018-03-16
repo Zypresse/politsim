@@ -101,6 +101,7 @@ class RegistrationForm extends Model
         $identity->generateAccessToken();
         $identity->save();
         $this->identity = $identity;
+        Yii::$app->user->login($identity);
         return true;
     }
 

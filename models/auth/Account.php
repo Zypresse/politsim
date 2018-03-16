@@ -129,7 +129,7 @@ class Account extends ActiveRecord implements IdentityInterface
 
     public static function findIdentityByEmail($email): Account
     {
-        return self::find()->where(['accessToken' => $token])->one();
+        return self::find()->where(['email' => $email])->one();
     }
     
     /**
