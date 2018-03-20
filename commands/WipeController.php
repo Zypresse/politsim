@@ -7,6 +7,7 @@ use yii\console\Controller;
 use app\models\map\Tile;
 use app\models\map\Region;
 use app\models\map\City;
+use app\components\TileCombiner;
 
 /**
  * Description of WipeController
@@ -139,6 +140,34 @@ class WipeController extends Controller
                 $regionTilesCount -= $cityTilesCount;
             }
             Tile::updateAll(['population' => round($population/$regionTilesCount)], ['cityId' => null, 'regionId' => $region->id]);
+        }
+    }
+    
+    /**
+     * 4) Combine regions and cities polygons
+     */
+    public function actionCombinePolygons()
+    {
+        $cities = City::findAll();
+        /* @var $city City */
+        foreach ($cities as $city) {
+            echo $city->name;
+            $city->polygon = TileCombiner::combine($city->getTiles());
+            if (!$city->save()) {
+                print_r($city->getErrors()); die();
+            }
+            echo " saved".PHP_EOL;
+        }
+        
+        $regions = Region::findAll();
+        /* @var $region Region */
+        foreach ($regions as $region) {
+            echo $region->name;
+            $region->polygon = TileCombiner::combine($region->getTiles());
+            if (!$region->save()) {
+                print_r($region->getErrors()); die();
+            }
+            echo " saved".PHP_EOL;
         }
     }
 

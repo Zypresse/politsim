@@ -49,7 +49,7 @@ abstract class TileCombiner
     protected static $lines = [];
     protected static $conturs = [];
     protected static $linesAdded = [];
-    
+
     protected static function pointsEquals($p1, $p2)
     {
         return (abs($p1[0] - $p2[0]) <= static::EPSILON) && (abs($p1[1] - $p2[1]) <= static::EPSILON);
@@ -147,7 +147,7 @@ abstract class TileCombiner
 
         foreach ($tilesByXY as $x => $row) {
             foreach ($row as $y => $tile) {
-
+                $tile = self::pointToFloat($tile);
                 $borders = [];
 
                 for ($i = 0; $i < 6; $i++) {
@@ -158,16 +158,16 @@ abstract class TileCombiner
                 }
 
                 if (count($borders)) {
-                    $latFactor = (int) round(cos($tile[0] * 0.0175) * (Tile::LAT_LON_FACTOR / 11.2676));
-                    $lat = (int)$tile[0];
-                    $lon = (int)$tile[1];
+                    $latFactor = (int) round(cos($tile[0] * 0.0175) * 887.65);
+                    $lat = (int) round($tile[0] * 10000);
+                    $lon = (int) round($tile[1] * 10000);
                     $coords = [
-                        [$lat, $lon + Tile::LAT_LON_FACTOR/10], # east
-                        [$lat - $latFactor, $lon + Tile::LAT_LON_FACTOR/20], # east-south
-                        [$lat - $latFactor, $lon - Tile::LAT_LON_FACTOR/20], # west-south
-                        [$lat, $lon - Tile::LAT_LON_FACTOR/10], # west
-                        [$lat + $latFactor, $lon - Tile::LAT_LON_FACTOR/20], # west-nord
-                        [$lat + $latFactor, $lon + Tile::LAT_LON_FACTOR/20] # east-nord
+                        [$lat, $lon + 1000], # east
+                        [$lat - $latFactor, $lon + 500], # east-south
+                        [$lat - $latFactor, $lon - 500], # west-south
+                        [$lat, $lon - 1000], # west
+                        [$lat + $latFactor, $lon - 500], # west-nord
+                        [$lat + $latFactor, $lon + 500] # east-nord
                     ];
 
                     foreach ($borders as $d) {

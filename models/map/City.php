@@ -43,7 +43,7 @@ class City extends ActiveRecord
             [['regionId', 'population', 'usersCount', 'usersFame', 'utr'], 'default', 'value' => null],
             [['regionId', 'population', 'usersCount', 'usersFame', 'utr'], 'integer'],
             [['name', 'nameShort'], 'required'],
-            [['polygon'], 'string'],
+            [['polygon'], 'safe'],
             [['name', 'flag', 'anthem'], 'string', 'max' => 255],
             [['nameShort'], 'string', 'max' => 10],
             [['utr'], 'unique'],

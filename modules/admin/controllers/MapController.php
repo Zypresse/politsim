@@ -2,21 +2,24 @@
 
 namespace app\modules\admin\controllers;
 
-use app\modules\admin\controllers\base\Controller;
+use app\modules\admin\controllers\base\AdminController;
+use app\models\map\City;
+use app\models\map\Region;
 
 /**
  * Description of MapController
  *
  * @author ilya
  */
-class MapController extends Controller
+class MapController extends AdminController
 {
-    
-    public $layout = 'admin';
     
     public function actionIndex()
     {
-        return 'map';
+        return $this->render('index', [
+            'cities' => City::findAll(),
+//            'regions' => Region::findAll(),
+        ]);
     }
     
 }

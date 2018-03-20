@@ -12,8 +12,10 @@ use app\exceptions\NotAllowedHttpException;
  *
  * @author ilya
  */
-abstract class Controller extends YiiController
+abstract class AdminController extends YiiController
 {
+    
+    public $layout = 'admin';
     
     /**
      * {@inheritdoc}
