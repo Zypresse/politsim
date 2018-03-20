@@ -22,7 +22,6 @@ class m180313_181803_create_states_table extends Migration
             'usersFame' => $this->integer()->unsigned()->notNull()->defaultValue(0),
             'dateCreated' => $this->integer()->unsigned()->null(),
             'dateDeleted' => $this->integer()->unsigned()->null(),
-            'polygon' => 'JSONB DEFAULT NULL',
             'utr' => $this->integer()->unsigned()->unique()->null(),
         ]);
         $this->createIndex('nameStates', 'states', ['name']);

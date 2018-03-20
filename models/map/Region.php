@@ -21,7 +21,6 @@ use app\models\base\ActiveRecord;
  * @property integer $dateCreated
  * @property integer $dateDeleted
  * @property integer $implodedTo
- * @property array $polygon
  * @property integer $utr
  *
  * @property City[] $cities
@@ -29,6 +28,7 @@ use app\models\base\ActiveRecord;
  * @property Region $implodedToObject
  * @property State $state
  * @property Tile[] $tiles
+ * @property Polygon $polygon
  */
 class Region extends ActiveRecord
 {
@@ -50,7 +50,6 @@ class Region extends ActiveRecord
             [['stateId', 'cityId', 'population', 'usersCount', 'usersFame', 'dateCreated', 'dateDeleted', 'implodedTo', 'utr'], 'default', 'value' => null],
             [['stateId', 'cityId', 'population', 'usersCount', 'usersFame', 'dateCreated', 'dateDeleted', 'implodedTo', 'utr'], 'integer'],
             [['name', 'nameShort'], 'required'],
-            [['polygon'], 'safe'],
             [['name', 'flag', 'anthem'], 'string', 'max' => 255],
             [['nameShort'], 'string', 'max' => 10],
             [['utr'], 'unique'],
@@ -79,7 +78,6 @@ class Region extends ActiveRecord
             'dateCreated' => 'Date Created',
             'dateDeleted' => 'Date Deleted',
             'implodedTo' => 'Imploded To',
-            'polygon' => 'Polygon',
             'utr' => 'Utr',
         ];
     }
@@ -89,7 +87,7 @@ class Region extends ActiveRecord
      */
     public function getCities()
     {
-        return $this->hasMany(City::className(), ['regionId' => 'id']);
+        return $this->hasMany(City::class, ['regionId' => 'id']);
     }
 
     /**
@@ -97,7 +95,7 @@ class Region extends ActiveRecord
      */
     public function getCity()
     {
-        return $this->hasOne(City::className(), ['id' => 'cityId']);
+        return $this->hasOne(City::class, ['id' => 'cityId']);
     }
 
     /**
@@ -105,7 +103,7 @@ class Region extends ActiveRecord
      */
     public function getImplodedToObject()
     {
-        return $this->hasOne(Region::className(), ['id' => 'implodedTo']);
+        return $this->hasOne(Region::class, ['id' => 'implodedTo']);
     }
 
     /**
@@ -113,7 +111,7 @@ class Region extends ActiveRecord
      */
     public function getState()
     {
-        return $this->hasOne(State::className(), ['id' => 'stateId']);
+        return $this->hasOne(State::class, ['id' => 'stateId']);
     }
 
     /**
@@ -121,7 +119,15 @@ class Region extends ActiveRecord
      */
     public function getTiles()
     {
-        return $this->hasMany(Tile::className(), ['regionId' => 'id']);
+        return $this->hasMany(Tile::class, ['regionId' => 'id']);
+    }
+    
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPolygon()
+    {
+        return $this->hasOne(Polygon::class, ['ownerId' => 'id'])->andWhere(['ownerType' => Polygon::TYPE_REGION]);
     }
 
 }

@@ -21,7 +21,6 @@ class m180313_181802_create_regions_table extends Migration
             'dateCreated' => $this->integer()->unsigned()->null(),
             'dateDeleted' => $this->integer()->unsigned()->null(),
             'implodedTo' => $this->integer()->unsigned()->null(),
-            'polygon' => 'JSONB DEFAULT NULL',
             'utr' => $this->integer()->unsigned()->unique()->null(),
         ]);
         $this->createIndex('stateIdRegions', 'regions', ['stateId']);

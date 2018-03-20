@@ -17,11 +17,11 @@ use app\models\base\ActiveRecord;
  * @property integer $population
  * @property integer $usersCount
  * @property integer $usersFame
- * @property array $polygon
  * @property integer $utr
  *
  * @property Region $region
  * @property Tile[] $tiles
+ * @property Polygon $polygon
  */
 class City extends ActiveRecord
 {
@@ -43,7 +43,6 @@ class City extends ActiveRecord
             [['regionId', 'population', 'usersCount', 'usersFame', 'utr'], 'default', 'value' => null],
             [['regionId', 'population', 'usersCount', 'usersFame', 'utr'], 'integer'],
             [['name', 'nameShort'], 'required'],
-            [['polygon'], 'safe'],
             [['name', 'flag', 'anthem'], 'string', 'max' => 255],
             [['nameShort'], 'string', 'max' => 10],
             [['utr'], 'unique'],
@@ -66,7 +65,6 @@ class City extends ActiveRecord
             'population' => 'Population',
             'usersCount' => 'Users Count',
             'usersFame' => 'Users Fame',
-            'polygon' => 'Polygon',
             'utr' => 'Utr',
         ];
     }
@@ -87,4 +85,12 @@ class City extends ActiveRecord
         return $this->hasMany(Tile::className(), ['cityId' => 'id']);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPolygon()
+    {
+        return $this->hasOne(Polygon::class, ['ownerId' => 'id'])->andWhere(['ownerType' => Polygon::TYPE_CITY]);
+    }
+    
 }
