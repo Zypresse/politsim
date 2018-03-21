@@ -7,6 +7,7 @@ use yii\console\Controller;
 use app\models\map\Tile;
 use app\models\map\Region;
 use app\models\map\City;
+use app\models\map\Polygon;
 use app\components\TileCombiner;
 
 /**
@@ -152,9 +153,21 @@ class WipeController extends Controller
         /* @var $city City */
         foreach ($cities as $city) {
             echo $city->name;
-            $city->polygon = TileCombiner::combine($city->getTiles());
-            if (!$city->save()) {
-                print_r($city->getErrors()); die();
+            if ($city->getPolygon()->exists()) {
+                echo " skipped".PHP_EOL;
+                continue;
+            }
+            if (!$city->getTiles()->exists()) {
+                echo " have no tiles".PHP_EOL;
+                continue;
+            }
+            $polygon = new Polygon([
+                'ownerType' => Polygon::TYPE_CITY,
+                'ownerId' => $city->id,
+                'data' => TileCombiner::combine($city->getTiles()),
+            ]);
+            if (!$polygon->save()) {
+                var_dump($polygon->getErrors(), $polygon->data); die();
             }
             echo " saved".PHP_EOL;
         }
@@ -163,9 +176,21 @@ class WipeController extends Controller
         /* @var $region Region */
         foreach ($regions as $region) {
             echo $region->name;
-            $region->polygon = TileCombiner::combine($region->getTiles());
-            if (!$region->save()) {
-                print_r($region->getErrors()); die();
+            if ($region->getPolygon()->exists()) {
+                echo " skipped".PHP_EOL;
+                continue;
+            }
+            if (!$region->getTiles()->exists()) {
+                echo " have no tiles".PHP_EOL;
+                continue;
+            }
+            $polygon = new Polygon([
+                'ownerType' => Polygon::TYPE_REGION,
+                'ownerId' => $region->id,
+                'data' => TileCombiner::combine($region->getTiles()),
+            ]);
+            if (!$polygon->save()) {
+                var_dump($polygon->getErrors()); die();
             }
             echo " saved".PHP_EOL;
         }
