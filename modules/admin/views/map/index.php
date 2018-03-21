@@ -6,21 +6,16 @@ use yii\bootstrap\Html;
 /* @var $cities \app\models\map\City[] */
 /* @var $regions \app\models\map\Region[] */
 
+$this->title = Yii::t('app', 'Wolrd political map');
+
 ?>
-<section class="content-header">
-    <h1>
-        <?=Yii::t('app', 'Wolrd political map')?>
-    </h1>
-</section>
-<section class="content">
-    <div id="map" style="width:100%; min-height: 500px; height: auto"></div>
-</section>
+<div id="map" style="width:100%; min-height: 500px; height: auto"></div>
 <?php
 
     $js = <<<EOJS
-    var neg = $('.main-header').outerHeight() + $('.main-footer').outerHeight() + $('.content-header').outerHeight();
+    var neg = $('#admin-nav').outerHeight() + $('#admin-content-header').outerHeight();
     var window_height = $(window).height();
-    $('#map').css('min-height', window_height - neg - 30);
+    $('#map').css('min-height', window_height - neg - 50);
     
     var options = {center: [45, 34], zoom: 5};
     if (localStorage.getItem('zoom')) {
@@ -48,18 +43,38 @@ use yii\bootstrap\Html;
     
 EOJS;
     
-    foreach($cities as $city) {
-        $js += "cities[{$city->id}] = L.multiPolygon([".json_encode($city->polygon)."],{
+    $cities = app\models\map\City::find()->with('polygon')->all();
+    foreach ($cities as $city) {
+        if (!$city->polygon) {
+            continue;
+        }
+        $js .= "cities[{$city->id}] = L.multiPolygon([".json_encode($city->polygon->data)."],{
             color: '#000',
             opacity: 1,
-            fillColor: '#<?='fff'?>',
-            fillOpacity: 0.5,
+            fillColor: '#0ff',
+            fillOpacity: 1,
             weight: 1,
-            title: '<?=Html::encode($city->name)?>'
-        }).bindLabel('<?=Html::encode($city->name)?>');
-        cities[<?=$city->id?>].addTo(map);";
+            title: '{$city->name}'
+        }).bindLabel('{$city->name}');
+        cities[{$city->id}].addTo(map);";
+        unset($city->polygon);
     }
+//    $regions = app\models\map\Region::find()->with('polygon')->all();
+//    foreach ($regions as $region) {
+//        if (!$region->polygon) {
+//            continue;
+//        }
+//        $js .= "cities[{$region->id}] = L.multiPolygon([".json_encode($region->polygon->data)."],{
+//            color: '#000',
+//            opacity: 1,
+//            fillColor: '#fff',
+//            fillOpacity: 0.5,
+//            weight: 1,
+//            title: '{$region->name}'
+//        }).bindLabel('{$region->name}');
+//        cities[{$region->id}].addTo(map);";
+//        unset($region->polygon);
+//    }
     
     $this->registerJs($js);
     
-?>

@@ -21,7 +21,7 @@ AppAsset::register($this);
     <body>
         <?php $this->beginBody() ?>
 
-        <nav class="navbar navbar-default">
+        <nav id="admin-nav" class="navbar navbar-default">
             <div class="container-fluid">
                 <!-- Brand and toggle get grouped for better mobile display -->
                 <div class="navbar-header">
@@ -69,7 +69,14 @@ AppAsset::register($this);
             </div><!-- /.container-fluid -->
         </nav>
 
-        <?= $content ?>
+        <section id="admin-content-header" class="content-header">
+            <h1>
+                <?= $this->title ?>
+            </h1>
+        </section>
+        <section id="admin-content" class="content">
+            <?= $content ?>
+        </section>
         <?php $this->endBody() ?>
     </body>
 </html>
