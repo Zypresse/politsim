@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models\economy;
+namespace app\models\base\taxpayers;
 
 /**
  * Tax payer model with UTR

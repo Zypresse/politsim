@@ -1,6 +1,8 @@
 <?php
 
-namespace app\models\economy;
+namespace app\models\base\taxpayers;
+
+use app\models\economy\Utr;
 
 /**
  * Description of TaxPayerTrait
@@ -16,6 +18,14 @@ trait TaxPayerTrait
      */
     public function getUtr(): int
     {
+        if (!$this->utr) {
+            $utr = new Utr([
+                'objectType' => self::getUtrType(),
+                'objectId' => $this->id,
+            ]);
+            $utr->save();
+            $this->utr = $utr->id;
+        }
 	return $this->utr;
     }
 

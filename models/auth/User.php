@@ -4,9 +4,8 @@ namespace app\models\auth;
 
 use Yii;
 use yii\behaviors\TimestampBehavior;
-use app\models\economy\TaxPayerBehavior;
+use app\models\base\taxpayers\TaxPayerInterface;
 use app\models\base\ActiveRecord;
-use app\models\economy\TaxPayerInterface;
 use app\models\economy\UtrType;
 use yii\web\UploadedFile;
 use yii\imagine\Image;
@@ -35,8 +34,8 @@ use yii\imagine\Image;
  */
 class User extends ActiveRecord implements TaxPayerInterface
 {
-
-    use \app\models\economy\TaxPayerTrait;
+    
+    use \app\models\base\taxpayers\TaxPayerTrait;
     
     const GENDER_UNKNOWN = 0;
     const GENDER_FEMALE = 1;
@@ -66,9 +65,6 @@ class User extends ActiveRecord implements TaxPayerInterface
 		'class' => TimestampBehavior::className(),
 		'createdAtAttribute' => 'dateCreated',
 		'updatedAtAttribute' => false,
-	    ],
-	    [
-		'class' => TaxPayerBehavior::className(),
 	    ],
 	];
     }
@@ -208,5 +204,5 @@ class User extends ActiveRecord implements TaxPayerInterface
         $this->avatar = '/upload/avatars/'.$this->id.'/50.jpg';
         return $this->save();
     }
-    
+
 }

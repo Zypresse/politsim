@@ -4,6 +4,9 @@ namespace app\models\map;
 
 use Yii;
 use app\models\base\ActiveRecord;
+use app\models\base\interfaces\MapObject;
+use app\models\base\taxpayers\TaxPayerInterface;
+use app\models\economy\UtrType;
 
 /**
  * This is the model class for table "cities".
@@ -23,9 +26,11 @@ use app\models\base\ActiveRecord;
  * @property Tile[] $tiles
  * @property Polygon $polygon
  */
-class City extends ActiveRecord
+class City extends ActiveRecord implements MapObject, TaxPayerInterface
 {
 
+    use \app\models\base\taxpayers\TaxPayerTrait;
+    
     /**
      * @inheritdoc
      */
@@ -92,5 +97,35 @@ class City extends ActiveRecord
     {
         return $this->hasOne(Polygon::class, ['ownerId' => 'id'])->andWhere(['ownerType' => Polygon::TYPE_CITY]);
     }
-    
+
+    public function getTaxStateId(): int
+    {
+        return $this->region ? $this->region->stateId : 0;
+    }
+
+    public function getUserControllerId()
+    {
+        return null;
+    }
+
+    public function getUtrType(): int
+    {
+        return UtrType::CITY;
+    }
+
+    public function isGovernment(int $stateId): bool
+    {
+        return $this->region ? $this->region->stateId === $stateId : false;
+    }
+
+    public function isTaxedInState(int $stateId): bool
+    {
+        return $this->region ? $this->region->stateId === $stateId : false;
+    }
+
+    public function isUserController(int $userId): bool
+    {
+        return false;
+    }
+
 }
