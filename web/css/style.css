@@ -809,3 +809,40 @@ ul.twPc-Arrange {
 .login-box-body a.text-center {
     display: block;
 }
+
+#map {
+    width: 100%;
+    min-height: 550px;
+    height: auto;
+    background-color: #4B6099;
+}
+
+#map-info-label {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 300px;
+    margin-left: -150px;
+    z-index: 100;
+}
+
+.leaflet-layer {
+    cursor: pointer;
+}
+
+.dragging .leaflet-layer {
+    cursor: -webkit-grab;
+    cursor: -moz-grab;
+    cursor: grab;
+}
+
+#admin-nav {
+    margin-bottom: 0;
+}
+
+#admin-content-header > .breadcrumb {
+    float: none;
+    position: initial;
+    top: 0;
+    left: 0;
+}

@@ -25,6 +25,7 @@ use app\models\economy\UtrType;
  * @property integer $govermentFormId
  * @property integer $stateStructureId
  * @property integer $population
+ * @property integer $area
  * @property integer $usersCount
  * @property integer $usersFame
  * @property integer $dateCreated
@@ -58,8 +59,8 @@ class State extends ActiveRecord implements MapObject, TaxPayerInterface
     {
         return [
             [['name', 'nameShort'], 'required'],
-            [['cityId', 'govermentFormId', 'stateStructureId', 'population', 'usersCount', 'usersFame', 'dateCreated', 'dateDeleted', 'utr'], 'default', 'value' => null],
-            [['cityId', 'govermentFormId', 'stateStructureId', 'population', 'usersCount', 'usersFame', 'dateCreated', 'dateDeleted', 'utr'], 'integer'],
+            [['cityId', 'govermentFormId', 'stateStructureId', 'population', 'area', 'usersCount', 'usersFame', 'dateCreated', 'dateDeleted', 'utr'], 'default', 'value' => null],
+            [['cityId', 'govermentFormId', 'stateStructureId', 'population', 'area', 'usersCount', 'usersFame', 'dateCreated', 'dateDeleted', 'utr'], 'integer'],
             [['name', 'flag', 'anthem'], 'string', 'max' => 255],
             [['nameShort'], 'string', 'max' => 10],
             [['mapColor'], 'string', 'max' => 6],
@@ -84,6 +85,7 @@ class State extends ActiveRecord implements MapObject, TaxPayerInterface
             'govermentFormId' => 'Goverment Form ID',
             'stateStructureId' => 'State Structure ID',
             'population' => 'Population',
+            'area' => 'Area',
             'usersCount' => 'Users Count',
             'usersFame' => 'Users Fame',
             'dateCreated' => 'Date Created',

@@ -39,9 +39,27 @@ $this->title = Yii::t('app', 'Wolrd political map');
         localStorage.setItem('center-lng',map.getCenter().lng);
     });
     
+    var regions = {};
     var cities = {};
     
 EOJS;
+    
+    $regions = app\models\map\Region::find()->with('polygon')->all();
+    foreach ($regions as $region) {
+        if (!$region->polygon) {
+            continue;
+        }
+        $js .= "regions[{$region->id}] = L.multiPolygon([".json_encode($region->polygon->data)."],{
+            color: '#000',
+            opacity: 1,
+            fillColor: '#fff',
+            fillOpacity: 0.5,
+            weight: 1,
+            title: '{$region->name}'
+        }).bindLabel('{$region->name}');
+        regions[{$region->id}].addTo(map);";
+        unset($region->polygon);
+    }
     
     $cities = app\models\map\City::find()->with('polygon')->all();
     foreach ($cities as $city) {
@@ -59,22 +77,6 @@ EOJS;
         cities[{$city->id}].addTo(map);";
         unset($city->polygon);
     }
-//    $regions = app\models\map\Region::find()->with('polygon')->all();
-//    foreach ($regions as $region) {
-//        if (!$region->polygon) {
-//            continue;
-//        }
-//        $js .= "cities[{$region->id}] = L.multiPolygon([".json_encode($region->polygon->data)."],{
-//            color: '#000',
-//            opacity: 1,
-//            fillColor: '#fff',
-//            fillOpacity: 0.5,
-//            weight: 1,
-//            title: '{$region->name}'
-//        }).bindLabel('{$region->name}');
-//        cities[{$region->id}].addTo(map);";
-//        unset($region->polygon);
-//    }
     
     $this->registerJs($js);
     

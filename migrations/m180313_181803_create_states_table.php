@@ -18,6 +18,7 @@ class m180313_181803_create_states_table extends Migration
             'govermentFormId' => $this->integer(2)->unsigned()->null(),
             'stateStructureId' => $this->integer(1)->unsigned()->null(),
             'population' => $this->integer()->unsigned()->notNull()->defaultValue(0),
+            'area' => $this->integer()->unsigned()->notNull()->defaultValue(0),
             'usersCount' => $this->integer()->unsigned()->notNull()->defaultValue(0),
             'usersFame' => $this->integer()->unsigned()->notNull()->defaultValue(0),
             'dateCreated' => $this->integer()->unsigned()->null(),
@@ -30,6 +31,7 @@ class m180313_181803_create_states_table extends Migration
         $this->createIndex('govermentFormIdStates', 'states', ['govermentFormId']);
         $this->createIndex('stateStructureIdStates', 'states', ['stateStructureId']);
         $this->createIndex('populationStates', 'states', ['population']);
+        $this->createIndex('areaStates', 'states', ['area']);
         $this->createIndex('usersCountStates', 'states', ['usersCount']);
         $this->createIndex('usersFameStates', 'states', ['usersFame']);
         $this->createIndex('dateCreatedStates', 'states', ['dateCreated']);
@@ -51,6 +53,7 @@ class m180313_181803_create_states_table extends Migration
         $this->dropIndex('govermentFormIdStates', 'states');
         $this->dropIndex('stateStructureIdStates', 'states');
         $this->dropIndex('populationStates', 'states');
+        $this->dropIndex('areaStates', 'states');
         $this->dropIndex('usersCountStates', 'states');
         $this->dropIndex('usersFameStates', 'states');
         $this->dropIndex('dateCreatedStates', 'states');

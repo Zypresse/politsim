@@ -149,6 +149,8 @@ class WipeController extends Controller
      */
     public function actionCombinePolygons()
     {
+        $db = Yii::$app->db;
+        $db->createCommand()->setSql("TRUNCATE TABLE {$db->quoteTableName(Polygon::tableName())} CASCADE")->execute();
         $cities = City::findAll();
         /* @var $city City */
         foreach ($cities as $city) {
