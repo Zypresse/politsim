@@ -15,6 +15,7 @@ class m180313_181801_create_cities_table extends Migration
             'flag' => $this->string(255)->null(),
             'anthem' => $this->string(255)->null(),
             'population' => $this->integer()->unsigned()->notNull()->defaultValue(0),
+            'area' => $this->integer()->unsigned()->notNull()->defaultValue(0),
             'usersCount' => $this->integer()->unsigned()->notNull()->defaultValue(0),
             'usersFame' => $this->integer()->unsigned()->notNull()->defaultValue(0),
             'utr' => $this->integer()->unique()->null(),
@@ -23,6 +24,7 @@ class m180313_181801_create_cities_table extends Migration
         $this->createIndex('nameCities', 'cities', ['name']);
         $this->createIndex('nameShortCities', 'cities', ['nameShort']);
         $this->createIndex('populationCities', 'cities', ['population']);
+        $this->createIndex('areaCities', 'cities', ['area']);
         $this->createIndex('usersCountCities', 'cities', ['usersCount']);
         $this->createIndex('usersFameCities', 'cities', ['usersFame']);
         $this->createIndex('utrCities', 'cities', ['utr'], true);
@@ -34,6 +36,7 @@ class m180313_181801_create_cities_table extends Migration
         $this->dropIndex('nameCities', 'cities');
         $this->dropIndex('nameShortCities', 'cities');
         $this->dropIndex('populationCities', 'cities');
+        $this->dropIndex('areaCities', 'cities');
         $this->dropIndex('usersCountCities', 'cities');
         $this->dropIndex('usersFameCities', 'cities');
         $this->dropIndex('utrCities', 'cities');

@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use app\assets\AppAsset;
+use yii\widgets\Breadcrumbs;
 
 /* @var $this \yii\web\View */
 /* @var $content string */
@@ -42,11 +43,11 @@ AppAsset::register($this);
                             <ul class="dropdown-menu">
                                 <li><a href="/admin/map">Обзор</a></li>
                                 <li role="separator" class="divider"></li>
-                                <li><a href="#">Разметка суши</a></li>
-                                <li><a href="#">Разметка воды</a></li>
+                                <li><a href="/admin/map/land">Разметка суши</a></li>
+                                <li><a href="/admin/map/water">Разметка воды</a></li>
                                 <li role="separator" class="divider"></li>
-                                <li><a href="#">Редактор регионов</a></li>
-                                <li><a href="#">Редактор городов</a></li>
+                                <li><a href="/admin/region">Редактор регионов</a></li>
+                                <li><a href="/admin/city">Редактор городов</a></li>
                                 <li role="separator" class="divider"></li>
                                 <li><a href="#">Редактор ресурсов</a></li>
                             </ul>
@@ -70,9 +71,10 @@ AppAsset::register($this);
         </nav>
 
         <section id="admin-content-header" class="content-header">
-            <h1>
-                <?= $this->title ?>
-            </h1>
+            <?= Breadcrumbs::widget([
+                'links' => $this->params['breadcrumbs'] ?? [],
+                'homeLink' => false,
+            ]) ?>
         </section>
         <section id="admin-content" class="content">
             <?= $content ?>

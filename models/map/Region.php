@@ -19,6 +19,7 @@ use app\models\economy\UtrType;
  * @property string $flag
  * @property string $anthem
  * @property integer $population
+ * @property integer $area
  * @property integer $usersCount
  * @property integer $usersFame
  * @property integer $dateCreated
@@ -52,8 +53,8 @@ class Region extends ActiveRecord implements MapObject, TaxPayerInterface
     public function rules()
     {
         return [
-            [['stateId', 'cityId', 'population', 'usersCount', 'usersFame', 'dateCreated', 'dateDeleted', 'implodedTo', 'utr'], 'default', 'value' => null],
-            [['stateId', 'cityId', 'population', 'usersCount', 'usersFame', 'dateCreated', 'dateDeleted', 'implodedTo', 'utr'], 'integer'],
+            [['stateId', 'cityId', 'population', 'area', 'usersCount', 'usersFame', 'dateCreated', 'dateDeleted', 'implodedTo', 'utr'], 'default', 'value' => null],
+            [['stateId', 'cityId', 'population', 'area', 'usersCount', 'usersFame', 'dateCreated', 'dateDeleted', 'implodedTo', 'utr'], 'integer'],
             [['name', 'nameShort'], 'required'],
             [['name', 'flag', 'anthem'], 'string', 'max' => 255],
             [['nameShort'], 'string', 'max' => 10],
@@ -78,6 +79,7 @@ class Region extends ActiveRecord implements MapObject, TaxPayerInterface
             'flag' => 'Flag',
             'anthem' => 'Anthem',
             'population' => 'Population',
+            'area' => 'Area',
             'usersCount' => 'Users Count',
             'usersFame' => 'Users Fame',
             'dateCreated' => 'Date Created',

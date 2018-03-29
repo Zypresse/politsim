@@ -16,6 +16,7 @@ class m180313_181802_create_regions_table extends Migration
             'flag' => $this->string(255)->null(),
             'anthem' => $this->string(255)->null(),
             'population' => $this->integer()->unsigned()->notNull()->defaultValue(0),
+            'area' => $this->integer()->unsigned()->notNull()->defaultValue(0),
             'usersCount' => $this->integer()->unsigned()->notNull()->defaultValue(0),
             'usersFame' => $this->integer()->unsigned()->notNull()->defaultValue(0),
             'dateCreated' => $this->integer()->unsigned()->null(),
@@ -28,6 +29,7 @@ class m180313_181802_create_regions_table extends Migration
         $this->createIndex('nameRegions', 'regions', ['name']);
         $this->createIndex('nameShortRegions', 'regions', ['nameShort']);
         $this->createIndex('populationRegions', 'regions', ['population']);
+        $this->createIndex('areaRegions', 'regions', ['area']);
         $this->createIndex('usersCountRegions', 'regions', ['usersCount']);
         $this->createIndex('usersFameRegions', 'regions', ['usersFame']);
         $this->createIndex('dateCreatedRegions', 'regions', ['dateCreated']);
@@ -51,6 +53,7 @@ class m180313_181802_create_regions_table extends Migration
         $this->dropIndex('nameRegions', 'regions');
         $this->dropIndex('nameShortRegions', 'regions');
         $this->dropIndex('populationRegions', 'regions');
+        $this->dropIndex('areaRegions', 'regions');
         $this->dropIndex('usersCountRegions', 'regions');
         $this->dropIndex('usersFameRegions', 'regions');
         $this->dropIndex('dateCreatedRegions', 'regions');

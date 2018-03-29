@@ -149,6 +149,8 @@ class WipeController extends Controller
      */
     public function actionCombinePolygons()
     {
+        $db = Yii::$app->db;
+        $db->createCommand()->setSql("TRUNCATE TABLE {$db->quoteTableName(Polygon::tableName())} CASCADE")->execute();
         $cities = City::findAll();
         /* @var $city City */
         foreach ($cities as $city) {
@@ -192,6 +194,46 @@ class WipeController extends Controller
             if (!$polygon->save()) {
                 var_dump($polygon->getErrors()); die();
             }
+            echo " saved".PHP_EOL;
+        }
+    }
+    
+    /**
+     * 5) Calc regions and cities areas
+     */
+    public function actionCalcPolygonsArea()
+    {
+        $cities = City::findAll();
+        /* @var $city City */
+        foreach ($cities as $city) {
+            echo $city->name;
+            if (!$city->getTiles()->exists()) {
+                echo " have no tiles".PHP_EOL;
+                continue;
+            }
+            $city->area = 0;
+            foreach ($city->tiles as $tile) {
+                $city->area += $tile->area;
+            }
+            $city->area = round($city->area);
+            $city->save();
+            echo " saved".PHP_EOL;
+        }
+        
+        $regions = Region::findAll();
+        /* @var $region Region */
+        foreach ($regions as $region) {
+            echo $region->name;
+            if (!$region->getTiles()->exists()) {
+                echo " have no tiles".PHP_EOL;
+                continue;
+            }
+            $region->area = 0;
+            foreach ($region->tiles as $tile) {
+                $region->area += $tile->area;
+            }
+            $region->area = round($region->area);
+            $region->save();
             echo " saved".PHP_EOL;
         }
     }

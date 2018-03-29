@@ -18,6 +18,7 @@ use app\models\economy\UtrType;
  * @property string $flag
  * @property string $anthem
  * @property integer $population
+ * @property integer $area
  * @property integer $usersCount
  * @property integer $usersFame
  * @property integer $utr
@@ -45,8 +46,8 @@ class City extends ActiveRecord implements MapObject, TaxPayerInterface
     public function rules()
     {
         return [
-            [['regionId', 'population', 'usersCount', 'usersFame', 'utr'], 'default', 'value' => null],
-            [['regionId', 'population', 'usersCount', 'usersFame', 'utr'], 'integer'],
+            [['regionId', 'population', 'area', 'usersCount', 'usersFame', 'utr'], 'default', 'value' => null],
+            [['regionId', 'population', 'area', 'usersCount', 'usersFame', 'utr'], 'integer'],
             [['name', 'nameShort'], 'required'],
             [['name', 'flag', 'anthem'], 'string', 'max' => 255],
             [['nameShort'], 'string', 'max' => 10],
@@ -62,15 +63,16 @@ class City extends ActiveRecord implements MapObject, TaxPayerInterface
     {
         return [
             'id' => 'ID',
-            'regionId' => 'Region ID',
-            'name' => 'Name',
-            'nameShort' => 'Name Short',
-            'flag' => 'Flag',
-            'anthem' => 'Anthem',
-            'population' => 'Population',
-            'usersCount' => 'Users Count',
-            'usersFame' => 'Users Fame',
-            'utr' => 'Utr',
+            'regionId' => 'Регион',
+            'name' => 'Название',
+            'nameShort' => 'Краткое название (код)',
+            'flag' => 'Флаг',
+            'anthem' => 'Гимн',
+            'population' => 'Население',
+            'area' => 'Площадь',
+            'usersCount' => 'Число игроков',
+            'usersFame' => 'Суммарная известность игроков',
+            'utr' => 'ИНН',
         ];
     }
 
@@ -126,6 +128,11 @@ class City extends ActiveRecord implements MapObject, TaxPayerInterface
     public function isUserController(int $userId): bool
     {
         return false;
+    }
+    
+    public function getTilesCount()
+    {
+        return $this->getTiles()->count();
     }
 
 }
