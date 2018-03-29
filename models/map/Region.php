@@ -28,7 +28,7 @@ use app\models\economy\UtrType;
  * @property integer $utr
  *
  * @property City[] $cities
- * @property City $city
+ * @property City $capital
  * @property Region $implodedToObject
  * @property State $state
  * @property Tile[] $tiles
@@ -72,20 +72,20 @@ class Region extends ActiveRecord implements MapObject, TaxPayerInterface
     {
         return [
             'id' => 'ID',
-            'stateId' => 'State ID',
-            'cityId' => 'City ID',
-            'name' => 'Name',
-            'nameShort' => 'Name Short',
-            'flag' => 'Flag',
-            'anthem' => 'Anthem',
-            'population' => 'Population',
-            'area' => 'Area',
-            'usersCount' => 'Users Count',
-            'usersFame' => 'Users Fame',
-            'dateCreated' => 'Date Created',
-            'dateDeleted' => 'Date Deleted',
-            'implodedTo' => 'Imploded To',
-            'utr' => 'Utr',
+            'stateId' => 'Государство',
+            'cityId' => 'Столица',
+            'name' => 'Название',
+            'nameShort' => 'Краткое название (код)',
+            'flag' => 'Флаг',
+            'anthem' => 'Гимн',
+            'population' => 'Население',
+            'area' => 'Площадь ',
+            'usersCount' => 'Число игроков',
+            'usersFame' => 'Суммарная известность игроков',
+            'dateCreated' => 'Дата формирования',
+            'dateDeleted' => 'Дата расформирования',
+            'implodedTo' => 'Объединён с регионом',
+            'utr' => 'ИНН',
         ];
     }
 
@@ -100,7 +100,7 @@ class Region extends ActiveRecord implements MapObject, TaxPayerInterface
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getCity()
+    public function getCapital()
     {
         return $this->hasOne(City::class, ['id' => 'cityId']);
     }

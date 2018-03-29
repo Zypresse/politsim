@@ -17,11 +17,14 @@ use app\models\map\Tile;
 class MapController extends AdminController
 {
     
+    const TYPE_CITY = 'city';
+    const TYPE_REGION = 'region';
+    
     public function actionIndex()
     {
         return $this->render('index', [
-            'cities' => City::findAll(),
-//            'regions' => Region::findAll(),
+            'cities' => City::find()->with('polygon')->all(),
+            'regions' => Region::find()->with('polygon')->all(),
         ]);
     }
     
@@ -32,40 +35,79 @@ class MapController extends AdminController
                 ->andWhere(['BETWEEN', 'lon', round($minLng*Tile::LAT_LON_FACTOR),  round($maxLng*Tile::LAT_LON_FACTOR)])
                 ->andWhere(['>', 'biome', 1])
                 ->all();
+        
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return ['result' => $this->getTilesData($tiles, $type, $subType)];
+    }
+    
+    /**
+     * 
+     * @param Tile[] $tiles
+     * @param string $type
+     * @param integer $id
+     * @return array
+     */
+    private function getTilesData($tiles, string $type, int $id)
+    {
         $data = [];
         /* @var $tile Tile */
         foreach ($tiles as $tile) {
+            $occupied = false;
+            $disabled = false;
+            switch ($type) {
+                case self::TYPE_CITY:
+                    $occupied = $tile->cityId && (int)$tile->cityId === $id;
+                    $disabled = $tile->cityId && (int)$tile->cityId !== $id;
+                    break;
+                case self::TYPE_REGION:
+                    $occupied = $tile->regionId && (int)$tile->regionId === $id;
+                    $disabled = $tile->regionId && (int)$tile->regionId !== $id;
+                    break;
+            }
+            
             $data[] = [
                 'id' => $tile->id,
-                'occupied' => $tile->cityId && $tile->cityId == $subType,
-                'disabled' => $tile->cityId && $tile->cityId != $subType,
+                'occupied' => $occupied,
+                'disabled' => $disabled,
                 'coords' => $tile->coords,
             ];
         }
-        
-        Yii::$app->response->format = Response::FORMAT_JSON;
-        return ['result' => $data];
-    }
-    
-    private function explodePost($field)
-    {
-        $data = Yii::$app->request->post($field);
-        return $data ? explode(',', $data) : [];
+        return $data;
     }
     
     public function actionSave()
     {
-        $type = (int) Yii::$app->request->post('type');
-        $subType = (int) Yii::$app->request->post('subType');
+        $type = Yii::$app->request->post('type');
+        $id = (int) Yii::$app->request->post('subType');
         $selected = $this->explodePost('selected');
         $deleted = $this->explodePost('deleted');
         
-        
-        $cUpdated = Tile::updateAll(['cityId' => $subType], ['id' => $selected]);
-        $cDeleted = Tile::updateAll(['cityId' => null], ['id' => $deleted]);
+        $cUpdated = 0;
+        $cDeleted = 0;
+        switch ($type) {
+            case self::TYPE_CITY:
+                $cUpdated = Tile::updateAll(['"cityId"' => $id], ['id' => $selected]);
+                $cDeleted = Tile::updateAll(['"cityId"' => null], ['id' => $deleted]);
+                break;
+            case self::TYPE_REGION:
+                $cUpdated = Tile::updateAll(['"regionId"' => $id], ['id' => $selected]);
+                $cDeleted = Tile::updateAll(['"regionId"' => null], ['id' => $deleted]);
+                break;
+        }
         
         return "Upd tiles: $cUpdated saved, $cDeleted deleted";
         
+    }
+    
+    /**
+     * 
+     * @param string $field
+     * @return array
+     */
+    private function explodePost($field)
+    {
+        $data = Yii::$app->request->post($field);
+        return $data ? explode(',', $data) : [];
     }
     
 }

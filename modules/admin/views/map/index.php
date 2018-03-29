@@ -44,7 +44,6 @@ $this->title = Yii::t('app', 'Wolrd political map');
     
 EOJS;
     
-    $regions = app\models\map\Region::find()->with('polygon')->all();
     foreach ($regions as $region) {
         if (!$region->polygon) {
             continue;
@@ -61,7 +60,6 @@ EOJS;
         unset($region->polygon);
     }
     
-    $cities = app\models\map\City::find()->with('polygon')->all();
     foreach ($cities as $city) {
         if (!$city->polygon) {
             continue;

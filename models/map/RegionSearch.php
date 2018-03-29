@@ -5,12 +5,12 @@ namespace app\models\map;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\map\City;
+use app\models\map\Region;
 
 /**
- * CitySearch represents the model behind the search form of `app\models\map\City`.
+ * RegionSearch represents the model behind the search form of `app\models\map\City`.
  */
-class CitySearch extends City
+class RegionSearch extends Region
 {
     
     public $tilesCount;
@@ -45,9 +45,9 @@ class CitySearch extends City
     public function search($params)
     {
         $query = self::find()
-                ->select(['cities.*', 'COUNT(tiles.id) AS "tilesCount"'])
-                ->leftJoin('tiles', 'tiles."cityId" = cities.id')
-                ->groupBy("cities.id");
+                ->select(['regions.*', 'COUNT(tiles.id) AS "tilesCount"'])
+                ->leftJoin('tiles', 'tiles."regionId" = regions.id')
+                ->groupBy("regions.id");
         
         // add conditions that should always apply here
 
