@@ -46,7 +46,7 @@ function getMinZoom() {
             return 3;
         case 'land':
         case 'water':
-            return 4;
+            return 5;
         default:
             return 6;
     }
@@ -323,13 +323,25 @@ function initMap(t, s)
         case 'land':
         case 'water':
         default:
-            
-            var Esri_WorldImagery = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-                    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
-                    noWrap: true,
-                    minZoom: 2
-            });
-            Esri_WorldImagery.addTo(map);
+            var layer = L.tileLayer(
+              'https://vec{s}.maps.yandex.net/tiles?l=map&v=4.55.2&z={z}&x={x}&y={y}&scale=2&lang=ru_RU', {
+                subdomains: ['01', '02', '03', '04'],
+                attribution: 'Яндекс',
+                reuseTiles: true,
+                updateWhenIdle: false,
+                minZoom: 1,
+                maxZoom: 12,
+                noWrap: true
+              }
+            );
+            layer.addTo(map);
+            map.options.crs = L.CRS.EPSG3395;
+//            var Esri_WorldImagery = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+//                    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+//                    noWrap: true,
+//                    minZoom: 2
+//            });
+//            Esri_WorldImagery.addTo(map);
                 
             break;
     }

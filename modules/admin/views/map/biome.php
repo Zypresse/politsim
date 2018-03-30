@@ -15,9 +15,9 @@ $this->registerJs("initMap('{$type}')");
         <div class="form-group" id="instruments-list" >
             <label for="instrument">Малярня</label>
             <div>
-                <label style="display: none"><input type="radio" name="instrument" id="paint-on-move" class="select-instrument" >Красить по наведению</label>
+                <label><input type="radio" name="instrument" id="paint-on-move" class="select-instrument" >Красить по наведению</label>
                 <label><input type="radio" name="instrument" id="paint-on-click" class="select-instrument" >Рисовать</label>
-                <label style="display: none"><input type="radio" name="instrument" id="clear-on-move" class="select-instrument" >Стирать по наведению</label>
+                <label><input type="radio" name="instrument" id="clear-on-move" class="select-instrument" >Стирать по наведению</label>
                 <label><input type="radio" name="instrument" id="clear-on-click" class="select-instrument" >Стирать</label>
                 <div class="btn-group">
                     <button onclick="paintAll()" class="btn btn-default">Залить всё</button>

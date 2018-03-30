@@ -53,7 +53,8 @@ class Region extends ActiveRecord implements MapObject, TaxPayerInterface
     public function rules()
     {
         return [
-            [['stateId', 'cityId', 'population', 'area', 'usersCount', 'usersFame', 'dateCreated', 'dateDeleted', 'implodedTo', 'utr'], 'default', 'value' => null],
+            [['stateId', 'cityId', 'dateCreated', 'dateDeleted', 'implodedTo', 'utr'], 'default', 'value' => null],
+            [['population', 'area', 'usersCount', 'usersFame'], 'default', 'value' => 0],
             [['stateId', 'cityId', 'population', 'area', 'usersCount', 'usersFame', 'dateCreated', 'dateDeleted', 'implodedTo', 'utr'], 'integer'],
             [['name', 'nameShort'], 'required'],
             [['name', 'flag', 'anthem'], 'string', 'max' => 255],
