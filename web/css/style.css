@@ -823,7 +823,7 @@ ul.twPc-Arrange {
     left: 50%;
     width: 300px;
     margin-left: -150px;
-    z-index: 100;
+    z-index: 1000;
 }
 
 .leaflet-layer {
@@ -858,8 +858,4 @@ ul.twPc-Arrange {
 .map-state-tooltip {
     font-size: 20px;
     font-weight: bold;
-}
-
-.map-region-tooltip {
-    
 }

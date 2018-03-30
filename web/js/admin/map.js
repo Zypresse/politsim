@@ -44,9 +44,6 @@ function getMinZoom() {
     switch (type) {
         case 'spectator':
             return 3;
-        case 'land':
-        case 'water':
-            return 5;
         default:
             return 6;
     }
@@ -409,5 +406,6 @@ function saveAll() {
     data.deleted = deleted.join(',');
     $.post('/admin/map/save', data, function (result) {
         alert(result);
+        reset();
     });
 }
