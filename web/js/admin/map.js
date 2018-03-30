@@ -44,6 +44,9 @@ function getMinZoom() {
     switch (type) {
         case 'spectator':
             return 3;
+        case 'land':
+        case 'water':
+            return 4;
         default:
             return 6;
     }

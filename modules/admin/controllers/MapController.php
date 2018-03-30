@@ -19,6 +19,8 @@ class MapController extends AdminController
     
     const TYPE_CITY = 'city';
     const TYPE_REGION = 'region';
+    const TYPE_LAND = 'land';
+    const TYPE_WATER = 'water';
     
     public function actionIndex()
     {
@@ -28,13 +30,31 @@ class MapController extends AdminController
         ]);
     }
     
-    public function actionTiles($minLat, $maxLat, $minLng, $maxLng, $type, $subType = null)
+    public function actionLand()
     {
-        $tiles = Tile::find()
+        return $this->render('biome', [
+            'type' => self::TYPE_LAND,
+        ]);
+    }
+    
+    public function actionWater()
+    {
+        return $this->render('biome', [
+            'type' => self::TYPE_WATER,
+        ]);
+    }
+    
+    public function actionTiles($minLat, $maxLat, $minLng, $maxLng, $type, $subType = 0)
+    {
+        $query = Tile::find()
                 ->andWhere(['BETWEEN', 'lat', round($minLat*Tile::LAT_LON_FACTOR),  round($maxLat*Tile::LAT_LON_FACTOR)])
-                ->andWhere(['BETWEEN', 'lon', round($minLng*Tile::LAT_LON_FACTOR),  round($maxLng*Tile::LAT_LON_FACTOR)])
-                ->andWhere(['>', 'biome', 1])
-                ->all();
+                ->andWhere(['BETWEEN', 'lon', round($minLng*Tile::LAT_LON_FACTOR),  round($maxLng*Tile::LAT_LON_FACTOR)]);
+        
+        if (!in_array($type, [self::TYPE_LAND, self::TYPE_WATER])) {
+            $query->andWhere(['>', 'biome', 1]);
+        }
+                
+        $tiles = $query->all();
         
         Yii::$app->response->format = Response::FORMAT_JSON;
         return ['result' => $this->getTilesData($tiles, $type, $subType)];
@@ -62,6 +82,12 @@ class MapController extends AdminController
                 case self::TYPE_REGION:
                     $occupied = $tile->regionId && (int)$tile->regionId === $id;
                     $disabled = $tile->regionId && (int)$tile->regionId !== $id;
+                    break;
+                case self::TYPE_LAND:
+                    $occupied = (int)$tile->biome === Tile::BIOME_LAND;
+                    break;
+                case self::TYPE_WATER:
+                    $occupied = (int)$tile->biome === Tile::BIOME_WATER;
                     break;
             }
             
@@ -92,6 +118,14 @@ class MapController extends AdminController
             case self::TYPE_REGION:
                 $cUpdated = Tile::updateAll(['"regionId"' => $id], ['id' => $selected]);
                 $cDeleted = Tile::updateAll(['"regionId"' => null], ['id' => $deleted]);
+                break;
+            case self::TYPE_LAND:
+                $cUpdated = Tile::updateAll(['biome' => Tile::BIOME_LAND], ['id' => $selected]);
+                $cDeleted = Tile::updateAll(['biome' => Tile::BIOME_WATER], ['id' => $deleted]);
+                break;
+            case self::TYPE_WATER:
+                $cUpdated = Tile::updateAll(['biome' => Tile::BIOME_WATER], ['id' => $selected]);
+                $cDeleted = Tile::updateAll(['biome' => Tile::BIOME_LAND], ['id' => $deleted]);
                 break;
         }
         

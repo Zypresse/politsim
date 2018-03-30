@@ -37,12 +37,12 @@ class Tile extends ActiveRecord
     const LAT_LON_FACTOR = 10000;
     
     /**
-     * mask is water
+     * type water
      */
     const BIOME_WATER = 1;
     
     /**
-     * mask is land
+     * type land
      */
     const BIOME_LAND = 2;
     
@@ -183,8 +183,7 @@ class Tile extends ActiveRecord
             'y' => 'Y',
             'lat' => 'Lat',
             'lon' => 'Lon',
-            'isWater' => 'Is Water',
-            'isLand' => 'Is Land',
+            'biome' => 'Biome',
             'population' => 'Population',
             'regionId' => 'Region ID',
             'cityId' => 'City ID',
