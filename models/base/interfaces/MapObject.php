@@ -12,6 +12,11 @@ interface MapObject
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getTiles();
+    
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getPolygon();
     
 }

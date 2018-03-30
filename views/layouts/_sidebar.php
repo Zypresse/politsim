@@ -117,13 +117,8 @@ use app\helpers\Icon;
                 </a>
                 <ul class="treeview-menu">
                     <li>
-                        <a href="#!map">
+                        <a href="/map/political">
                             <i class="fa fa-flag"></i> Политическая карта
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#!map/historical">
-                            <i class="fa fa-legal"></i> Карта претензий
                         </a>
                     </li>
                     <li>

@@ -7,6 +7,7 @@ use app\models\base\ActiveRecord;
 use app\models\map\Region;
 use app\models\map\City;
 use app\models\map\Polygon;
+use app\models\map\Tile;
 use app\models\auth\User;
 use app\models\base\interfaces\MapObject;
 use app\models\base\taxpayers\TaxPayerInterface;
@@ -59,13 +60,14 @@ class State extends ActiveRecord implements MapObject, TaxPayerInterface
     {
         return [
             [['name', 'nameShort'], 'required'],
-            [['cityId', 'govermentFormId', 'stateStructureId', 'population', 'area', 'usersCount', 'usersFame', 'dateCreated', 'dateDeleted', 'utr'], 'default', 'value' => null],
+            [['cityId', 'govermentFormId', 'stateStructureId', 'dateCreated', 'dateDeleted', 'utr'], 'default', 'value' => null],
+            [['population', 'area', 'usersCount', 'usersFame'], 'default', 'value' => 0],
             [['cityId', 'govermentFormId', 'stateStructureId', 'population', 'area', 'usersCount', 'usersFame', 'dateCreated', 'dateDeleted', 'utr'], 'integer'],
             [['name', 'flag', 'anthem'], 'string', 'max' => 255],
             [['nameShort'], 'string', 'max' => 10],
             [['mapColor'], 'string', 'max' => 6],
             [['utr'], 'unique'],
-            [['cityId'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::className(), 'targetAttribute' => ['cityId' => 'id']],
+            [['cityId'], 'exist', 'skipOnError' => true, 'targetClass' => City::className(), 'targetAttribute' => ['cityId' => 'id']],
         ];
     }
 
@@ -179,6 +181,22 @@ class State extends ActiveRecord implements MapObject, TaxPayerInterface
     public function getPolygon()
     {
         return $this->hasOne(Polygon::class, ['ownerId' => 'id'])->where(['ownerType' => Polygon::TYPE_STATE]);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTiles()
+    {
+        return Tile::find()->where(['regionId' => $this->getRegions()->select('id')->column()]);
+    }
+    
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public static function findActive()
+    {
+        return self::find()->andWhere(['dateDeleted' => null]);
     }
 
 }
