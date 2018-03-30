@@ -79,7 +79,7 @@ class CitySearch extends City
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
+            'cities.id' => $this->id,
             'utr' => $this->utr,
         ]);
 

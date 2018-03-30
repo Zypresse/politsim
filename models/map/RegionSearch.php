@@ -79,7 +79,7 @@ class RegionSearch extends Region
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
+            'regions.id' => $this->id,
             'utr' => $this->utr,
         ]);
 
