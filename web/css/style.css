@@ -814,7 +814,7 @@ ul.twPc-Arrange {
     width: 100%;
     min-height: 550px;
     height: auto;
-    background-color: #4B6099;
+    background-color: #99b3cc;
 }
 
 #map-info-label {
@@ -845,4 +845,21 @@ ul.twPc-Arrange {
     position: initial;
     top: 0;
     left: 0;
+}
+
+.map-state-tooltip, .map-region-tooltip {
+    background: rgba(0,0,0,0.5);
+    border: none;
+    outline: none;
+    box-shadow: none;
+    color: white;
+}
+
+.map-state-tooltip {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.map-region-tooltip {
+    
 }

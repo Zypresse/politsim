@@ -286,15 +286,6 @@ function initMap(t, s)
         case 'city':
         case 'region':
             
-//            var Stamen_TerrainBackground = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/terrain-background/{z}/{x}/{y}.{ext}', {
-//                    attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-//                    subdomains: 'abcd',
-//                    noWrap: true,
-//                    minZoom: 2,
-//                    maxZoom: 18,
-//                    ext: 'png'
-//            });
-//            Stamen_TerrainBackground.addTo(map);
 //            var Stamen_TonerHybrid = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-hybrid/{z}/{x}/{y}.{ext}', {
 //                attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
 //                subdomains: 'abcd',
@@ -323,25 +314,36 @@ function initMap(t, s)
         case 'land':
         case 'water':
         default:
-            var layer = L.tileLayer(
-              'https://vec{s}.maps.yandex.net/tiles?l=map&v=4.55.2&z={z}&x={x}&y={y}&scale=2&lang=ru_RU', {
-                subdomains: ['01', '02', '03', '04'],
-                attribution: 'Яндекс',
-                reuseTiles: true,
-                updateWhenIdle: false,
-                minZoom: 1,
-                maxZoom: 12,
-                noWrap: true
-              }
-            );
-            layer.addTo(map);
-            map.options.crs = L.CRS.EPSG3395;
+//            var layer = L.tileLayer(
+//              'https://vec{s}.maps.yandex.net/tiles?l=map&v=4.55.2&z={z}&x={x}&y={y}&scale=2&lang=ru_RU', {
+//                subdomains: ['01', '02', '03', '04'],
+//                attribution: 'Яндекс',
+//                reuseTiles: true,
+//                updateWhenIdle: false,
+//                minZoom: 1,
+//                maxZoom: 12,
+//                noWrap: true
+//              }
+//            );
+//            layer.addTo(map);
+//            map.options.crs = L.CRS.EPSG3395;
+
 //            var Esri_WorldImagery = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
 //                    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
 //                    noWrap: true,
 //                    minZoom: 2
 //            });
 //            Esri_WorldImagery.addTo(map);
+                
+            var Stamen_TerrainBackground = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/terrain-background/{z}/{x}/{y}.{ext}', {
+                    attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+                    subdomains: 'abcd',
+                    noWrap: true,
+                    minZoom: 2,
+                    maxZoom: 18,
+                    ext: 'png'
+            });
+            Stamen_TerrainBackground.addTo(map);
                 
             break;
     }

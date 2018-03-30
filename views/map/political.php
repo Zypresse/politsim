@@ -20,14 +20,17 @@ $this->title = Yii::t('app', 'Wolrd political map');
     if (localStorage.getItem('center-lat') && localStorage.getItem('center-lng')) {
         options.center = [localStorage.getItem('center-lat'),localStorage.getItem('center-lng')];
     }
-    var map = new L.map('map', options);
+    map = new L.map('map', options);
     
-    var Esri_WorldImagery = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-            attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
-            noWrap: true,
-            minZoom: 2
+    var Stamen_TerrainBackground = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/terrain-background/{z}/{x}/{y}.{ext}', {
+	attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+	subdomains: 'abcd',
+	noWrap: true,
+        minZoom: 2,
+	maxZoom: 18,
+	ext: 'png'
     });
-    Esri_WorldImagery.addTo(map);
+    Stamen_TerrainBackground.addTo(map);
     
     map.on('moveend', function(){
         localStorage.setItem('zoom',map.getZoom());
@@ -35,7 +38,7 @@ $this->title = Yii::t('app', 'Wolrd political map');
         localStorage.setItem('center-lng',map.getCenter().lng);
     });
     
-    var states = {};
+    states = {};
     
 EOJS;
     
@@ -43,15 +46,17 @@ EOJS;
         if (!$state->polygon) {
             continue;
         }
-        $js .= "states[{$state->id}] = L.multiPolygon([".json_encode($state->polygon->data)."],{
+        $js .= "states[{$state->id}] = L.polygon([".json_encode($state->polygon->data)."],{
             color: '#000',
             opacity: 1,
             fillColor: '#{$state->mapColor}',
             fillOpacity: 0.5,
             weight: 1,
             title: '{$state->name}'
-        }).bindLabel('{$state->name}');
-        states[{$state->id}].addTo(map);";
+        }).bindTooltip('{$state->tooltipName}', {permanent: true, className: 'map-state-tooltip', offset: [0, 0], direction: 'center' });
+        states[{$state->id}].addTo(map);
+        
+        ";
         unset($state->polygon);
     }
     

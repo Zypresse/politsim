@@ -15,7 +15,6 @@ class AppAsset extends AssetBundle
 	'css/dataTables.bootstrap.css',
 	'css/skin-black.css',
 	'css/leaflet.css',
-	'css/leaflet.label.css',
 	'css/icheck-blue.css',
 	'css/style.css',
     ];
@@ -27,10 +26,8 @@ class AppAsset extends AssetBundle
 	'js/jquery.dataTables.min.js',
 	'js/dataTables.bootstrap.min.js',
 	'js/leaflet.js',
-	'js/leaflet.label.js',
 	'js/leaflet.geometryutil.js',
 	'js/leaflet-geodesy.js',
-	'js/leaflet3d.js',
 	'js/app.js',
 	'js/script.js',
     ];

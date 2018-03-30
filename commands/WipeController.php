@@ -172,15 +172,20 @@ class WipeController extends Controller
                 echo " have no tiles".PHP_EOL;
                 continue;
             }
-            $polygon = new Polygon([
-                'ownerType' => Polygon::TYPE_REGION,
-                'ownerId' => $region->id,
-                'data' => TileCombiner::combine($region->getTiles()),
-            ]);
-            if (!$polygon->save()) {
-                var_dump($polygon->getErrors()); die();
+            try {
+                $polygon = new Polygon([
+                    'ownerType' => Polygon::TYPE_REGION,
+                    'ownerId' => $region->id,
+                    'data' => TileCombiner::combine($region->getTiles()),
+                ]);
+                if (!$polygon->save()) {
+                    var_dump($polygon->getErrors()); die();
+                }
+                echo " saved".PHP_EOL;
+            } catch (\yii\console\Exception $e) {
+                echo " error: {$e->getMessage()}".PHP_EOL;
+                continue;
             }
-            echo " saved".PHP_EOL;
         }
     }
     

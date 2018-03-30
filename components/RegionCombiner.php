@@ -2,36 +2,32 @@
 
 namespace app\components;
 
-use app\models\politics\Region;
+use app\models\map\Region;
 
 /**
  * Объединитель регионов
  *
- * @author dev
+ * @author ilya
  */
 class RegionCombiner extends TileCombiner
 {
-    
+
     private static function getLineIdByPoints($point1, $point2)
     {
         foreach (static::$lines as $i => $line) {
-            if (
-                    (static::pointsEquals($point1, $line[0]) && static::pointsEquals($point2, $line[1]))
-                 || (static::pointsEquals($point2, $line[0]) && static::pointsEquals($point1, $line[1]))
-            ) {
+            if ((static::pointsEquals($point1, $line[0]) && static::pointsEquals($point2, $line[1])) || (static::pointsEquals($point2, $line[0]) && static::pointsEquals($point1, $line[1]))) {
                 return $i;
             }
         }
         return null;
     }
 
-
     public static function combine(\yii\db\ActiveQuery $query)
     {
         static::$conturs = [];
         static::$lines = [];
         static::$linesAdded = [];
-        
+
         /* @var $list Region[] */
         $list = $query->all();
         $count = $query->count();
@@ -40,19 +36,19 @@ class RegionCombiner extends TileCombiner
         }
         $conturs = [];
         foreach ($list as $region) {
-            $polygons = json_decode($region->getPolygon());
+            $polygons = $region->polygon->data;
             foreach ($polygons as $polygon) {
                 $conturs[] = $polygon;
             }
         }
         unset($list);
-        
+
         static::$lines = [];
-        
+
         foreach ($conturs as $i => $contur) {
-            $lastElement = count($contur)-1;
+            $lastElement = count($contur) - 1;
             foreach ($contur as $j => $point) {
-                $next = $j == $lastElement ? 0 : $j+1;
+                $next = $j == $lastElement ? 0 : $j + 1;
                 $point1 = static::pointToInt($point);
                 $point2 = static::pointToInt($contur[$next]);
                 $lineId = static::getLineIdByPoints($point1, $point2);
@@ -63,8 +59,8 @@ class RegionCombiner extends TileCombiner
                 }
             }
         }
-        unset($conturs);        
-                
+        unset($conturs);
+
         $n = 0;
         while ($n >= 0) {
             $n = static::addLine($n);
@@ -72,19 +68,18 @@ class RegionCombiner extends TileCombiner
 
         foreach (static::$conturs as &$contur) {
             foreach ($contur as $i => $lineId) {
-                $point1 = static::$lines[$lineId][0];           
+                $point1 = static::$lines[$lineId][0];
                 $contur[$i] = static::pointToFloat($point1);
             }
         }
-        
+
         $result = static::$conturs;
-        
+
         static::$conturs = [];
         static::$lines = [];
         static::$linesAdded = [];
-        
+
         return $result;
-        
-        
     }
+
 }

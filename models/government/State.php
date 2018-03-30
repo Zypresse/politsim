@@ -39,6 +39,8 @@ use app\models\economy\UtrType;
  * @property Party[] $parties
  * @property Region[] $regions
  * @property City $capital
+ * 
+ * @property string $tooltipName
  */
 class State extends ActiveRecord implements MapObject, TaxPayerInterface
 {
@@ -197,6 +199,15 @@ class State extends ActiveRecord implements MapObject, TaxPayerInterface
     public static function findActive()
     {
         return self::find()->andWhere(['dateDeleted' => null]);
+    }
+    
+    /**
+     * 
+     * @return string
+     */
+    public function getTooltipName()
+    {
+        return mb_strlen($this->name) > 18 ? $this->nameShort : $this->name;
     }
 
 }
