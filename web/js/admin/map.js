@@ -166,7 +166,7 @@ function onLoadTiles(data) {
         }
 
         var color = tile.occupied ? getColor() : 'white';
-        var opacity = tile.occupied ? 0.7 : 0;
+        var opacity = tile.occupied ? 0.5 : 0;
         if (tile.disabled) {
             color = 'red';
             opacity = 0.5;
@@ -176,8 +176,8 @@ function onLoadTiles(data) {
         }
         var polygon = L.polygon(tile.coords, {
             weight: 1,
-            color: 'black',
-            opacity: 0.3,
+            color: 'white',
+            opacity: 0.5,
             fillColor: color,
             fillOpacity: opacity
         });

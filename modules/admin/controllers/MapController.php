@@ -30,6 +30,13 @@ class MapController extends AdminController
         ]);
     }
     
+    public function actionDebug()
+    {
+        return $this->render('debug', [
+            'tiles' => Tile::find()->where(['and', ['>', 'x', -437], ['regionId' => 3]])->all(),
+        ]);
+    }
+    
     public function actionLand()
     {
         return $this->render('biome', [

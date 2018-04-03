@@ -62,8 +62,8 @@ EOJS;
             fillColor: '".someColor()."',
             fillOpacity: 0.5,
             weight: 1,
-            title: '{$region->name}'
-        }).bindTooltip('{$region->name}');
+            title: '#{$region->id} ({$region->name})'
+        }).bindTooltip('#{$region->id} ({$region->name})');
         regions[{$region->id}].addTo(map);";
         unset($region->polygon);
     }
@@ -78,8 +78,8 @@ EOJS;
             fillColor: '#0ff',
             fillOpacity: 1,
             weight: 1,
-            title: '{$city->name}'
-        }).bindTooltip('{$city->name}');
+            title: '#{$city->id} ({$city->name})'
+        }).bindTooltip('#{$city->id} ({$city->name})');
         cities[{$city->id}].addTo(map);";
         unset($city->polygon);
     }
