@@ -53,9 +53,24 @@ EOJS;
             fillOpacity: 0.5,
             weight: 1,
             title: '{$state->name}'
-        }).bindTooltip('{$state->tooltipName}', {permanent: true, className: 'map-state-tooltip', offset: [0, 0], direction: 'center' });
+        })
+        .bindTooltip('{$state->tooltipName}', {permanent: true, className: 'map-state-tooltip', offset: [0, 0], direction: 'center' })
+        ;
         states[{$state->id}].addTo(map);
         
+//        var bounds = states[{$state->id}].getBounds();
+//        var point1 = bounds.getCenter();
+//        point1.lng = bounds.getWest();
+//        var point2 = bounds.getCenter();
+//        point2.lng = bounds.getEast();
+//        var line = L.polyline([point1, point2], {opacity:0})
+//        .setText('{$state->name}', {
+//                            repeat: false,
+//                            center: true,
+//                            attributes: {fill: '#000',
+//                                         'font-weight': 'bold',
+//                                         'font-size': '24'}})
+//        .addTo(map);
         ";
         unset($state->polygon);
     }

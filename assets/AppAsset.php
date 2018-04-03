@@ -28,6 +28,8 @@ class AppAsset extends AssetBundle
 	'js/leaflet.js',
 	'js/leaflet.geometryutil.js',
 	'js/leaflet-geodesy.js',
+        // для текста вдоль полилиний
+//	'js/leaflet.textpath.js',
 	'js/app.js',
 	'js/script.js',
     ];
