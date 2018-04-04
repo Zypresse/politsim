@@ -103,6 +103,8 @@ class MapController extends AdminController
                 'occupied' => $occupied,
                 'disabled' => $disabled,
                 'coords' => $tile->coords,
+                'x' => $tile->x,
+                'y' => $tile->y,
             ];
         }
         return $data;

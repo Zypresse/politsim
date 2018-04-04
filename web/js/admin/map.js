@@ -2,7 +2,8 @@
 var map;
 
 var editionCache = {};
-var polygons = [];
+var polygons = {};
+var polygonsIdToXY = {};
 var $label;
 var instrument = 'paint-on-click';
 var currentRequest = false;
@@ -14,9 +15,11 @@ function clearCache() {
 }
 
 function clearPolygons() {
-    while (polygon = polygons.pop()) {
-        map.removeLayer(polygon);
+    for (var i in polygons) {
+        map.removeLayer(polygons[i]);
     }
+    polygons = {};
+    polygonsIdToXY = {};
 }
 
 function reset() {
@@ -90,6 +93,52 @@ function regionClick(e) {
                 editionCache[e.target.id] = false;
             }
             break;
+        case 'bigpaint-on-click':
+            if (!e.target.occupied) {
+                e.target.setStyle({
+                    fillOpacity: 0.5,
+                    fillColor: getColor()
+                });
+                e.target.occupied = true;
+                editionCache[e.target.id] = true;
+            }
+            var h = e.target.xy.split('x');
+            for (var d = 0; d < 6; d++) {
+                var xy = offsetNeighbor(h,d);
+                var neighbour = polygons[polygonsIdToXY[xy[0]+'x'+xy[1]]];
+                if (!neighbour.occupied) {
+                    neighbour.setStyle({
+                        fillOpacity: 0.5,
+                        fillColor: getColor()
+                    });
+                    neighbour.occupied = true;
+                    editionCache[neighbour.id] = true;
+                }
+            }
+            break;
+        case 'bigclear-on-click':
+            if (e.target.occupied) {
+                e.target.setStyle({
+                    fillOpacity: 0.5,
+                    fillColor: '#fff'
+                });
+                e.target.occupied = false;
+                editionCache[e.target.id] = false;
+            }
+            var h = e.target.xy.split('x');
+            for (var d = 0; d < 6; d++) {
+                var xy = offsetNeighbor(h,d);
+                var neighbour = polygons[polygonsIdToXY[xy[0]+'x'+xy[1]]];
+                if (neighbour.occupied) {
+                    neighbour.setStyle({
+                        fillOpacity: 0.5,
+                        fillColor: '#fff'
+                    });
+                    neighbour.occupied = false;
+                    editionCache[neighbour.id] = false;
+                }
+            }
+            break;
     }
 }
 
@@ -106,6 +155,29 @@ function regionMouseOver(e) {
                 editionCache[e.target.id] = true;
             }
             break;
+        case 'bigpaint-on-move':
+            if (!e.target.occupied) {
+                e.target.setStyle({
+                    fillOpacity: 0.5,
+                    fillColor: getColor()
+                });
+                e.target.occupied = true;
+                editionCache[e.target.id] = true;
+            }
+            var h = e.target.xy.split('x');
+            for (var d = 0; d < 6; d++) {
+                var xy = offsetNeighbor(h,d);
+                var neighbour = polygons[polygonsIdToXY[xy[0]+'x'+xy[1]]];
+                if (!neighbour.occupied) {
+                    neighbour.setStyle({
+                        fillOpacity: 0.5,
+                        fillColor: getColor()
+                    });
+                    neighbour.occupied = true;
+                    editionCache[neighbour.id] = true;
+                }
+            }
+            break;
         case 'clear-on-move':
             if (e.target.occupied) {
                 e.target.setStyle({
@@ -114,6 +186,30 @@ function regionMouseOver(e) {
                 });
                 e.target.occupied = false;
                 editionCache[e.target.id] = false;
+            }
+            break;
+        case 'bigclear-on-move':
+            if (e.target.occupied) {
+                e.target.setStyle({
+                    fillOpacity: 0.5,
+                    fillColor: '#fff'
+                });
+                e.target.occupied = false;
+                editionCache[e.target.id] = false;
+                
+            }
+            var h = e.target.xy.split('x');
+            for (var d = 0; d < 6; d++) {
+                var xy = offsetNeighbor(h,d);
+                var neighbour = polygons[polygonsIdToXY[xy[0]+'x'+xy[1]]];
+                if (neighbour.occupied) {
+                    neighbour.setStyle({
+                        fillOpacity: 0.5,
+                        fillColor: '#fff'
+                    });
+                    neighbour.occupied = false;
+                    editionCache[neighbour.id] = false;
+                }
             }
             break;
     }
@@ -157,6 +253,28 @@ function clearPaintAll() {
     }
 }
 
+
+var directions = [
+    [//    nord      n-e       s-e      south      s-w       n-w
+        [[+1, 0], [0, +1], [-1, +1], [-1, 0], [-1, -1], [0, -1]],
+        [[+1, 0], [+1, +1], [0, +1], [-1, 0], [0, -1], [+1, -1]]
+    ], [
+        [[+1, 0], [0, +1], [-1, +1], [-1, 0], [-1, -1], [0, -1]],
+        [[+1, 0], [+1, +1], [0, +1], [-1, 0], [0, -1], [+1, -1]]
+    ]
+];
+
+function offsetNeighbor($h, $d)
+{
+    $h[0] = parseInt($h[0]);
+    $h[1] = parseInt($h[1]);
+    $parityX = $h[0] & 1;
+    $parityY = $h[1] & 1;
+    $off = directions[$parityX][$parityY][$d];
+
+    return [$h[0] + $off[0], $h[1] + $off[1]];
+}
+
 function onLoadTiles(data) {
     var tile;
     while (tile = data.result.pop()) {
@@ -182,13 +300,15 @@ function onLoadTiles(data) {
             fillOpacity: opacity
         });
         polygon.id = tile.id;
+        polygon.xy = tile.x + 'x' + tile.y;
         polygon.occupied = tile.occupied;
         polygon.disabled = tile.disabled;
         polygon.on('click', regionClick);
         polygon.on('mouseover', regionMouseOver);
         polygon.on('mouseout', regionMouseOut);
         polygon.addTo(map);
-        polygons.push(polygon);
+        polygons[polygon.id] = polygon;
+        polygonsIdToXY[polygon.xy] = polygon.id;
     }
     currentRequest = false;
     $label.hide();
@@ -210,7 +330,7 @@ function onLoadRegions(data) {
         });
         polygon.bindPopup('ID: ' + region.id + ' (' + region.name + ')');
         polygon.addTo(map);
-        polygons.push(polygon);
+        polygons[region.id] = polygon;
     }
     while (city = cities.pop()) {
 
@@ -223,7 +343,7 @@ function onLoadRegions(data) {
         });
         polygon.bindPopup('ID: ' + city.id + ' (' + city.name + ')');
         polygon.addTo(map);
-        polygons.push(polygon);
+        polygons[city.id] = polygon;
     }
     currentRequest = false;
     $label.hide();
