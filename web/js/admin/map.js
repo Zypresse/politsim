@@ -176,8 +176,8 @@ function onLoadTiles(data) {
         }
         var polygon = L.polygon(tile.coords, {
             weight: 1,
-            color: 'white',
-            opacity: 0.5,
+            color: '#666',
+            opacity: 0.3,
             fillColor: color,
             fillOpacity: opacity
         });
