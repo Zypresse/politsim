@@ -60,6 +60,10 @@ $config = [
 //        'notificator' => [
 //            'class' => 'app\components\Notificator',
 //        ]
+        'filedb' => [
+            'class' => 'yii2tech\filedb\Connection',
+            'path' => '@app/data/static',
+        ],
     ],
     'modules' => [
         'admin' => [

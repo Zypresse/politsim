@@ -31,9 +31,13 @@ return [
         ],
         'i18n' => $i18n,
         'db' => $db,
-        'notificator' => [
-            'class' => 'app\components\Notificator',
-        ]
+//        'notificator' => [
+//            'class' => 'app\components\Notificator',
+//        ],
+        'filedb' => [
+            'class' => 'yii2tech\filedb\Connection',
+            'path' => '@app/data/static',
+        ],
     ],
     'params' => $params,
 ];
