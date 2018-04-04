@@ -82,7 +82,7 @@ class ExportController extends Controller
                 ];
             }
             file_put_contents(Yii::$app->basePath . "/data/default/tiles/part{$i}.json", json_encode($data, JSON_UNESCAPED_UNICODE));
-            echo count($data)." tiles exported".PHP_EOL;
+            echo "part #{$i} (".count($data)." tiles) exported".PHP_EOL;
         }
     }
     
