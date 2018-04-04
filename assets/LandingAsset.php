@@ -14,7 +14,7 @@ class LandingAsset extends AssetBundle
 	'/css/landing.css',
     ];
     public $js = [
-	'/js/jquery.countdown.min.js',
+	'/js/imagesloaded.pkgd.min.js',
 	'/js/landing.js',
     ];
     public $depends = [
