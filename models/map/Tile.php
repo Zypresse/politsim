@@ -163,7 +163,8 @@ class Tile extends ActiveRecord
     {
         return [
             [['x', 'y', 'lat', 'lon'], 'required'],
-            [['x', 'y', 'lat', 'lon', 'population', 'regionId', 'cityId', 'districtId'], 'default', 'value' => null],
+            [['x', 'y', 'lat', 'lon', 'regionId', 'cityId', 'districtId'], 'default', 'value' => null],
+            [['population'], 'default', 'value' => 0],
             [['x', 'y', 'lat', 'lon', 'population', 'regionId', 'cityId', 'districtId', 'biome'], 'integer'],
             [['lat', 'lon'], 'unique', 'targetAttribute' => ['lat', 'lon']],
             [['x', 'y'], 'unique', 'targetAttribute' => ['x', 'y']],

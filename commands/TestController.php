@@ -124,37 +124,52 @@ class TestController extends Controller
         }
     }
     
-    const UNDEFINED_REGION = 1;
-    
-    /**
-     * разбить антарктику на регионы
-     */
-    public function actionAntarctica()
+    const R = 0.1;
+
+    private static function getLat($x,$y)
     {
-        $width = 100;
-        
-        $tran = Yii::$app->db->beginTransaction();
-        
-        for ($y = -1200, $i = 0; $y <= 1200; $y+=$width, $i++) {
-            $region = new Region([
-                'name' => 'Антарктида '.($i+1),
-                'nameShort' => 'AN-'.($i+1),
-                'population' => 0,
-            ]);
-            if (!$region->save()) {
-                var_dump($region->getErrors());
-                $tran->rollBack();
-                return;
+        $lat = $y%2 == 0 ? 0 : static::R*0.886;
+        if ($x > 0) {
+            for ($i = 0; $i < $x; $i++) {
+                $lat += static::R*0.866*2*static::correctX($lat);
             }
-            
-            echo "{$region->name} created...";
-            
-            $count = Tile::updateAll(['regionId' => $region->id], ['and', ['between', 'y', $y, $y+$width-1], ['regionId' => self::UNDEFINED_REGION]]);
-            
-            echo "saved {$count} tiles".PHP_EOL;
+        } else {
+            for ($i = 0; $i > $x; $i--) {
+                $lat -= static::R*0.866*2*static::correctX($lat);
+            }
         }
-        $tran->commit();
-        
+        return $lat;
+    }
+
+    private static function getLng($x,$y) {
+        return $y*static::R*1.5;
+    }
+
+    private static function correctX($x) {
+        return round(cos($x*0.0175)*41000/360 / 111.1111,4);
+    }
+
+    
+    public function actionNordpole()
+    {
+        $data = [];
+        for ($x = 942; $x < 1026; $x++) {
+            for ($y = -1200; $y <= 1200; $y++) {
+                $check = Tile::find()->where(['x' => $x, 'y' => $y])->exists();
+                if (!$check) {
+                    $data[] = [
+                        'x' => $x,
+                        'y' => $y,
+                        'lat' => round(static::getLat($x, $y) * Tile::LAT_LON_FACTOR),
+                        'lon' => round(static::getLng($x, $y) * Tile::LAT_LON_FACTOR),
+                        'biome' => Tile::BIOME_WATER,
+                        'population' => 0,
+                    ];
+                }
+            }
+        }
+        echo "prepared ".count($data).PHP_EOL;
+        echo "saved ".Tile::getDb()->createCommand()->batchInsert(Tile::tableName(), ['x', 'y', 'lat', 'lon', 'biome', 'population'], $data)->execute().PHP_EOL;
     }
     
 }

@@ -56,7 +56,7 @@ EOJS;
         if (!$region->polygon) {
             continue;
         }
-        $js .= "regions[{$region->id}] = L.polygon([".json_encode($region->polygon->data)."],{
+        $js .= "regions[{$region->id}] = L.polygon(".json_encode($region->polygon->data).",{
             color: '#fff',
             opacity: 1,
             fillColor: '".someColor()."',
@@ -65,14 +65,13 @@ EOJS;
             title: '#{$region->id} ({$region->name})'
         }).bindTooltip('#{$region->id} ({$region->name})');
         regions[{$region->id}].addTo(map);";
-        unset($region->polygon);
     }
     
     foreach ($cities as $city) {
         if (!$city->polygon) {
             continue;
         }
-        $js .= "cities[{$city->id}] = L.polygon([".json_encode($city->polygon->data)."],{
+        $js .= "cities[{$city->id}] = L.polygon(".json_encode($city->polygon->data).",{
             color: '#000',
             opacity: 1,
             fillColor: '#0ff',
@@ -81,7 +80,6 @@ EOJS;
             title: '#{$city->id} ({$city->name})'
         }).bindTooltip('#{$city->id} ({$city->name})');
         cities[{$city->id}].addTo(map);";
-        unset($city->polygon);
     }
     
     $this->registerJs($js);

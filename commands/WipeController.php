@@ -83,13 +83,17 @@ class WipeController extends Controller
      */
     public function actionReloadTiles()
     {
-        $parts = 16; // TODO: files list
+        $dir = Yii::$app->basePath . '/data/default/tiles/';
+        $data = scandir($dir);
         $db = Yii::$app->db;
         $db->createCommand()->setSql("TRUNCATE TABLE {$db->quoteTableName(Tile::tableName())} CASCADE")->execute();
-        for ($i = 0; $i < $parts; $i++) {
-            $rawData = json_decode(file_get_contents(Yii::$app->basePath . '/data/default/tiles/part' . $i . '.json'));
+        foreach ($data as $file) {
+            if (!is_file($dir.$file)) {
+                continue;
+            }
+            $rawData = json_decode(file_get_contents($dir.$file));
             $countRaw = count($rawData);
-            echo "part #$i loaded ($countRaw tiles)" . PHP_EOL;
+            echo "{$file} loaded ($countRaw tiles)" . PHP_EOL;
             $data = [];
             foreach ($rawData as $tile) {
                 $data[] = [
@@ -103,7 +107,7 @@ class WipeController extends Controller
                 ];
             }
             $count = $db->createCommand()->batchInsert(Tile::tableName(), ['x', 'y', 'lat', 'lon', 'biome', 'regionId', 'cityId'], $data)->execute();
-            echo "part #$i inserted ($count tiles)" . PHP_EOL;
+            echo "inserted $count tiles" . PHP_EOL;
         }
     }
     
