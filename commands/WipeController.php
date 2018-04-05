@@ -48,6 +48,8 @@ class WipeController extends Controller
         }
 
         $count = Yii::$app->db->createCommand()->batchInsert(Region::tableName(), ['id', 'name', 'nameShort', 'population'], $data)->execute();
+        $autoincrement = $count+1;
+        Yii::$app->db->createCommand("ALTER SEQUENCE regions_id_seq RESTART WITH {$autoincrement}")->execute();
         echo "regions inserted ($count regions)" . PHP_EOL;
     }
 
@@ -71,6 +73,8 @@ class WipeController extends Controller
         }
 
         $count = Yii::$app->db->createCommand()->batchInsert(City::tableName(), ['id', 'name', 'nameShort', 'regionId', 'population'], $data)->execute();
+        $autoincrement = $count+1;
+        Yii::$app->db->createCommand("ALTER SEQUENCE cities_id_seq RESTART WITH {$autoincrement}")->execute();
         echo "cities inserted ($count cities)" . PHP_EOL;
     }
 
@@ -136,31 +140,31 @@ class WipeController extends Controller
     public function actionCombinePolygons()
     {
         $db = Yii::$app->db;
-        $db->createCommand()->setSql("TRUNCATE TABLE {$db->quoteTableName(Polygon::tableName())} CASCADE")->execute();
-        $cities = City::findAll();
-        /* @var $city City */
-        foreach ($cities as $city) {
-            echo $city->name;
-            if ($city->getPolygon()->exists()) {
-                echo " skipped".PHP_EOL;
-                continue;
-            }
-            if (!$city->getTiles()->exists()) {
-                echo " have no tiles".PHP_EOL;
-                continue;
-            }
-            $polygon = new Polygon([
-                'ownerType' => Polygon::TYPE_CITY,
-                'ownerId' => $city->id,
-                'data' => TileCombiner::combine($city->getTiles()),
-            ]);
-            if (!$polygon->save()) {
-                var_dump($polygon->getErrors(), $polygon->data); die();
-            }
-            echo " saved".PHP_EOL;
-        }
+//        $db->createCommand()->setSql("TRUNCATE TABLE {$db->quoteTableName(Polygon::tableName())} CASCADE")->execute();
+//        $cities = City::findAll();
+//        /* @var $city City */
+//        foreach ($cities as $city) {
+//            echo $city->name;
+//            if ($city->getPolygon()->exists()) {
+//                echo " skipped".PHP_EOL;
+//                continue;
+//            }
+//            if (!$city->getTiles()->exists()) {
+//                echo " have no tiles".PHP_EOL;
+//                continue;
+//            }
+//            $polygon = new Polygon([
+//                'ownerType' => Polygon::TYPE_CITY,
+//                'ownerId' => $city->id,
+//                'data' => TileCombiner::combine($city->getTiles()),
+//            ]);
+//            if (!$polygon->save()) {
+//                var_dump($polygon->getErrors(), $polygon->data); die();
+//            }
+//            echo " saved".PHP_EOL;
+//        }
         
-        $regions = Region::findAll();
+        $regions = Region::find()->where(['>', 'id', 1261])->all();
         /* @var $region Region */
         foreach ($regions as $region) {
             echo $region->name;

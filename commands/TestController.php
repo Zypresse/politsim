@@ -131,13 +131,11 @@ class TestController extends Controller
      */
     public function actionAntarctica()
     {
+        $width = 100;
         
-        $count = Tile::find()->where(['regionId' => self::UNDEFINED_REGION])->count();
-        $n = 50000;
-        $steps = ceil($count/$n);
         $tran = Yii::$app->db->beginTransaction();
-        for ($i = 0; $i < $steps; $i++) {
-            $query = Tile::find()->where(['regionId' => self::UNDEFINED_REGION])->orderBy(['x' => SORT_ASC, 'y' => SORT_ASC])->limit($n)->offset($n*$i);
+        
+        for ($y = -1200, $i = 0; $y <= 1200; $y+=$width, $i++) {
             $region = new Region([
                 'name' => 'Антарктида '.($i+1),
                 'nameShort' => 'AN-'.($i+1),
@@ -149,18 +147,11 @@ class TestController extends Controller
                 return;
             }
             
-            $polygon = new Polygon([
-                'ownerType' => Polygon::TYPE_REGION,
-                'ownerId' => $region->id,
-                'data' => TileCombiner::combine($query),
-            ]);
-            if (!$polygon->save()) {
-                var_dump($polygon->getErrors());
-                $tran->rollBack();
-                return;
-            }
+            echo "{$region->name} created...";
             
-            echo "saved {$region->name}".PHP_EOL;
+            $count = Tile::updateAll(['regionId' => $region->id], ['and', ['between', 'y', $y, $y+$width-1], ['regionId' => self::UNDEFINED_REGION]]);
+            
+            echo "saved {$count} tiles".PHP_EOL;
         }
         $tran->commit();
         
