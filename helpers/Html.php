@@ -1,8 +1,8 @@
 <?php
 
-use app\helpers\Html as YiiHtml;
-
 namespace app\helpers;
+
+use yii\helpers\Html as YiiHtml;
 
 /**
  * Description of Html
@@ -11,7 +11,7 @@ namespace app\helpers;
  */
 class Html extends YiiHtml
 {
-    
+
     /**
      * Русское форматирование слов стоящих за числами
      * @param integer $n
@@ -25,11 +25,11 @@ class Html extends YiiHtml
         $pref = ($n < 0) ? '-' : '';
         $n = abs($n);
         $number = $pref . number_format($n, 0, '', ' ');
-        
+
         if ($s0 === false) {
             return $number;
         }
-        
+
         if ($s0 === 'h') {
             $s0 = 'человек';
             $s1 = 'человек';
@@ -62,5 +62,15 @@ class Html extends YiiHtml
             return $number . ' ' . $s0;
         }
     }
-    
+
+    /**
+     * prettyDate span с форматированным временем
+     * @param integer $time unixtime
+     * @return string
+     */
+    public static function timeAutoFormat(int $time)
+    {
+        return "<span class='prettyDate' data-unixtime='{$time}'>" . date('d-m-Y H:i', $time) . "</span>";
+    }
+
 }

@@ -78,7 +78,7 @@ use app\helpers\Icon;
                 </a>
                 <ul class="treeview-menu">
                     <li>
-                        <a href="#!citizenship">
+                        <a href="/citizenship">
                             <i class="fa fa-flag"></i> Гражданство
                         </a>
                     </li>

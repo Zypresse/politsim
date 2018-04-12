@@ -17,8 +17,11 @@ use app\exceptions\NotAllowedHttpException;
 class UserController extends AppController
 {
     
-    public function actionProfile(int $id)
+    public function actionProfile(int $id = null)
     {
+        if (!$id) {
+            $id = $this->user->id;
+        }
         return $this->render('profile', [
             'model' => $this->getModel($id),
             'viewer' => null, // viewer User

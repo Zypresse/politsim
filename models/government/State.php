@@ -12,6 +12,7 @@ use app\models\auth\User;
 use app\models\base\interfaces\MapObject;
 use app\models\base\taxpayers\TaxPayerInterface;
 use app\models\economy\UtrType;
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "states".
@@ -71,6 +72,20 @@ class State extends ActiveRecord implements MapObject, TaxPayerInterface
             [['utr'], 'unique'],
             [['cityId'], 'exist', 'skipOnError' => true, 'targetClass' => City::className(), 'targetAttribute' => ['cityId' => 'id']],
         ];
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+	return [
+	    [
+		'class' => TimestampBehavior::className(),
+		'createdAtAttribute' => 'dateCreated',
+		'updatedAtAttribute' => false,
+	    ],
+	];
     }
 
     /**

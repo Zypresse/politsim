@@ -9,6 +9,8 @@ use app\models\base\ActiveRecord;
 use app\models\economy\UtrType;
 use yii\web\UploadedFile;
 use yii\imagine\Image;
+use app\models\government\Citizenship;
+use app\models\government\State;
 
 /**
  * This is the model class for table "users".
@@ -31,6 +33,8 @@ use yii\imagine\Image;
  * @property integer $utr UTR
  *
  * @property Account $account
+ * @property Citizenship $citizenships
+ * @property State[] $states
  */
 class User extends ActiveRecord implements TaxPayerInterface
 {
@@ -205,4 +209,20 @@ class User extends ActiveRecord implements TaxPayerInterface
         return $this->save();
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCitizenships()
+    {
+        return $this->hasMany(Citizenship::class, ['userId' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getStates()
+    {
+        return $this->hasMany(State::class, ['id' => 'stateId'])->viaTable('citizenships', ['userId' => 'id']);
+    }
+    
 }
