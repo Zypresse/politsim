@@ -100,7 +100,7 @@ class Account extends ActiveRecord implements IdentityInterface
      */
     public function getUsers()
     {
-        return $this->hasMany(User::className(), ['accountId' => 'id']);
+        return $this->hasMany(User::className(), ['accountId' => 'id'])->orderBy(['id' => SORT_ASC]);
     }
 
     /**

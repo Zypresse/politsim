@@ -35,6 +35,8 @@ class UserController extends AppController
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             $transaction = $model->getDb()->beginTransaction();
             if ($model->save() && $model->saveAvatar()) {
+                $model->account->activeUserId = $model->id;
+                $model->account->save();
                 $transaction->commit();
                 return $this->redirect(['user/profile', 'id' => $model->id]);
             } else {
