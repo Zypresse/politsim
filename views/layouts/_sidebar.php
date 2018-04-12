@@ -170,7 +170,7 @@ use app\helpers\Icon;
                         </a>
                     </li>
                     <li>
-                        <a href="#!chart/states">
+                        <a href="/rating/states">
                             <i class="fa fa-th-list"></i> Рейтинг государств
                         </a>
                     </li>
