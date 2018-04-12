@@ -6,6 +6,7 @@ use Yii;
 use app\controllers\base\AppController;
 use app\models\auth\User;
 use app\models\auth\Account;
+use app\models\variables\Ideology;
 use yii\web\NotFoundHttpException;
 use app\exceptions\NotAllowedHttpException;
 
@@ -16,6 +17,8 @@ use app\exceptions\NotAllowedHttpException;
  */
 class UserController extends AppController
 {
+    
+    public $defaultAction = 'profile';
     
     public function actionProfile(int $id = null)
     {
@@ -62,6 +65,22 @@ class UserController extends AppController
         Yii::$app->user->identity->activeUserId = $id;
         Yii::$app->user->identity->save();
         return $this->redirect(["user/profile", "id" => $id]);
+    }
+    
+    public function actionIdeology()
+    {
+        if (Yii::$app->request->isPost) {
+            $id = (int) Yii::$app->request->post('id');
+            if (!$this->user->setIdeologyId($id)) {
+                Yii::$app->session->setFlash('save-error', implode(', ', $this->user->getErrors('ideologyId')));
+            }
+            return $this->redirect(['profile']);
+        }
+        
+        return $this->renderAjax('_ideology', [
+            'user' => $this->user,
+            'ideologies' => Ideology::find()->all(),
+        ]);
     }
     
     /**

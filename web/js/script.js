@@ -156,3 +156,69 @@ function prettyDates() {
         $(elem).text($.format.date(new Date($(elem).data('unixtime') * 1000), $(elem).data('timeformat')));
     });
 }
+
+function showError(e) {
+    
+    if ($("#last-error")[0]) {
+        $("#last-error").slideUp(400, function(){
+            $(this).remove();
+            showError(e);
+        });
+        return;
+    }
+    
+    var message = 'Unknown error';
+    if (typeof e === "object") {
+        if (e.result === "error") {
+            message = e.error;
+        } else if (e.responseJSON) {
+            message = e.responseJSON.error;
+        } else {
+            message = e.statusText;
+        }
+    } else {
+        message = e;
+    }
+    
+    $('#error-block').append("<div id='last-error' class='alert alert-danger alert-dismissible' style='display:none; width:100%; margin-bottom: 5px; border-radius: 0;' >" +
+        "<button type='button' class='close' data-dismiss='alert' aria-label='Close'>" +
+        "<span aria-hidden='true'>&times;</span>" +
+        "</button>" +
+        "<i class='fa fa-warning'></i>" +
+        "&nbsp;" +
+        message +
+    "</div>");
+    $("#last-error").slideDown();
+}
+
+function ajaxModal(action, params, title, footer, modalId, bodyId, modalClass) {
+    modalId = modalId ? modalId : 'automodal' + action.replace(/\//g, '-') + '-modal';
+    bodyId = bodyId ? bodyId : modalId + '-body';
+    modalClass = modalClass ? modalClass : '';
+    footer = footer ? footer : '';
+    if ($('#'+modalId)[0]) {
+        $('#'+bodyId).html('<div class="text-center"><br><br><br>Загрузка...<br><br><br><br><br></div>');
+        if (footer) {
+            $('#'+modalId+'-footer').html(footer);
+        } else {
+            $('#'+modalId+'-footer').hide();
+        }
+        $('#'+modalId+'-label').text(title);
+    } else {
+        $(document.body).append(
+            '<div style="display:none" class="modal fade" id="'+modalId+'" tabindex="-1" role="dialog" aria-labelledby="'+modalId+'-label" aria-hidden="true"><div class="modal-dialog '+modalClass+'"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button><h3 id="'+modalId+'-label">'+title+'</h3></div><div id="'+bodyId+'" class="modal-body"><div class="text-center"><br><br><br>Загрузка...<br><br><br><br><br></div></div><div id="'+modalId+'-footer" class="modal-footer" '+(footer ? '' : 'style="display:none"')+' >'+footer+'</div></div></div></div>'
+        );        
+    }
+    $.ajax({
+        method: 'GET',
+        url: action,
+        data: params,
+        success: function(d) {
+            $('#'+bodyId).html(d);
+            $('#'+modalId).modal();
+            prettyDates();
+            $('#'+bodyId).find('[autofocus]').focus();
+        },
+        error: showError
+    });
+}

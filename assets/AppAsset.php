@@ -31,7 +31,6 @@ class AppAsset extends AssetBundle
 	'js/lib/leaflet-geodesy.js',
         // для текста вдоль полилиний
 //	'js/lib/leaflet.textpath.js',
-//	'js/lib/app.js',
 	'js/script.js',
     ];
     public $depends = [

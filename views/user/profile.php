@@ -31,7 +31,7 @@ $this->title = $model->name;
                     <h1><?= Html::encode($model->name) ?> <?php if ($isOwner): ?><small>(это вы)</small><?php endif ?></h1>
                 </div>
                 <div class="box-body">
-                    <p>
+                    <div>
                         <i class="fa fa-flag"></i>
                         <?php if ($model->ideology) : ?>
                             <?=Yii::t('app', 'Have ideology «{0}»', [$model->ideology->name])?>
@@ -39,9 +39,9 @@ $this->title = $model->name;
                         Идеология не указана
                         <?php endif ?>
                         <?php if ($isOwner): ?>
-                        <button id="choose-ideology-btn" class="btn btn-xs btn-primary">Изменить</button>
+                        <button onclick="ajaxModal('/user/ideology', {}, 'Выберите новую идеологию')" class="btn btn-xs btn-primary"><i class="fa fa-pencil"></i> Изменить</button>
                         <?php endif ?>
-                    </p>
+                    </div>
                     <?php /*<p>
                         <i class="fa fa-group"></i>
                         <?php if (count($model->parties)): ?>

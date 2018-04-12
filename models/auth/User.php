@@ -235,4 +235,19 @@ class User extends ActiveRecord implements TaxPayerInterface
         return $this->hasOne(Ideology::class, ['id' => 'ideologyId']);
     }
     
+    /**
+     * 
+     * @param integer $id
+     */
+    public function setIdeologyId(int $id)
+    {
+        if (!Ideology::find()->where(['id' => $id])->exists()) {
+            $this->addError('ideologyId', 'Несуществующая идеология');
+            return false;
+        }
+        
+        $this->ideologyId = $id;
+        return $this->save();
+    }
+    
 }
