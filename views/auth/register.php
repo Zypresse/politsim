@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use app\widgets\SocialAuth;
 
 /* @var $this \yii\web\View */
 /* @var $model \app\models\auth\RegistrationForm */
@@ -52,14 +53,7 @@ $this->title = 'Регистрация нового аккаунта';
 			</div>
                     <?php ActiveForm::end() ?>
 
-		    <div class="social-auth-links text-center">
-			<a href="#" class="btn btn-block btn-social btn-vk btn-flat"><i class="fa fa-vk"></i> Войти через
-			    VK</a>
-			<a href="#" class="btn btn-block btn-social btn-facebook btn-flat"><i class="fa fa-facebook"></i> Войти через
-			    Facebook</a>
-			<a href="#" class="btn btn-block btn-social btn-google btn-flat"><i class="fa fa-google-plus"></i> Войти через
-			    Google+</a>
-		    </div>
+                    <?= SocialAuth::widget() ?>
 
 		    <a href="/login" class="text-center">У меня уже есть аккаунт</a>
 		</div>

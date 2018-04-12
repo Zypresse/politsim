@@ -58,5 +58,24 @@ $this->title = 'Настройки аккаунта';
         <!-- /.box-footer-->
     </div>
     <!-- /.box -->
+    <div class="box box-info">
+        <div class="box-header with-border">
+            <h3 class="box-title">Способы входа</h3>
+        </div>
+        <div class="box-body">
+            <?php foreach ($model->providers as $provider): ?>
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    Провайдер #<?= $provider->sourceType?>, Аккаунт <?= $provider->sourceId ?>
+                </div>
+            </div>
+            <?php endforeach ?>
+            <div class="panel panel-info">
+                <div class="panel-body">
+                    Пароль <?= $model->password ? '<span class="text-green">установлен</span>' : '<span class="text-red">не установлен</span>' ?>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
 <!-- /.content -->

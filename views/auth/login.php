@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use app\widgets\SocialAuth;
 
 /* @var $this \yii\web\View */
 /* @var $model \app\models\auth\LoginForm */
@@ -50,18 +51,10 @@ $this->title = 'Авторизация';
                         <!-- /.col -->
                     </div>
                 <?php ActiveForm::end() ?>
+                
+                <?= SocialAuth::widget() ?>
 
-                <div class="social-auth-links text-center">
-                    <a href="#" class="btn btn-block btn-social btn-vk btn-flat"><i class="fa fa-vk"></i> Войти через
-                        VK</a>
-                    <a href="#" class="btn btn-block btn-social btn-facebook btn-flat"><i class="fa fa-facebook"></i> Войти через
-                        Facebook</a>
-                    <a href="#" class="btn btn-block btn-social btn-google btn-flat"><i class="fa fa-google-plus"></i> Войти через
-                        Google+</a>
-                </div>
-                <!-- /.social-auth-links -->
-
-                <a href="#" class="text-center">Я забыл мой пароль</a>
+                <a href="javascript:alert('Забыл пароль? И хуле на кнопку то жать? Думаешь тут будет восстановление пароля по емейлу? А вот нихуя, иди вспоминай свой пароль сам, безмозглое уёбище')" class="text-center">Я забыл мой пароль</a>
                 <a href="/registration" class="text-center">Зарегистрировать новый аккаунт</a>
 
             </div>

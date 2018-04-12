@@ -5,10 +5,13 @@ namespace app\controllers;
 use Yii;
 use yii\web\Controller;
 use yii\authclient\AuthAction;
+use yii\authclient\ClientInterface;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use app\models\auth\RegistrationForm;
 use app\models\auth\LoginForm;
+use app\models\auth\Account;
+use app\models\auth\AccountProvider;
 
 /**
  * Авторизация и аутентификация
@@ -25,7 +28,7 @@ class AuthController extends Controller
     {
 	return [
 	    'auth' => [
-		'class' => AuthAction::className(),
+		'class' => AuthAction::class,
 		'successCallback' => [$this, 'onAuthSuccess'],
 	    ],
 	];
@@ -38,7 +41,7 @@ class AuthController extends Controller
     {
 	return [
 	    'access' => [
-		'class' => AccessControl::className(),
+		'class' => AccessControl::class,
 		'only' => ['logout'],
 		'rules' => [
 		    [
@@ -49,7 +52,7 @@ class AuthController extends Controller
 		],
 	    ],
 	    'verbs' => [
-		'class' => VerbFilter::className(),
+		'class' => VerbFilter::class,
 		'actions' => [
 		    'logout' => ['post'],
 		],
@@ -103,6 +106,64 @@ class AuthController extends Controller
     {
 	Yii::$app->user->logout();
 	return $this->goHome();
+    }
+    
+    /**
+     * 
+     * @param ClientInterface $client
+     */
+    public function onAuthSuccess(ClientInterface $client)
+    {
+        
+        $sourceType = AccountProvider::typeToId($client->getId());
+        $attributes = $client->getUserAttributes();
+        $sourceId = (string) $attributes['id'] ?: $attributes['uid'];
+
+        /* @var $accountProvider AccountProvider */
+        $accountProvider = AccountProvider::findOne([
+            'sourceType' => $sourceType,
+            'sourceId' => $sourceId,
+        ]);
+        
+        if (is_null($accountProvider)) {
+            $email = $attributes['email'];
+            $account = Account::findIdentityByEmail($email);
+            if ($account) {
+                $accountProvider = new AccountProvider([
+                    'accountId' => $account->id,
+                    'sourceType' => $sourceType,
+                    'sourceId' => $sourceId,
+                ]);
+                $accountProvider->save();
+            }
+        } else {
+            $account = $accountProvider->account;
+        }
+        
+        if (Yii::$app->user->isGuest) {
+            if ($account) { // login
+                Yii::$app->user->login($account, 30*24*60*60);
+            } else { // signup
+                $params = AccountProvider::loadParams($sourceType, $attributes);
+                $accountProvider = AccountProvider::signUp($sourceType, $params);
+                if ($accountProvider->getErrors()) { // TODO
+                    var_dump($accountProvider->getErrors()); die();
+                }
+            }
+            return $this->redirect('/');
+        } else { // user already logged in
+            if (!$accountProvider) { // add auth provider
+                $accountProvider = new AccountProvider([
+                    'accountId' => Yii::$app->user->id,
+                    'sourceType' => $sourceType,
+                    'sourceId' => $sourceId,
+                ]);
+                $accountProvider->save();
+            }
+            return $this->redirect(['account/profile']);
+        }
+        
+
     }
 
 }

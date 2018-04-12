@@ -17,7 +17,7 @@ class m180313_185814_create_accountProviders_table extends Migration
             'sourceId' => $this->integer()->notNull(),
             'sourceType' => $this->smallInteger(2)->notNull(),
         ]);
-        $this->createIndex('accountProvidersPrimary', 'accountProviders', ['accountId', 'sourceId', 'sourceType'], true);
+        $this->createIndex('accountProvidersPrimary', 'accountProviders', ['sourceId', 'sourceType'], true);
         $this->addForeignKey('accountProvidersToAccount', 'accountProviders', 'accountId', 'accounts', 'id');
     }
 
