@@ -222,3 +222,34 @@ function ajaxModal(action, params, title, footer, modalId, bodyId, modalClass) {
         error: showError
     });
 }
+
+
+var datatable_language = {
+    paginate: {
+        first:    '«',
+        previous: '‹',
+        next:     '›',
+        last:     '»'
+    },
+    aria: {
+        paginate: {
+            first:    'К первой',
+            previous: 'Назад',
+            next:     'Далее',
+            last:     'К последней'
+        },
+        sortAscending: '- нажмите чтобы отсортировать по возрастанию',
+        sortDescending: '- нажмите чтобы отсортировать по убыванию'
+    },
+    decimal: ',',
+    thousands: '.',
+    emptyTable: 'Нет данных',
+    info: 'Отображаются элементы от _START_ до _END_ (_TOTAL_ всего)',
+    infoEmpty: 'Нет данных для отображения',
+    infoFiltered: '(отфильтровано из _MAX_ элементов)',
+    lengthMenu: 'Показывать <select><option value="10">10</option><option value="20">20</option><option value="30">30</option><option value="40">40</option><option value="50">50</option><option value="-1">Все</option></select> элементов на странице',
+    processing: 'Обработка...',
+    search: 'Поиск:',
+    searchPlaceholder: 'Введите что-нибудь',
+    zeroRecords: 'Ничего не найдено'
+};
