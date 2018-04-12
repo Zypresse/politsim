@@ -2,6 +2,7 @@
 
 use yii\bootstrap\Html;
 use app\helpers\Icon;
+use app\helpers\LinkCreator;
 
 /* @var $this \yii\web\View */
 /* @var $model \app\models\auth\User */
@@ -31,17 +32,20 @@ $this->title = $model->name;
                     <h1><?= Html::encode($model->name) ?> <?php if ($isOwner): ?><small>(это вы)</small><?php endif ?></h1>
                 </div>
                 <div class="box-body">
-                    <div>
-                        <i class="fa fa-flag"></i>
-                        <?php if ($model->ideology) : ?>
-                            <?=Yii::t('app', 'Have ideology «{0}»', [$model->ideology->name])?>
-                        <?php else: ?>
-                        Идеология не указана
-                        <?php endif ?>
-                        <?php if ($isOwner): ?>
-                        <button onclick="ajaxModal('/user/ideology', {}, 'Выберите новую идеологию')" class="btn btn-xs btn-primary"><i class="fa fa-pencil"></i> Изменить</button>
-                        <?php endif ?>
+                    <div class="panel panel-default col-lg-6 col-md-12">
+                        <div class="panel-body">
+                            <i class="fa fa-flag"></i>
+                            <?php if ($model->ideology) : ?>
+                                <?=Yii::t('app', 'Have ideology «{0}»', [$model->ideology->name])?>
+                            <?php else: ?>
+                            Идеология не указана
+                            <?php endif ?>
+                            <?php if ($isOwner): ?>
+                            <button onclick="ajaxModal('/user/ideology', {}, 'Выберите новую идеологию')" class="btn btn-xs btn-primary"><i class="fa fa-pencil"></i> Изменить</button>
+                            <?php endif ?>
+                        </div>
                     </div>
+                    <div class="clearfix"></div>
                     <?php /*<p>
                         <i class="fa fa-group"></i>
                         <?php if (count($model->parties)): ?>
@@ -56,20 +60,24 @@ $this->title = $model->name;
                             <?=Yii::t('app', 'Have not party membership')?>
                         <?php endif ?>
                     </p> */ ?>
-                    <?php /*<p>
-                        <i class="fa fa-globe"></i>
-                        <?php if (count($user->states)): ?>
-                            <?php
-                                $stateLinks = [];
-                                foreach ($user->states as $state) {
-                                    $stateLinks[] = LinkCreator::stateLink($state);
-                                }
-                            ?>
-                            <?=Yii::t('app', 'Have citizenships: {0}', [implode(', ', $stateLinks)])?>
-                        <?php else: ?>
-                            <?=Yii::t('app', 'Have not citizenship')?>
-                        <?php endif ?>
-                    </p> */ ?>
+                    <div class="clearfix"></div>
+                    <div class="panel panel-default col-lg-6 col-md-12">
+                        <div class="panel-body">
+                            <i class="fa fa-globe"></i>
+                            <?php if (count($model->states)): ?>
+                                <?php
+                                    $stateLinks = [];
+                                    foreach ($user->states as $state) {
+                                        $stateLinks[] = LinkCreator::stateLink($state);
+                                    }
+                                ?>
+                                <?=Yii::t('app', 'Have citizenships: {0}', [implode(', ', $stateLinks)])?>
+                            <?php else: ?>
+                                <?=Yii::t('app', 'Have not citizenship')?>
+                            <?php endif ?>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
                     <?php /*<p>                
                         <i class="fa fa-briefcase"></i>
                         <?php if ($user->getPosts()->count()): ?>
@@ -96,20 +104,23 @@ $this->title = $model->name;
                             <?=Yii::t('app', 'Have not agency posts')?>
                         <?php endif ?>
                     </p> */ ?>
-                    <?php /*<p>
-                        <i class="fa fa-globe"></i>
-                        <?php if ($user->tile): ?>
-                            <?php if ($user->tile->city): ?>
-                            <?= Yii::t('app', 'Have residence in city {0}', [LinkCreator::cityLink($user->tile->city)]) ?>
-                            <?php elseif ($user->tile->region): ?>
-                            <?= Yii::t('app', 'Have residence in region {0}', [LinkCreator::regionLink($user->tile->region)]) ?>
+                    <div class="clearfix"></div>
+                    <div class="panel panel-default col-lg-6 col-md-12">
+                        <div class="panel-body">
+                            <i class="fa fa-globe"></i>
+                            <?php if ($model->tile): ?>
+                                <?php if ($model->tile->city): ?>
+                                <?= Yii::t('app', 'Have residence in city {0}', [LinkCreator::cityLink($model->tile->city)]) ?>
+                                <?php elseif ($model->tile->region): ?>
+                                <?= Yii::t('app', 'Have residence in region {0}', [LinkCreator::regionLink($model->tile->region)]) ?>
+                                <?php else: ?>
+                                <?= Yii::t('app', 'Have residence in tile [{0},{1}]', [$model->tile->x, $model->tile->y]) ?>
+                                <?php endif ?>
                             <?php else: ?>
-                            <?= Yii::t('app', 'Have residence in tile [{0},{1}]', [$user->tile->x, $user->tile->y]) ?>
+                                <?= Yii::t('app', 'Have not residence') ?>
                             <?php endif ?>
-                        <?php else: ?>
-                            <?= Yii::t('app', 'Have not residence') ?>
-                        <?php endif ?>
-                    </p> */ ?>
+                        </div>
+                    </div>
                 </div>
                 <div class="box-footer">
                 <?php if ($isOwner): ?>

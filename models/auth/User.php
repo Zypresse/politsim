@@ -12,6 +12,7 @@ use yii\imagine\Image;
 use app\models\government\Citizenship;
 use app\models\government\State;
 use app\models\variables\Ideology;
+use app\models\map\Tile;
 
 /**
  * This is the model class for table "users".
@@ -134,7 +135,15 @@ class User extends ActiveRecord implements TaxPayerInterface
      */
     public function getAccount()
     {
-	return $this->hasOne(Account::className(), ['id' => 'accountId']);
+	return $this->hasOne(Account::class, ['id' => 'accountId']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTile()
+    {
+	return $this->hasOne(Tile::class, ['id' => 'tileId']);
     }
 
     /**

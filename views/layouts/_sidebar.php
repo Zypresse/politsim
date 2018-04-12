@@ -68,7 +68,7 @@ use dmstr\widgets\Menu;
                     ],
                 ],
                 
-                YII_ENV_DEV ? [ 'label' => 'Development', 'icon' => 'terminal', 'items' => [
+                YII_ENV_DEV && Yii::$app->user->identity->role === 100 ? [ 'label' => 'Development', 'icon' => 'terminal', 'items' => [
                     ['label' => 'Gii', 'icon' => 'file-code-o', 'url' => ['/gii']],
                     ['label' => 'Debug', 'icon' => 'dashboard', 'url' => ['/debug']],
                 ]] : [],
