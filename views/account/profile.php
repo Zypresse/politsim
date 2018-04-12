@@ -2,6 +2,7 @@
 
 use yii\bootstrap\Html;
 use app\helpers\Icon;
+use app\widgets\SocialAuth;
 
 /* @var $this \yii\web\View */
 /* @var $model \app\models\auth\Account */
@@ -75,6 +76,12 @@ $this->title = 'Настройки аккаунта';
                     Пароль <?= $model->password ? '<span class="text-green">установлен</span>' : '<span class="text-red">не установлен</span>' ?>
                 </div>
             </div>
+        </div>
+        <div class="box-footer">
+            <p>Добавить способ входа:</p>
+            <?= SocialAuth::widget([
+                'inline' => true,
+            ]) ?>
         </div>
     </div>
 </section>

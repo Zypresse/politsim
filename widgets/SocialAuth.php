@@ -12,9 +12,13 @@ use yii\base\Widget;
 class SocialAuth extends Widget
 {
     
+    public $inline = false;
+    
     public function run()
     {
-        return $this->render('social-auth');
+        return $this->render('social-auth', [
+            'inline' => $this->inline,
+        ]);
     }
     
 }
