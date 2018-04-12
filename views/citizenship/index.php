@@ -3,10 +3,12 @@
 use app\helpers\Html;
 use app\helpers\LinkCreator;
 
-/* @var $this yii\base\View */
+/* @var $this \yii\web\View */
 /* @var $approved app\models\government\Citizenship[] */
 /* @var $requested app\models\government\Citizenship[] */
 /* @var $user \app\models\auth\User */
+
+$this->title = Yii::t('app', 'Citizenships');
 
 ?>
 <section class="content-header">

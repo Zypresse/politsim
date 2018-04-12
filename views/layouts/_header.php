@@ -70,7 +70,7 @@ use app\helpers\Icon;
                         <li class="user-footer">
                             <div class="text-center">
                                 <div class="btn-group">
-                                    <?= Html::a('<i class="fa fa-cog"></i> Настройки акканута', ["/account/profile", 'id' => Yii::$app->user->id ], ['class' => 'btn btn-info btn-xs']) ?>
+                                    <?= Html::a('<i class="fa fa-cog"></i> Настройки акканута', ["/account/profile"], ['class' => 'btn btn-info btn-xs']) ?>
                                     <?= Html::a('<i class="fa fa-sign-out"></i> Выход', ["auth/logout"], [
                                         'class' => 'btn btn-warning btn-xs',
                                         'data' => [

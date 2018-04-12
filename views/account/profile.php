@@ -6,6 +6,8 @@ use app\helpers\Icon;
 /* @var $this \yii\web\View */
 /* @var $model \app\models\auth\Account */
 
+$this->title = 'Настройки аккаунта';
+
 ?>
 <section class="content-header">
     <h1>

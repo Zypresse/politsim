@@ -8,6 +8,7 @@ use Yii,
 class AppAsset extends AssetBundle
 {
 
+    public $sourcePath = '@vendor/almasaeed2010/adminlte/plugins';
     public $basePath = '@webroot';
     public $baseUrl = '@web';
     public $css = [
@@ -19,18 +20,18 @@ class AppAsset extends AssetBundle
 	'css/style.css',
     ];
     public $js = [
-	'js/fullscreen.js',
-	'js/jquery-dateFormat.min.js',
-	'js/icheck.min.js',
-//      'js/serialize-object.js',
-	'js/jquery.dataTables.min.js',
-	'js/dataTables.bootstrap.min.js',
-	'js/leaflet.js',
-	'js/leaflet.geometryutil.js',
-	'js/leaflet-geodesy.js',
+	'js/lib/fullscreen.js',
+	'js/lib/jquery-dateFormat.min.js',
+	'js/lib/icheck.min.js',
+//      'js/lib/serialize-object.js',
+	'js/lib/jquery.dataTables.min.js',
+	'js/lib/dataTables.bootstrap.min.js',
+	'js/lib/leaflet.js',
+	'js/lib/leaflet.geometryutil.js',
+	'js/lib/leaflet-geodesy.js',
         // для текста вдоль полилиний
-//	'js/leaflet.textpath.js',
-	'js/app.js',
+//	'js/lib/leaflet.textpath.js',
+//	'js/lib/app.js',
 	'js/script.js',
     ];
     public $depends = [

@@ -1,7 +1,7 @@
 <?php
 
-use yii\helpers\Html;
 use app\helpers\Icon;
+use dmstr\widgets\Menu;
 
 /* @var $this \yii\web\View */
 
@@ -32,160 +32,47 @@ use app\helpers\Icon;
                 </span>
             </div>
         </form>
-        <ul class="sidebar-menu" id="topmenu" >
-        <?php if (Yii::$app->user->identity->currentUser): ?>
-            <li class="treeview">
-                <a href="#" >
-                    <?= Icon::draw(Icon::PROFILE) ?>
-                    <span>
-                        Профиль                     
-                    </span>
-                    <i class="fa fa-angle-left pull-right"></i>
-                </a>
-                <ul class="treeview-menu">
-                    <li>
-                        <?= Html::a('<i class="fa fa-user"></i> Мой профиль', ["user/profile", "id" => Yii::$app->user->identity->activeUserId]) ?>
-                    </li>
-                    <li>
-                        <a href="#!dealings">
-                            <i class="fa fa-briefcase"></i> Мои сделки
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#!notifications">
-                            <i class="fa fa-comments"></i> Мои уведомления
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            <li class="">
-                <a href="#!work">
-                    <?= Icon::draw(Icon::WORK) ?>
-                    <span>Моя работа</span>
-                </a>
-            </li>
-            <li class="">
-                <a href="#!membership">
-                    <?= Icon::draw(Icon::PARTY) ?>
-                    <span>Мои партии</span>
-                </a>
-            </li>
-            <li class="treeview">
-                <a href="#" >
-                    <?= Icon::draw(Icon::GOVERMENT) ?>
-                    <span>Государство</span>
-                    <i class="fa fa-angle-left pull-right"></i>
-                </a>
-                <ul class="treeview-menu">
-                    <li>
-                        <a href="/citizenship">
-                            <i class="fa fa-flag"></i> Гражданство
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#!elections">
-                            <i class="fa fa-bullhorn"></i> Выборы
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            <li class="treeview">
-                <a href="#" >
-                    <?= Icon::draw(Icon::BUSINESS) ?>
-                    <span>Бизнес</span>
-                    <i class="fa fa-angle-left pull-right"></i>
-                </a>
-                <ul class="treeview-menu">
-                    <li>
-                        <a href="#!business">
-                            <i class="fa fa-building"></i> Мой бизнес
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#!market">
-                            <i class="fa fa-th-large"></i> Рынок
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            <?php endif ?>
-            <li class="treeview">
-                <a href="#" >
-                    <?= Icon::draw(Icon::GLOBE) ?>
-                    <span>Карта</span>
-                    <i class="fa fa-angle-left pull-right"></i>
-                </a>
-                <ul class="treeview-menu">
-                    <li>
-                        <a href="/map/political">
-                            <i class="fa fa-flag"></i> Политическая карта
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#!map/economical">
-                            <i class="fa fa-briefcase"></i> Экономическая карта
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#!map/resources">
-                            <i class="fa fa-money"></i> Карта ресурсов
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#!map/demography">
-                            <i class="fa fa-group"></i> Демографическая карта
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            <li class="treeview">
-                <a href="#" >
-                    <?= Icon::draw(Icon::NEWS) ?>
-                    <span>СМИ</span>
-                    <i class="fa fa-angle-left pull-right"></i>
-                </a>
-                <ul class="treeview-menu">
-                    <li>
-                        <a href="#!twitter">
-                            <i class="fa fa-twitter"></i> Соц. сети
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#!newspapers">
-                            <i class="fa fa-newspaper-o"></i> Пресса
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            <li class="treeview">
-                <a href="#" >
-                    <?= Icon::draw(Icon::RATING) ?>
-                    <span>Рейтинг</span>
-                    <i class="fa fa-angle-left pull-right"></i>
-                </a>
-                <ul class="treeview-menu">
-                    <li>
-                        <a href="#!chart/users">
-                            <i class="fa fa-list"></i> Рейтинг людей
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/rating/states">
-                            <i class="fa fa-th-list"></i> Рейтинг государств
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#!chart/parties">
-                            <i class="fa fa-list-ul"></i> Рейтинг партий
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#!chart/companies">
-                            <i class="fa fa-tasks"></i> Рейтинг компаний
-                        </a>
-                    </li>
-                </ul>
-            </li>
-        </ul>
+        <?= Menu::widget([
+            'options' => ['id' => 'topmenu', 'class' => 'sidebar-menu', 'data-widget' => 'tree'],
+            'items' => [
+                Yii::$app->user->identity->currentUser ? 
+                [
+                    'label' => 'Профиль',
+                    'template' => '<a href="{url}">'.Icon::draw(Icon::PROFILE).' {label} <i class="fa fa-angle-left pull-right"></i></a>',
+                    'items' => [
+                        ['label' => 'Мой профиль', 'icon' => 'user', 'url' => ['/user/profile']],
+                    ],
+                ] : [],
+                
+                Yii::$app->user->identity->currentUser ? [
+                    'label' => 'Государство',
+                    'template' => '<a href="{url}">'.Icon::draw(Icon::GOVERNMENT).' {label} <i class="fa fa-angle-left pull-right"></i></a>',
+                    'items' => [
+                        ['label' => 'Гражданство', 'icon' => 'flag', 'url' => ['/citizenship']],
+                    ],
+                ] : [],
+                
+                [
+                    'label' => 'Карта',
+                    'template' => '<a href="{url}">'.Icon::draw(Icon::GLOBE).' {label} <i class="fa fa-angle-left pull-right"></i></a>',
+                    'items' => [
+                        ['label' => 'Политическая', 'icon' => 'flag', 'url' => ['/map/political']],
+                    ],
+                ],
+                
+                [
+                    'label' => 'Рейтинг',
+                    'template' => '<a href="{url}">'.Icon::draw(Icon::RATING).' {label} <i class="fa fa-angle-left pull-right"></i></a>',
+                    'items' => [
+                        ['label' => 'Государства', 'icon' => 'flag', 'url' => ['/rating/states']],
+                    ],
+                ],
+                
+                YII_ENV_DEV ? [ 'label' => 'Development', 'icon' => 'terminal', 'items' => [
+                    ['label' => 'Gii', 'icon' => 'file-code-o', 'url' => ['/gii']],
+                    ['label' => 'Debug', 'icon' => 'dashboard', 'url' => ['/debug']],
+                ]] : [],
+            ],
+        ]) ?>
     </section>
 </aside>

@@ -9,7 +9,7 @@ use app\assets\LandingAsset;
 /* @var $message string */
 /* @var $exception Exception */
 
-$this->title = $name . ' | Political Simulator';
+$this->title = $name;
 
 LandingAsset::register($this);
 

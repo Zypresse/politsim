@@ -2,8 +2,10 @@
 
 use app\helpers\Html;
 
-/* @var $this yii\base\View */
+/* @var $this \yii\web\View */
 /* @var $list app\models\government\State[] */
+
+$this->title = 'Рейтинг государств';
 
 ?>
 <section class="content-header">

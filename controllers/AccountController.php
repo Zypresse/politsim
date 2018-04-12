@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use Yii;
 use app\controllers\base\AppController;
 use yii\web\NotFoundHttpException;
 use app\models\auth\Account;
@@ -16,13 +17,12 @@ class AccountController extends AppController
     
     /**
      * 
-     * @param integer $id
      * @return mixed
      */
-    public function actionProfile(int $id)
+    public function actionProfile()
     {
         return $this->render('profile', [
-            'model' => $this->getModel($id),
+            'model' => $this->getModel(Yii::$app->user->id),
         ]);
     }
     

@@ -6,6 +6,8 @@ use yii\widgets\ActiveForm;
 /* @var $this \yii\web\View */
 /* @var $model \app\models\auth\RegistrationForm */
 
+$this->title = 'Регистрация нового аккаунта';
+
 ?>
 <div class="wrapper">
     <section id="hero" class="module-hero overlay-dark">

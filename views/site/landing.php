@@ -6,6 +6,7 @@ use yii\helpers\Html;
 
 $this->registerJsFile("https://tympanus.net/Tutorials/CSSGlitchEffect/js/imagesloaded.pkgd.min.js");
 $this->registerJs("init();");
+$this->title = 'Political Simulator';
 
 ?>
 <div class="page-loader">

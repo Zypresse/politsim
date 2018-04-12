@@ -4,10 +4,11 @@ use yii\bootstrap\Html;
 use yii\bootstrap\ActiveForm;
 use app\models\auth\User;
 use kartik\widgets\FileInput;
-use yii\helpers\Url;
 
 /* @var $this \yii\web\View */
 /* @var $model \app\models\auth\User */
+
+$this->title = 'Создание персонажа';
 
 ?>
 <section class="content-header">

@@ -8,6 +8,8 @@ use app\helpers\Icon;
 /* @var $viewer \app\models\auth\User */
 /* @var $isOwner boolean */
 
+$this->title = $model->name;
+
 ?>
 <section class="content">
     <div class="row">
@@ -29,22 +31,17 @@ use app\helpers\Icon;
                     <h1><?= Html::encode($model->name) ?> <?php if ($isOwner): ?><small>(это вы)</small><?php endif ?></h1>
                 </div>
                 <div class="box-body">
-                    <?php /*if ($model->ideology):  ?>
                     <p>
                         <i class="fa fa-flag"></i>
                         <?php if ($model->ideology) : ?>
                             <?=Yii::t('app', 'Have ideology «{0}»', [$model->ideology->name])?>
+                        <?php else: ?>
+                        Идеология не указана
+                        <?php endif ?>
+                        <?php if ($isOwner): ?>
+                        <button id="choose-ideology-btn" class="btn btn-xs btn-primary">Изменить</button>
                         <?php endif ?>
                     </p>
-                    <?php endif*/ ?>
-                    <?php /*if ($model->religion):  ?>
-                    <p>
-                        <i class="fa">☪</i>
-                        <?php if ($model->religion) : ?>
-                            <?=Yii::t('app', 'Have religion «{0}»', [$model->religion->name])?>
-                        <?php endif ?>
-                    </p>
-                    <?php endif*/ ?>
                     <?php /*<p>
                         <i class="fa fa-group"></i>
                         <?php if (count($model->parties)): ?>
@@ -118,8 +115,7 @@ use app\helpers\Icon;
                 <?php if ($isOwner): ?>
                     <div class="btn-toolbar">
                         <div class="btn-group">
-                            <button id="choose-ideology-btn" class="btn btn-sm btn-primary"><i class="fa fa-flag"></i> &nbsp; <?=Yii::t('app', 'Change ideology')?></button>
-                            <button id="choose-religion-btn" class="btn btn-sm btn-primary"><i class="fa">☪</i> &nbsp; <?=Yii::t('app', 'Change religion')?></button>
+                            
                         </div>
                     </div>
                 <?php endif ?>

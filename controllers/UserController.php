@@ -25,7 +25,7 @@ class UserController extends AppController
         return $this->render('profile', [
             'model' => $this->getModel($id),
             'viewer' => null, // viewer User
-            'isOwner' => false,
+            'isOwner' => $this->user->id === $id,
         ]);
     }
     

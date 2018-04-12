@@ -31,7 +31,7 @@ class SiteController extends Controller
     public function actionIndex()
     {
         if (!Yii::$app->user->isGuest) {
-            return $this->redirect(['account/profile', 'id' => Yii::$app->user->id]);
+            return $this->redirect(Yii::$app->user->identity->currentUser ? ['user/profile'] : ['account/profile']);
         }
         
 	$this->layout = 'landing';

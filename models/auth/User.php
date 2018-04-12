@@ -11,6 +11,7 @@ use yii\web\UploadedFile;
 use yii\imagine\Image;
 use app\models\government\Citizenship;
 use app\models\government\State;
+use app\models\variables\Ideology;
 
 /**
  * This is the model class for table "users".
@@ -35,6 +36,7 @@ use app\models\government\State;
  * @property Account $account
  * @property Citizenship $citizenships
  * @property State[] $states
+ * @property Ideology $ideology
  */
 class User extends ActiveRecord implements TaxPayerInterface
 {
@@ -223,6 +225,14 @@ class User extends ActiveRecord implements TaxPayerInterface
     public function getStates()
     {
         return $this->hasMany(State::class, ['id' => 'stateId'])->viaTable('citizenships', ['userId' => 'id']);
+    }
+
+    /**
+     * @return \yii2tech\filedb\ActiveQuery
+     */
+    public function getIdeology()
+    {
+        return $this->hasOne(Ideology::class, ['id' => 'ideologyId']);
     }
     
 }

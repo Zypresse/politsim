@@ -18,7 +18,7 @@ abstract class Icon
     
     const BUSINESS = ['/img/icons/business.png', 'Бизнес', 16];
     const GLOBE = ['/img/icons/globe.png', 'Карта', 16];
-    const GOVERMENT = ['/img/icons/goverment.png', 'Государство', 16];
+    const GOVERNMENT = ['/img/icons/goverment.png', 'Государство', 16];
     const MAP = ['/img/icons/map.png', 'Карта', 16];
     const NEWS = ['/img/icons/news.png', 'Новости', 16];
     const PARTY = ['/img/icons/party.png', 'Партия', 16];
