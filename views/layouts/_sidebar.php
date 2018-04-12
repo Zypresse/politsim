@@ -52,6 +52,14 @@ use dmstr\widgets\Menu;
                     ],
                 ] : [],
                 
+                Yii::$app->user->identity->currentUser ? [
+                    'label' => 'Организации',
+                    'template' => '<a href="{url}">'.Icon::draw(Icon::PARTY).' {label} <i class="fa fa-angle-left pull-right"></i></a>',
+                    'items' => [
+                        ['label' => 'Членство', 'icon' => 'users', 'url' => ['/organization']],
+                    ],
+                ] : [],
+                
                 [
                     'label' => 'Карта',
                     'template' => '<a href="{url}">'.Icon::draw(Icon::GLOBE).' {label} <i class="fa fa-angle-left pull-right"></i></a>',
@@ -65,6 +73,7 @@ use dmstr\widgets\Menu;
                     'template' => '<a href="{url}">'.Icon::draw(Icon::RATING).' {label} <i class="fa fa-angle-left pull-right"></i></a>',
                     'items' => [
                         ['label' => 'Государства', 'icon' => 'flag', 'url' => ['/rating/states']],
+                        ['label' => 'Организации', 'icon' => 'flag', 'url' => ['/rating/organizations']],
                     ],
                 ],
                 
