@@ -6,6 +6,8 @@ use Yii;
 use app\models\base\ActiveRecord;
 use app\models\auth\User;
 use yii\behaviors\TimestampBehavior;
+use yii\web\UploadedFile;
+use yii\imagine\Image;
 
 /**
  * This is the model class for table "organizations".
@@ -28,6 +30,12 @@ class Organization extends ActiveRecord
 {
     
     /**
+     *
+     * @var \yii\web\UploadedFile
+     */
+    public $flagFile;
+    
+    /**
      * @inheritdoc
      */
     public static function tableName()
@@ -47,7 +55,10 @@ class Organization extends ActiveRecord
             [['name', 'flag', 'anthem'], 'string', 'max' => 255],
             [['nameShort'], 'string', 'max' => 10],
             [['utr'], 'unique'],
-            [['leaderId'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['leaderId' => 'id']],
+            [['leaderId'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['leaderId' => 'id']],
+            [['flagFile'], 'file', 'maxFiles' => 1],
+            [['flagFile'], 'safe'],
+            [['anthem'], 'validateAnthem'],
         ];
     }
     
@@ -58,7 +69,7 @@ class Organization extends ActiveRecord
     {
 	return [
 	    [
-		'class' => TimestampBehavior::className(),
+		'class' => TimestampBehavior::class,
 		'createdAtAttribute' => 'dateCreated',
 		'updatedAtAttribute' => false,
 	    ],
@@ -115,4 +126,27 @@ class Organization extends ActiveRecord
         return self::find()->andWhere(['dateDeleted' => null]);
     }
     
+    /**
+     * 
+     * @return boolean
+     */
+    public function saveFlag()
+    {
+        $this->flagFile = UploadedFile::getInstance($this, 'flagFile');
+        if ($this->flagFile->error) {
+            $this->addError('flagFile', 'Error #'.$this->flagFile->error);
+            return false;
+        }
+        
+        $path = Yii::getAlias("@webroot/upload/organizations/{$this->id}/");
+        if (!is_dir($path)) {
+            mkdir($path);
+        }
+        
+//        Image::thumbnail($this->flagFile->tempName , 50, 50)->save($path.'50.jpg', ['quality' => 80]);
+        Image::resize($this->flagFile->tempName, 300, null, true)->save($path.'300.jpg', ['quality' => 80]);
+        
+        $this->flag = '/upload/organizations/'.$this->id.'/300.jpg';
+        return $this->save();
+    }
 }

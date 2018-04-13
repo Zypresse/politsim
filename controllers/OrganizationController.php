@@ -24,4 +24,32 @@ class OrganizationController extends AppController
         ]);
     }
     
+    public function actionCreate()
+    {
+        $model = new Organization([
+            'leaderId' => $this->user->id,
+        ]);
+        
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            $transaction = $model->getDb()->beginTransaction();
+            if ($model->save() && $model->saveFlag()) {
+                $membership = new OrganizationMembership([
+                    'orgId' => $model->id,
+                    'userId' => $this->user->id,
+                ]);
+                if (!$membership->approve()) {
+                    var_dump($membership->getErrors()); die();
+                }
+                $transaction->commit();
+                return $this->redirect(['organization/profile', 'id' => $model->id]);
+            } else {
+                $transaction->rollBack();
+            }
+        }
+        
+        return $this->render('create', [
+            'model' => $model,
+        ]);
+    }
+    
 }

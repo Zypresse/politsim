@@ -7,6 +7,7 @@ use app\models\government\State;
 use app\models\map\Region;
 use app\models\map\City;
 use app\models\auth\User;
+use app\models\politics\Organization;
 
 /**
  * 
@@ -22,14 +23,16 @@ abstract class LinkCreator
     public static function link($object)
     {
         switch ($object->className()) {
-            case State::className():
+            case State::class:
                 return static::stateLink($object);
-            case Region::className():
+            case Region::class:
                 return static::regionLink($object);
-            case City::className():
+            case City::class:
                 return static::cityLink($object);
-            case User::className():
+            case User::class:
                 return static::userLink($object);
+            case Organization::class:
+                return static::orgLink($object);
             default:
                 return $object->canGetProperty('name') ? $object->name : '…';
         }
@@ -85,6 +88,16 @@ abstract class LinkCreator
     public static function userLink(User $user)
     {
         return static::render($user->avatar, $user->name, ['/user/profile', 'id' => $user->id], 16, 'top');
+    }
+    
+    /**
+     * 
+     * @param Organization $org
+     * @return string
+     */
+    public static function orgLink(Organization $org)
+    {
+        return static::render($org->flag, $org->name, ['/organization/profile', 'id' => $org->id]);
     }
     
 }

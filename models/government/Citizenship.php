@@ -22,6 +22,8 @@ use yii\behaviors\TimestampBehavior;
 class Citizenship extends ActiveRecord
 {
 
+    use \app\models\base\traits\MembershipTrait;
+    
     /**
      * @inheritdoc
      */
@@ -75,49 +77,6 @@ class Citizenship extends ActiveRecord
     public function getState()
     {
         return $this->hasOne(State::class, ['id' => 'stateId']);
-    }
-
-    /**
-     * Подтвердить гражданство
-     * @param boolean $save
-     */
-    public function approve($save = true)
-    {
-        $this->dateApproved = time();
-        if ($save) {
-            if ($this->save()) {
-//                Yii::$app->notificator->citizenshipApprouved($this->userId, $this->state);
-                return true;
-            } else {
-                return false;
-            }
-        }
-    }
-
-    /**
-     * 
-     * @param boolean $self
-     * @return boolean
-     */
-    public function fire($self = false)
-    {
-        if ($this->delete()) {
-//            $userId = $this->userId;
-//            $state = $this->state;
-//            Yii::$app->notificator->citizenshipLost($userId, $state, $self);
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * 
-     * @return boolean
-     */
-    public function fireSelf()
-    {
-        return $this->fire(true);
     }
     
     /**

@@ -4,6 +4,7 @@ namespace app\models\base;
 
 use Yii;
 use yii\db\ActiveRecord as YiiActiveRecord;
+use app\helpers\SoundCloudLink;
 
 /**
  * Custom active record
@@ -48,4 +49,16 @@ class ActiveRecord extends YiiActiveRecord
 	return $condition === false ? static::find()->all() : parent::findAll($condition);
     }
 
+    /**
+     * 
+     * @return boolean
+     */
+    public function validateAnthem() {
+        if (!SoundCloudLink::validate($this->anthem)) {
+            $this->addError('anthem', Yii::t('app', 'Anthem are not valid SoundCloud link'));
+            return false;
+        }
+        return true;
+    }
+    
 }

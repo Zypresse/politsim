@@ -5,6 +5,7 @@ namespace app\models\politics;
 use Yii;
 use app\models\base\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
+use app\models\auth\User;
 
 /**
  * This is the model class for table "organizationsMemberships".
@@ -19,6 +20,8 @@ use yii\behaviors\TimestampBehavior;
  */
 class OrganizationMembership extends ActiveRecord
 {
+    
+    use \app\models\base\traits\MembershipTrait;
 
     /**
      * @inheritdoc
@@ -34,12 +37,12 @@ class OrganizationMembership extends ActiveRecord
     public function rules()
     {
         return [
-            [['userId', 'orgId', 'dateCreated'], 'required'],
+            [['userId', 'orgId'], 'required'],
             [['userId', 'orgId', 'dateCreated', 'dateApproved'], 'default', 'value' => null],
             [['userId', 'orgId', 'dateCreated', 'dateApproved'], 'integer'],
             [['userId', 'orgId'], 'unique', 'targetAttribute' => ['userId', 'orgId']],
-            [['orgId'], 'exist', 'skipOnError' => true, 'targetClass' => Organization::className(), 'targetAttribute' => ['orgId' => 'id']],
-            [['userId'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['userId' => 'id']],
+            [['orgId'], 'exist', 'skipOnError' => true, 'targetClass' => Organization::class, 'targetAttribute' => ['orgId' => 'id']],
+            [['userId'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['userId' => 'id']],
         ];
     }
     
@@ -50,7 +53,7 @@ class OrganizationMembership extends ActiveRecord
     {
 	return [
 	    [
-		'class' => TimestampBehavior::className(),
+		'class' => TimestampBehavior::class,
 		'createdAtAttribute' => 'dateCreated',
 		'updatedAtAttribute' => false,
 	    ],
