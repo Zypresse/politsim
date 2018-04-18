@@ -13,6 +13,7 @@ use app\models\government\Citizenship;
 use app\models\government\State;
 use app\models\variables\Ideology;
 use app\models\map\Tile;
+use app\models\politics\OrganizationMembership;
 
 /**
  * This is the model class for table "users".
@@ -38,6 +39,9 @@ use app\models\map\Tile;
  * @property Citizenship $citizenships
  * @property State[] $states
  * @property Ideology $ideology
+ * @property OrganizationMembership[] $membership
+ * @property OrganizationMembership[] $requestedMembership
+ * @property OrganizationMembership[] $approvedMembership
  */
 class User extends ActiveRecord implements TaxPayerInterface
 {
@@ -257,6 +261,50 @@ class User extends ActiveRecord implements TaxPayerInterface
         
         $this->ideologyId = $id;
         return $this->save();
+    }
+    
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMemberships()
+    {
+	return $this->hasMany(OrganizationMembership::classname(), ['userId' => 'id']);
+    }
+    
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getApprovedMemberships()
+    {
+        return $this->getMemberships()->where(['is not', 'dateApproved', null]);
+    }
+    
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRequestedMemberships()
+    {
+        return $this->getMemberships()->where(['dateApproved' => null]);
+    }
+    
+    /**
+     * 
+     * @param integer $orgId
+     * @return boolean
+     */
+    public function isHaveMembership(int $orgId)
+    {
+        return $this->getApprovedMemberships()->andWhere(['orgId' => $orgId])->exists();
+    }
+    
+    /**
+     * 
+     * @param integer $orgId
+     * @return boolean
+     */
+    public function isHaveMembershipRequest(int $orgId)
+    {
+        return $this->getRequestedMemberships()->andWhere(['orgId' => $orgId])->exists();
     }
     
 }
