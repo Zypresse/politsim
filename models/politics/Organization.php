@@ -8,6 +8,9 @@ use app\models\auth\User;
 use yii\behaviors\TimestampBehavior;
 use yii\web\UploadedFile;
 use yii\imagine\Image;
+use app\models\politics\OrganizationMembership as Membership;
+use app\models\politics\OrganizationPost as Post;
+use app\models\variables\Ideology;
 
 /**
  * This is the model class for table "organizations".
@@ -17,14 +20,24 @@ use yii\imagine\Image;
  * @property string $nameShort
  * @property string $flag
  * @property string $anthem
- * @property integer $leaderId
+ * @property integer $leaderPostId
+ * @property integer $ideologyId
+ * @property integer $fame
+ * @property integer $trust
+ * @property integer $success
+ * @property string $text
+ * @property string $textHtml
+ * @property integer $membersCount
+ * @property integer $joiningRules
  * @property integer $dateCreated
  * @property integer $dateDeleted
  * @property integer $utr
  *
  * @property User $leader
- * @property OrganizationMembership[] $organizationMemberships
+ * @property Post $leaderPost
+ * @property Membership[] $organizationMemberships
  * @property User[] $users
+ * @property Ideology $ideology
  */
 class Organization extends ActiveRecord
 {
@@ -51,11 +64,13 @@ class Organization extends ActiveRecord
         return [
             [['name', 'nameShort'], 'required'],
             [['leaderId', 'dateCreated', 'dateDeleted', 'utr'], 'default', 'value' => null],
-            [['leaderId', 'dateCreated', 'dateDeleted', 'utr'], 'integer'],
+            [['leaderId', 'dateCreated', 'dateDeleted', 'utr', 'leaderPostId', 'ideologyId', 'fame', 'trust', 'success', 'membersCount', 'joiningRules'], 'integer'],
             [['name', 'flag', 'anthem'], 'string', 'max' => 255],
             [['nameShort'], 'string', 'max' => 10],
+            [['text', 'textHtml'], 'string'],
             [['utr'], 'unique'],
-            [['leaderId'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['leaderId' => 'id']],
+            [['leaderPostId'], 'exist', 'skipOnError' => true, 'targetClass' => Post::class, 'targetAttribute' => ['leaderPostId' => 'id']],
+            [['ideologyId'], 'exist', 'skipOnError' => true, 'targetClass' => Ideology::class, 'targetAttribute' => ['ideologyId' => 'id']],
             [['flagFile'], 'file', 'maxFiles' => 1],
             [['flagFile'], 'safe'],
             [['anthem'], 'validateAnthem'],
@@ -99,7 +114,23 @@ class Organization extends ActiveRecord
      */
     public function getLeader()
     {
-        return $this->hasOne(User::class, ['id' => 'leaderId']);
+        return $this->hasOne(User::class, ['id' => 'userId'])->via('leaderPost');
+    }
+    
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLeaderPost()
+    {
+        return $this->hasOne(Post::class, ['id' => 'leaderPostId']);
+    }
+
+    /**
+     * @return \yii2tech\filedb\ActiveQuery
+     */
+    public function getIdeology()
+    {
+        return $this->hasOne(Ideology::class, ['id' => 'ideologyId']);
     }
 
     /**
