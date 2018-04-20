@@ -3,6 +3,7 @@
 use app\helpers\Html;
 use app\helpers\LinkCreator;
 use app\helpers\Icon;
+use app\models\politics\Organization;
 
 /* @var $this yii\base\View */
 /* @var $model \app\models\politics\Organization */
@@ -10,10 +11,10 @@ use app\helpers\Icon;
 
 $isHaveMembership = $user->isHaveMembership($model->id);
 $isHaveMembershipRequest = $user->isHaveMembershipRequest($model->id);
-//$userPost = null;
-//if ($isHaveMembership) {
-//    $userPost = $party->getPostByUserId($user->id);
-//}
+$userPost = null;
+if ($isHaveMembership) {
+    $userPost = $model->getPostByUserId($user->id);
+}
 ?>
 <section class="content-header">
     <h1>
@@ -31,11 +32,11 @@ $isHaveMembershipRequest = $user->isHaveMembershipRequest($model->id);
             <div class="box">
                 <div class="box-body">
                     <?=Html::img($model->flag, ['class' => 'img-polaroid', 'style' => 'width: 100%'])?>
-                    <?php /*<div class="photo_bottom_container">
-                        <span class="star" ><?= $model->fame ?> <?= MyHtmlHelper::icon('star') ?></span>
-                        <span class="heart" ><?= $model->trust?> <?= MyHtmlHelper::icon('heart') ?></span>
-                        <span class="chart_pie" ><?= $model->success ?> <?= MyHtmlHelper::icon('chart_pie') ?></span>
-                    </div> */?>
+                    <div class="photo_bottom_container">
+                        <span class="star" ><?= $model->fame ?> <?= Icon::draw(Icon::STAR) ?></span>
+                        <span class="heart" ><?= $model->trust?> <?= Icon::draw(Icon::HEART) ?></span>
+                        <span class="chart_pie" ><?= $model->success ?> <?= Icon::draw(Icon::CHARTPIE) ?></span>
+                    </div>
                 </div>
                 <div class="box-footer">
                     <em>Флаг организации</em>
@@ -84,16 +85,12 @@ $isHaveMembershipRequest = $user->isHaveMembershipRequest($model->id);
                                         <td><strong><i class="fa fa-flag"></i> <?=Yii::t('app', 'Ideology')?>:</strong></td>
                                         <td><?=$model->ideology->name?></td>
                                     </tr>
-                                    <?php /*<tr>
+                                    <tr>
                                         <td><strong><i class="fa fa-sign-in"></i> <?=Yii::t('app', 'Joining')?>:</strong></td>
                                         <td>
-                                            <?=[
-                                                Party::JOINING_RULES_PRIVATE => Yii::t('app', 'Private'),
-                                                Party::JOINING_RULES_CLOSED => Yii::t('app', 'Closed'),
-                                                Party::JOINING_RULES_OPEN => Yii::t('app', 'Open'),
-                                            ][$party->joiningRules]?>
+                                            <?=$model->joiningRulesName?>
                                         </td>
-                                    </tr>*/ ?>
+                                    </tr>
                                     <?php /*<tr>
                                         <td><strong><i class="fa fa-list-ul"></i> <?=Yii::t('app', 'Election list creation')?>:</strong></td>
                                         <td>
@@ -103,11 +100,11 @@ $isHaveMembershipRequest = $user->isHaveMembershipRequest($model->id);
                                             ][$party->listCreationRules]?>
                                         </td>
                                     </tr>*/?>
-                                    <?php if (!$model->dateDeleted): ?>
-                                        <?php if ($model->leader): ?>
+                                    <?php if (!$model->isDeleted): ?>
+                                        <?php if ($model->leaderPost): ?>
                                         <tr>
                                             <td><strong><i class="fa fa-user"></i> Лидер организации:</strong></td>
-                                            <td><?=LinkCreator::userLink($model->leader) ?></td>
+                                            <td><?=LinkCreator::userLink($model->leaderPost->user) ?></td>
                                         </tr>
                                         <?php endif ?>
                                     <?php endif ?>
@@ -122,7 +119,7 @@ $isHaveMembershipRequest = $user->isHaveMembershipRequest($model->id);
                                     <tr>
                                         <td><strong><i class="fa fa-group"></i> Участники организации:</strong></td>
                                         <td>
-                                            <?=Html::numberWord($model->getUsers()->count(), 'h')?> 
+                                            <?=Html::numberWord($model->membersCount, 'h')?> 
                                             <a href="/organization/members?id=<?=$model->id?>" class="btn btn-info btn-xs"><i class="fa fa-group"></i> <?=Yii::t('app', 'Full list')?></a>
                                         </td>
                                     </tr>
@@ -132,12 +129,12 @@ $isHaveMembershipRequest = $user->isHaveMembershipRequest($model->id);
                                             <?=Html::numberWord($model->getOrganizationMemberships()->where(['dateApproved' => null])->count(), 'заявок', 'заявка', 'заявки')?>
                                         </td>
                                     </tr>
-                                    <tr>
+                                    <?php /*<tr>
                                         <td><strong><i class="fa fa-list-alt"></i> <?=Yii::t('app', 'Political program')?>:</strong></td>
                                         <td>
                                             <a href="/organization/program?id=<?=$model->id?>" class="btn btn-info btn-xs"><i class="fa fa-list-alt"></i> <?=Yii::t('app', 'Read')?></a>
                                         </td>
-                                    </tr>
+                                    </tr>*/ ?>
                                 </tbody>
                             </table>
                         </div>
@@ -204,23 +201,25 @@ $isHaveMembershipRequest = $user->isHaveMembershipRequest($model->id);
              */ ?>
             <div class="box">
                 <div class="box-header">
-                    <h3><?=Yii::t('app', 'Top party members')?></h3>
+                    <h3>Известные члены организации</h3>
                     <div class="box-tools pull-right">
-                        <a href="/organization/members?id=<?=$model->id?>" class="btn btn-info"><i class="fa fa-group"></i> <?=Yii::t('app', 'Full list')?></a>
+                        <?= Html::a('<i class="fa fa-group"></i> '.Yii::t('app', 'Full list'), ['/organization/members', 'id' => $model->id], ['class' => 'btn btn-info btn-flat']) ?>
                     </div>
                 </div>
                 <div class="box-body">
                     <div class="row">
                         <?php 
                         $colors = ['green-gradient', 'aqua-gradient', 'red-gradient'];
-                        for ($i = 0; $i < min([$model->getUsers()->count(),3]); $i++ ):
-                            $member = $party->members[$i];
-                            $post = $party->getPostByUserId($member->id);
+                        for ($i = 0; $i < min([$model->membersCount,3]); $i++ ):
+                            $member = $model->users[$i];
+//                            $post = $party->getPostByUserId($member->id);
                         ?>
                         <div class="col-lg-4 col-md-6 col-sm-12">
                             <div class="box box-widget widget-user">
                                 <div class="widget-user-header bg-<?=$colors[$i]?>">
-                                    <h3 class="widget-user-username"><a href="/user/profile?id=<?=$member->id?>"><?=Html::encode($member->name)?></a></h3>
+                                    <h3 class="widget-user-username">
+                                        <a href="/user/profile?id=<?=$member->id?>"><?=Html::encode($member->name)?></a>
+                                    </h3>
                                     <?php /*<h5 class="widget-user-desc"><?=$post ? Html::encode($post->name) : Yii::t('app', 'Party member')?></h5> */ ?>
                                 </div>
                                 <div class="widget-user-image">

@@ -4,9 +4,11 @@ use yii\bootstrap\Html;
 use yii\bootstrap\ActiveForm;
 use app\models\politics\Organization;
 use kartik\widgets\FileInput;
+use yii\helpers\ArrayHelper;
 
 /* @var $this \yii\web\View */
 /* @var $model \app\models\politics\Organization */
+/* @var $ideologies app\models\variables\Ideology[] */
 
 $this->title = 'Создание организации';
 
@@ -43,6 +45,8 @@ $this->title = 'Создание организации';
                 ],
             ]) ?>
             <?= $form->field($model, 'anthem') ?>
+            <?= $form->field($model, 'ideologyId')->dropDownList(ArrayHelper::map($ideologies, 'id', 'name')) ?>
+            <?= $form->field($model, 'joiningRules')->dropDownList(Organization::joiningRulesList()) ?>
         </div>
         <!-- /.box-body -->
         <div class="box-footer">

@@ -37,10 +37,18 @@ use app\models\variables\Ideology;
  * @property Post $leaderPost
  * @property Membership[] $organizationMemberships
  * @property User[] $users
+ * @property Post[] $posts
  * @property Ideology $ideology
+ * 
+ * @property boolean $isDeleted
+ * @property string $joiningRulesName
  */
 class Organization extends ActiveRecord
 {
+    
+    const JOINING_RULES_OPEN = 1;
+    const JOINING_RULES_CLOSED = 2;
+    const JOINING_RULES_PRIVATE = 3;
     
     /**
      *
@@ -62,9 +70,9 @@ class Organization extends ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'nameShort'], 'required'],
-            [['leaderId', 'dateCreated', 'dateDeleted', 'utr'], 'default', 'value' => null],
-            [['leaderId', 'dateCreated', 'dateDeleted', 'utr', 'leaderPostId', 'ideologyId', 'fame', 'trust', 'success', 'membersCount', 'joiningRules'], 'integer'],
+            [['name', 'nameShort', 'ideologyId'], 'required'],
+            [['leaderPostId', 'dateCreated', 'dateDeleted', 'utr'], 'default', 'value' => null],
+            [['leaderPostId', 'dateCreated', 'dateDeleted', 'utr', 'ideologyId', 'fame', 'trust', 'success', 'membersCount', 'joiningRules'], 'integer'],
             [['name', 'flag', 'anthem'], 'string', 'max' => 255],
             [['nameShort'], 'string', 'max' => 10],
             [['text', 'textHtml'], 'string'],
@@ -98,14 +106,14 @@ class Organization extends ActiveRecord
     {
         return [
             'id' => 'ID',
-            'name' => 'Name',
-            'nameShort' => 'Name Short',
-            'flag' => 'Flag',
-            'anthem' => 'Anthem',
-            'leaderId' => 'Leader ID',
-            'dateCreated' => 'Date Created',
-            'dateDeleted' => 'Date Deleted',
-            'utr' => 'Utr',
+            'name' => 'Название организации',
+            'nameShort' => 'Аббревиатура',
+            'flagFile' => 'Флаг',
+            'flag' => 'Флаг',
+            'anthem' => 'Гимн',
+            'ideologyId' => 'Идеология',
+            'joiningRules' => 'Правила вступления',
+            'utr' => 'ИНН',
         ];
     }
 
@@ -148,6 +156,14 @@ class Organization extends ActiveRecord
     {
         return $this->hasMany(User::class, ['id' => 'userId'])->viaTable('organizationsMemberships', ['orgId' => 'id']);
     }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPosts()
+    {
+        return $this->hasMany(Post::class, ['orgId' => 'id']);
+    }
     
     /**
      * @return \yii\db\ActiveQuery
@@ -180,4 +196,46 @@ class Organization extends ActiveRecord
         $this->flag = '/upload/organizations/'.$this->id.'/300.jpg';
         return $this->save();
     }
+    
+    /**
+     * 
+     * @param integer $id
+     * @return Post
+     */
+    public function getPostByUserId(int $id)
+    {
+        $model = Post::findOne(['userId' => $id, 'orgId' => $this->id]);
+    }
+    
+    /**
+     * 
+     * @return array
+     */
+    public static function joiningRulesList()
+    {
+        return [
+            self::JOINING_RULES_OPEN => 'Свободные',
+            self::JOINING_RULES_CLOSED => 'По заявкам',
+            self::JOINING_RULES_PRIVATE => 'По приглашениям',
+        ];
+    }
+    
+    /**
+     * 
+     * @return boolean
+     */
+    public function getIsDeleted(): bool
+    {
+        return !is_null($this->dateDeleted);
+    }
+    
+    /**
+     * 
+     * @return string
+     */
+    public function getJoiningRulesName(): string
+    {
+        return self::joiningRulesList()[$this->joiningRules];
+    }
+    
 }

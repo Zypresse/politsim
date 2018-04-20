@@ -26,6 +26,17 @@ class OrganizationPost extends ActiveRecord
 {
 
     /**
+     * Дефолтные данные для создания поста лидера новой организации
+     */
+    const DEFAULT_LEADER_DATA = [
+        'name' => 'Лидер',
+        'nameShort' => 'Л',
+        'powers' => 0,
+        'appointmentType' => 0,
+        'successorId' => null,
+    ];
+    
+    /**
      * @inheritdoc
      */
     public static function tableName()
