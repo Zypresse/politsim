@@ -11,6 +11,7 @@ use yii\imagine\Image;
 use app\models\politics\OrganizationMembership as Membership;
 use app\models\politics\OrganizationPost as Post;
 use app\models\variables\Ideology;
+use app\models\government\State;
 
 /**
  * This is the model class for table "organizations".
@@ -41,19 +42,59 @@ use app\models\variables\Ideology;
  * @property User[] $users
  * @property Post[] $posts
  * @property Ideology $ideology
+ * @property State $state
  *
  * @property boolean $isDeleted
  * @property string $joiningRulesName
+ * @property string $typeName
  */
 class Organization extends ActiveRecord
 {
 
+    /**
+     * Свободное вступление
+     */
     const JOINING_RULES_OPEN = 1;
+
+    /**
+     * Вступление по заявкам
+     */
     const JOINING_RULES_CLOSED = 2;
+
+    /**
+     * Вступление по приглашениям
+     */
     const JOINING_RULES_PRIVATE = 3;
+
+    /**
+     * Организация без типа
+     */
     const TYPE_DEFAULT = 0;
+
+    /**
+     * Незарегистрированная партия
+     */
     const TYPE_UNREGISTERED_PARTY = 1;
+
+    /**
+     * Зарегистрированная партия
+     */
     const TYPE_REGISTERED_PARTY = 2;
+
+    /**
+     * Частная компания
+     */
+    const TYPE_PRIVATE_COMPANY = 3;
+
+    /**
+     * Государственная компания
+     */
+    const TYPE_STATE_OWNED_COMPANY = 4;
+
+    /**
+     * Агенство (государственная организация)
+     */
+    const TYPE_AGENCY = 5;
 
     /**
      *
@@ -229,9 +270,38 @@ class Organization extends ActiveRecord
     public static function joiningRulesList()
     {
 	return [
-	    self::JOINING_RULES_OPEN => 'Свободные',
-	    self::JOINING_RULES_CLOSED => 'По заявкам',
-	    self::JOINING_RULES_PRIVATE => 'По приглашениям',
+	    self::JOINING_RULES_OPEN => 'Свободное членство',
+	    self::JOINING_RULES_CLOSED => 'Членство по заявкам',
+	    self::JOINING_RULES_PRIVATE => 'Членство по приглашениям',
+	];
+    }
+
+    /**
+     *
+     * @return array
+     */
+    public static function typesList()
+    {
+	return [
+	    self::TYPE_DEFAULT => 'Некоммерческая организация',
+	    self::TYPE_UNREGISTERED_PARTY => 'Политическая партия',
+	    self::TYPE_REGISTERED_PARTY => 'Политическая партия',
+	    self::TYPE_PRIVATE_COMPANY => 'Частная компания',
+	    self::TYPE_STATE_OWNED_COMPANY => 'Государственная компания',
+	    self::TYPE_AGENCY => 'Государственная организация',
+	];
+    }
+
+    /**
+     *
+     * @return array
+     */
+    public static function typesListOnCreate()
+    {
+	return [
+	    self::TYPE_DEFAULT => 'Некоммерческая организация',
+	    self::TYPE_UNREGISTERED_PARTY => 'Политическая партия',
+	    self::TYPE_PRIVATE_COMPANY => 'Частная компания',
 	];
     }
 
@@ -251,6 +321,15 @@ class Organization extends ActiveRecord
     public function getJoiningRulesName(): string
     {
 	return self::joiningRulesList()[$this->joiningRules];
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function getTypeName(): string
+    {
+	return self::typesList()[$this->type];
     }
 
 }
